@@ -1,6 +1,6 @@
 [@@@ocaml.text "/*"]
 
-(** Copyright 2023-2024, Kakadu and contributors *)
+(** Copyright 2023-2025, Kakadu and contributors *)
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
@@ -13,7 +13,6 @@ let () =
   let the_module = Llvm.create_module context "main" in
   Llvm.set_target_triple "x86_64-pc-linux-gnu" the_module;
   let _the_execution_engine = Llvm_executionengine.create the_module in
-  let the_fpm = Llvm.PassManager.create_function the_module in
   let module LL = (val LL.make context builder the_module) in
   let i64_type = Llvm.i64_type context in
   let void_type = Llvm.void_type context in
@@ -46,7 +45,7 @@ let () =
          (Llvm.string_of_llvalue the_function);
        Llvm_analysis.assert_valid_function the_function);
     (* Optimize the function. *)
-    let (_ : bool) = Llvm.PassManager.run_function the_function the_fpm in
+    (* let (_ : bool) = Llvm.PassManager.run_function the_function the_fpm in *)
     (* Llvm.dump_value the_function; *)
     ()
   in

@@ -1,0 +1,4 @@
+depexts: [
+  [ "llvm-18-dev" "clang-18" "gcc-riscv64-linux-gnu" "g++-riscv64-linux-gnu" "qemu-user"] {os-distribution = "ubuntu"}
+]
+# Don't edit '*.opam' file manually. Use 'dune b @install'

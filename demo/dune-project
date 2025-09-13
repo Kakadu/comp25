@@ -7,11 +7,11 @@
 (source
  (github Kakadu/comp24))
 
-(authors "FIXME Vasya Pupkin")
+(authors "FIXME Vasya Pupkin" "FIXME Pupkin Vasya")
 
-(maintainers "FIXME Vasya Pupkin")
+(maintainers "FIXME Vasya Pupkin" "FIXME Pupkin Vasya")
 
-(license LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception)
+(license LGPL-3-or-later WITH OCaml-LGPL-linking-exception)
 
 (package
  (name demo)
@@ -19,10 +19,14 @@
  (depends
   ocaml
   dune
+  (angstrom
+   (= "0.16.0"))
+  qcheck
   bisect_ppx
   (llvm
-   (= "16.0.6+nnp"))
+   (= "18-shared"))
   (qcheck :with-tests)
-  (ppx_deriving_qcheck :with-tests)))
+  ;ppx_deriving_qcheck 
+  ))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
