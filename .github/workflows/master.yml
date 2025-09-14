@@ -6,8 +6,11 @@ on:
   #    - 'master'
   push:
     paths-ignore:
-      - 'README.md'
-      - 'exam.md'
+      - '*.md'
+      - Makefile
+      - .github/workflows/PRformat.yml
+      - .github/workflows/PR.yml
+      - .github/workflows/PrPost.yml
     branches:
       - 'master'
 env:
