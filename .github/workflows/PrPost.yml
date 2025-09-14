@@ -207,6 +207,8 @@ jobs:
   upload_docs:
     if: ${{( github.event.workflow_run.event == 'pull_request') && (github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Print
