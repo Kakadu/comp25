@@ -78,10 +78,16 @@ jobs:
       # Smart link about setting environment variables
       # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
       - name: Detect latest directory with changes in ${{ github.event.repository.name }}
+        working-directory: .github
         run: |
-          opam exec -- ocaml .github/detect_latest_pr.ml -v "pull/${{ steps.branch-name.outputs.ref_branch }}" -repo ${{ github.event.repository.name }} >> $GITHUB_ENV
-          echo "${{ env.latest }}"
+          printf '%s\n%s\n' '#require "str,unix";;' "$(cat detect_latest_pr.ml)" > detect_latest_pr.ml
+          printf '%s\n%s\n' '#use "topfind";;' "$(cat detect_latest_pr.ml)" > detect_latest_pr.ml
+          (cd .. && opam exec -- ocaml .github/detect_latest_pr.ml -v "pull/${{ steps.branch-name.outputs.ref_branch }}" -repo ${{ github.event.repository.name }}) >> $GITHUB_ENV
+
         #if: ${{ github.event.pull_request.user.login == 'fp2022-helper' }}
+
+      - name: Detected directory -- ${{ env.latest }}
+        run: echo ${{ env.latest }}
 
       - name: Look for `rust-toolchain.toml`
         run: |

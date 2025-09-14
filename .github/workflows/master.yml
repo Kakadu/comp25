@@ -11,9 +11,10 @@ on:
     branches:
       - 'master'
 env:
-  OPAMROOT: /home/user/.opam
+  OPAMROOT: /home/opam/.opam
   OPAMYES: true
   OPAMCONFIRMLEVEL: unsafe-yes
+
 jobs:
   build:
     defaults:
@@ -21,7 +22,8 @@ jobs:
         shell: bash
     runs-on: ubuntu-latest
     container:
-      image: kakadu18/ocaml:fp2024
+      image: kakadu18/ocaml:comp25
+
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
@@ -39,13 +41,18 @@ jobs:
       # Smart link about setting environment variables
       # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
       - name: Detect latest changes in ${{ github.event.repository.name }}
+        working-directory: .github
         run: |
-          opam exec -- ocaml .github/detect_latest_pr.ml -master -repo ${{ github.event.repository.name }} >> $GITHUB_ENV
-          echo "${{ env.latest }}"
+          printf '%s\n%s\n' '#require "str,unix";;' "$(cat detect_latest_pr.ml)" > detect_latest_pr.ml
+          printf '%s\n%s\n' '#use "topfind";;' "$(cat detect_latest_pr.ml)" > detect_latest_pr.ml
+          (cd .. && opam exec -- ocaml .github/detect_latest_pr.ml -master -repo -template demo ${{ github.event.repository.name }}) >> $GITHUB_ENV
+
+      - name: Detected directory -- ${{ env.latest }}
+        run: echo ${{ env.latest }}
 
       - name: Look for `rust-toolchain.toml`
+        working-directory: ${{ env.latest }}
         run: |
-          cd ${{ env.latest }}
           RUST_TOOLCHAIN=$(find . -name "rust-toolchain.toml" | head -n 1)
           if [ -n "$RUST_TOOLCHAIN" ]; then
             echo "RUST_TOOLCHAIN=$RUST_TOOLCHAIN" >> "$GITHUB_ENV"
@@ -69,10 +76,11 @@ jobs:
             rustup show
 
       - name: Installing dependencies for ${{ env.latest }}
+        working-directory: ${{ env.latest }}
         run: |
           opam update
-          opam install ./${{ env.latest }} --depext-only --with-test --with-doc
-          opam install ./${{ env.latest }} --deps-only --with-test --with-doc
+          opam install . --depext-only --with-test --with-doc
+          opam install . --deps-only --with-test --with-doc
 
       - if: false
         name: Checking ocamlformat
@@ -80,10 +88,12 @@ jobs:
           cd ${{ env.latest }} && opam exec -- dune build @fmt --profile=release
 
       - name: Compiling ${{ env.latest }}...
-        run: cd ${{ env.latest }} && opam exec -- dune build --profile=release
+        working-directory: ${{ env.latest }}
+        run: opam exec -- dune build --profile=release
 
       - name: Running tests in ${{ env.latest }}...
-        run: cd ${{ env.latest }} && opam exec -- dune runtest --profile=release
+        working-directory: ${{ env.latest }}
+        run: opam exec -- dune runtest --profile=release
 
       - name: Build API documentation for ${{ env.latest }}...
         if: false
