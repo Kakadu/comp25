@@ -207,17 +207,10 @@ jobs:
   upload_docs:
     if: ${{( github.event.workflow_run.event == 'pull_request') && (github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
-    #container:
-    #  image: kakadu18/ocaml:fp2024  # At the moment OCaml is not required (July 2024)
 
     steps:
       - name: Print
         run: env | sort
-
-      # - name: List installed OPAM packages
-      #   run: opam list
-
-      # - run: opam exec -- ocamlopt --version
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -234,9 +227,8 @@ jobs:
       - run: |
           echo "LANG_NAME=$(cat _docs/projectname.txt)" >> $GITHUB_ENV
           echo "PR_NUMBER=$(cat _docs/PR_number.txt)" >> $GITHUB_ENV
-      - run: |
-          echo "${{ env.LANG_NAME }}"
-          echo "${{ env.PR_NUMBER }}"
+      - name: Lang is ${{ env.LANG_NAME }}, PR is ${{ env.PR_NUMBER }}
+        run: echo
          # LANG_NAME is required for uploading docs.
          # PR_NUMBER -- for adding a comment
 
@@ -298,12 +290,12 @@ jobs:
       #       -repo ${{ github.event.repository.name }}
 
       - uses: mshick/add-pr-comment@v2
-        name: Add comment about uploaded docs
+        name: Add comment about uploaded docs to PR '${{ env.PR_NUMBER }}'
         with:
           message-path: text.md
           message-id: docs-uploaded
           refresh-message-position: true
-          issue: ${{ env.CI_PULL_REQUEST }}
+          issue: ${{ env.PR_NUMBER }}
 
       # - name: Adding a comment from 'text.md' manually
       #   if: false
@@ -332,8 +324,9 @@ jobs:
 
       - run: echo "${{ env.LANG_NAME }}"
 
-      - run: exit 1
+      - name: Check '${{ env.LANG_NAME }}' is not empty
         if: ${{ env.LANG_NAME == '' }}
+        run: exit 1
 
       - name: Deploy coverage
         uses: peaceiris/actions-gh-pages@v4
