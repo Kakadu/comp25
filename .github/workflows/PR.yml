@@ -82,7 +82,7 @@ jobs:
         run: |
           printf '%s\n%s\n' '#require "str,unix";;' "$(cat detect_latest_pr.ml)" > detect_latest_pr.ml
           printf '%s\n%s\n' '#use "topfind";;' "$(cat detect_latest_pr.ml)" > detect_latest_pr.ml
-          (cd .. && opam exec -- ocaml .github/detect_latest_pr.ml -v "pull/${{ steps.branch-name.outputs.ref_branch }}" -repo ${{ github.event.repository.name }}) >> $GITHUB_ENV
+          (cd .. && opam exec -- ocaml .github/detect_latest_pr.ml -v "pull/${{ steps.branch-name.outputs.ref_branch }}" -repo ${{ github.event.repository.name }} -template demo) >> $GITHUB_ENV
 
         #if: ${{ github.event.pull_request.user.login == 'fp2022-helper' }}
 
