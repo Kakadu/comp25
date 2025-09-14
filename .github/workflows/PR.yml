@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: kakadu18/ocaml:llvm16
+      image: kakadu18/ocaml:comp25
 
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
@@ -109,10 +109,11 @@ jobs:
             rustup show
 
       - name: Installing dependencies for ${{ env.latest }}
+        working-directory: ./${{ env.latest }}
         run: |
           opam update
-          opam install ./${{ env.latest }} --depext-only --with-test --with-doc
-          opam install ./${{ env.latest }} --deps-only --with-test --with-doc
+          opam install . --depext-only --with-test --with-doc
+          opam install . --deps-only --with-test --with-doc
 
       - name: List installed OPAM packages
         run: opam list
@@ -132,19 +133,19 @@ jobs:
           cargo clippy -- -D warnings
 
       - name: Naive linting
+        working-directory: ./${{ env.latest }}
         run: |
-          cd ${{ env.latest }}
           python ../.github/lint_filesystem.py ${{ env.latest }}
 
 
       - name: Compiling ${{ env.latest }} (profile=release)...
+        working-directory: ./${{ env.latest }}
         run: |
-          cd ${{ env.latest }}
           opam exec -- dune build @all @check --profile=release
 
       - name: Running tests in ${{ env.latest }}...
+        working-directory: ./${{ env.latest }}
         run: |
-          cd ${{ env.latest }}
           opam exec -- dune runtest --profile=release
 
       - name: Setting the environment
@@ -158,14 +159,14 @@ jobs:
 
       - name: Running linter in ${{ env.latest }}...
         if: ${{ !startsWith(github.event.pull_request.title, '[D]') && !startsWith(github.event.pull_request.title, '[E]') }}
+        working-directory: ./${{ env.latest }}
         run: |
-          cd ${{ env.latest }}
           opam exec -- zanuda -dir . -add-prefix ${{ env.latest }}/ -no-no_toplevel_eval -ordjsonl ${{ env.RDJSON_FILE_PATH }} > ${{ env.ZANUDA_REPORT_FILE_PATH }}
 
       - name: SKIPPING linter in ${{ env.latest }}...
         if: ${{ startsWith(github.event.pull_request.title, '[D]') || startsWith(github.event.pull_request.title, '[E]') }}
+        working-directory: ./${{ env.latest }}
         run: |
-          cd ${{ env.latest }}
           echo '' > ${{ env.ZANUDA_REPORT_FILE_PATH }}
           echo '' > ${{ env.RDJSON_FILE_PATH }}
 
@@ -228,9 +229,10 @@ jobs:
 
       - name: Calculating coverage (1/2)
         #if: ${{ !(env.IsD) }}
+        working-directory: ./${{ env.latest }}
         run: |
           mkdir -p ${{ env.BISECT_DIR }}
-          cd ${{ env.latest }} && opam exec -- dune runtest --instrument-with bisect_ppx --force
+          opam exec -- dune runtest --instrument-with bisect_ppx --force
         env:
           BISECT_DIR: /tmp/bisect_ppx_data
           BISECT_FILE: /tmp/bisect_ppx_data/data
@@ -243,8 +245,8 @@ jobs:
       - name: Calculating coverage (2/2)
         #if: ${{ !(env.IsD) }}
         id: calc-coverage
+        working-directory: ./${{ env.latest }}
         run: |
-            cd ${{ env.latest }}
             mkdir -p ${{ env.BISECT_DIR }}
             opam exec -- bisect-ppx-report html --coverage-path ${{ env.BISECT_DIR }}
             opam exec -- bisect-ppx-report summary --coverage-path ${{ env.BISECT_DIR }}
@@ -269,8 +271,8 @@ jobs:
         continue-on-error: true
 
       - name: Build API documentation for ${{ env.latest }}...
+        working-directory: ./${{ env.latest }}
         run: |
-          cd ${{ env.latest }}
           opam exec -- dune b @install --profile=release
           opam exec -- dune install
           opam exec -- dune install
