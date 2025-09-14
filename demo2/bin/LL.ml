@@ -79,8 +79,8 @@ let make context builder module_ =
     let set_metadata v kind fmt =
       Format.kasprintf
         (fun s ->
-          Llvm.set_metadata v (Llvm.mdkind_id context kind) (Llvm.mdstring context s);
-          v)
+           Llvm.set_metadata v (Llvm.mdkind_id context kind) (Llvm.mdstring context s);
+           v)
         fmt
     ;;
 
