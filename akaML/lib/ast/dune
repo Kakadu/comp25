@@ -1,0 +1,8 @@
+(library
+ (name Ast)
+ (public_name akaML.Ast)
+ (libraries base qcheck-core qcheck-core.runner)
+ (preprocess
+  (pps ppx_deriving.show ppx_deriving_qcheck))
+ (instrumentation
+  (backend bisect_ppx)))

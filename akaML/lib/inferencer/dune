@@ -1,0 +1,6 @@
+(library
+ (name Inferencer)
+ (public_name akaML.Inferencer)
+ (libraries Ast Pprinter)
+ (instrumentation
+  (backend bisect_ppx)))
