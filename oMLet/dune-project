@@ -1,32 +1,34 @@
 (lang dune 3.8)
 
-(name demo)
+(name OMLet)
 
 (generate_opam_files true)
 
 (source
- (github Kakadu/comp24))
+ (github p1onerka/oMLet))
 
-(authors "FIXME Vasya Pupkin" "FIXME Pupkin Vasya")
+(authors "Kotelnikova Ksenia" "Kozyreva Sofya")
 
-(maintainers "FIXME Vasya Pupkin" "FIXME Pupkin Vasya")
+(maintainers "Kotelnikova Ksenia" "Kozyreva Sofya")
 
 (license "LGPL-3.0-or-later WITH OCaml-LGPL-linking-exception")
 
 (package
- (name demo)
- (synopsis "A short LLVM demo")
+ (name OMLet)
+ (synopsis "Will be later")
  (depends
   ocaml
   (dune
    (= "3.19.1"))
   (angstrom
    (= "0.16.0"))
-  qcheck
+(ppx_inline_test :with-test)
+  ppx_deriving
+  qcheck-core
   bisect_ppx
+  (ocamlformat :build)
   (llvm
    (= "18-shared"))
-  (qcheck :with-tests)
   (ppx_deriving_qcheck
    (= "0.6"))))
 
