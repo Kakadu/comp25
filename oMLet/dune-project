@@ -1,0 +1,33 @@
+(lang dune 3.8)
+
+(name demo)
+
+(generate_opam_files true)
+
+(source
+ (github Kakadu/comp24))
+
+(authors "FIXME Vasya Pupkin" "FIXME Pupkin Vasya")
+
+(maintainers "FIXME Vasya Pupkin" "FIXME Pupkin Vasya")
+
+(license "LGPL-3.0-or-later WITH OCaml-LGPL-linking-exception")
+
+(package
+ (name demo)
+ (synopsis "A short LLVM demo")
+ (depends
+  ocaml
+  (dune
+   (= "3.19.1"))
+  (angstrom
+   (= "0.16.0"))
+  qcheck
+  bisect_ppx
+  (llvm
+   (= "18-shared"))
+  (qcheck :with-tests)
+  (ppx_deriving_qcheck
+   (= "0.6"))))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
