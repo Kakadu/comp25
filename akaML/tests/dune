@@ -9,7 +9,7 @@
   (backend bisect_ppx)))
 
 (cram
- (applies_to tests inference)
+ (applies_to tests inference codegen)
  (deps
   ../bin/akaML.exe
   manytests/do_not_type/001.ml

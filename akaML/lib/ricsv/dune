@@ -1,6 +1,8 @@
 (library
- (name Pprinter)
- (public_name akaML.Pprinter)
+ (name RiscV)
+ (public_name akaML.RiscV)
  (libraries base Ast Parser)
+ (preprocess
+  (pps ppx_deriving.eq))
  (instrumentation
   (backend bisect_ppx)))

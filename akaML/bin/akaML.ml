@@ -8,68 +8,70 @@ type opts =
   { mutable dump_parsetree : bool
   ; mutable inference : bool
   ; mutable input_file : string option
+  ; mutable output_file : string option
   }
 
 let pp_global_error ppf = function
   | #Inferencer.error as e -> Inferencer.pp_error ppf e
 ;;
 
-let run_single dump_parsetree inference input_source =
-  let run text env_infer =
+let compiler dump_parsetree inference input_source output_file =
+  let run text env_infer out_channel =
     let ast = Parser.parse text in
     match ast with
     | Error error ->
-      print_endline (Format.asprintf "Parsing error: %s" error);
+      Out_channel.output_string out_channel (Format.asprintf "Parsing error: %s\n" error);
       env_infer
     | Ok ast ->
       if dump_parsetree
       then (
-        print_endline (Ast.show_structure ast);
+        Out_channel.output_string out_channel (Ast.show_structure ast ^ "\n");
         env_infer)
       else (
         match Inferencer.run_inferencer env_infer ast with
         | Error e_infer ->
-          print_endline (Format.asprintf "Inferencer error: %a" pp_global_error e_infer);
+          Out_channel.output_string
+            out_channel
+            (Format.asprintf "Inferencer error: %a\n" pp_global_error e_infer);
           env_infer
         | Ok (env_infer, out_infer_list) ->
           if inference
           then (
-            List.iter
-              (function
-                | Some id, type' ->
-                  print_endline
-                    (Format.asprintf "val %s : %a" id Pprinter.pp_core_type type')
-                | None, type' ->
-                  print_endline (Format.asprintf "- : %a" Pprinter.pp_core_type type'))
-              out_infer_list;
+            Base.List.iter out_infer_list ~f:(function
+              | Some id, type' ->
+                Out_channel.output_string
+                  out_channel
+                  (Format.asprintf "val %s : %a\n" id Pprinter.pp_core_type type')
+              | None, type' ->
+                Out_channel.output_string
+                  out_channel
+                  (Format.asprintf "- : %a\n" Pprinter.pp_core_type type'));
             env_infer)
           else (
-            print_endline "In progress...";
+            let ppf = Format.formatter_of_out_channel out_channel in
+            Format.fprintf ppf "%a\n%!" RiscV.Codegen.gen_structure ast;
             env_infer))
   in
   let env_infer = Inferencer.env_with_print_funs in
   match input_source with
   | Some file_name ->
     let text = In_channel.read_all file_name |> String.trim in
-    let _ = run text env_infer in
-    ()
+    (match output_file with
+     | Some out_name ->
+       Out_channel.with_file out_name ~f:(fun oc -> ignore (run text env_infer oc))
+     | None -> ignore (run text env_infer Out_channel.stdout))
   | None ->
-    let rec input_lines lines env_infer =
-      match In_channel.input_line stdin with
-      | Some line ->
-        if line = ";;" || String.ends_with ~suffix:";;" line
-        then (
-          let env_infer = run (lines ^ line) env_infer in
-          input_lines "" env_infer)
-        else input_lines (lines ^ line) env_infer
-      | None -> ()
-    in
-    let _ = input_lines "" env_infer in
-    ()
+    let input = In_channel.input_all stdin |> String.trim in
+    (match output_file with
+     | Some out_name ->
+       Out_channel.with_file out_name ~f:(fun oc -> ignore (run input env_infer oc))
+     | None -> ignore (run input env_infer Out_channel.stdout))
 ;;
 
 let () =
-  let options = { dump_parsetree = false; inference = false; input_file = None } in
+  let options =
+    { dump_parsetree = false; inference = false; input_file = None; output_file = None }
+  in
   let () =
     let open Arg in
     parse
@@ -82,11 +84,14 @@ let () =
       ; ( "-fromfile"
         , String (fun filename -> options.input_file <- Some filename)
         , "Read code from the file" )
+      ; ( "-o"
+        , String (fun filename -> options.output_file <- Some filename)
+        , "Write code to the file" )
       ]
       (fun _ ->
          Format.eprintf "Positional arguments are not supported\n";
          exit 1)
-      "Read-Eval-Print-Loop for custom language"
+      "Compiler for custom language"
   in
-  run_single options.dump_parsetree options.inference options.input_file
+  compiler options.dump_parsetree options.inference options.input_file options.output_file
 ;;
