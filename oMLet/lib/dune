@@ -1,0 +1,16 @@
+(library
+ (name OMLet)
+ (public_name OMLet)
+ (modules
+  Ast
+  Parser
+  KeywordChecker
+  TypesPp
+  TypedTree)
+ (libraries base angstrom qcheck-core qcheck-core.runner)
+ (instrumentation
+  (backend bisect_ppx))
+ (preprocess
+  (pps ppx_deriving.show ppx_inline_test ppx_expect ppx_deriving_qcheck))
+ (inline_tests))
+
