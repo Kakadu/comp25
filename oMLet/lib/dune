@@ -4,6 +4,7 @@
  (modules
   Ast
   Parser
+  PrettyPrinter
   KeywordChecker
   TypesPp
   TypedTree)
