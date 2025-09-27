@@ -188,3 +188,7 @@ type construction =
   | Expr of expr (** expression *)
   | Statement of statement (** statement *)
 [@@deriving show { with_path = false }, qcheck]
+
+type constructions =
+  (construction list[@gen QCheck.Gen.(list_size (1 -- 2) gen_construction)])
+[@@deriving show { with_path = false }, qcheck]

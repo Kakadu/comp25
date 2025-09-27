@@ -1,417 +1,458 @@
-(** Copyright 2024-2025, Ksenia Kotelnikova <xeniia.ka@gmail.com>, Gleb Nasretdinov <gleb.nasretdinov@proton.me> *)
+(** Copyright 2024, Sofya Kozyreva, Maksim Shipilov *)
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
 open Angstrom
-open Ast
 open Base
-open KeywordChecker
+open Ast
 open TypedTree
 
-(* TECHNICAL FUNCTIONS *)
+(*---------------------Check conditions---------------------*)
 
-let is_ws = function
-  | ' ' -> true
-  | '\n' -> true
-  | '\t' -> true
+let is_keyword = function
+  | "let"
+  | "in"
+  | "fun"
+  | "rec"
+  | "if"
+  | "then"
+  | "else"
+  | "true"
+  | "false"
+  | "Some"
+  | "None"
+  | "and"
+  | "match"
+  | "with"
+  | "function"
+  | "type" -> true
   | _ -> false
 ;;
 
-let skip_ws = skip_while is_ws
+(*---------------------Control characters---------------------*)
 
-let peek_sep1 =
-  peek_char
-  >>= fun c ->
-  match c with
-  | None -> return None
-  | Some c ->
-    (match c with
-     | '(' | ')' | ']' | ';' | ':' | ',' -> return (Some c)
-     | _ -> if is_ws c then return (Some c) else fail "need a delimiter")
+let pwhitespace = take_while Char.is_whitespace
+let pws1 = take_while1 Char.is_whitespace
+let pstoken s = pwhitespace *> string s
+let ptoken s = pwhitespace *> s
+let pparens p = pstoken "(" *> p <* pstoken ")"
+let psqparens p = pstoken "[" *> p <* pstoken "]"
+
+(*------------------Prefix operators-----------------*)
+
+let ppref_op =
+  let pref_op =
+    ptoken
+      (let* first_char =
+         take_while1 (function
+           | '|'
+           | '~'
+           | '?'
+           | '<'
+           | '>'
+           | '!'
+           | '&'
+           | '*'
+           | '/'
+           | '='
+           | '+'
+           | '-'
+           | '@'
+           | '^' -> true
+           | _ -> false)
+       in
+       let* rest =
+         take_while (function
+           | '.'
+           | ':'
+           | '|'
+           | '~'
+           | '?'
+           | '<'
+           | '>'
+           | '!'
+           | '&'
+           | '*'
+           | '/'
+           | '='
+           | '+'
+           | '-'
+           | '@'
+           | '^' -> true
+           | _ -> false)
+       in
+       match first_char, rest with
+       | "|", "" -> fail "Prefix operator cannot be called | "
+       | "~", "" -> fail "Prefix operator cannot be called ~ "
+       | "?", "" -> fail "Prefix operator cannot be called ? "
+       | _ -> return (Ident (first_char ^ rest)))
+  in
+  pparens pref_op
 ;;
 
-let skip_ws_sep1 = peek_sep1 *> skip_ws
+let pEinf_op pexpr =
+  ppref_op
+  >>= fun inf_op ->
+  lift2
+    (fun left right -> Apply (Apply (Variable inf_op, left), right))
+    (pws1 *> pexpr)
+    (pwhitespace *> pexpr)
+;;
 
-let chainl1 e op =
+(* let pEinf_op =
+   pwhitespace *> pinf_op >>= fun inf_op -> return (fun e1 e2 -> Efun_application (Efun_application (Evar inf_op, e1), e2))
+   ;; *)
+
+(*-------------------------Constants/Variables-------------------------*)
+
+let pint =
+  pwhitespace *> take_while1 Char.is_digit
+  >>= fun str ->
+  match Stdlib.int_of_string_opt str with
+  | Some n -> return (Int_lt n)
+  | None -> fail "Integer value exceeds the allowable range for the int type"
+;;
+
+let pbool =
+  choice [ pstoken "true" *> return true; pstoken "false" *> return false ]
+  >>| fun x -> Bool_lt x
+;;
+
+let pstr =
+  pwhitespace *> char '"' *> take_till (Char.equal '"') <* char '"' >>| fun x -> String_lt x
+;;
+
+let punit = pstoken "()" *> return Unit_lt
+let const = choice [ pint; pbool; pstr; punit ]
+
+let varname =
+  ptoken
+    (let* first_char =
+       take_while1 (fun ch -> Char.is_lowercase ch || Char.equal ch '_')
+     in
+     let* rest =
+       take_while (fun ch ->
+         Char.is_alpha ch || Char.is_digit ch || Char.equal ch '_' || Char.equal ch '\'')
+     in
+     match first_char, rest with
+     | _, _ when is_keyword (first_char ^ rest) ->
+       fail "Variable name conflicts with a keyword"
+     | "_", "" -> fail "Variable cannot be called _"
+     | _ -> return (first_char ^ rest))
+;;
+
+let patomic_type =
+  choice
+    [ pstoken "int" *> return (Primitive "int")
+    ; pstoken "string" *> return (Primitive "string")
+    ; pstoken "bool" *> return (Primitive "bool")
+    ; pstoken "unit" *> return (Primitive "unit")
+    ]
+;;
+
+let plist_type ptype_opt = ptype_opt >>= fun t -> pstoken "list" *> return (Type_list t)
+
+let ptuple_type ptype_opt =
+  let star = pstoken "*" in
+  lift3
+    (fun t1 t2 rest -> Type_tuple (t1, t2, rest))
+    ptype_opt
+    (star *> ptype_opt)
+    (many (star *> ptype_opt))
+;;
+
+let rec pfun_type ptype_opt =
+  ptype_opt
+  >>= fun left ->
+  pstoken "->" *> pfun_type ptype_opt
+  >>= (fun right -> return (Arrow (left, right)))
+  <|> return left
+;;
+
+let poption_type ptype_opt = ptype_opt >>= fun t -> pstoken "option" *> return (TOption t)
+(* let precord_type = varname >>= fun t -> return (TRecord t) *)
+
+let ptype_helper =
+  fix (fun typ ->
+    (* let atom = patomic_type <|> pparens typ <|> precord_type in *)
+    let atom = patomic_type <|> pparens typ in
+    let list = plist_type atom <|> atom in
+    let option = poption_type list <|> list in
+    let tuple = ptuple_type option <|> option in
+    let func = pfun_type tuple <|> tuple in
+    func)
+;;
+
+let ptype =
+  let t = ptype_helper in
+  pstoken ":" *> t
+;;
+
+let pident = lift (fun t -> Ident t) varname <|> ppref_op
+let pat_var = pident >>| fun x -> PVar x
+let pat_const = const >>| fun x -> PConst x
+let pat_any = pstoken "_" *> return Wild
+
+let pat_tuple pat =
+  let commas = pstoken "," in
+  let tuple =
+    lift3
+      (fun p1 p2 rest -> PTuple (p1, p2, rest))
+      pat
+      (commas *> pat)
+      (many (commas *> pat))
+    <* pwhitespace
+  in
+  pparens tuple <|> tuple
+;;
+
+let pat_list pat =
+  let semicols = pstoken ";" in
+  psqparens (sep_by semicols pat >>| fun patterns -> PList patterns)
+;;
+
+let rec pat_cons pat =
+  let cons =
+    pat
+    >>= fun head ->
+    pstoken "::" *> pat_cons pat
+    >>= (fun tail -> return (PCons (head, tail)))
+    <|> return head
+  in
+  pparens cons <|> cons
+;;
+
+let pat_option pat =
+  lift
+    (fun e -> POption e)
+    (pstoken "Some" *> pat >>| (fun e -> Some e) <|> (pstoken "None" >>| fun _ -> None))
+;;
+
+let pat_ty pat =
+  let ty_pat = lift2 (fun pat ty -> PConstraint (pat, ty)) pat ptype in
+  ty_pat <|> pparens ty_pat
+;;
+
+let ppattern =
+  fix (fun pat ->
+    let patom =
+      pat_const <|> pat_var <|> pat_any <|> pparens pat <|> pparens (pat_ty pat)
+    in
+    let poption = pat_option patom <|> patom in
+    let pptuple = pat_tuple poption <|> poption in
+    let pplist = pat_list pptuple <|> pptuple in
+    let pcons = pat_cons pplist <|> pplist in
+    let pty = pat_ty pcons <|> pcons in
+    pty)
+;;
+
+(*------------------Binary operators-----------------*)
+
+let pbinop op token =
+  pwhitespace *> pstoken token *> return (fun e1 e2 -> Bin_expr (op, e1, e2))
+;;
+
+let add = pbinop Binary_add "+"
+let sub = pbinop Binary_subtract "-"
+let mult = pbinop Binary_multiply "*"
+let div = pbinop Binary_divide "/"
+
+let relation =
+  choice
+    [ pbinop Binary_equal "="
+    ; pbinop Binary_unequal "<>"
+    ; pbinop Binary_less_or_equal "<="
+    ; pbinop Binary_greater_or_equal ">="
+    ; pbinop Binary_less "<"
+    ; pbinop Binary_greater ">"
+    ]
+;;
+
+let logic = choice [ pbinop Logical_and "&&"; pbinop Logical_or "||" ]
+let cons = pbinop Binary_cons "::"
+
+(*------------------Unary operators-----------------*)
+
+let punop op token = pwhitespace *> pstoken token *> return (fun e1 -> Unary_expr (op, e1))
+let negation = punop Unary_not "not" <* pws1
+let neg_sign = punop Unary_minus "-"
+(* let pos_sign = punop Positive "+" *)
+
+(*------------------------Expressions----------------------*)
+
+let chain e op =
   let rec go acc = lift2 (fun f x -> f acc x) op e >>= go <|> return acc in
   e >>= go
 ;;
 
-let rec chainr1 e op =
+let rec chainr e op =
   let* left = e in
   (let* f = op in
-   let* right = chainr1 e op in
+   let* right = chainr e op in
    return (f left right))
   <|> return left
 ;;
 
-let rec unary_chain op e =
-  op >>= (fun unexpr -> unary_chain op e >>= fun expr -> return (unexpr expr)) <|> e
+let un_chain e op =
+  fix (fun self -> op >>= (fun unop -> self >>= fun e -> return (unop e)) <|> e)
 ;;
 
-(* SIMPLE PARSERS *)
-let expr_const_factory parser = parser >>| fun lit -> Const lit
-let pat_const_factory parser = parser >>| fun lit -> PConst lit
-
-let p_int =
-  skip_ws
-  *> let* sign = string "+" <|> string "-" <|> string "" in
-     let* number = take_while1 Char.is_digit in
-     return (Int_lt (Int.of_string (sign ^ number)))
-;;
-
-let p_int_expr = expr_const_factory p_int
-let p_int_pat = pat_const_factory p_int
-
-let p_bool =
-  skip_ws *> string "true"
-  <|> skip_ws *> string "false"
-  >>| fun s -> Bool_lt (Bool.of_string s)
-;;
-
-let p_bool_expr = expr_const_factory p_bool
-let p_bool_pat = pat_const_factory p_bool
-
-let p_escaped_char =
-  char '\\'
-  *> (any_char
-      >>= function
-      | '"' -> return '"'
-      | '\\' -> return '\\'
-      | 'n' -> return '\n'
-      | 't' -> return '\t'
-      | 'r' -> return '\r'
-      | other -> fail (Printf.sprintf "Unknown escape sequence: \\%c" other))
-;;
-
-let p_regular_char = satisfy (fun c -> Char.(c <> '"' && c <> '\\'))
-
-let p_string =
-  let+ s = skip_ws *> char '"' *> many (p_regular_char <|> p_escaped_char) <* char '"' in
-  String_lt (String.of_char_list s)
-;;
-
-let p_string_expr = expr_const_factory p_string
-let p_string_pat = pat_const_factory p_string
-
-let p_inf_oper =
-  let* oper =
-    skip_ws
-    *> take_while1 (function
-      | '+'
-      | '-'
-      | '<'
-      | '>'
-      | '*'
-      | '|'
-      | '!'
-      | '$'
-      | '%'
-      | '&'
-      | '.'
-      | '/'
-      | ':'
-      | '='
-      | '?'
-      | '@'
-      | '^'
-      | '~' -> true
-      | _ -> false)
-  in
-  if is_keyword oper
-  then fail "keywords are not allowed as variable names"
-  else return (Ident oper)
-;;
-
-let p_name p_fst_letter =
-  let* name =
-    skip_ws
-    *> lift2
-         ( ^ )
-         p_fst_letter
-         (take_while (function
-           | 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' -> true
-           | _ -> false))
-  in
-  if is_keyword name
-  then fail "keywords are not allowed as variable names"
-  else return name
-;;
-
-let p_varname =
-  p_name
-    (take_while1 (function
-      | 'a' .. 'z' | '_' -> true
-      | _ -> false))
-;;
-
-let p_act_pat_name =
-  p_name
-    (take_while1 (function
-      | 'A' .. 'Z' -> true
-      | _ -> false))
-;;
-
-let p_ident =
-  let* varname = p_varname in
-  return (Ident varname)
-;;
-
-let p_act_pat_ident =
-  let* name = p_act_pat_name in
-  return (Ident name)
-;;
-
-let p_type = skip_ws *> char ':' *> skip_ws *> p_varname >>| fun s -> Primitive s
-let p_var_expr = p_ident >>| fun ident -> Variable ident
-let p_var_pat = p_ident >>| fun ident -> PVar ident
-
-let p_semicolon_list p_elem =
-  skip_ws
-  *> string "["
-  *> skip_ws
-  *> let+ list =
-       fix (fun p_semi_list ->
-         choice
-           [ (let* hd = p_elem <* skip_ws <* string ";" in
-              let* tl = p_semi_list in
-              return (hd :: tl))
-           ; (let* hd = p_elem <* skip_ws <* string "]" in
-              return [ hd ])
-           ; skip_ws *> string "]" *> return []
-           ])
-     in
-     list
-;;
-
-let p_semicolon_list_expr p_expr = p_semicolon_list p_expr >>| fun l -> List l
-let p_semicolon_list_pat p_pat = p_semicolon_list p_pat >>| fun l -> PList l
-let p_unit = skip_ws *> string "(" *> skip_ws *> string ")" *> return Unit_lt
-let p_unit_expr = expr_const_factory p_unit
-let p_unit_pat = pat_const_factory p_unit
-
-(* EXPR PARSERS *)
-let p_parens p = skip_ws *> char '(' *> skip_ws *> p <* skip_ws <* char ')'
-let make_binexpr op expr1 expr2 = Bin_expr (op, expr1, expr2) [@@inline always]
-let make_unexpr op expr = Unary_expr (op, expr) [@@inline always]
-let make_tuple_expr e1 e2 rest = Tuple (e1, e2, rest) [@@inline always]
-let make_tuple_pat p1 p2 rest = PTuple (p1, p2, rest)
-let p_binexpr binop_str binop = skip_ws *> string binop_str *> return (make_binexpr binop)
-let p_unexpr unop_str unop = skip_ws *> string unop_str *> return (make_unexpr unop)
-let p_not = p_unexpr "not" Unary_not
-let unminus = p_unexpr "-" Unary_minus
-let add = p_binexpr "+" Binary_add
-let sub = p_binexpr "-" Binary_subtract
-let mul = p_binexpr "*" Binary_multiply
-let div = p_binexpr "/" Binary_divide
-let equal = p_binexpr "=" Binary_equal
-let unequal = p_binexpr "<>" Binary_unequal
-let less = p_binexpr "<" Binary_less
-let less_or_equal = p_binexpr "<=" Binary_less_or_equal
-let greater = p_binexpr ">" Binary_greater
-let greater_or_equal = p_binexpr ">=" Binary_greater_or_equal
-let log_or = p_binexpr "||" Logical_or
-let log_and = p_binexpr "&&" Logical_and
-let bitwise_or = p_binexpr "|||" Binary_or_bitwise
-let bitwise_and = p_binexpr "&&&" Binary_and_bitwise
-let bitwise_xor = p_binexpr "^^^" Binary_xor_bitwise
-let cons = p_binexpr "::" Binary_cons
-
-let p_cons_list_pat p_pat =
-  chainr1 p_pat (skip_ws *> string "::" *> return (fun l r -> PCons (l, r)))
-;;
-
-let p_tuple make p =
-  let tuple =
-    let* fst = p <* skip_ws <* string "," in
-    let* snd = p in
-    let* rest = many (skip_ws *> string "," *> p) in
-    return (make fst snd rest)
-  in
-  p_parens tuple <|> tuple
-;;
-
-let p_tuple_pat p_pat = p_tuple make_tuple_pat p_pat
-
-let p_if p_expr =
-  lift3
-    (fun cond th el -> If_then_else (cond, th, el))
-    (skip_ws *> string "if" *> peek_sep1 *> p_expr)
-    (skip_ws *> string "then" *> peek_sep1 *> p_expr)
-    (skip_ws
-     *> string "else"
-     *> peek_sep1
-     *> (p_expr <* peek_sep1 >>= fun e -> return (Some e))
-     <|> return None)
-;;
-
-let p_option p make_option =
-  skip_ws *> string "None" *> peek_sep1 *> return (make_option None)
-  <|> let+ inner = skip_ws *> string "Some" *> peek_sep1 *> p in
-      make_option (Some inner)
-;;
-
-let make_option_expr expr = Option expr
-let make_option_pat pat = POption pat
-let p_wild_pat = skip_ws *> string "_" *> return Wild
-
-let p_pat_const =
-  choice [ p_int_pat; p_bool_pat; p_unit_pat; p_string_pat; p_var_pat; p_wild_pat ]
-;;
-
-let p_constraint_pat p_pat =
-  let* pat = p_pat in
-  let* typ = p_type in
-  return (PConstraint (pat, typ))
-;;
-
-let p_pat =
-  skip_ws
-  *> fix (fun self ->
-    let atom = choice [ p_pat_const; p_parens self; p_parens (p_constraint_pat self) ] in
-    let semicolon_list = p_semicolon_list_pat (self <|> atom) <|> atom in
-    let opt = p_option semicolon_list make_option_pat <|> semicolon_list in
-    let cons = p_cons_list_pat opt in
-    let tuple = p_tuple_pat cons <|> cons in
-    tuple)
+let rec pbody pexpr =
+  ppattern
+  >>= fun p ->
+  many ppattern
+  >>= fun patterns ->
+  pbody pexpr <|> (pstoken "=" *> pexpr >>| fun e -> Lambda (p, patterns, e))
 ;;
 
 let p_let_bind p_expr =
-  let* name = p_pat <|> (p_parens p_inf_oper >>| fun oper -> PVar oper) in
-  let* args = many p_pat in
-  let* body = skip_ws *> string "=" *> p_expr in
+  let* name = ppattern <|> (pparens ppref_op >>| fun oper -> PVar oper) in
+  let* args = many ppattern in
+  let* body = pstoken("=") *> p_expr in
   return (Let_bind (name, args, body))
 ;;
-
-let p_letin p_expr =
-  skip_ws
-  *> string "let"
-  *> skip_ws_sep1
-  *>
-  let* rec_flag = string "rec" *> peek_sep1 *> return Rec <|> return Nonrec in
-  let* let_bind1 = p_let_bind p_expr in
-  let* let_binds = many (skip_ws *> string "and" *> peek_sep1 *> p_let_bind p_expr) in
-  let* in_expr = skip_ws *> string "in" *> peek_sep1 *> p_expr in
-  return (LetIn (rec_flag, let_bind1, let_binds, in_expr))
+let plet pexpr =
+  pstoken "let"
+  *> lift4
+       (fun rec_flag value_bindings and_bindings body ->
+         LetIn (rec_flag, value_bindings, and_bindings, body))
+       (pstoken "rec" *> (pws1 *> return Rec) <|> return Nonrec)
+       (p_let_bind pexpr)
+       (many (pstoken "and" *> p_let_bind pexpr))
+       (pstoken "in" *> pexpr)
 ;;
 
-let p_let p_expr =
-  skip_ws
-  *> string "let"
-  *> skip_ws_sep1
-  *>
-  let* rec_flag = string "rec" *> peek_sep1 *> return Rec <|> return Nonrec in
-  let* let_bind1 = p_let_bind p_expr in
-  let* let_binds = many (skip_ws *> string "and" *> peek_sep1 *> p_let_bind p_expr) in
-  return (Let (rec_flag, let_bind1, let_binds))
+let pEfun pexpr =
+  (* if there's only one argument, ascription without parentheses is possible *)
+  let single_arg =
+    lift2
+      (fun arg body -> Lambda (arg, [], body))
+      (pstoken "fun" *> pws1 *> ppattern)
+      (pstoken "->" *> pexpr)
+  in
+  let mult_args =
+    lift3
+      (fun arg args body -> Lambda (arg, args, body))
+      (pstoken "fun" *> pws1 *> ppattern)
+      (many ppattern)
+      (pstoken "->" *> pexpr)
+  in
+  single_arg <|> mult_args
 ;;
 
-let p_apply p_expr =
-  chainl1
-    (p_parens p_expr <|> (p_expr <* peek_sep1))
-    (return (fun expr1 expr2 -> Apply (expr1, expr2)))
+let pElist pexpr =
+  let semicols = pstoken ";" in
+  psqparens (sep_by semicols pexpr <* (semicols <|> pwhitespace) >>| fun x -> List x)
 ;;
 
-let p_lambda p_expr =
-  skip_ws
-  *> string "fun"
-  *> peek_sep1
-  *>
-  let* arg1 = p_pat in
-  let* args = many p_pat <* skip_ws <* string "->" in
-  let* body = p_expr in
-  return (Lambda (arg1, args, body))
+let pEtuple pexpr =
+  let commas = pstoken "," in
+  let tuple =
+    lift3
+      (fun e1 e2 rest -> Tuple (e1, e2, rest))
+      (pexpr <* commas)
+      pexpr
+      (many (commas *> pexpr))
+    <* pwhitespace
+  in
+  pparens tuple <|> tuple
 ;;
 
-let p_case p_expr =
-  let* pat = skip_ws *> string "|" *> p_pat <* skip_ws <* string "->" in
-  let* expr = p_expr in
-  return (pat, expr)
+let pEconst = const >>| fun x -> Const x
+let pEvar = pident >>| fun x -> Variable x
+let pEapp e = chain e (return (fun e1 e2 -> Apply (e1, e2)))
+
+let pEoption pexpr =
+  lift
+    (fun e -> Option e)
+    (pstoken "Some" *> pexpr >>| (fun e -> Some e) <|> (pstoken "None" >>| fun _ -> None))
 ;;
 
-let p_first_case p_expr =
-  let* pat = skip_ws *> (string "|" *> p_pat <|> p_pat) <* skip_ws <* string "->" in
-  let* expr = p_expr in
-  return (pat, expr)
+let pbranch pexpr =
+  lift3
+    (fun e1 e2 e3 -> If_then_else (e1, e2, e3))
+    (pstoken "if" *> pexpr)
+    (pstoken "then" *> pexpr)
+    (pstoken "else" *> pexpr >>| (fun e3 -> Some e3) <|> return None)
 ;;
 
-let p_match p_expr =
-  let* value = skip_ws *> string "match" *> p_expr <* skip_ws <* string "with" in
-  let* pat1, expr1 = p_first_case p_expr in
-  let* cases = many (p_case p_expr) in
-  return (Match (value, (pat1, expr1), cases))
+let pEmatch pexpr =
+  let parse_case =
+    lift2
+      (fun pat exp -> (pat, exp))
+      (ppattern <* pstoken "->")
+      (pwhitespace *> pexpr)
+  in
+  let match_cases =
+    lift3
+      (fun e case case_l -> Match (e, case, case_l))
+      (pstoken "match" *> pexpr <* pstoken "with")
+      ((pstoken "|" <|> pwhitespace) *> parse_case)
+      (many (pstoken "|" *> parse_case))
+  in
+  let function_cases =
+    lift2
+      (fun case case_l -> Function (case, case_l))
+      (pstoken "function" *> pstoken "|" *> parse_case
+       <|> pstoken "function" *> pwhitespace *> parse_case)
+      (many (pstoken "|" *> parse_case))
+  in
+  function_cases <|> match_cases
 ;;
 
-let p_function p_expr =
-  skip_ws
-  *> string "function"
-  *>
-  let* pat1, expr1 = p_first_case p_expr in
-  let* cases = many (p_case p_expr) in
-  return (Function ((pat1, expr1), cases))
-;;
+let pEconstraint pexpr = lift2 (fun expr t -> EConstraint (expr, t)) pexpr ptype
 
-let p_inf_oper_expr p_expr =
-  skip_ws
-  *> chainl1
-       p_expr
-       (p_inf_oper
-        >>= fun op ->
-        return (fun expr1 expr2 -> Apply (Apply (Variable op, expr1), expr2)))
-;;
-
-let p_constraint_expr p_expr =
-  let* expr = p_expr in
-  let* typ = p_type in
-  return (EConstraint (expr, typ))
-;;
-
-let p_expr =
-  skip_ws
-  *> fix (fun p_expr ->
-    let atom =
+let pexpr =
+  fix (fun expr ->
+    let atom_expr =
       choice
-        [ p_var_expr
-        ; p_int_expr
-        ; p_string_expr
-        ; p_unit_expr
-        ; p_bool_expr
-        ; p_parens p_expr
-        ; p_semicolon_list_expr p_expr
-        ; p_parens (p_constraint_expr p_expr)
+        [ pEconst
+        ; pEvar
+        ; pparens expr
+        ; pElist expr
+        ; pEfun expr
+        ; pEoption expr
+        ; pEmatch expr (* ; pErecord expr *)
+        ; pparens (pEconstraint expr)
         ]
     in
-    let if_expr = p_if (p_expr <|> atom) <|> atom in
-    let letin_expr = p_letin (p_expr <|> if_expr) <|> if_expr in
-    let option = p_option letin_expr make_option_expr <|> letin_expr in
-    let apply = p_apply option <|> option in
-    let unary = choice [ unary_chain p_not apply; unary_chain unminus apply ] in
-    let factor = chainl1 unary (mul <|> div) in
-    let term = chainl1 factor (add <|> sub) in
-    let cons_op = chainr1 term cons in
-    let comp_eq = chainl1 cons_op (equal <|> unequal) in
-    let comp_less = chainl1 comp_eq (less_or_equal <|> less) in
-    let comp_gr = chainl1 comp_less (greater_or_equal <|> greater) in
-    let bit_xor = chainl1 comp_gr bitwise_xor in
-    let bit_and = chainl1 bit_xor bitwise_and in
-    let bit_or = chainl1 bit_and bitwise_or in
-    let comp_and = chainl1 bit_or log_and in
-    let comp_or = chainl1 comp_and log_or in
-    let inf_oper = p_inf_oper_expr comp_or <|> comp_or in
-    let tuple = p_tuple make_tuple_expr inf_oper <|> inf_oper in
-    let p_function = p_function (p_expr <|> tuple) <|> tuple in
-    let ematch = p_match (p_expr <|> p_function) <|> p_function in
-    let efun = p_lambda (p_expr <|> ematch) <|> ematch in
-    efun)
+    let let_expr = plet expr in
+    let ite_expr = pbranch (expr <|> atom_expr) <|> atom_expr in
+    let inf_op = pEinf_op (ite_expr <|> atom_expr) <|> ite_expr in
+    let app_expr = pEapp (inf_op <|> atom_expr) <|> inf_op in
+    let un_expr =
+      choice
+        [ un_chain app_expr negation
+        ; un_chain app_expr neg_sign
+        ]
+    in
+    let factor_expr = chain un_expr (mult <|> div) in
+    let sum_expr = chain factor_expr (add <|> sub) in
+    let rel_expr = chain sum_expr relation in
+    let log_expr = chain rel_expr logic in
+    let tuple_expr = pEtuple log_expr <|> log_expr in
+    (* let field_expr = pEfield_access tuple_expr <|> tuple_expr in
+       let cons_expr = chainr field_expr cons in *)
+    let cons_expr = chainr tuple_expr cons in
+    choice [ let_expr; cons_expr ])
 ;;
 
-let p_statement = p_let p_expr
-
-let p_construction =
-  p_expr >>= (fun e -> return (Expr e)) <|> (p_statement >>= fun s -> return (Statement s))
+let pconstruction =
+  let pseval = pexpr >>| fun e -> Expr e in
+  let psvalue =
+    (pstoken "let"
+    *> lift3
+         (fun r id id_list -> Let (r, id, id_list))
+         (pstoken "rec" *> (pws1 *> return Rec) <|> return Nonrec)
+         (p_let_bind pexpr)
+         (many (pstoken "and" *> p_let_bind pexpr))) >>| fun s -> Statement(s)
+  in
+  choice [ pseval; psvalue ]
 ;;
 
-(* MAIN PARSE FUNCTION *)
-let parse (str : string) =
-  parse_string ~consume:All (skip_ws *> p_construction <* skip_ws) str
+let pconstructions =
+  let semicolons = many (pstoken ";;") in
+  sep_by semicolons pconstruction <* semicolons <* pwhitespace
 ;;
+
+let parse str = parse_string ~consume:All pconstructions str
