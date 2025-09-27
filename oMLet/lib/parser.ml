@@ -7,28 +7,6 @@ open Base
 open Ast
 open TypedTree
 
-(*---------------------Check conditions---------------------*)
-
-let is_keyword = function
-  | "let"
-  | "in"
-  | "fun"
-  | "rec"
-  | "if"
-  | "then"
-  | "else"
-  | "true"
-  | "false"
-  | "Some"
-  | "None"
-  | "and"
-  | "match"
-  | "with"
-  | "function"
-  | "type" -> true
-  | _ -> false
-;;
-
 (*---------------------Control characters---------------------*)
 
 let pwhitespace = take_while Char.is_whitespace
@@ -135,7 +113,7 @@ let varname =
          Char.is_alpha ch || Char.is_digit ch || Char.equal ch '_' || Char.equal ch '\'')
      in
      match first_char, rest with
-     | _, _ when is_keyword (first_char ^ rest) ->
+     | _, _ when KeywordChecker.is_keyword (first_char ^ rest) ->
        fail "Variable name conflicts with a keyword"
      | "_", "" -> fail "Variable cannot be called _"
      | _ -> return (first_char ^ rest))
