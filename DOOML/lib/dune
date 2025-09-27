@@ -1,0 +1,10 @@
+(library
+ (name DOOML)
+ (public_name DOOML.Lib)
+ (modules Ast Fe)
+ (libraries base stdlib angstrom)
+ (inline_tests)
+ (preprocess
+  (pps ppx_expect ppx_deriving.show ppx_variants_conv ppx_inline_test))
+ (instrumentation
+  (backend bisect_ppx)))
