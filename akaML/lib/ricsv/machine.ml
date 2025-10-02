@@ -31,59 +31,62 @@ type instr =
   | Add of reg * reg * reg
   | Sub of reg * reg * reg
   | Mul of reg * reg * reg
+  | Xori of reg * reg * int
+  | Xor of reg * reg * reg
+  | Slt of reg * reg * reg
+  | Seqz of reg * reg
+  | Snez of reg * reg
   | Li of reg * int
-  | Ecall
-  | Call of string
-  | Ret
+  | Mv of reg * reg
   | Ld of reg * offset
   | Sd of reg * offset
-  | Mv of reg * reg
   | Beq of reg * reg * string
-  | Blt of reg * reg * string
-  | Ble of reg * reg * string
-  | Slt of reg * reg * reg
-  | Xori of reg * reg * int
   | J of string
   | Label of string
+  | Call of string
+  | Ret
+  | Ecall
 
 let pp_instr ppf =
   let open Format in
   function
-  | Addi (r1, r2, n) -> fprintf ppf "addi %a, %a, %d" pp_reg r1 pp_reg r2 n
-  | Add (r1, r2, r3) -> fprintf ppf "add  %a, %a, %a" pp_reg r1 pp_reg r2 pp_reg r3
-  | Sub (r1, r2, r3) -> fprintf ppf "sub %a, %a, %a" pp_reg r1 pp_reg r2 pp_reg r3
-  | Mul (r1, r2, r3) -> fprintf ppf "mul %a, %a, %a" pp_reg r1 pp_reg r2 pp_reg r3
+  | Addi (rd, rs, imm) -> fprintf ppf "addi %a, %a, %d" pp_reg rd pp_reg rs imm
+  | Add (rd, rs1, rs2) -> fprintf ppf "add  %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | Sub (rd, rs1, rs2) -> fprintf ppf "sub %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | Mul (rd, rs1, rs2) -> fprintf ppf "mul %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | Xori (rd, rs1, imm) -> fprintf ppf "xori %a, %a, %d" pp_reg rd pp_reg rs1 imm
+  | Xor (rd, rs1, rs2) -> fprintf ppf "xor %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | Slt (rd, rs1, rs2) -> fprintf ppf "slt %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | Seqz (rd, rs) -> fprintf ppf "seqz %a, %a" pp_reg rd pp_reg rs
+  | Snez (rd, rs) -> fprintf ppf "snez %a, %a" pp_reg rd pp_reg rs
   | Li (rd, imm) -> fprintf ppf "li %a, %d" pp_reg rd imm
-  | Ecall -> fprintf ppf "ecall"
-  | Call f -> fprintf ppf "call %s" f
-  | Ret -> fprintf ppf "ret"
+  | Mv (rd, rs) -> fprintf ppf "mv %a, %a" pp_reg rd pp_reg rs
   | Ld (rd, ofs) -> fprintf ppf "ld %a, %a" pp_reg rd pp_offset ofs
   | Sd (rs, ofs) -> fprintf ppf "sd %a, %a" pp_reg rs pp_offset ofs
-  | Mv (rd, rs) -> fprintf ppf "mv %a, %a" pp_reg rd pp_reg rs
-  | Beq (r1, r2, offset) -> fprintf ppf "beq %a, %a, %s" pp_reg r1 pp_reg r2 offset
-  | Blt (r1, r2, offset) -> fprintf ppf "blt %a, %a, %s" pp_reg r1 pp_reg r2 offset
-  | Ble (r1, r2, offset) -> fprintf ppf "ble %a, %a, %s" pp_reg r1 pp_reg r2 offset
-  | Slt (r1, r2, r3) -> fprintf ppf "slt %a, %a, %a" pp_reg r1 pp_reg r2 pp_reg r3
-  | Xori (r1, r2, n) -> fprintf ppf "xori %a, %a, %d" pp_reg r1 pp_reg r2 n
+  | Beq (rs1, rs2, s) -> fprintf ppf "beq %a, %a, %s" pp_reg rs1 pp_reg rs2 s
   | J s -> fprintf ppf "j %s" s
   | Label s -> fprintf ppf "%s:" s
+  | Call s -> fprintf ppf "call %s" s
+  | Ret -> fprintf ppf "ret"
+  | Ecall -> fprintf ppf "ecall"
 ;;
 
-let addi k r1 r2 n = k @@ Addi (r1, r2, n)
-let add k r1 r2 r3 = k @@ Add (r1, r2, r3)
-let sub k r1 r2 r3 = k @@ Sub (r1, r2, r3)
-let mul k r1 r2 r3 = k @@ Mul (r1, r2, r3)
-let li k r n = k (Li (r, n))
-let ecall k = k Ecall
-let call k name = k (Call name)
-let ret k = k Ret
-let ld k a b = k (Ld (a, b))
-let sd k a b = k (Sd (a, b))
-let mv k a b = k (Mv (a, b))
-let beq k r1 r2 r3 = k @@ Beq (r1, r2, r3)
-let blt k r1 r2 r3 = k @@ Blt (r1, r2, r3)
-let ble k r1 r2 r3 = k @@ Ble (r1, r2, r3)
-let slt k r1 r2 r3 = k @@ Slt (r1, r2, r3)
-let xori k r1 r2 n = k @@ Xori (r1, r2, n)
+let addi k rd rs imm = k @@ Addi (rd, rs, imm)
+let add k rd rs1 rs2 = k @@ Add (rd, rs1, rs2)
+let sub k rd rs1 rs2 = k @@ Sub (rd, rs1, rs2)
+let mul k rd rs1 rs2 = k @@ Mul (rd, rs1, rs2)
+let xori k rd rs1 imm = k @@ Xori (rd, rs1, imm)
+let xor k rd rs1 rs2 = k @@ Xor (rd, rs1, rs2)
+let slt k rd rs1 rs2 = k @@ Slt (rd, rs1, rs2)
+let seqz k rd rs = k (Seqz (rd, rs))
+let snez k rd rs = k (Snez (rd, rs))
+let li k rd imm = k (Li (rd, imm))
+let mv k rd rs = k (Mv (rd, rs))
+let ld k rd ofs = k (Ld (rd, ofs))
+let sd k rd ofs = k (Sd (rd, ofs))
+let beq k rs1 rs2 s = k @@ Beq (rs1, rs2, s)
 let j k s = k (J s)
 let label k s = k (Label s)
+let call k s = k (Call s)
+let ret k = k Ret
+let ecall k = k Ecall

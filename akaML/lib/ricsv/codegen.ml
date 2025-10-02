@@ -52,8 +52,17 @@ module Emission = struct
     | "-" -> emit sub dst r1 r2
     | "*" -> emit mul dst r1 r2
     | "<=" ->
-      emit slt dst (T 1) (T 0);
+      emit slt dst r2 r1;
       emit xori dst dst 1
+    | ">=" ->
+      emit slt dst r1 r2;
+      emit xori dst dst 1
+    | "==" ->
+      emit xor dst r1 r2;
+      emit seqz dst dst
+    | "<>" ->
+      emit xor dst r1 r2;
+      emit snez dst dst
     | _ -> failwith ("unsupported binary operator: " ^ op)
   ;;
 
@@ -125,9 +134,9 @@ module Emission = struct
   ;;
 
   let emit_fn_epilogue is_main =
-    (* restore S0 and RA using FP (S0) as reference *)
-    emit addi SP (S 0) (2 * Platform.word_size);
-    emit ld RA (S 0, Platform.word_size) ~comm:"Epilogue starts";
+    (* restore SP, S0 and RA using FP (S0) as reference *)
+    emit addi SP (S 0) (2 * Platform.word_size) ~comm:"Epilogue starts";
+    emit ld RA (S 0, Platform.word_size);
     emit ld (S 0) (S 0, 0);
     if is_main
     then (
@@ -238,22 +247,20 @@ let rec gen_exp (env : env) (dst : reg) = function
 ;;
 
 let rec count_local_vars = function
-  | Exp_ident _ | Exp_constant _ -> 0
+  | Exp_ident _ | Exp_constant _ | Exp_construct (_, None) -> 0
   | Exp_let (_, vb, vb_list, body) ->
-    let count_one { pat; exp } =
-      let self =
+    let count_one_vb { pat; exp } =
+      let count_vars_in_pat =
         match pat with
         | Pat_var _ -> 1
         | _ -> 0
       in
-      self + count_local_vars exp
+      count_vars_in_pat + count_local_vars exp
     in
-    let this =
-      count_one vb + List.fold_left vb_list ~init:0 ~f:(fun acc vb -> acc + count_one vb)
-    in
-    this + count_local_vars body
-  | Exp_fun (_, pats, body) ->
-    List.fold_left pats ~init:0 ~f:(fun acc _ -> acc) + count_local_vars body
+    List.fold_left (vb :: vb_list) ~init:0 ~f:(fun acc vb -> acc + count_one_vb vb)
+    + count_local_vars body
+  | Exp_fun (_, _, exp) | Exp_construct (_, Some exp) | Exp_constraint (exp, _) ->
+    count_local_vars exp
   | Exp_apply (exp1, exp2) -> count_local_vars exp1 + count_local_vars exp2
   | Exp_ifthenelse (cond, then_exp, Some else_exp) ->
     count_local_vars cond + count_local_vars then_exp + count_local_vars else_exp
@@ -261,21 +268,15 @@ let rec count_local_vars = function
     count_local_vars cond + count_local_vars then_exp
   | Exp_function (case, case_list) ->
     let count_case { left = _; right } = count_local_vars right in
-    count_case case
-    + List.fold_left case_list ~init:0 ~f:(fun acc c -> acc + count_case c)
+    List.fold_left (case :: case_list) ~init:0 ~f:(fun acc c -> acc + count_case c)
   | Exp_match (scrut, case, case_list) ->
     let count_case { left = _; right } = count_local_vars right in
     count_local_vars scrut
-    + count_case case
-    + List.fold_left case_list ~init:0 ~f:(fun acc c -> acc + count_case c)
+    + List.fold_left (case :: case_list) ~init:0 ~f:(fun acc c -> acc + count_case c)
   | Exp_tuple (exp1, exp2, exp_list) ->
-    count_local_vars exp1
-    + count_local_vars exp2
-    + List.fold_left exp_list ~init:0 ~f:(fun acc e -> acc + count_local_vars e)
-  | Exp_construct (_, None) -> 0
-  | Exp_construct (_, Some exp) -> count_local_vars exp
+    List.fold_left (exp1 :: exp2 :: exp_list) ~init:0 ~f:(fun acc e ->
+      acc + count_local_vars e)
   | Exp_sequence (exp1, exp2) -> count_local_vars exp1 + count_local_vars exp2
-  | Exp_constraint (exp, _) -> count_local_vars exp
 ;;
 
 let gen_func (f : ident) (args : pattern list) (body : Expression.t) ppf : unit =
