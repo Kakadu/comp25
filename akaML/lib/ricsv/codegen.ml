@@ -88,17 +88,7 @@ module Emission = struct
   ;;
 
   (* save 'live' registers from env to stack *)
-  (* Currently, T n registers are restored after the called function returns,
-    but A n registers are not restored, so their location in env changes by an offset to fp. *)
   let emit_save_caller_regs env =
-    let compare_reg_for_save r1 r2 =
-      match r1, r2 with
-      | A i, A j -> Int.compare i j
-      | T i, T j -> Int.compare i j
-      | T _, _ -> -1
-      | _, T _ -> 1
-      | _, _ -> 0
-    in
     let regs =
       Map.to_alist env
       |> List.filter_map ~f:(fun (name, loc) ->
@@ -108,44 +98,13 @@ module Emission = struct
            | A _ | T _ -> Some (name, r)
            | _ -> None)
         | _ -> None)
-      |> List.sort ~compare:(fun (_, r1) (_, r2) -> compare_reg_for_save r1 r2)
     in
     let spill_count = List.length regs in
     let frame_size = spill_count * Platform.word_size in
     if frame_size > 0 then emit addi SP SP (-frame_size) ~comm:"Saving 'live' regs";
-    List.foldi regs ~init:env ~f:(fun i env (name, r) ->
-      match r with
-      | A _ ->
-        let new_loc = emit_store r in
-        Map.set env ~key:name ~data:new_loc
-      | _ ->
-        let ofs = i * Platform.word_size in
-        emit sd r (SP, ofs);
-        env)
-  ;;
-
-  (* Currently restores only T n registers. *)
-  let emit_restore_caller_regs env =
-    let t_regs =
-      Map.to_alist env
-      |> List.filter_map ~f:(fun (_, loc) ->
-        match loc with
-        | Loc_reg (T rnum) -> Some rnum
-        | _ -> None)
-      |> List.sort ~compare:Int.compare
-    in
-    let frame_size = List.length t_regs * Platform.word_size in
-    List.iteri t_regs ~f:(fun i rnum ->
-      let ofs = i * Platform.word_size in
-      emit ld (T rnum) (SP, ofs));
-    if frame_size > 0
-    then
-      emit
-        addi
-        SP
-        SP
-        frame_size
-        ~comm:(Format.sprintf "%d 'live' regs have been restored" frame_size)
+    List.fold regs ~init:env ~f:(fun env (name, r) ->
+      let new_loc = emit_store r in
+      Map.set env ~key:name ~data:new_loc)
   ;;
 
   let emit_fn_prologue name stack_size =
@@ -199,7 +158,7 @@ let ensure_reg_free env dst : env =
   if not (reg_is_used env dst)
   then env
   else (
-    let candidate_regs = List.init 8 ~f:(fun i -> A i) @ List.init 7 ~f:(fun i -> T i) in
+    let candidate_regs = List.init 8 ~f:(fun i -> A i) in
     match find_free_reg env candidate_regs with
     | Some new_reg ->
       emit mv new_reg dst;
@@ -258,7 +217,6 @@ let rec gen_exp env dst = function
        in
        let env = emit_save_caller_regs env in
        emit call fname;
-       emit_restore_caller_regs env;
        if not (equal_reg dst (A 0)) then emit mv dst (A 0);
        env
      | _ -> failwith "unsupported function application")
