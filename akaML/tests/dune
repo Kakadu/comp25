@@ -1,7 +1,12 @@
 (library
  (name tests)
- (libraries akaML.Ast akaML.Parser akaML.Pprinter akaML.Inferencer)
- (modules Test_parser Test_pprinter Test_inferencer)
+ (libraries
+  akaML.Ast
+  akaML.Parser
+  akaML.Pprinter
+  akaML.Inferencer
+  akaML.RiscV)
+ (modules Test_parser Test_pprinter Test_inferencer Test_riscv)
  (preprocess
   (pps ppx_expect))
  (inline_tests)

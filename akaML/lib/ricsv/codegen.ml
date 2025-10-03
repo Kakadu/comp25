@@ -54,7 +54,6 @@ module State = struct
   let ( let* ) = bind
   let get st = st, st
   let put st = fun _ -> (), st
-  let modify f st = (), f st
 
   let modify_frame_offset f =
     let* st = get in
@@ -68,7 +67,7 @@ module State = struct
 
   let fresh =
     let* st = get in
-    let* () = modify_fresh_id succ in
+    let* () = modify_fresh_id Int.succ in
     return st.fresh_id
   ;;
 end
@@ -101,7 +100,7 @@ module Emission = struct
     | ">=" ->
       emit slt dst r1 r2;
       emit xori dst dst 1
-    | "==" ->
+    | "=" ->
       emit xor dst r1 r2;
       emit seqz dst dst
     | "<>" ->
