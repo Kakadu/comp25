@@ -24,10 +24,10 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li t1, 1
     slt t0, t1, t0
     xori t0, t0, 1
-    beq t0, zero, else_1
+    beq t0, zero, else_0
     li a0, 1
-    j end_2
-  else_1:
+    j end_0
+  else_0:
     mv t0, a0
     li t1, 1
     mv a1, a0
@@ -41,7 +41,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     ld t0, -16(s0)
     ld t1, -24(s0)
     mul a0, t0, t1
-  end_2:
+  end_0:
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)

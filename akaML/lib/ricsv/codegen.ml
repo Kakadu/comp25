@@ -13,16 +13,6 @@ module Platform = struct
   let word_size = 8
 end
 
-(* Stores the current offset from FP for local variables and some caller-regs *)
-let frame_offset = ref 0
-let state = ref 0
-
-(* fresh id generator *)
-let fresh () =
-  Int.incr state;
-  !state
-;;
-
 (** Environment context: maps variables to registers or stack offsets *)
 type location =
   | Loc_reg of reg
@@ -43,6 +33,47 @@ let pp_env ppf env =
     fprintf ppf "%s -> %a" name pp_location loc);
   fprintf ppf "}"
 ;;
+
+type codegen_state =
+  { frame_offset : int
+    (* Stores the current offset from FP for local variables and some caller-regs *)
+  ; fresh_id : int
+  }
+
+module State = struct
+  type 'a t = codegen_state -> 'a * codegen_state
+
+  let return x st = x, st
+
+  let bind m f =
+    fun state ->
+    let x, st = m state in
+    f x st
+  ;;
+
+  let ( let* ) = bind
+  let get st = st, st
+  let put st = fun _ -> (), st
+  let modify f st = (), f st
+
+  let modify_frame_offset f =
+    let* st = get in
+    put { st with frame_offset = f st.frame_offset }
+  ;;
+
+  let modify_fresh_id f =
+    let* st = get in
+    put { st with fresh_id = f st.fresh_id }
+  ;;
+
+  let fresh =
+    let* st = get in
+    let* () = modify_fresh_id succ in
+    return st.fresh_id
+  ;;
+end
+
+open State
 
 module Emission = struct
   let code : (instr * string) Queue.t = Queue.create ()
@@ -80,10 +111,11 @@ module Emission = struct
   ;;
 
   let emit_store ?(comm = "") reg =
-    frame_offset := !frame_offset + Platform.word_size;
-    let ofs = - !frame_offset in
+    let* () = modify_frame_offset (fun fr_ofs -> fr_ofs + Platform.word_size) in
+    let* state = get in
+    let ofs = -state.frame_offset in
     emit sd reg (S 0, ofs) ~comm;
-    Loc_mem (S 0, ofs)
+    return (Loc_mem (S 0, ofs))
   ;;
 
   (* save 'live' registers from env to stack *)
@@ -101,9 +133,10 @@ module Emission = struct
     let spill_count = List.length regs in
     let frame_size = spill_count * Platform.word_size in
     if frame_size > 0 then emit addi SP SP (-frame_size) ~comm:"Saving 'live' regs";
-    List.fold regs ~init:env ~f:(fun env (name, r) ->
-      let new_loc = emit_store r in
-      Map.set env ~key:name ~data:new_loc)
+    List.fold regs ~init:(return env) ~f:(fun acc (name, r) ->
+      let* env = acc in
+      let* new_loc = emit_store r in
+      return (Map.set env ~key:name ~data:new_loc))
   ;;
 
   let emit_fn_prologue name stack_size =
@@ -138,57 +171,55 @@ let reg_is_used env r =
 ;;
 
 (* If dst contains a live variable, it moves it to another location. *)
-let ensure_reg_free env dst : env =
-  let find_free_reg env reg_list =
-    List.find_map reg_list ~f:(fun r -> if not (reg_is_used env r) then Some r else None)
-  in
+let ensure_reg_free env dst =
   let relocate env ~(from : reg) ~(to_ : location) =
     Map.map env ~f:(function
       | Loc_reg r when equal_reg r from -> to_
       | loc -> loc)
   in
   if not (reg_is_used env dst)
-  then env
+  then return env
   else (
     let candidate_regs = List.init 8 ~f:(fun i -> A i) in
-    match find_free_reg env candidate_regs with
+    match List.find candidate_regs ~f:(fun r -> not (reg_is_used env r)) with
     | Some new_reg ->
       emit mv new_reg dst;
-      relocate env ~from:dst ~to_:(Loc_reg new_reg)
+      return (relocate env ~from:dst ~to_:(Loc_reg new_reg))
     | None ->
-      let new_loc = emit_store dst in
-      relocate env ~from:dst ~to_:new_loc)
+      let* new_loc = emit_store dst in
+      return (relocate env ~from:dst ~to_:new_loc))
 ;;
 
 let rec gen_exp env dst = function
   | Exp_constant (Const_integer n) ->
     emit li dst n;
-    env
+    return env
   | Exp_ident x ->
     (match Map.find env x with
      | Some (Loc_reg r) ->
        if equal_reg r dst
-       then env
+       then return env
        else (
          emit mv dst r;
-         env)
+         return env)
      | Some (Loc_mem ofs) ->
        emit ld dst ofs;
-       env
+       return env
      | None -> failwith ("unbound variable: " ^ x))
   | Exp_ifthenelse (cond, then_e, Some else_e) ->
-    let env = gen_exp env (T 0) cond in
-    let else_lbl = Printf.sprintf "else_%d" (fresh ()) in
-    let end_lbl = Printf.sprintf "end_%d" (fresh ()) in
+    let* env = gen_exp env (T 0) cond in
+    let* id = fresh in
+    let else_lbl = Printf.sprintf "else_%d" id
+    and end_lbl = Printf.sprintf "end_%d" id in
     emit beq (T 0) Zero else_lbl;
     (* then case *)
-    let env = gen_exp env dst then_e in
+    let* env = gen_exp env dst then_e in
     emit j end_lbl;
     (* else case *)
     emit label else_lbl;
-    let env = gen_exp env dst else_e in
+    let* env = gen_exp env dst else_e in
     emit label end_lbl;
-    env
+    return env
   | Exp_apply _ as e ->
     let rec collect_apps acc = function
       | Exp_apply (f, arg) -> collect_apps (arg :: acc) f
@@ -197,28 +228,27 @@ let rec gen_exp env dst = function
     let fn, args = collect_apps [] e in
     (match fn, args with
      | Exp_ident op, [ a1; a2 ] when Parser.is_operator op ->
-       let env = gen_exp env (T 0) a1 in
-       let env = gen_exp env (T 1) a2 in
-       let env = ensure_reg_free env dst in
+       let* env = gen_exp env (T 0) a1 in
+       let* env = gen_exp env (T 1) a2 in
+       let* env = ensure_reg_free env dst in
        emit_bin_op dst op (T 0) (T 1);
-       env
+       return env
      | Exp_ident fname, args ->
-       let env =
-         List.foldi args ~init:env ~f:(fun i env arg ->
+       let* env =
+         List.foldi args ~init:(return env) ~f:(fun i acc arg ->
+           let* env = acc in
            if i < Platform.arg_regs_count
-           then (
-             let env = gen_exp env (A i) arg in
-             env)
+           then gen_exp env (A i) arg
            else failwith "too many args")
        in
-       let env = emit_save_caller_regs env in
+       let* env = emit_save_caller_regs env in
        emit call fname;
        if not (equal_reg dst (A 0)) then emit mv dst (A 0);
-       env
+       return env
      | _ -> failwith "unsupported function application")
   | Exp_let (_, { pat = Pat_var id; exp }, [], exp_in) ->
-    let env = gen_exp env (A 0) exp in
-    let loc = emit_store (A 0) ~comm:id in
+    let* env = gen_exp env (A 0) exp in
+    let* loc = emit_store (A 0) ~comm:id in
     let env = Map.set env ~key:id ~data:loc in
     gen_exp env dst exp_in
   | _ -> failwith "expression not supported yet"
@@ -257,10 +287,9 @@ let rec count_local_vars = function
   | Exp_sequence (exp1, exp2) -> count_local_vars exp1 + count_local_vars exp2
 ;;
 
-let gen_func f_id arg_list body_exp ppf =
-  frame_offset := 0;
+let gen_func f_id arg_list body_exp ppf state =
   let f_id = if String.equal f_id "main" then "_start" else f_id in
-  let () = fprintf ppf "\n  .globl %s\n  .type %s, @function\n" f_id f_id in
+  fprintf ppf "\n  .globl %s\n  .type %s, @function\n" f_id f_id;
   let arity = List.length arg_list in
   let reg_params, stack_params =
     List.split_n arg_list (min arity Platform.arg_regs_count)
@@ -280,21 +309,24 @@ let gen_func f_id arg_list body_exp ppf =
       | _ -> failwith "unsupported pattern")
   in
   emit_fn_prologue f_id stack_size;
-  let _ = gen_exp env (A 0) body_exp in
+  let init_state = { state with frame_offset = 0 } in
+  let _, state = gen_exp env (A 0) body_exp init_state in
   emit_fn_epilogue (String.equal f_id "_start");
-  flush_queue ppf
+  flush_queue ppf;
+  state
 ;;
 
 let gen_structure ppf ast =
-  let () = fprintf ppf ".section .text" in
-  List.iter
-    ~f:(function
+  fprintf ppf ".section .text";
+  let init_state = { frame_offset = 0; fresh_id = 0 } in
+  let _ =
+    List.fold ast ~init:init_state ~f:(fun state -> function
       | Struct_value
           (Recursive, { pat = Pat_var f_id; exp = Exp_fun (p, p_list, body_exp) }, _) ->
-        gen_func f_id (p :: p_list) body_exp ppf
+        gen_func f_id (p :: p_list) body_exp ppf state
       | Struct_value (Nonrecursive, { pat = Pat_var f_id; exp = body_exp }, _) ->
-        gen_func f_id [] body_exp ppf
+        gen_func f_id [] body_exp ppf state
       | _ -> failwith "unsupported structure item")
-    ast;
+  in
   pp_print_flush ppf ()
 ;;
