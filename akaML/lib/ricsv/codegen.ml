@@ -29,23 +29,22 @@ type location =
   | Loc_mem of offset
 
 let pp_location ppf = function
-  | Loc_reg r -> Format.fprintf ppf "Reg(%a)" pp_reg r
-  | Loc_mem ofs -> Format.fprintf ppf "Mem(%a)" pp_offset ofs
+  | Loc_reg r -> fprintf ppf "Reg(%a)" pp_reg r
+  | Loc_mem ofs -> fprintf ppf "Mem(%a)" pp_offset ofs
 ;;
 
 type env = (ident, location, String.comparator_witness) Map.t
 
 let pp_env ppf env =
   let bindings = Map.to_alist env in
-  Format.fprintf ppf "{";
+  fprintf ppf "{";
   List.iteri bindings ~f:(fun i (name, loc) ->
-    if i > 0 then Format.fprintf ppf "; ";
-    Format.fprintf ppf "%s -> %a" name pp_location loc);
-  Format.fprintf ppf "}"
+    if i > 0 then fprintf ppf "; ";
+    fprintf ppf "%s -> %a" name pp_location loc);
+  fprintf ppf "}"
 ;;
 
 module Emission = struct
-  (* maybe in sep file? *)
   let code : (instr * string) Queue.t = Queue.create ()
   let emit ?(comm = "") instr = instr (fun i -> Queue.enqueue code (i, comm))
 
@@ -131,11 +130,6 @@ end
 
 open Emission
 
-let rec collect_apps acc = function
-  | Exp_apply (f, arg) -> collect_apps (arg :: acc) f
-  | fn -> fn, acc
-;;
-
 let reg_is_used env r =
   Map.exists env ~f:(fun loc ->
     match loc with
@@ -143,13 +137,11 @@ let reg_is_used env r =
     | Loc_mem _ -> false)
 ;;
 
-let find_free_reg env reg_list =
-  List.find_map reg_list ~f:(fun r -> if not (reg_is_used env r) then Some r else None)
-;;
-
-(* Ensures that dst is usable. If dst contains a live variable, 
-  it moves it to another location. Returns the updated environment. *)
+(* If dst contains a live variable, it moves it to another location. *)
 let ensure_reg_free env dst : env =
+  let find_free_reg env reg_list =
+    List.find_map reg_list ~f:(fun r -> if not (reg_is_used env r) then Some r else None)
+  in
   let relocate env ~(from : reg) ~(to_ : location) =
     Map.map env ~f:(function
       | Loc_reg r when equal_reg r from -> to_
@@ -164,7 +156,7 @@ let ensure_reg_free env dst : env =
       emit mv new_reg dst;
       relocate env ~from:dst ~to_:(Loc_reg new_reg)
     | None ->
-      let new_loc = emit_store dst ~comm:"spill" in
+      let new_loc = emit_store dst in
       relocate env ~from:dst ~to_:new_loc)
 ;;
 
@@ -198,6 +190,10 @@ let rec gen_exp env dst = function
     emit label end_lbl;
     env
   | Exp_apply _ as e ->
+    let rec collect_apps acc = function
+      | Exp_apply (f, arg) -> collect_apps (arg :: acc) f
+      | fn -> fn, acc
+    in
     let fn, args = collect_apps [] e in
     (match fn, args with
      | Exp_ident op, [ a1; a2 ] when Parser.is_operator op ->
