@@ -28,7 +28,21 @@ type location =
   | Loc_reg of reg
   | Loc_mem of offset
 
+let pp_location ppf = function
+  | Loc_reg r -> Format.fprintf ppf "Reg(%a)" pp_reg r
+  | Loc_mem ofs -> Format.fprintf ppf "Mem(%a)" pp_offset ofs
+;;
+
 type env = (ident, location, String.comparator_witness) Map.t
+
+let pp_env ppf env =
+  let bindings = Map.to_alist env in
+  Format.fprintf ppf "{";
+  List.iteri bindings ~f:(fun i (name, loc) ->
+    if i > 0 then Format.fprintf ppf "; ";
+    Format.fprintf ppf "%s -> %a" name pp_location loc);
+  Format.fprintf ppf "}"
+;;
 
 module Emission = struct
   (* maybe in sep file? *)
@@ -76,7 +90,7 @@ module Emission = struct
   (* save 'live' registers from env to stack *)
   (* Currently, T n registers are restored after the called function returns,
   but A n registers are not restored, so their location in env changes. *)
-  let emit_save_caller_regs (env : env) : env =
+  let emit_save_caller_regs env =
     let compare_reg_for_save r1 r2 =
       match r1, r2 with
       | A i, A j -> Int.compare i j
@@ -98,7 +112,7 @@ module Emission = struct
     in
     let spill_count = List.length regs in
     let frame_size = spill_count * Platform.word_size in
-    if frame_size > 0 then emit addi SP SP (-frame_size) ~comm:"spill live regs";
+    if frame_size > 0 then emit addi SP SP (-frame_size) ~comm:"Saving 'live' regs";
     List.foldi regs ~init:env ~f:(fun i env (name, r) ->
       let ofs = i * Platform.word_size in
       emit sd r (SP, ofs);
@@ -108,7 +122,7 @@ module Emission = struct
   ;;
 
   (* Currently restores only T n registers. *)
-  let emit_restore_caller_regs (env : env) =
+  let emit_restore_caller_regs env =
     let t_regs =
       Map.to_alist env
       |> List.filter_map ~f:(fun (_, loc) ->
@@ -118,7 +132,7 @@ module Emission = struct
       |> List.sort ~compare:Int.compare
     in
     let frame_size = List.length t_regs * Platform.word_size in
-    if frame_size > 0 then emit addi SP SP frame_size ~comm:"unspill live regs";
+    if frame_size > 0 then emit addi SP SP frame_size ~comm:"Restoring 'live' regs";
     List.iteri t_regs ~f:(fun i rnum ->
       let ofs = i * Platform.word_size in
       emit ld (T rnum) (SP, ofs))
@@ -153,21 +167,21 @@ let rec collect_apps acc = function
   | fn -> fn, acc
 ;;
 
-let reg_is_used (env : env) (r : reg) : bool =
+let reg_is_used env r =
   Map.exists env ~f:(fun loc ->
     match loc with
     | Loc_reg r' -> equal_reg r r'
     | Loc_mem _ -> false)
 ;;
 
-let find_free_reg (env : env) (regs : reg list) : reg option =
-  List.find_map regs ~f:(fun r -> if not (reg_is_used env r) then Some r else None)
+let find_free_reg env reg_list =
+  List.find_map reg_list ~f:(fun r -> if not (reg_is_used env r) then Some r else None)
 ;;
 
 (* Ensures that dst is usable. If dst contains a live variable, 
   it moves it to another location. Returns the updated environment. *)
-let ensure_reg_free (env : env) (dst : reg) : env =
-  let relocate (env : env) ~(from : reg) ~(to_ : location) : env =
+let ensure_reg_free env dst : env =
+  let relocate env ~(from : reg) ~(to_ : location) =
     Map.map env ~f:(function
       | Loc_reg r when equal_reg r from -> to_
       | loc -> loc)
@@ -185,7 +199,7 @@ let ensure_reg_free (env : env) (dst : reg) : env =
       relocate env ~from:dst ~to_:new_loc)
 ;;
 
-let rec gen_exp (env : env) (dst : reg) = function
+let rec gen_exp env dst = function
   | Exp_constant (Const_integer n) ->
     emit li dst n;
     env
@@ -279,13 +293,15 @@ let rec count_local_vars = function
   | Exp_sequence (exp1, exp2) -> count_local_vars exp1 + count_local_vars exp2
 ;;
 
-let gen_func (f : ident) (args : pattern list) (body : Expression.t) ppf : unit =
+let gen_func f_id arg_list body_exp ppf =
   frame_offset := 0;
-  let f = if String.equal f "main" then "_start" else f in
-  let () = fprintf ppf "\n  .globl %s\n  .type %s, @function\n" f f in
-  let arity = List.length args in
-  let reg_params, stack_params = List.split_n args (min arity Platform.arg_regs_count) in
-  let stack_size = (2 + count_local_vars body) * Platform.word_size in
+  let f_id = if String.equal f_id "main" then "_start" else f_id in
+  let () = fprintf ppf "\n  .globl %s\n  .type %s, @function\n" f_id f_id in
+  let arity = List.length arg_list in
+  let reg_params, stack_params =
+    List.split_n arg_list (min arity Platform.arg_regs_count)
+  in
+  let stack_size = (2 + count_local_vars body_exp) * Platform.word_size in
   let env = Map.empty (module String) in
   let env =
     List.foldi reg_params ~init:env ~f:(fun i env -> function
@@ -295,25 +311,26 @@ let gen_func (f : ident) (args : pattern list) (body : Expression.t) ppf : unit 
   let env =
     List.foldi stack_params ~init:env ~f:(fun i env -> function
       | Pat_var name ->
-        let offset = (i + 1) * Platform.word_size in
-        Map.set env ~key:name ~data:(Loc_mem (SP, offset))
+        let offset = (i + 2) * Platform.word_size in
+        Map.set env ~key:name ~data:(Loc_mem (S 0, offset))
       | _ -> failwith "unsupported pattern")
   in
-  emit_fn_prologue f stack_size;
-  let _ = gen_exp env (A 0) body in
-  emit_fn_epilogue (String.equal f "_start");
+  emit_fn_prologue f_id stack_size;
+  let _ = gen_exp env (A 0) body_exp in
+  emit_fn_epilogue (String.equal f_id "_start");
   flush_queue ppf
 ;;
 
-let gen_structure ppf (s : structure) =
+let gen_structure ppf ast =
   let () = fprintf ppf ".section .text" in
   List.iter
     ~f:(function
-      | Struct_value (Recursive, { pat = Pat_var f; exp = Exp_fun (p, ps, body) }, _) ->
-        gen_func f (p :: ps) body ppf
-      | Struct_value (Nonrecursive, { pat = Pat_var f; exp = body }, _) ->
-        gen_func f [] body ppf
+      | Struct_value
+          (Recursive, { pat = Pat_var f_id; exp = Exp_fun (p, p_list, body_exp) }, _) ->
+        gen_func f_id (p :: p_list) body_exp ppf
+      | Struct_value (Nonrecursive, { pat = Pat_var f_id; exp = body_exp }, _) ->
+        gen_func f_id [] body_exp ppf
       | _ -> failwith "unsupported structure item")
-    s;
+    ast;
   pp_print_flush ppf ()
 ;;

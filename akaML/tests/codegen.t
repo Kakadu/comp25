@@ -34,7 +34,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sub a0, t0, t1
     sd a0, -8(s0) # n1
     ld a0, -8(s0)
-    addi sp, sp, -8 # spill live regs
+    addi sp, sp, -8 # Saving 'live' regs
     sd a1, 0(sp)
     call fac
     sd a0, -16(s0) # m
