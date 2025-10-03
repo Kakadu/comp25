@@ -13,7 +13,7 @@ module Platform = struct
   let word_size = 8
 end
 
-(* Stores the current offset from FP for local variables *)
+(* Stores the current offset from FP for local variables and some caller-regs *)
 let frame_offset = ref 0
 let state = ref 0
 
@@ -89,7 +89,7 @@ module Emission = struct
 
   (* save 'live' registers from env to stack *)
   (* Currently, T n registers are restored after the called function returns,
-  but A n registers are not restored, so their location in env changes. *)
+    but A n registers are not restored, so their location in env changes by an offset to fp. *)
   let emit_save_caller_regs env =
     let compare_reg_for_save r1 r2 =
       match r1, r2 with
@@ -114,11 +114,14 @@ module Emission = struct
     let frame_size = spill_count * Platform.word_size in
     if frame_size > 0 then emit addi SP SP (-frame_size) ~comm:"Saving 'live' regs";
     List.foldi regs ~init:env ~f:(fun i env (name, r) ->
-      let ofs = i * Platform.word_size in
-      emit sd r (SP, ofs);
       match r with
-      | A _ -> Map.set env ~key:name ~data:(Loc_mem (SP, ofs))
-      | _ -> env)
+      | A _ ->
+        let new_loc = emit_store r in
+        Map.set env ~key:name ~data:new_loc
+      | _ ->
+        let ofs = i * Platform.word_size in
+        emit sd r (SP, ofs);
+        env)
   ;;
 
   (* Currently restores only T n registers. *)
@@ -132,10 +135,17 @@ module Emission = struct
       |> List.sort ~compare:Int.compare
     in
     let frame_size = List.length t_regs * Platform.word_size in
-    if frame_size > 0 then emit addi SP SP frame_size ~comm:"Restoring 'live' regs";
     List.iteri t_regs ~f:(fun i rnum ->
       let ofs = i * Platform.word_size in
-      emit ld (T rnum) (SP, ofs))
+      emit ld (T rnum) (SP, ofs));
+    if frame_size > 0
+    then
+      emit
+        addi
+        SP
+        SP
+        frame_size
+        ~comm:(Format.sprintf "%d 'live' regs have been restored" frame_size)
   ;;
 
   let emit_fn_prologue name stack_size =

@@ -35,11 +35,11 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd a0, -8(s0) # n1
     ld a0, -8(s0)
     addi sp, sp, -8 # Saving 'live' regs
-    sd a1, 0(sp)
+    sd a1, -16(s0)
     call fac
-    sd a0, -16(s0) # m
-    ld t0, 0(sp)
-    ld t1, -16(s0)
+    sd a0, -24(s0) # m
+    ld t0, -16(s0)
+    ld t1, -24(s0)
     mul a0, t0, t1
   end_2:
     addi sp, s0, 16 # Epilogue starts
