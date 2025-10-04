@@ -1,0 +1,8 @@
+(executable
+ (name compile)
+ (modules compile)
+ (libraries OMLet))
+
+(cram
+ (applies_to factorial)
+ (deps ./compile.exe))

@@ -1,0 +1,6 @@
+(executable
+ (name repl)
+ (public_name OMLet_main)
+ (libraries OMLet base stdio)
+ (instrumentation
+  (backend bisect_ppx)))
