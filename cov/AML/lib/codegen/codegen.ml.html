@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>codegen.ml &mdash; Coverage report</title>
-    <meta name="description" content="95.62% coverage in lib/codegen/codegen.ml">
+    <meta name="description" content="95.65% coverage in lib/codegen/codegen.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,16 +15,16 @@
           <span class="dirname">lib/codegen/</span>codegen.ml
         </a>
       </h1>
-      <h2>95.62%</h2>
+      <h2>95.65%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:34.95%"></span>
-      <span class="unvisited" style="top:40.86%"></span>
-      <span class="some-visited" style="bottom:46.24%"></span>
-      <span class="unvisited" style="bottom:35.48%"></span>
-      <span class="unvisited" style="bottom:26.88%"></span>
-      <span class="unvisited" style="bottom:13.98%"></span>
-      <span class="unvisited" style="bottom:1.08%"></span>
+      <span class="unvisited" style="top:34.39%"></span>
+      <span class="unvisited" style="top:40.21%"></span>
+      <span class="some-visited" style="bottom:47.09%"></span>
+      <span class="unvisited" style="bottom:36.51%"></span>
+      <span class="unvisited" style="bottom:28.04%"></span>
+      <span class="unvisited" style="bottom:15.34%"></span>
+      <span class="unvisited" style="bottom:1.06%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -199,22 +199,25 @@
 <a id="L168"></a><span class="visited"> </span>
 <a id="L169"></a><span class="visited"> </span>
 <a id="L170"></a><span class="visited"> </span>
-<a id="L171"></a><span > </span>
-<a id="L172"></a><span class="visited"> </span>
+<a id="L171"></a><span class="visited"> </span>
+<a id="L172"></a><span > </span>
 <a id="L173"></a><span class="visited"> </span>
-<a id="L174"></a><span > </span>
+<a id="L174"></a><span class="visited"> </span>
 <a id="L175"></a><span > </span>
 <a id="L176"></a><span > </span>
-<a id="L177"></a><span class="visited"> </span>
+<a id="L177"></a><span > </span>
 <a id="L178"></a><span > </span>
-<a id="L179"></a><span class="visited"> </span>
+<a id="L179"></a><span > </span>
 <a id="L180"></a><span class="visited"> </span>
 <a id="L181"></a><span > </span>
 <a id="L182"></a><span class="visited"> </span>
-<a id="L183"></a><span > </span>
-<a id="L184"></a><span class="unvisited"> </span>
+<a id="L183"></a><span class="visited"> </span>
+<a id="L184"></a><span > </span>
 <a id="L185"></a><span class="visited"> </span>
 <a id="L186"></a><span > </span>
+<a id="L187"></a><span class="unvisited"> </span>
+<a id="L188"></a><span class="visited"> </span>
+<a id="L189"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -405,6 +408,9 @@
 <a href="#L184">184</a>
 <a href="#L185">185</a>
 <a href="#L186">186</a>
+<a href="#L187">187</a>
+<a href="#L188">188</a>
+<a href="#L189">189</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2025-2026, Rodion Suvorov, Dmitriy Chirkov*)
 
@@ -570,15 +576,18 @@ let gen_func name args body =
   let initial_env = List.foldi args ~init:(Map.empt<span data-count="4">y</span> (module String)) ~f in
   <span data-count="4">l</span>et initial_cg_state = { env = initial_env; frame_offset = 16; label_id = 0 } in
   let (), _final_state = Codegen.run initial_cg_state (gen_exp<span data-count="4">r</span> a0 body) in
-  <span data-count="4">e</span>mit label (name ^ "_end");
-  <span data-count="4">e</span>mit ld ra (ROff (stack_size - 8, sp));
-  <span data-count="4">e</span>mit ld fp (ROff (stack_size - 16, sp));
-  <span data-count="4">e</span>mit addi sp sp stack_size;
-  <span data-count="4">i</span>f is_main
-  then <span data-count="1">(</span>
-    emit li (A 7) 93;
-    <span data-count="1">e</span>mit ecall)
-  else <span data-count="3">e</span>mit ret
+  <span data-count="4">l</span>et finalize () =
+    <span data-count="4">e</span>mit label (name ^ "_end");
+    <span data-count="4">e</span>mit ld ra (ROff (stack_size - 8, sp));
+    <span data-count="4">e</span>mit ld fp (ROff (stack_size - 16, sp));
+    <span data-count="4">e</span>mit addi sp sp stack_size;
+    <span data-count="4">i</span>f is_main
+    then <span data-count="1">(</span>
+      emit li (A 7) 93;
+      <span data-count="1">e</span>mit ecall)
+    else <span data-count="3">e</span>mit ret
+  in
+  finalize ()
 ;;
 
 let codegen ppf (s : Structure.structure_item list) =
