@@ -13,13 +13,13 @@ license: "LGPL-3.0-or-later WITH OCaml-LGPL-linking-exception"
 homepage: "https://github.com/Friend-zva/akaML"
 bug-reports: "https://github.com/Friend-zva/akaML/issues"
 depends: [
-  "dune" {>= "3.19"}
+  "dune" {>= "3.19" & = "3.19.1"}
   "base"
-  "angstrom"
+  "angstrom" {= "0.16.0"}
   "qcheck-core"
   "ppx_inline_test" {with-test}
   "ppx_deriving"
-  "ppx_deriving_qcheck"
+  "ppx_deriving_qcheck" {= "0.6"}
   "ppx_expect"
   "bisect_ppx"
   "odoc" {with-doc}
