@@ -1,0 +1,6 @@
+(library
+ (name Parser)
+ (public_name akaML.Parser)
+ (libraries base angstrom Ast)
+ (instrumentation
+  (backend bisect_ppx)))

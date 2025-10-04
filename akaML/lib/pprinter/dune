@@ -1,0 +1,6 @@
+(library
+ (name Pprinter)
+ (public_name akaML.Pprinter)
+ (libraries base Ast Parser)
+ (instrumentation
+  (backend bisect_ppx)))

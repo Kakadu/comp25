@@ -1,0 +1,3 @@
+(executable
+ (name akaML)
+ (libraries stdio base Parser Inferencer Pprinter RiscV))
