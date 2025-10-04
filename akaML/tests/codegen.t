@@ -62,3 +62,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li a7, 93
     ecall
   
+  $ riscv64-linux-gnu-as -march=rv64gc factorial.s -o temp.o
+  $ riscv64-linux-gnu-ld temp.o -o file.exe
+  $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ./file.exe
+  [24]
