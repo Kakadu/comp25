@@ -24,11 +24,13 @@
   (dune
    (= "3.19.1"))
   base
-  (angstrom (= "0.16.0"))
+  (angstrom
+   (= "0.16.0"))
   qcheck-core
   (ppx_inline_test :with-test)
   ppx_deriving
-  (ppx_deriving_qcheck (= "0.6"))
+  (ppx_deriving_qcheck
+   (= "0.6"))
   ppx_expect
   bisect_ppx))
 

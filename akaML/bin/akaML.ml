@@ -58,14 +58,22 @@ let compiler dump_parsetree inference input_source output_file =
     let text = In_channel.read_all file_name |> String.trim in
     (match output_file with
      | Some out_name ->
-       Out_channel.with_file out_name ~f:(fun oc -> ignore (run text env_infer oc))
-     | None -> ignore (run text env_infer Out_channel.stdout))
+       Out_channel.with_file out_name ~f:(fun oc ->
+         let (_ : Inferencer.TypeEnv.t) = run text env_infer oc in
+         ())
+     | None ->
+       let (_ : Inferencer.TypeEnv.t) = run text env_infer Out_channel.stdout in
+       ())
   | None ->
     let input = In_channel.input_all stdin |> String.trim in
     (match output_file with
      | Some out_name ->
-       Out_channel.with_file out_name ~f:(fun oc -> ignore (run input env_infer oc))
-     | None -> ignore (run input env_infer Out_channel.stdout))
+       Out_channel.with_file out_name ~f:(fun oc ->
+         let (_ : Inferencer.TypeEnv.t) = run input env_infer oc in
+         ())
+     | None ->
+       let (_ : Inferencer.TypeEnv.t) = run input env_infer Out_channel.stdout in
+       ())
 ;;
 
 let () =

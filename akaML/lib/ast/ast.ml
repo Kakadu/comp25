@@ -179,11 +179,11 @@ module Expression = struct
       [ map2 (fun id arg -> exp_ident id, arg) gen_ident (gen (n / coef))
       ; map2
           (fun opr opn -> opr, opn)
-          (oneofl (List.map (fun opr -> exp_ident opr) un_op_list))
+          (oneofl (List.map exp_ident un_op_list))
           (gen (n / coef))
       ; map3
           (fun opr opn1 opn2 -> exp_apply (opr, opn1), opn2)
-          (oneofl (List.map (fun opr -> exp_ident opr) bin_op_list))
+          (oneofl (List.map exp_ident bin_op_list))
           (gen (n / coef))
           (gen (n / coef))
       ]

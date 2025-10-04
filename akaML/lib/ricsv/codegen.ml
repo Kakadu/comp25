@@ -163,8 +163,7 @@ end
 open Emission
 
 let reg_is_used env r =
-  Map.exists env ~f:(fun loc ->
-    match loc with
+  Map.exists env ~f:(function
     | Loc_reg r' -> equal_reg r r'
     | Loc_mem _ -> false)
 ;;
