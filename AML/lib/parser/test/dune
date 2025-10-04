@@ -1,0 +1,16 @@
+(library
+ (name ParserTest)
+ (libraries
+  base
+  stdio
+  Ast
+  Parser
+  Pprinter
+  qcheck-core
+  qcheck-core.runner
+  Qchecker)
+ (preprocess
+  (pps ppx_expect))
+ (inline_tests)
+ (instrumentation
+  (backend bisect_ppx)))

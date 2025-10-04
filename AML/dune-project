@@ -1,0 +1,33 @@
+(lang dune 3.8)
+
+(name AML)
+
+(generate_opam_files true)
+
+(source
+ (github suvorovrain/AML))
+
+(authors "suvorovrain" , "kinokotakenoko9")
+
+(maintainers "suvorovrain" , "kinokotakenoko9")
+
+(license LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception)
+
+(package
+ (name AML)
+ (synopsis "A ML compiler")
+ (depends
+  (dune
+   (= "3.19.1"))
+  base
+  (angstrom
+   (= "0.16.0"))
+  qcheck-core
+  (ppx_inline_test :with-test)
+  ppx_deriving
+  (ppx_deriving_qcheck
+   (= "0.6"))
+  ppx_expect
+  bisect_ppx))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project

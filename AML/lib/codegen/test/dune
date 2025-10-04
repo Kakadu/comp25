@@ -1,0 +1,12 @@
+(library
+ (name CodegenTest)
+ (libraries base stdio Ast Parser Pprinter Inferencer Codegen)
+ (preprocess
+  (pps ppx_expect))
+ (inline_tests)
+ (instrumentation
+  (backend bisect_ppx)))
+
+(cram
+ (applies_to codegen)
+ (deps ../../../bin/AML.exe))

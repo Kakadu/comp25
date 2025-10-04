@@ -1,0 +1,6 @@
+(library
+ (name Qchecker)
+ (public_name AML.Qchecker)
+ (libraries Pprinter)
+ (instrumentation
+  (backend bisect_ppx)))

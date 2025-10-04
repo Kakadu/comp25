@@ -1,0 +1,5 @@
+pin-depends: [
+  ["ppx_deriving_qcheck.0.6" "git+https://github.com/c-cube/qcheck.git#42429bf06ba12373cad02b1404f50d0ad6238af5"]
+]
+
+# Don't edit '*.opam' file manually. Use 'dune build @install'

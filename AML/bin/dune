@@ -1,0 +1,3 @@
+(executable
+ (name AML)
+ (libraries stdio base Parser Inferencer Pprinter Codegen))

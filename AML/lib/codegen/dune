@@ -1,0 +1,8 @@
+(library
+ (name Codegen)
+ (public_name AML.Codegen)
+ (libraries base Ast)
+ (preprocess
+  (pps ppx_deriving.eq))
+ (instrumentation
+  (backend bisect_ppx)))
