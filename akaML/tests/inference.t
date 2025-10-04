@@ -1,6 +1,3 @@
-Copyright 2025-2026, Friend-zva, RodionovMaxim05
-SPDX-License-Identifier: LGPL-3.0-or-later
-
 do_not_type:
 
   $ ../bin/akaML.exe -inference -fromfile manytests/do_not_type/001.ml
