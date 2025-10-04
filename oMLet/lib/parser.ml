@@ -97,7 +97,9 @@ let pbool =
 ;;
 
 let pstr =
-  pwhitespace *> char '"' *> take_till (Char.equal '"') <* char '"' >>| fun x -> String_lt x
+  pwhitespace *> char '"' *> take_till (Char.equal '"')
+  <* char '"'
+  >>| fun x -> String_lt x
 ;;
 
 let punit = pstoken "()" *> return Unit_lt
@@ -251,7 +253,10 @@ let cons = pbinop Binary_cons "::"
 
 (*------------------Unary operators-----------------*)
 
-let punop op token = pwhitespace *> pstoken token *> return (fun e1 -> Unary_expr (op, e1))
+let punop op token =
+  pwhitespace *> pstoken token *> return (fun e1 -> Unary_expr (op, e1))
+;;
+
 let negation = punop Unary_not "not" <* pws1
 let neg_sign = punop Unary_minus "-"
 (* let pos_sign = punop Positive "+" *)
@@ -286,14 +291,15 @@ let rec pbody pexpr =
 let p_let_bind p_expr =
   let* name = ppattern <|> (pparens ppref_op >>| fun oper -> PVar oper) in
   let* args = many ppattern in
-  let* body = pstoken("=") *> p_expr in
+  let* body = pstoken "=" *> p_expr in
   return (Let_bind (name, args, body))
 ;;
+
 let plet pexpr =
   pstoken "let"
   *> lift4
        (fun rec_flag value_bindings and_bindings body ->
-         LetIn (rec_flag, value_bindings, and_bindings, body))
+          LetIn (rec_flag, value_bindings, and_bindings, body))
        (pstoken "rec" *> (pws1 *> return Rec) <|> return Nonrec)
        (p_let_bind pexpr)
        (many (pstoken "and" *> p_let_bind pexpr))
@@ -356,10 +362,7 @@ let pbranch pexpr =
 
 let pEmatch pexpr =
   let parse_case =
-    lift2
-      (fun pat exp -> (pat, exp))
-      (ppattern <* pstoken "->")
-      (pwhitespace *> pexpr)
+    lift2 (fun pat exp -> pat, exp) (ppattern <* pstoken "->") (pwhitespace *> pexpr)
   in
   let match_cases =
     lift3
@@ -398,12 +401,7 @@ let pexpr =
     let ite_expr = pbranch (expr <|> atom_expr) <|> atom_expr in
     let inf_op = pEinf_op (ite_expr <|> atom_expr) <|> ite_expr in
     let app_expr = pEapp (inf_op <|> atom_expr) <|> inf_op in
-    let un_expr =
-      choice
-        [ un_chain app_expr negation
-        ; un_chain app_expr neg_sign
-        ]
-    in
+    let un_expr = choice [ un_chain app_expr negation; un_chain app_expr neg_sign ] in
     let factor_expr = chain un_expr (mult <|> div) in
     let sum_expr = chain factor_expr (add <|> sub) in
     let rel_expr = chain sum_expr relation in
@@ -418,12 +416,13 @@ let pexpr =
 let pconstruction =
   let pseval = pexpr >>| fun e -> Expr e in
   let psvalue =
-    (pstoken "let"
+    pstoken "let"
     *> lift3
          (fun r id id_list -> Let (r, id, id_list))
          (pstoken "rec" *> (pws1 *> return Rec) <|> return Nonrec)
          (p_let_bind pexpr)
-         (many (pstoken "and" *> p_let_bind pexpr))) >>| fun s -> Statement(s)
+         (many (pstoken "and" *> p_let_bind pexpr))
+    >>| fun s -> Statement s
   in
   choice [ pseval; psvalue ]
 ;;

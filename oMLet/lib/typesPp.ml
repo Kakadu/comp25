@@ -17,9 +17,9 @@ let rec pp_typ fmt = function
     Format.pp_print_list
       ~pp_sep:(fun fmt () -> fprintf fmt " * ")
       (fun fmt typ ->
-        match typ with
-        | Arrow _ -> fprintf fmt "(%a)" pp_typ typ
-        | _ -> pp_typ fmt typ)
+         match typ with
+         | Arrow _ -> fprintf fmt "(%a)" pp_typ typ
+         | _ -> pp_typ fmt typ)
       fmt
       (first :: second :: rest)
   | TOption t ->
