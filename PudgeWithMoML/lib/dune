@@ -1,0 +1,11 @@
+(library
+ (name PudgeWithMoML)
+ (public_name PudgeWithMoML)
+ (modules :standard)
+ (libraries base angstrom)
+ (preprocess
+  (pps ppx_deriving.show ppx_deriving.eq))
+ (instrumentation
+  (backend bisect_ppx)))
+
+(include_subdirs qualified)

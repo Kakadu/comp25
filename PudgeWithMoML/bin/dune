@@ -1,0 +1,10 @@
+(executable
+ (public_name compiler)
+ (name compiler)
+ (modules compiler)
+ (libraries PudgeWithMoML stdio)
+ (instrumentation
+  (backend bisect_ppx)))
+
+(cram
+ (deps ./compiler.exe fact))
