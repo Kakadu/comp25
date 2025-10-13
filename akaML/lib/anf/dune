@@ -1,0 +1,9 @@
+(library
+ (name Anf)
+ (public_name akaML.Anf)
+ (libraries base Ast Pprinter)
+ (preprocess
+  (pps ppx_deriving.show))
+ (instrumentation
+  (backend bisect_ppx)))
+
