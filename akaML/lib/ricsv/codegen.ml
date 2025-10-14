@@ -7,7 +7,6 @@
 [@@@ocaml.text "/*"]
 
 open Ast
-open Ast.Expression
 open Machine
 open Base
 open Stdlib.Format
@@ -192,143 +191,290 @@ let ensure_reg_free env dst =
       return (relocate env ~from:dst ~to_:new_loc))
 ;;
 
-let rec gen_exp env dst = function
-  | Exp_constant (Const_integer n) ->
-    emit li dst n;
-    return env
-  | Exp_ident x ->
-    (match Map.find env x with
-     | Some (Loc_reg r) ->
-       if equal_reg r dst
-       then return env
-       else (
-         emit mv dst r;
-         return env)
-     | Some (Loc_mem ofs) ->
-       emit ld dst ofs;
-       return env
-     | None -> failwith ("unbound variable: " ^ x))
-  | Exp_ifthenelse (cond, then_e, Some else_e) ->
-    let* env = gen_exp env (T 0) cond in
-    let* id = fresh in
-    let else_lbl = Printf.sprintf "else_%d" id
-    and end_lbl = Printf.sprintf "end_%d" id in
-    emit beq (T 0) Zero else_lbl;
-    (* then case *)
-    let* env = gen_exp env dst then_e in
-    emit j end_lbl;
-    (* else case *)
-    emit label else_lbl;
-    let* env = gen_exp env dst else_e in
-    emit label end_lbl;
-    return env
-  | Exp_apply _ as e ->
-    let rec collect_apps acc = function
-      | Exp_apply (f, arg) -> collect_apps (arg :: acc) f
-      | fn -> fn, acc
-    in
-    let fn, args = collect_apps [] e in
-    (match fn, args with
-     | Exp_ident op, [ a1; a2 ] when Parser.is_operator op ->
-       let* env = gen_exp env (T 0) a1 in
-       let* env = gen_exp env (T 1) a2 in
-       let* env = ensure_reg_free env dst in
-       emit_bin_op dst op (T 0) (T 1);
-       return env
-     | Exp_ident fname, args ->
-       let* env =
-         List.foldi args ~init:(return env) ~f:(fun i acc arg ->
-           let* env = acc in
-           if i < Platform.arg_regs_count
-           then gen_exp env (A i) arg
-           else failwith "too many args")
-       in
-       let* env = emit_save_caller_regs env in
-       emit call fname;
-       if not (equal_reg dst (A 0)) then emit mv dst (A 0);
-       return env
-     | _ -> failwith "unsupported function application")
-  | Exp_let (_, { pat = Pat_var id; exp }, [], exp_in) ->
-    let* env = gen_exp env (A 0) exp in
-    let* loc = emit_store (A 0) ~comm:id in
-    let env = Map.set env ~key:id ~data:loc in
-    gen_exp env dst exp_in
-  | _ -> failwith "expression not supported yet"
-;;
+module Default = struct
+  open Ast.Expression
 
-let rec count_local_vars = function
-  | Exp_ident _ | Exp_constant _ | Exp_construct (_, None) -> 0
-  | Exp_let (_, vb, vb_list, body) ->
-    let count_one_vb { pat; exp } =
+  let rec gen_exp env dst = function
+    | Exp_constant (Const_integer n) ->
+      emit li dst n;
+      return env
+    | Exp_ident x ->
+      (match Map.find env x with
+       | Some (Loc_reg r) ->
+         if equal_reg r dst
+         then return env
+         else (
+           emit mv dst r;
+           return env)
+       | Some (Loc_mem ofs) ->
+         emit ld dst ofs;
+         return env
+       | None -> failwith ("unbound variable: " ^ x))
+    | Exp_ifthenelse (cond, then_e, Some else_e) ->
+      let* env = gen_exp env (T 0) cond in
+      let* id = fresh in
+      let else_lbl = Printf.sprintf "else_%d" id
+      and end_lbl = Printf.sprintf "end_%d" id in
+      emit beq (T 0) Zero else_lbl;
+      (* then case *)
+      let* env = gen_exp env dst then_e in
+      emit j end_lbl;
+      (* else case *)
+      emit label else_lbl;
+      let* env = gen_exp env dst else_e in
+      emit label end_lbl;
+      return env
+    | Exp_apply _ as e ->
+      let rec collect_apps acc = function
+        | Exp_apply (f, arg) -> collect_apps (arg :: acc) f
+        | fn -> fn, acc
+      in
+      let fn, args = collect_apps [] e in
+      (match fn, args with
+       | Exp_ident op, [ a1; a2 ] when Parser.is_operator op ->
+         let* env = gen_exp env (T 0) a1 in
+         let* env = gen_exp env (T 1) a2 in
+         let* env = ensure_reg_free env dst in
+         emit_bin_op dst op (T 0) (T 1);
+         return env
+       | Exp_ident fname, args ->
+         let* env =
+           List.foldi args ~init:(return env) ~f:(fun i acc arg ->
+             let* env = acc in
+             if i < Platform.arg_regs_count
+             then gen_exp env (A i) arg
+             else failwith "too many args")
+         in
+         let* env = emit_save_caller_regs env in
+         emit call fname;
+         if not (equal_reg dst (A 0)) then emit mv dst (A 0);
+         return env
+       | _ -> failwith "unsupported function application")
+    | Exp_let (_, { pat = Pat_var id; exp }, [], exp_in) ->
+      let* env = gen_exp env (A 0) exp in
+      let* loc = emit_store (A 0) ~comm:id in
+      let env = Map.set env ~key:id ~data:loc in
+      gen_exp env dst exp_in
+    | _ -> failwith "expression not supported yet"
+  ;;
+
+  let rec count_local_vars = function
+    | Exp_ident _ | Exp_constant _ | Exp_construct (_, None) -> 0
+    | Exp_let (_, vb, vb_list, body) ->
+      let count_one_vb { pat; exp } =
+        let count_vars_in_pat =
+          match pat with
+          | Pat_var _ -> 1
+          | _ -> 0
+        in
+        count_vars_in_pat + count_local_vars exp
+      in
+      List.fold_left (vb :: vb_list) ~init:0 ~f:(fun acc vb -> acc + count_one_vb vb)
+      + count_local_vars body
+    | Exp_fun (_, _, exp) | Exp_construct (_, Some exp) | Exp_constraint (exp, _) ->
+      count_local_vars exp
+    | Exp_apply (exp1, exp2) -> count_local_vars exp1 + count_local_vars exp2
+    | Exp_ifthenelse (cond, then_exp, Some else_exp) ->
+      count_local_vars cond + count_local_vars then_exp + count_local_vars else_exp
+    | Exp_ifthenelse (cond, then_exp, None) ->
+      count_local_vars cond + count_local_vars then_exp
+    | Exp_function (case, case_list) ->
+      let count_case { left = _; right } = count_local_vars right in
+      List.fold_left (case :: case_list) ~init:0 ~f:(fun acc c -> acc + count_case c)
+    | Exp_match (scrut, case, case_list) ->
+      let count_case { left = _; right } = count_local_vars right in
+      count_local_vars scrut
+      + List.fold_left (case :: case_list) ~init:0 ~f:(fun acc c -> acc + count_case c)
+    | Exp_tuple (exp1, exp2, exp_list) ->
+      List.fold_left (exp1 :: exp2 :: exp_list) ~init:0 ~f:(fun acc e ->
+        acc + count_local_vars e)
+    | Exp_sequence (exp1, exp2) -> count_local_vars exp1 + count_local_vars exp2
+  ;;
+
+  let gen_func f_id arg_list body_exp ppf state =
+    let f_id = if String.equal f_id "main" then "_start" else f_id in
+    fprintf ppf "\n  .globl %s\n  .type %s, @function\n" f_id f_id;
+    let arity = List.length arg_list in
+    let reg_params, stack_params =
+      List.split_n arg_list (min arity Platform.arg_regs_count)
+    in
+    let stack_size = (2 + count_local_vars body_exp) * Platform.word_size in
+    let env = Map.empty (module String) in
+    let env =
+      List.foldi reg_params ~init:env ~f:(fun i env -> function
+        | Pat_var name -> Map.set env ~key:name ~data:(Loc_reg (A i))
+        | _ -> failwith "unsupported pattern")
+    in
+    let env =
+      List.foldi stack_params ~init:env ~f:(fun i env -> function
+        | Pat_var name ->
+          let offset = (i + 2) * Platform.word_size in
+          Map.set env ~key:name ~data:(Loc_mem (S 0, offset))
+        | _ -> failwith "unsupported pattern")
+    in
+    emit_fn_prologue f_id stack_size;
+    let init_state = { state with frame_offset = 0 } in
+    let _, state = gen_exp env (A 0) body_exp init_state in
+    emit_fn_epilogue (String.equal f_id "_start");
+    flush_queue ppf;
+    state
+  ;;
+
+  let gen_structure ppf ast =
+    fprintf ppf ".section .text";
+    let init_state = { frame_offset = 0; fresh_id = 0 } in
+    let _ =
+      List.fold ast ~init:init_state ~f:(fun state -> function
+        | Struct_value
+            (Recursive, { pat = Pat_var f_id; exp = Exp_fun (p, p_list, body_exp) }, _) ->
+          gen_func f_id (p :: p_list) body_exp ppf state
+        | Struct_value (Nonrecursive, { pat = Pat_var f_id; exp = body_exp }, _) ->
+          gen_func f_id [] body_exp ppf state
+        | _ -> failwith "unsupported structure item")
+    in
+    pp_print_flush ppf ()
+  ;;
+end
+
+module Anf = struct
+  let rec gen_i_exp env dst = function
+    | Anf.IExp_constant (Const_integer n) ->
+      emit li dst n;
+      return env
+    | IExp_ident x ->
+      (match Map.find env x with
+       | Some (Loc_reg r) ->
+         if equal_reg r dst
+         then return env
+         else (
+           emit mv dst r;
+           return env)
+       | Some (Loc_mem ofs) ->
+         emit ld dst ofs;
+         return env
+       | None -> failwith ("unbound variable: " ^ x))
+    | IExp_fun _ -> failwith ""
+    | _ -> failwith "GenIExp: Not implemented"
+
+  and gen_c_exp env dst = function
+    | Anf.CIExp i_exp -> gen_i_exp env dst i_exp
+    | CExp_apply (Anf.IExp_ident op, i_exp1, [ i_exp2 ]) when Ast.is_bin_op op ->
+      let* env = gen_i_exp env (T 0) i_exp1 in
+      let* env = gen_i_exp env (T 1) i_exp2 in
+      let* env = ensure_reg_free env dst in
+      emit_bin_op dst op (T 0) (T 1);
+      return env
+    | CExp_apply (Anf.IExp_ident fname, i_exp, i_exp_list) ->
+      let args = i_exp :: i_exp_list in
+      let* env =
+        List.foldi args ~init:(return env) ~f:(fun i acc arg ->
+          let* env = acc in
+          if i < Platform.arg_regs_count
+          then gen_i_exp env (A i) arg
+          else failwith "too many args")
+      in
+      let* env = emit_save_caller_regs env in
+      emit call fname;
+      if not (equal_reg dst (A 0)) then emit mv dst (A 0);
+      return env
+    | CExp_ifthenelse (cond, then_e, Some else_e) ->
+      let* env = gen_c_exp env (T 0) cond in
+      let* id = fresh in
+      let else_lbl = Printf.sprintf "else_%d" id
+      and end_lbl = Printf.sprintf "end_%d" id in
+      emit beq (T 0) Zero else_lbl;
+      (* then case *)
+      let* env = gen_a_exp env dst then_e in
+      emit j end_lbl;
+      (* else case *)
+      emit label else_lbl;
+      let* env = gen_a_exp env dst else_e in
+      emit label end_lbl;
+      return env
+    | _ -> failwith "GenCExp: Not implemented"
+
+  and gen_a_exp env dst = function
+    | Anf.ACExp c_exp -> gen_c_exp env dst c_exp
+    | AExp_let (_, Pat_var id, exp, exp_in) ->
+      let* env = gen_c_exp env (A 0) exp in
+      let* loc = emit_store (A 0) ~comm:id in
+      let env = Map.set env ~key:id ~data:loc in
+      gen_a_exp env dst exp_in
+    | _ -> failwith "GenAExp: Not implemented"
+  ;;
+
+  let rec count_loc_vars_i_exp = function
+    | Anf.IExp_ident _ | IExp_constant _ -> 0
+    | IExp_fun (_, a_exp) -> count_loc_vars_a_exp a_exp
+
+  and count_loc_vars_c_exp = function
+    | Anf.CIExp i_exp -> count_loc_vars_i_exp i_exp
+    | CExp_tuple (i_exp1, i_exp2, i_exp_list) ->
+      List.fold_left (i_exp1 :: i_exp2 :: i_exp_list) ~init:0 ~f:(fun acc e ->
+        acc + count_loc_vars_i_exp e)
+    | CExp_apply (i_exp1, i_exp2, i_exp_list) ->
+      List.fold_left (i_exp1 :: i_exp2 :: i_exp_list) ~init:0 ~f:(fun acc e ->
+        acc + count_loc_vars_i_exp e)
+    | CExp_ifthenelse (c_exp_if, a_exp_then, None) ->
+      count_loc_vars_c_exp c_exp_if + count_loc_vars_a_exp a_exp_then
+    | CExp_ifthenelse (c_exp_if, a_exp_then, Some a_exp_else) ->
+      count_loc_vars_c_exp c_exp_if
+      + count_loc_vars_a_exp a_exp_then
+      + count_loc_vars_a_exp a_exp_else
+
+  and count_loc_vars_a_exp = function
+    | Anf.ACExp c_exp -> count_loc_vars_c_exp c_exp
+    | AExp_let (_, pat, c_exp, a_exp) ->
       let count_vars_in_pat =
         match pat with
         | Pat_var _ -> 1
         | _ -> 0
       in
-      count_vars_in_pat + count_local_vars exp
+      count_vars_in_pat + count_loc_vars_c_exp c_exp + count_loc_vars_a_exp a_exp
+  ;;
+
+  let gen_a_func f_id arg_list body_exp ppf state =
+    let f_id = if String.equal f_id "main" then "_start" else f_id in
+    fprintf ppf "\n  .globl %s\n  .type %s, @function\n" f_id f_id;
+    let arity = List.length arg_list in
+    let reg_params, stack_params =
+      List.split_n arg_list (min arity Platform.arg_regs_count)
     in
-    List.fold_left (vb :: vb_list) ~init:0 ~f:(fun acc vb -> acc + count_one_vb vb)
-    + count_local_vars body
-  | Exp_fun (_, _, exp) | Exp_construct (_, Some exp) | Exp_constraint (exp, _) ->
-    count_local_vars exp
-  | Exp_apply (exp1, exp2) -> count_local_vars exp1 + count_local_vars exp2
-  | Exp_ifthenelse (cond, then_exp, Some else_exp) ->
-    count_local_vars cond + count_local_vars then_exp + count_local_vars else_exp
-  | Exp_ifthenelse (cond, then_exp, None) ->
-    count_local_vars cond + count_local_vars then_exp
-  | Exp_function (case, case_list) ->
-    let count_case { left = _; right } = count_local_vars right in
-    List.fold_left (case :: case_list) ~init:0 ~f:(fun acc c -> acc + count_case c)
-  | Exp_match (scrut, case, case_list) ->
-    let count_case { left = _; right } = count_local_vars right in
-    count_local_vars scrut
-    + List.fold_left (case :: case_list) ~init:0 ~f:(fun acc c -> acc + count_case c)
-  | Exp_tuple (exp1, exp2, exp_list) ->
-    List.fold_left (exp1 :: exp2 :: exp_list) ~init:0 ~f:(fun acc e ->
-      acc + count_local_vars e)
-  | Exp_sequence (exp1, exp2) -> count_local_vars exp1 + count_local_vars exp2
-;;
+    let stack_size = (2 + count_loc_vars_a_exp body_exp) * Platform.word_size in
+    let env = Map.empty (module String) in
+    let env =
+      List.foldi reg_params ~init:env ~f:(fun i env -> function
+        | Anf.APat_var name -> Map.set env ~key:name ~data:(Loc_reg (A i))
+        | _ -> failwith "unsupported pattern")
+    in
+    let env =
+      List.foldi stack_params ~init:env ~f:(fun i env -> function
+        | APat_var name ->
+          let offset = (i + 2) * Platform.word_size in
+          Map.set env ~key:name ~data:(Loc_mem (S 0, offset))
+        | _ -> failwith "unsupported pattern")
+    in
+    emit_fn_prologue f_id stack_size;
+    let init_state = { state with frame_offset = 0 } in
+    let _, state = gen_a_exp env (A 0) body_exp init_state in
+    emit_fn_epilogue (String.equal f_id "_start");
+    flush_queue ppf;
+    state
+  ;;
 
-let gen_func f_id arg_list body_exp ppf state =
-  let f_id = if String.equal f_id "main" then "_start" else f_id in
-  fprintf ppf "\n  .globl %s\n  .type %s, @function\n" f_id f_id;
-  let arity = List.length arg_list in
-  let reg_params, stack_params =
-    List.split_n arg_list (min arity Platform.arg_regs_count)
-  in
-  let stack_size = (2 + count_local_vars body_exp) * Platform.word_size in
-  let env = Map.empty (module String) in
-  let env =
-    List.foldi reg_params ~init:env ~f:(fun i env -> function
-      | Pat_var name -> Map.set env ~key:name ~data:(Loc_reg (A i))
-      | _ -> failwith "unsupported pattern")
-  in
-  let env =
-    List.foldi stack_params ~init:env ~f:(fun i env -> function
-      | Pat_var name ->
-        let offset = (i + 2) * Platform.word_size in
-        Map.set env ~key:name ~data:(Loc_mem (S 0, offset))
-      | _ -> failwith "unsupported pattern")
-  in
-  emit_fn_prologue f_id stack_size;
-  let init_state = { state with frame_offset = 0 } in
-  let _, state = gen_exp env (A 0) body_exp init_state in
-  emit_fn_epilogue (String.equal f_id "_start");
-  flush_queue ppf;
-  state
-;;
-
-let gen_structure ppf ast =
-  fprintf ppf ".section .text";
-  let init_state = { frame_offset = 0; fresh_id = 0 } in
-  let _ =
-    List.fold ast ~init:init_state ~f:(fun state -> function
-      | Struct_value
-          (Recursive, { pat = Pat_var f_id; exp = Exp_fun (p, p_list, body_exp) }, _) ->
-        gen_func f_id (p :: p_list) body_exp ppf state
-      | Struct_value (Nonrecursive, { pat = Pat_var f_id; exp = body_exp }, _) ->
-        gen_func f_id [] body_exp ppf state
-      | _ -> failwith "unsupported structure item")
-  in
-  pp_print_flush ppf ()
-;;
+  let gen_a_structure ppf ast =
+    fprintf ppf ".section .text";
+    let init_state = { frame_offset = 0; fresh_id = 0 } in
+    let _ =
+      List.fold ast ~init:init_state ~f:(fun state -> function
+        | Anf.AStruct_value
+            ( Recursive
+            , { pat = Pat_var f_id; exp = ACExp (CIExp (IExp_fun (pat, body_exp))) }
+            , _ ) -> gen_a_func f_id [ pat ] body_exp ppf state
+        | AStruct_value (Nonrecursive, { pat = Pat_var f_id; exp = body_exp }, _) ->
+          gen_a_func f_id [] body_exp ppf state
+        | _ -> failwith "unsupported structure item")
+    in
+    pp_print_flush ppf ()
+  ;;
+end

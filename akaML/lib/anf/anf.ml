@@ -60,7 +60,7 @@ and a_exp =
 
 (* ANF value_binding *)
 and a_value_binding =
-  { pat : a_pat
+  { pat : pattern
   ; exp : a_exp
   }
 [@@deriving show { with_path = false }]
@@ -165,7 +165,7 @@ module Style = struct
     pp_open_hvbox ppf 0;
     function
     | { pat; exp } ->
-      fprintf ppf "%a =@]@ " pp_a_pat pat;
+      fprintf ppf "%a =@]@ " Pprinter.pp_pattern pat;
       fprintf ppf "@[<hv>%a@]@]" (pp_a_exp_deep false) exp
   ;;
 
@@ -280,7 +280,7 @@ let anf_exp exp (exp_with_hole : i_exp -> a_exp) =
 ;;
 
 let anf_value_binding (vb : Expression.value_binding_exp) =
-  { pat = anf_pat vb.pat; exp = anf_exp vb.exp i_to_a_exp }
+  { pat = vb.pat; exp = anf_exp vb.exp i_to_a_exp }
 ;;
 
 let anf_structure_item = function

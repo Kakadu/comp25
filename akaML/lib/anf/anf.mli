@@ -28,7 +28,7 @@ and a_exp =
   | AExp_let of Ast.rec_flag * Ast.pattern * c_exp * a_exp
 
 and a_value_binding =
-  { pat : a_pat
+  { pat : Ast.pattern
   ; exp : a_exp
   }
 
