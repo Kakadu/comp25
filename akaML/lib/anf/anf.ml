@@ -268,9 +268,12 @@ let anf_exp exp (exp_with_hole : i_exp -> a_exp) =
         f exp2 (fun i_exp2 ->
           let c_exp = CExp_tuple (i_exp1, i_exp2, []) in
           a_exp_let_non c_exp k))
-    | Exp_fun (pat, [], exp) ->
-      i_to_a_exp
-      @@ IExp_fun (anf_pat pat, f exp (fun i_exp -> a_exp_let_non (i_to_c_exp i_exp) k))
+    | Exp_fun (pat, pat_list, exp) ->
+      let body_exp = f exp (fun i_exp -> a_exp_let_non (i_to_c_exp i_exp) k) in
+      List.fold_right
+        (fun pat acc -> i_to_a_exp (IExp_fun (anf_pat pat, acc)))
+        (pat :: pat_list)
+        body_exp
     | _ -> failwith "Exp: Not implemented"
   in
   f exp exp_with_hole

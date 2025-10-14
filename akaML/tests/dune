@@ -5,8 +5,9 @@
   akaML.Parser
   akaML.Pprinter
   akaML.Inferencer
-  akaML.RiscV)
- (modules Test_parser Test_pprinter Test_inferencer Test_riscv)
+  akaML.RiscV
+  akaML.Anf)
+ (modules Test_parser Test_pprinter Test_inferencer Test_riscv Test_anf)
  (preprocess
   (pps ppx_expect))
  (inline_tests)

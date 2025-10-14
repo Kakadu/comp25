@@ -72,6 +72,7 @@ module Style : sig
   val pp_a_structure : Format.formatter -> a_structure_item list -> unit
 end
 
+val reset_gen_id : unit -> unit
 val anf_pat : Ast.pattern -> a_pat
 val anf_exp : Ast.Expression.t -> (i_exp -> a_exp) -> a_exp
 val anf_value_binding : Ast.Expression.value_binding_exp -> a_value_binding
