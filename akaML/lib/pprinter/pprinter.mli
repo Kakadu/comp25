@@ -6,6 +6,8 @@
 
 [@@@ocaml.text "/*"]
 
+val pp_comma : Format.formatter -> unit -> unit
+val pp_and : int -> Format.formatter -> unit -> unit
 val pp_rec_flag : Format.formatter -> Ast.rec_flag -> unit
 val pp_ident : Format.formatter -> string -> unit
 val pp_constant : Format.formatter -> Ast.constant -> unit

@@ -13,6 +13,8 @@ val show_list_ : (Format.formatter -> 'a -> unit) -> 'a list_ -> string
 (** Identifier *)
 type ident = string
 
+val bin_op_list : string list
+val is_bin_op : ident -> bool
 val show_ident : ident -> string
 val is_unary_minus : string -> bool
 val is_keyword : ident -> bool
