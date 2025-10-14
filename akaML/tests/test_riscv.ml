@@ -177,21 +177,18 @@ let%expect_test "codegen default factorial" =
     {|
   let rec fac =
     fun n ->
-    let temp1 = ( = ) n in
-    let temp2 = temp1 0 in
-    let temp8 =
-      if temp2
+    let temp1 = n = 0 in
+    let temp5 =
+      if temp1
       then 1
       else (
-        let temp3 = ( * ) n in
-        let temp4 = ( - ) n in
-        let temp5 = temp4 1 in
-        let temp6 = fac temp5 in
-        let temp7 = temp3 temp6 in
-        temp7)
+        let temp2 = n - 1 in
+        let temp3 = fac temp2 in
+        let temp4 = n * temp3 in
+        temp4)
     in
-    let temp9 = temp8 in
-    temp9
+    let temp6 = temp5 in
+    temp6
   ;;
   |};
   [%expect
@@ -200,43 +197,40 @@ let%expect_test "codegen default factorial" =
     .globl fac
     .type fac, @function
   fac:
-    addi sp, sp, -88
-    sd ra, 80(sp)
-    sd s0, 72(sp)
-    addi s0, sp, 72 # Prologue ends
-    addi sp, sp, -8 # Saving 'live' regs
-    sd a0, -8(s0)
-    call =
-    sd a0, -16(s0) # temp1
-    li a0, 0
-    call temp1
-    sd a0, -24(s0) # temp2
-    ld t0, -24(s0)
+    addi sp, sp, -64
+    sd ra, 56(sp)
+    sd s0, 48(sp)
+    addi s0, sp, 48 # Prologue ends
+    mv t0, a0
+    li t1, 0
+    mv a1, a0
+    xor a0, t0, t1
+    seqz a0, a0
+    sd a0, -8(s0) # temp1
+    ld t0, -8(s0)
     beq t0, zero, else_0
     li a0, 1
     j end_0
   else_0:
-    ld a0, -8(s0)
-    call *
+    mv t0, a1
+    li t1, 1
+    sub a0, t0, t1
+    sd a0, -16(s0) # temp2
+    ld a0, -16(s0)
+    addi sp, sp, -8 # Saving 'live' regs
+    sd a1, -24(s0)
+    call fac
     sd a0, -32(s0) # temp3
-    ld a0, -8(s0)
-    call -
+    ld t0, -24(s0)
+    ld t1, -32(s0)
+    mul a0, t0, t1
     sd a0, -40(s0) # temp4
-    li a0, 1
-    call temp4
+    ld a0, -40(s0)
+  end_0:
     sd a0, -48(s0) # temp5
     ld a0, -48(s0)
-    call fac
     sd a0, -56(s0) # temp6
     ld a0, -56(s0)
-    call temp3
-    sd a0, -64(s0) # temp7
-    ld a0, -64(s0)
-  end_0:
-    sd a0, -72(s0) # temp8
-    ld a0, -72(s0)
-    sd a0, -80(s0) # temp9
-    ld a0, -80(s0)
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -256,43 +250,40 @@ let%expect_test "codegen ANF factorial" =
     .globl fac
     .type fac, @function
   fac:
-    addi sp, sp, -88
-    sd ra, 80(sp)
-    sd s0, 72(sp)
-    addi s0, sp, 72 # Prologue ends
-    addi sp, sp, -8 # Saving 'live' regs
-    sd a0, -8(s0)
-    call =
-    sd a0, -16(s0) # temp1
-    li a0, 0
-    call temp1
-    sd a0, -24(s0) # temp2
-    ld t0, -24(s0)
+    addi sp, sp, -64
+    sd ra, 56(sp)
+    sd s0, 48(sp)
+    addi s0, sp, 48 # Prologue ends
+    mv t0, a0
+    li t1, 0
+    mv a1, a0
+    xor a0, t0, t1
+    seqz a0, a0
+    sd a0, -8(s0) # temp1
+    ld t0, -8(s0)
     beq t0, zero, else_0
     li a0, 1
     j end_0
   else_0:
-    ld a0, -8(s0)
-    call *
+    mv t0, a1
+    li t1, 1
+    sub a0, t0, t1
+    sd a0, -16(s0) # temp2
+    ld a0, -16(s0)
+    addi sp, sp, -8 # Saving 'live' regs
+    sd a1, -24(s0)
+    call fac
     sd a0, -32(s0) # temp3
-    ld a0, -8(s0)
-    call -
+    ld t0, -24(s0)
+    ld t1, -32(s0)
+    mul a0, t0, t1
     sd a0, -40(s0) # temp4
-    li a0, 1
-    call temp4
+    ld a0, -40(s0)
+  end_0:
     sd a0, -48(s0) # temp5
     ld a0, -48(s0)
-    call fac
     sd a0, -56(s0) # temp6
     ld a0, -56(s0)
-    call temp3
-    sd a0, -64(s0) # temp7
-    ld a0, -64(s0)
-  end_0:
-    sd a0, -72(s0) # temp8
-    ld a0, -72(s0)
-    sd a0, -80(s0) # temp9
-    ld a0, -80(s0)
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)

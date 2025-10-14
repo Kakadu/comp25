@@ -42,20 +42,10 @@ let%expect_test "ANF several binary operations" =
   run
     {|
   let a = 1 + 2 + 3;;
-  (* 
-  let a =
-    let temp1 = ( + ) 1 2 in
-    let temp2 = ( + ) temp1 in
-    let temp3 = temp3 2 in
-    temp3
-  ;;
-   *)
   |};
   [%expect
     {|
-  let a = let temp1 = 1 + 2 in (let temp2 = ( + ) temp1 in (let temp3 = temp2 3 in
-  temp3))
-  ;;
+  let a = let temp1 = 1 + 2 in (let temp2 = temp1 + 3 in temp2);;
   |}]
 ;;
 
@@ -77,31 +67,13 @@ let%expect_test "ANF function with 2 arguments" =
     {|
   let f a b = a + b;;
   let a = f 1 2;;
-  (* 
-  let f =
-    fun a ->
-    fun b ->
-    let temp1 = ( + ) a in
-    let temp2 = temp1 b in
-    let temp3 = temp2 in
-    temp3
-  ;;
-
-  let a =
-    let temp4 = f 1 in
-    let temp5 = temp4 2 in
-    temp5
-  ;;
-   *)
   |};
   [%expect
     {|
   let f =
-    fun a -> (fun b -> (let temp1 = ( + ) a in (let temp2 = temp1 b in
-    (let temp3 =
-    temp2 in temp3))))
+    fun a -> (fun b -> (let temp1 = a + b in (let temp2 = temp1 in temp2)))
   ;;
-  let a = let temp4 = f 1 in (let temp5 = temp4 2 in temp5);;
+  let a = let temp3 = f 1 in (let temp4 = temp3 2 in temp4);;
   |}]
 ;;
 
@@ -109,36 +81,17 @@ let%expect_test "ANF factorial" =
   run
     {|
   let rec fac n = if n = 0 then 1 else n * fac (n - 1);;
-  (* 
-  let rec fac =
-    fun n ->
-    let temp1 = ( = ) n in
-    let temp2 = temp1 0 in
-    let temp8 =
-      if temp2
-      then 1
-      else (
-        let temp3 = ( * ) n in
-        let temp4 = ( - ) n in
-        let temp5 = temp4 1 in
-        let temp6 = fac temp5 in
-        let temp7 = temp3 temp6 in
-        temp7)
-    in
-    let temp9 = temp8 in
-    temp9
-  ;;
-   *)
   |};
   [%expect
     {|
-  let rec fac = fun n -> (let temp1 = ( = ) n in (let temp2 = temp1 0 in
-    (let temp8 =
-    (if temp2 then 1 else (let temp3 =
-                       ( * ) n in (let temp4 = ( - ) n in
+  let rec fac =
+    fun n -> (let temp1 = n = 0 in
     (let temp5 =
-    temp4 1 in (let temp6 = fac temp5 in
-  (let temp7 = temp3 temp6 in temp7)))))) in (let temp9 = temp8 in temp9))));;
+    (if temp1 then 1 else (let temp2 =
+                       n - 1 in (let temp3 = fac temp2 in
+    (let temp4 =
+    n * temp3 in
+    temp4)))) in (let temp6 = temp5 in temp6)));;
   |}]
 ;;
 
@@ -146,41 +99,18 @@ let%expect_test "ANF fibonacci" =
   run
     {|
   let rec fib n = if n < 2 then n else fib (n - 1) + fib (n - 2);;
-  (* 
-  let rec fib =
-    fun n ->
-    let temp1 = ( < ) n in
-    let temp2 = temp1 2 in
-    let temp11 =
-      if temp2
-      then n
-      else (
-        let temp3 = ( - ) n in
-        let temp4 = temp3 1 in
-        let temp5 = fib temp4 in
-        let temp6 = ( + ) temp5 in
-        let temp7 = ( - ) n in
-        let temp8 = temp7 2 in
-        let temp9 = fib temp8 in
-        let temp10 = temp6 temp9 in
-        temp10)
-    in
-    let temp12 = temp11 in
-    temp12
-  ;;
-   *)
   |};
   [%expect
     {|
-  let rec fib = fun n -> (let temp1 = ( < ) n in (let temp2 = temp1 2 in
-    (let temp11 =
-    (if temp2 then n else (let temp3 =
-                       ( - ) n in (let temp4 = temp3 1 in
+  let rec fib =
+    fun n -> (let temp1 = n < 2 in
+    (let temp7 =
+    (if temp1 then n else (let temp2 =
+                       n - 1 in (let temp3 = fib temp2 in
+    (let temp4 =
+    n - 2 in
     (let temp5 =
-    fib temp4 in (let temp6 = ( + ) temp5 in
-  (let temp7 = ( - ) n in (let temp8 = temp7 2 in (let temp9 = fib temp8 in
-  (let temp10 = temp6 temp9 in temp10))))))))) in (let temp12 = temp11 in
-  temp12))))
-  ;;
+    fib temp4 in (let temp6 = temp3 + temp5 in
+  temp6)))))) in (let temp8 = temp7 in temp8)));;
   |}]
 ;;

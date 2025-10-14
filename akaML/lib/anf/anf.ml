@@ -58,17 +58,10 @@ and a_exp =
   | AExp_let of rec_flag * pattern * c_exp * a_exp
 [@@deriving show { with_path = false }]
 
-(* ANF value_binding *)
-and a_value_binding =
-  { pat : pattern
-  ; exp : a_exp
-  }
-[@@deriving show { with_path = false }]
-
 (* ANF structure_item *)
 type a_structure_item =
   | AStruct_eval of a_exp
-  | AStruct_value of rec_flag * a_value_binding * a_value_binding list
+  | AStruct_value of rec_flag * pattern * a_exp
 [@@deriving show { with_path = false }]
 
 type a_structure = a_structure_item list [@@deriving show { with_path = false }]
@@ -160,13 +153,6 @@ module Style = struct
       fprintf ppf " in@ %a" (pp_a_exp_deep true) a_exp;
       if need_parens then fprintf ppf ")";
       pp_close_box ppf ()
-
-  and pp_a_value_binding ppf =
-    pp_open_hvbox ppf 0;
-    function
-    | { pat; exp } ->
-      fprintf ppf "%a =@]@ " Pprinter.pp_pattern pat;
-      fprintf ppf "@[<hv>%a@]@]" (pp_a_exp_deep false) exp
   ;;
 
   let pp_i_exp = pp_i_exp_deep false
@@ -177,15 +163,16 @@ module Style = struct
     | AStruct_eval a_exp ->
       fprintf ppf "@[<hv>%a@];;" pp_a_exp a_exp;
       pp_print_flush ppf ()
-    | AStruct_value (rec_flag, a_vb, []) ->
+    | AStruct_value (rec_flag, pat, a_exp) ->
       pp_open_hovbox ppf 2;
       pp_rec_flag ppf rec_flag;
-      fprintf ppf "%a" pp_a_value_binding a_vb;
+      pp_open_hvbox ppf 0;
+      fprintf ppf "%a =@]@ " Pprinter.pp_pattern pat;
+      fprintf ppf "@[<hv>%a@]@]" (pp_a_exp_deep false) a_exp;
       pp_print_if_newline ppf ();
       pp_print_cut ppf ();
       fprintf ppf ";;";
       pp_print_flush ppf ()
-    | _ -> failwith "Not implemented"
   ;;
 
   let pp_a_structure ppf ast =
@@ -236,14 +223,12 @@ let anf_exp exp (exp_with_hole : i_exp -> a_exp) =
     match exp with
     | Expression.Exp_ident id -> k @@ IExp_ident id
     | Exp_constant const -> k @@ IExp_constant const
-    | Exp_apply
-        (Exp_apply (Exp_ident opr, (Exp_constant _ as exp1)), (Exp_constant _ as exp2))
-      when is_bin_op opr ->
+    | Exp_apply (Exp_apply (Exp_ident opr, exp1), exp2) when is_bin_op opr ->
       f exp1 (fun i_exp1 ->
         f exp2 (fun i_exp2 ->
           let c_exp = CExp_apply (IExp_ident opr, i_exp1, [ i_exp2 ]) in
           a_exp_let_non c_exp k))
-    | Exp_apply (Exp_ident opr, (Exp_constant _ as exp)) when is_unary_minus opr ->
+    | Exp_apply (Exp_ident opr, exp) when is_unary_minus opr ->
       f exp (fun i_exp ->
         let c_exp = CExp_apply (IExp_ident opr, i_exp, []) in
         a_exp_let_non c_exp k)
@@ -279,14 +264,12 @@ let anf_exp exp (exp_with_hole : i_exp -> a_exp) =
   f exp exp_with_hole
 ;;
 
-let anf_value_binding (vb : Expression.value_binding_exp) =
-  { pat = vb.pat; exp = anf_exp vb.exp i_to_a_exp }
-;;
-
 let anf_structure_item = function
-  | Struct_eval exp -> AStruct_eval (anf_exp exp i_to_a_exp)
+  | Struct_eval exp -> [ AStruct_eval (anf_exp exp i_to_a_exp) ]
   | Struct_value (rec_flag, vb, vbs) ->
-    AStruct_value (rec_flag, anf_value_binding vb, List.map anf_value_binding vbs)
+    List.map
+      (fun { pat; exp } -> AStruct_value (rec_flag, pat, anf_exp exp i_to_a_exp))
+      (vb :: vbs)
 ;;
 
-let anf_structure = List.map anf_structure_item
+let anf_structure = List.concat_map anf_structure_item

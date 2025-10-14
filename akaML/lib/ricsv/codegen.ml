@@ -353,7 +353,6 @@ module Anf = struct
          emit ld dst ofs;
          return env
        | None -> failwith ("unbound variable: " ^ x))
-    | IExp_fun _ -> failwith ""
     | _ -> failwith "GenIExp: Not implemented"
 
   and gen_c_exp env dst = function
@@ -468,10 +467,9 @@ module Anf = struct
     let _ =
       List.fold ast ~init:init_state ~f:(fun state -> function
         | Anf.AStruct_value
-            ( Recursive
-            , { pat = Pat_var f_id; exp = ACExp (CIExp (IExp_fun (pat, body_exp))) }
-            , _ ) -> gen_a_func f_id [ pat ] body_exp ppf state
-        | AStruct_value (Nonrecursive, { pat = Pat_var f_id; exp = body_exp }, _) ->
+            (Recursive, Pat_var f_id, ACExp (CIExp (IExp_fun (pat, body_exp)))) ->
+          gen_a_func f_id [ pat ] body_exp ppf state
+        | AStruct_value (Nonrecursive, Pat_var f_id, body_exp) ->
           gen_a_func f_id [] body_exp ppf state
         | _ -> failwith "unsupported structure item")
     in

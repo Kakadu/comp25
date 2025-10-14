@@ -27,19 +27,13 @@ and a_exp =
   | ACExp of c_exp
   | AExp_let of Ast.rec_flag * Ast.pattern * c_exp * a_exp
 
-and a_value_binding =
-  { pat : Ast.pattern
-  ; exp : a_exp
-  }
-
 val show_i_exp : i_exp -> string
 val show_c_exp : c_exp -> string
 val show_a_exp : a_exp -> string
-val show_a_value_binding : a_value_binding -> string
 
 type a_structure_item =
   | AStruct_eval of a_exp
-  | AStruct_value of Ast.rec_flag * a_value_binding * a_value_binding list
+  | AStruct_value of Ast.rec_flag * Ast.pattern * a_exp
 
 val show_a_structure_item : a_structure_item -> string
 
@@ -48,23 +42,7 @@ type a_structure = a_structure_item list
 val show_a_structure : a_structure -> string
 
 module Style : sig
-  val pp_comma : Format.formatter -> unit -> unit
-  val pp_sep : Format.formatter -> unit -> unit
-  val pp_rec_flag : Format.formatter -> Ast.rec_flag -> unit
-  val pp_ident : Format.formatter -> string -> unit
-  val pp_constant : Format.formatter -> Ast.constant -> unit
   val pp_a_pat : Format.formatter -> a_pat -> unit
-  val pp_i_exp_deep : bool -> Format.formatter -> i_exp -> unit
-  val pp_c_exp_deep : bool -> Format.formatter -> c_exp -> unit
-
-  val pp_c_exp_apply
-    :  ?need_parens:bool
-    -> Format.formatter
-    -> i_exp * i_exp * i_exp list
-    -> unit
-
-  val pp_a_exp_deep : bool -> Format.formatter -> a_exp -> unit
-  val pp_a_value_binding : Format.formatter -> a_value_binding -> unit
   val pp_i_exp : Format.formatter -> i_exp -> unit
   val pp_c_exp : Format.formatter -> c_exp -> unit
   val pp_a_exp : Format.formatter -> a_exp -> unit
@@ -75,6 +53,5 @@ end
 val reset_gen_id : unit -> unit
 val anf_pat : Ast.pattern -> a_pat
 val anf_exp : Ast.Expression.t -> (i_exp -> a_exp) -> a_exp
-val anf_value_binding : Ast.Expression.value_binding_exp -> a_value_binding
-val anf_structure_item : Ast.structure_item -> a_structure_item
+val anf_structure_item : Ast.structure_item -> a_structure_item list
 val anf_structure : Ast.structure_item list -> a_structure_item list
