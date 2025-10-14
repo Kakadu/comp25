@@ -142,28 +142,6 @@ let%expect_test "ANF factorial" =
   |}]
 ;;
 
-let rec fib =
-  fun n ->
-  let temp1 = ( < ) n in
-  let temp2 = temp1 2 in
-  let temp11 =
-    if temp2
-    then n
-    else (
-      let temp3 = ( - ) n in
-      let temp4 = temp3 1 in
-      let temp5 = fib temp4 in
-      let temp6 = ( + ) temp5 in
-      let temp7 = ( - ) n in
-      let temp8 = temp7 2 in
-      let temp9 = fib temp8 in
-      let temp10 = temp6 temp9 in
-      temp10)
-  in
-  let temp12 = temp11 in
-  temp12
-;;
-
 let%expect_test "ANF fibonacci" =
   run
     {|

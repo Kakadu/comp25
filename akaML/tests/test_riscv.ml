@@ -8,14 +8,23 @@
 
 open Parser
 
-let run str =
+let run_default str =
   match parse str with
-  | Ok ast -> Format.printf "%a\n%!" RiscV.Codegen.gen_structure ast
+  | Ok ast -> Format.printf "%a\n%!" RiscV.Codegen.Default.gen_structure ast
   | Error _ -> Format.printf "Parsing error\n"
 ;;
 
-let%expect_test "codegen bin op" =
-  run
+let run_anf str =
+  Anf.reset_gen_id ();
+  match parse str with
+  | Ok ast ->
+    let anf_ast = Anf.anf_structure ast in
+    Format.printf "%a\n%!" RiscV.Codegen.Anf.gen_a_structure anf_ast
+  | Error _ -> Format.printf "Parsing error\n"
+;;
+
+let%expect_test "codegen default bin op" =
+  run_default
     {|
   let foo =
     let a = 1 + 2 in
@@ -74,5 +83,219 @@ let%expect_test "codegen bin op" =
       addi sp, s0, 16 # Epilogue starts
       ld ra, 8(s0)
       ld s0, 0(s0)
-      ret |}]
+      ret
+  |}]
+;;
+
+let%expect_test "codegen ANF bin op" =
+  run_anf
+    {|
+  let foo = 1 + 2
+  |};
+  [%expect
+    {|
+    .section .text
+      .globl foo
+      .type foo, @function
+    foo:
+      addi sp, sp, -24
+      sd ra, 16(sp)
+      sd s0, 8(sp)
+      addi s0, sp, 8 # Prologue ends
+      li t0, 1
+      li t1, 2
+      add  a0, t0, t1
+      sd a0, -8(s0) # temp1
+      ld a0, -8(s0)
+      addi sp, s0, 16 # Epilogue starts
+      ld ra, 8(s0)
+      ld s0, 0(s0)
+      ret
+  |}]
+;;
+
+let%expect_test "codegen default main function" =
+  run_default
+    {|
+  let main = 
+    let temp1 = fac 4 in
+    temp1
+  ;;
+  |};
+  [%expect
+    {|
+  .section .text
+    .globl _start
+    .type _start, @function
+  _start:
+    addi sp, sp, -24
+    sd ra, 16(sp)
+    sd s0, 8(sp)
+    addi s0, sp, 8 # Prologue ends
+    li a0, 4
+    call fac
+    sd a0, -8(s0) # temp1
+    ld a0, -8(s0)
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    li a7, 93
+    ecall
+  |}]
+;;
+
+let%expect_test "codegen ANF main function" =
+  run_anf
+    {|
+  let main = fac 4
+  |};
+  [%expect
+    (* run_default sample *)
+    {|
+  .section .text
+    .globl _start
+    .type _start, @function
+  _start:
+    addi sp, sp, -24
+    sd ra, 16(sp)
+    sd s0, 8(sp)
+    addi s0, sp, 8 # Prologue ends
+    li a0, 4
+    call fac
+    sd a0, -8(s0) # temp1
+    ld a0, -8(s0)
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    li a7, 93
+    ecall
+  |}]
+;;
+
+let%expect_test "codegen default factorial" =
+  run_default
+    {|
+  let rec fac =
+    fun n ->
+    let temp1 = ( = ) n in
+    let temp2 = temp1 0 in
+    let temp8 =
+      if temp2
+      then 1
+      else (
+        let temp3 = ( * ) n in
+        let temp4 = ( - ) n in
+        let temp5 = temp4 1 in
+        let temp6 = fac temp5 in
+        let temp7 = temp3 temp6 in
+        temp7)
+    in
+    let temp9 = temp8 in
+    temp9
+  ;;
+  |};
+  [%expect
+    {|
+  .section .text
+    .globl fac
+    .type fac, @function
+  fac:
+    addi sp, sp, -88
+    sd ra, 80(sp)
+    sd s0, 72(sp)
+    addi s0, sp, 72 # Prologue ends
+    addi sp, sp, -8 # Saving 'live' regs
+    sd a0, -8(s0)
+    call =
+    sd a0, -16(s0) # temp1
+    li a0, 0
+    call temp1
+    sd a0, -24(s0) # temp2
+    ld t0, -24(s0)
+    beq t0, zero, else_0
+    li a0, 1
+    j end_0
+  else_0:
+    ld a0, -8(s0)
+    call *
+    sd a0, -32(s0) # temp3
+    ld a0, -8(s0)
+    call -
+    sd a0, -40(s0) # temp4
+    li a0, 1
+    call temp4
+    sd a0, -48(s0) # temp5
+    ld a0, -48(s0)
+    call fac
+    sd a0, -56(s0) # temp6
+    ld a0, -56(s0)
+    call temp3
+    sd a0, -64(s0) # temp7
+    ld a0, -64(s0)
+  end_0:
+    sd a0, -72(s0) # temp8
+    ld a0, -72(s0)
+    sd a0, -80(s0) # temp9
+    ld a0, -80(s0)
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+  |}]
+;;
+
+let%expect_test "codegen ANF factorial" =
+  run_anf
+    {|
+  let rec fac n = if n = 0 then 1 else n * fac (n - 1)
+  |};
+  [%expect
+    (* run_default sample *)
+    {|
+  .section .text
+    .globl fac
+    .type fac, @function
+  fac:
+    addi sp, sp, -88
+    sd ra, 80(sp)
+    sd s0, 72(sp)
+    addi s0, sp, 72 # Prologue ends
+    addi sp, sp, -8 # Saving 'live' regs
+    sd a0, -8(s0)
+    call =
+    sd a0, -16(s0) # temp1
+    li a0, 0
+    call temp1
+    sd a0, -24(s0) # temp2
+    ld t0, -24(s0)
+    beq t0, zero, else_0
+    li a0, 1
+    j end_0
+  else_0:
+    ld a0, -8(s0)
+    call *
+    sd a0, -32(s0) # temp3
+    ld a0, -8(s0)
+    call -
+    sd a0, -40(s0) # temp4
+    li a0, 1
+    call temp4
+    sd a0, -48(s0) # temp5
+    ld a0, -48(s0)
+    call fac
+    sd a0, -56(s0) # temp6
+    ld a0, -56(s0)
+    call temp3
+    sd a0, -64(s0) # temp7
+    ld a0, -64(s0)
+  end_0:
+    sd a0, -72(s0) # temp8
+    ld a0, -72(s0)
+    sd a0, -80(s0) # temp9
+    ld a0, -80(s0)
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+  |}]
 ;;
