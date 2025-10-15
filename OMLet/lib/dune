@@ -2,6 +2,8 @@
  (name OMLet)
  (public_name OMLet)
  (modules
+  Anf
+  AnfPrettyPrinter
   Ast
   Parser
   PrettyPrinter
