@@ -1,0 +1,3 @@
+(cram
+ (applies_to fac_anf_print_test)
+ (deps ../../../repl/repl.exe fac_anf_print.ml ../../../lib/runtime.c))
