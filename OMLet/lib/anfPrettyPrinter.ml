@@ -8,17 +8,20 @@ let rec pp_aexpr fmt = function
     fprintf fmt "@[<v 2>let %s = %a in@,%a@]" name pp_cexpr cexpr pp_aexpr body
   | ACExpr cexpr -> fprintf fmt "%a" pp_cexpr cexpr
 
+and pp_cbinop fmt l r = function
+| CPlus -> fprintf fmt "%a + %a" pp_imm l pp_imm r
+| CMinus -> fprintf fmt "%a - %a" pp_imm l pp_imm r
+| CMul -> fprintf fmt "%a * %a" pp_imm l pp_imm r
+| CDiv -> fprintf fmt "%a / %a" pp_imm l pp_imm r
+| CEq -> fprintf fmt "%a = %a" pp_imm l pp_imm r
+| CNeq -> fprintf fmt "%a <> %a" pp_imm l pp_imm r
+| CGte -> fprintf fmt "%a >= %a" pp_imm l pp_imm r
+| CLte -> fprintf fmt "%a <= %a" pp_imm l pp_imm r
+| CGt -> fprintf fmt "%a > %a" pp_imm l pp_imm r
+| CLt -> fprintf fmt "%a < %a" pp_imm l pp_imm r
+
 and pp_cexpr fmt = function
-  | CPlus (l, r) -> fprintf fmt "%a + %a" pp_imm l pp_imm r
-  | CMinus (l, r) -> fprintf fmt "%a - %a" pp_imm l pp_imm r
-  | CMul (l, r) -> fprintf fmt "%a * %a" pp_imm l pp_imm r
-  | CDiv (l, r) -> fprintf fmt "%a / %a" pp_imm l pp_imm r
-  | CEq (l, r) -> fprintf fmt "%a = %a" pp_imm l pp_imm r
-  | CNeq (l, r) -> fprintf fmt "%a <> %a" pp_imm l pp_imm r
-  | CGte (l, r) -> fprintf fmt "%a >= %a" pp_imm l pp_imm r
-  | CLte (l, r) -> fprintf fmt "%a <= %a" pp_imm l pp_imm r
-  | CGt (l, r) -> fprintf fmt "%a > %a" pp_imm l pp_imm r
-  | CLt (l, r) -> fprintf fmt "%a < %a" pp_imm l pp_imm r
+  | CBinop (op, l, r) -> pp_cbinop fmt l r op
   | CImmexpr imm -> fprintf fmt "%a" pp_imm imm
   | CIte (c, t, e) ->
     fprintf fmt "@[<v 2>if %a@ then %a@ else %a@]" pp_cexpr c pp_aexpr t pp_aexpr e
