@@ -3,6 +3,7 @@
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
 open Ast
+open Anf
 open CodegenTypes
 
 (* for creating unique ite and function labels *)
@@ -314,3 +315,97 @@ let codegen cs =
   let instructions = True Ecall :: Pseudo (LI (Arg 7, 93)) :: instructions in
   List.rev instructions
 ;;
+
+
+
+
+
+
+let codegen_immexpr a_regs placement compiled = function
+  | ImmNum n ->
+    let instr = Pseudo (LI (List.hd a_regs, n)) in
+    a_regs, placement, instr :: compiled
+  | ImmId (Ident name) -> 
+    (match PlacementMap.find_opt name placement with
+     | None -> failwith "Panic: undefined var in codegen!"
+     | Some (Offset o) ->
+      (* change back to Arg 0 here? *)
+       let instr = True (StackType (LD, List.hd a_regs, Stack o)) in
+       a_regs, placement, instr :: compiled
+     | Some (FuncLabel l) ->
+       let instr = Pseudo (CALL l) in
+       a_regs, placement, instr :: compiled
+     | Some (Register reg) ->
+      (* change back to Arg 0 here? *)
+       let instr = Pseudo (MV (List.hd a_regs, reg)) in
+       a_regs, placement, instr :: compiled)
+;;
+
+let rec codegen_cexpr a_regs free_regs stack placement compiled = function
+  | CBinop (op, i1, i2) ->
+    let reg_fst = List.hd a_regs in
+    let _, _, compiled = codegen_immexpr a_regs placement compiled i1 in
+    let reg_fst_free, free_regs = find_free_reg free_regs in
+    let compiled = Pseudo (MV (reg_fst_free, reg_fst)) :: compiled in
+
+    let reg_snd = List.hd a_regs in
+    let _, _, compiled = codegen_immexpr a_regs placement compiled i2 in
+    let reg_snd_free, free_regs = find_free_reg free_regs in
+    let compiled = Pseudo (MV (reg_snd_free, reg_snd)) :: compiled in
+
+    let compiled = match op with
+      | CPlus -> True (RType (ADD, List.hd a_regs, reg_fst_free, reg_snd_free)) :: compiled
+      | CMinus -> True (RType (SUB, List.hd a_regs, reg_fst_free, reg_snd_free)) :: compiled
+      | CMul -> True (RType (MUL, List.hd a_regs, reg_fst_free, reg_snd_free)) :: compiled
+      | CDiv -> True (RType (DIV, List.hd a_regs, reg_fst_free, reg_snd_free)) :: compiled
+      (* TODO check logic for eq and neq *)
+      | CEq -> True (IType (SLTI, List.hd a_regs, List.hd a_regs, 1)) :: True (RType (SUB, List.hd a_regs, reg_fst_free, reg_snd_free)) :: compiled
+      | CNeq -> Pseudo(SNEZ (List.hd a_regs, List.hd a_regs)) :: True (RType (SUB, List.hd a_regs, reg_fst_free, reg_snd_free)) :: compiled
+      | CLt ->  True (RType (SLT, List.hd a_regs, reg_fst_free, reg_snd_free)) :: compiled
+      | CLte -> True (IType (XORI, List.hd a_regs, List.hd a_regs, 1))
+      :: True (RType (SLT, List.hd a_regs, reg_fst_free, reg_snd_free))
+      :: compiled
+      | CGt -> True (RType (SLT, List.hd a_regs, reg_fst_free, reg_snd_free)) :: compiled
+      | CGte -> True (IType (XORI, List.hd a_regs, List.hd a_regs, 1))
+      :: True (RType (SLT, Arg 0, reg_fst_free, reg_snd_free))
+      :: compiled
+    in a_regs, free_regs, stack, placement, compiled
+  | CImmexpr i -> 
+    (* TODO maybe replace it into anpther register? *)
+    let a_regs, placement, compiled = codegen_immexpr a_regs placement compiled i in
+    (a_regs, free_regs, stack, placement, compiled)
+  (*| CIte (cond, thn els) -> *)
+  | _ -> failwith "cexpr NYI"
+
+and codegen_aexpr a_regs free_regs stack placement compiled = function
+  | ACExpr ce -> codegen_cexpr a_regs free_regs stack placement compiled ce
+  | ALet (Ident (name), cexpr, body) ->
+    let _, _, stack, placement, compiled = codegen_cexpr a_regs free_regs stack placement compiled cexpr in
+    let stack, cur_offset = extend_stack stack 8 in
+    let placement = PlacementMap.add name (Offset cur_offset) placement in
+    let compiled = True (StackType (SD, List.hd a_regs, Stack cur_offset)) :: compiled in
+
+    let _, _, stack, placement, compiled = codegen_aexpr a_regs free_regs stack placement compiled body in
+    a_regs, free_regs, stack, placement, compiled
+;;
+
+let codegen_aconstruction a_regs free_regs stack placement compiled = function
+  | AExpr ae -> codegen_aexpr a_regs free_regs stack placement compiled ae
+  | _ -> failwith "aconstr NYI"
+
+let codegen_aconstructions acs =
+  let placement = PlacementMap.empty in
+  let placement = PlacementMap.add "print_int" (FuncLabel "print_int") placement in
+  let free_regs = regs in
+  let global_stack = 64 in
+  let _, _, _, _, instructions =
+    List.fold_left
+      (fun (a_regs, free_regs, stack, placement, compiled) c ->
+         codegen_aconstruction a_regs free_regs stack placement compiled c)
+      (a_regs, free_regs, global_stack, placement, [])
+      acs
+  in
+  let instructions = True Ecall :: Pseudo (LI (Arg 7, 93)) :: instructions in
+  List.rev instructions
+;;
+
