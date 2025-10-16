@@ -11,7 +11,7 @@ let () =
     \  else let n1 = n-1 in\n\
     \       let m = fac n1 in\n\
     \       n*m\n\n\
-     let main = fac 4"
+     let main = print_int (fac 4)"
   in
   match Parser.parse source with
   | Error e -> Stdlib.Format.printf "Parsing error: %s\n%!" e

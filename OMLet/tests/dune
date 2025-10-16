@@ -5,4 +5,4 @@
 
 (cram
  (applies_to factorial)
- (deps ./compile.exe))
+ (deps ./compile.exe ./runtime.c))
