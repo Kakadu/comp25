@@ -54,6 +54,14 @@ let binop_map = function
   | _ -> failwith "NYI"
 ;;
 
+let rec collect_app_args e =
+  match e with
+  | Apply (f, a) ->
+    let fn, args = collect_app_args f in
+    fn, args @ [ a ]
+  | _ -> e, []
+;;
+
 let rec anf (e : expr) (expr_with_hole : immexpr -> aexpr) =
   let anf_binop opname op left right expr_with_hole =
     let varname = gen_temp opname in
@@ -97,10 +105,15 @@ let rec anf (e : expr) (expr_with_hole : immexpr -> aexpr) =
     anf cond (fun condimm ->
       ACExpr (CIte (CImmexpr condimm, anf thn expr_with_hole, anf els expr_with_hole)))
   | Apply (f, args) ->
+    let f, arg_exprs = collect_app_args (Apply (f, args)) in
     anf f (fun fimm ->
-      anf args (fun argimm ->
-        let name = gen_temp "res_of_apply" in
-        ALet (name, CApp (fimm, [ argimm ]), expr_with_hole (ImmId name))))
+      let rec anf_args acc = function
+        | [] ->
+          let varname = gen_temp "res_of_app" in
+          ALet (varname, CApp (fimm, List.rev acc), expr_with_hole (ImmId varname))
+        | expr :: rest -> anf expr (fun immval -> anf_args (immval :: acc) rest)
+      in
+      anf_args [] arg_exprs)
   | _ -> failwith "anf expr NYI"
 ;;
 
