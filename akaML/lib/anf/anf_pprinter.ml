@@ -11,7 +11,6 @@ open Format
 open Anf_core
 open Pprinter
 
-let pp_comma ppf () = fprintf ppf "@,, "
 let pp_sep ppf () = fprintf ppf " "
 
 let pp_a_pat ppf = function
@@ -25,8 +24,8 @@ let rec pp_i_exp_deep need_parens ppf = function
   | IExp_fun (a_pat, a_exp) ->
     if need_parens then fprintf ppf "(";
     pp_open_box ppf 2;
-    fprintf ppf "fun@ %a@ " pp_a_pat a_pat;
-    fprintf ppf "->@ %a" (pp_a_exp_deep true) a_exp;
+    fprintf ppf "@[fun@ %a@ ->@]@ " pp_a_pat a_pat;
+    fprintf ppf "@[<hv>%a@]" (pp_a_exp_deep true) a_exp;
     if need_parens then fprintf ppf ")";
     pp_close_box ppf ()
 
@@ -47,17 +46,17 @@ and pp_c_exp_deep need_parens ppf = function
     pp_close_box ppf ()
   | CExp_ifthenelse (c_exp, a_exp, None) ->
     if need_parens then fprintf ppf "(";
-    pp_open_box ppf 0;
-    fprintf ppf "if %a@ " (pp_c_exp_deep false) c_exp;
+    pp_open_hvbox ppf 0;
+    fprintf ppf "@[if %a@ @]" (pp_c_exp_deep false) c_exp;
     fprintf ppf "@[<v 2>then %a@]" (pp_a_exp_deep true) a_exp;
     if need_parens then fprintf ppf ")";
     pp_close_box ppf ()
   | CExp_ifthenelse (c_exp, a_exp1, Some a_exp2) ->
     if need_parens then fprintf ppf "(";
-    pp_open_box ppf 0;
-    fprintf ppf "if %a@ " (pp_c_exp_deep false) c_exp;
+    pp_open_hvbox ppf 0;
+    fprintf ppf "@[if %a@ @]" (pp_c_exp_deep false) c_exp;
     fprintf ppf "@[<v 2>then %a@]@ " (pp_a_exp_deep true) a_exp1;
-    fprintf ppf "@[<v 2>else %a@]" (pp_a_exp_deep true) a_exp2;
+    fprintf ppf "@[<hv 2>else %a@]" (pp_a_exp_deep true) a_exp2;
     if need_parens then fprintf ppf ")";
     pp_close_box ppf ()
 
@@ -84,13 +83,12 @@ and pp_a_exp_deep need_parens ppf = function
   | ACExp c_exp -> pp_c_exp_deep need_parens ppf c_exp
   | AExp_let (rec_flag, pat, c_exp, a_exp) ->
     if need_parens then fprintf ppf "(";
-    pp_open_hvbox ppf 0;
+    fprintf ppf "@[<hv 2>";
     pp_rec_flag ppf rec_flag;
-    fprintf ppf "%a =@]@ " pp_pattern pat;
-    fprintf ppf "@[<hv>%a@]@]" (pp_c_exp_deep true) c_exp;
-    fprintf ppf " in@ %a" (pp_a_exp_deep true) a_exp;
+    fprintf ppf "@[%a =@]@ " pp_pattern pat;
+    fprintf ppf "@[%a@] in@]@\n" (pp_c_exp_deep false) c_exp;
+    fprintf ppf "@[%a@]" (pp_a_exp_deep false) a_exp;
     if need_parens then fprintf ppf ")";
-    pp_close_box ppf ()
 ;;
 
 let pp_i_exp = pp_i_exp_deep false
@@ -104,9 +102,8 @@ let pp_a_structure_item ppf = function
   | AStruct_value (rec_flag, pat, a_exp) ->
     pp_open_hovbox ppf 2;
     pp_rec_flag ppf rec_flag;
-    pp_open_hvbox ppf 0;
-    fprintf ppf "%a =@]@ " pp_pattern pat;
-    fprintf ppf "@[<hv>%a@]@]" (pp_a_exp_deep false) a_exp;
+    fprintf ppf "@[%a =@]@ " pp_pattern pat;
+    fprintf ppf "@[%a@]" pp_a_exp a_exp;
     pp_print_if_newline ppf ();
     pp_print_cut ppf ();
     fprintf ppf ";;";
@@ -117,6 +114,10 @@ let pp_a_structure ppf ast =
   if Base.List.is_empty ast
   then fprintf ppf ";;"
   else
-    fprintf ppf "@[%a@]" (pp_print_list ~pp_sep:pp_force_newline pp_a_structure_item) ast;
+    fprintf
+      ppf
+      "@[<v>%a@]"
+      (pp_print_list ~pp_sep:pp_force_newline pp_a_structure_item)
+      ast;
   pp_print_flush ppf ()
 ;;
