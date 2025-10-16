@@ -337,8 +337,10 @@ module Default = struct
 end
 
 module Anf = struct
+  open Anf.Anf_core
+
   let rec gen_i_exp env dst = function
-    | Anf.IExp_constant (Const_integer n) ->
+    | IExp_constant (Const_integer n) ->
       emit li dst n;
       return env
     | IExp_ident x ->
@@ -356,14 +358,14 @@ module Anf = struct
     | _ -> failwith "GenIExp: Not implemented"
 
   and gen_c_exp env dst = function
-    | Anf.CIExp i_exp -> gen_i_exp env dst i_exp
-    | CExp_apply (Anf.IExp_ident op, i_exp1, [ i_exp2 ]) when Ast.is_bin_op op ->
+    | CIExp i_exp -> gen_i_exp env dst i_exp
+    | CExp_apply (IExp_ident op, i_exp1, [ i_exp2 ]) when Ast.is_bin_op op ->
       let* env = gen_i_exp env (T 0) i_exp1 in
       let* env = gen_i_exp env (T 1) i_exp2 in
       let* env = ensure_reg_free env dst in
       emit_bin_op dst op (T 0) (T 1);
       return env
-    | CExp_apply (Anf.IExp_ident fname, i_exp, i_exp_list) ->
+    | CExp_apply (IExp_ident fname, i_exp, i_exp_list) ->
       let args = i_exp :: i_exp_list in
       let* env =
         List.foldi args ~init:(return env) ~f:(fun i acc arg ->
@@ -393,7 +395,7 @@ module Anf = struct
     | _ -> failwith "GenCExp: Not implemented"
 
   and gen_a_exp env dst = function
-    | Anf.ACExp c_exp -> gen_c_exp env dst c_exp
+    | ACExp c_exp -> gen_c_exp env dst c_exp
     | AExp_let (_, Pat_var id, exp, exp_in) ->
       let* env = gen_c_exp env (A 0) exp in
       let* loc = emit_store (A 0) ~comm:id in
@@ -403,11 +405,11 @@ module Anf = struct
   ;;
 
   let rec count_loc_vars_i_exp = function
-    | Anf.IExp_ident _ | IExp_constant _ -> 0
+    | IExp_ident _ | IExp_constant _ -> 0
     | IExp_fun (_, a_exp) -> count_loc_vars_a_exp a_exp
 
   and count_loc_vars_c_exp = function
-    | Anf.CIExp i_exp -> count_loc_vars_i_exp i_exp
+    | CIExp i_exp -> count_loc_vars_i_exp i_exp
     | CExp_tuple (i_exp1, i_exp2, i_exp_list) ->
       List.fold_left (i_exp1 :: i_exp2 :: i_exp_list) ~init:0 ~f:(fun acc e ->
         acc + count_loc_vars_i_exp e)
@@ -422,7 +424,7 @@ module Anf = struct
       + count_loc_vars_a_exp a_exp_else
 
   and count_loc_vars_a_exp = function
-    | Anf.ACExp c_exp -> count_loc_vars_c_exp c_exp
+    | ACExp c_exp -> count_loc_vars_c_exp c_exp
     | AExp_let (_, pat, c_exp, a_exp) ->
       let count_vars_in_pat =
         match pat with
@@ -443,7 +445,7 @@ module Anf = struct
     let env = Map.empty (module String) in
     let env =
       List.foldi reg_params ~init:env ~f:(fun i env -> function
-        | Anf.APat_var name -> Map.set env ~key:name ~data:(Loc_reg (A i))
+        | APat_var name -> Map.set env ~key:name ~data:(Loc_reg (A i))
         | _ -> failwith "unsupported pattern")
     in
     let env =
@@ -466,9 +468,8 @@ module Anf = struct
     let init_state = { frame_offset = 0; fresh_id = 0 } in
     let _ =
       List.fold ast ~init:init_state ~f:(fun state -> function
-        | Anf.AStruct_value
-            (Recursive, Pat_var f_id, ACExp (CIExp (IExp_fun (pat, body_exp)))) ->
-          gen_a_func f_id [ pat ] body_exp ppf state
+        | AStruct_value (Recursive, Pat_var f_id, ACExp (CIExp (IExp_fun (pat, body_exp))))
+          -> gen_a_func f_id [ pat ] body_exp ppf state
         | AStruct_value (Nonrecursive, Pat_var f_id, body_exp) ->
           gen_a_func f_id [] body_exp ppf state
         | _ -> failwith "unsupported structure item")

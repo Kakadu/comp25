@@ -15,10 +15,9 @@ let run_default str =
 ;;
 
 let run_anf str =
-  Anf.reset_gen_id ();
   match parse str with
   | Ok ast ->
-    let anf_ast = Anf.anf_structure ast in
+    let anf_ast = Anf.Anf_core.anf_structure ast in
     Format.printf "%a\n%!" RiscV.Codegen.Anf.gen_a_structure anf_ast
   | Error _ -> Format.printf "Parsing error\n"
 ;;
@@ -105,7 +104,7 @@ let%expect_test "codegen ANF bin op" =
       li t0, 1
       li t1, 2
       add  a0, t0, t1
-      sd a0, -8(s0) # temp1
+      sd a0, -8(s0) # temp0
       ld a0, -8(s0)
       addi sp, s0, 16 # Epilogue starts
       ld ra, 8(s0)
@@ -162,7 +161,7 @@ let%expect_test "codegen ANF main function" =
     addi s0, sp, 8 # Prologue ends
     li a0, 4
     call fac
-    sd a0, -8(s0) # temp1
+    sd a0, -8(s0) # temp0
     ld a0, -8(s0)
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
@@ -259,7 +258,7 @@ let%expect_test "codegen ANF factorial" =
     mv a1, a0
     xor a0, t0, t1
     seqz a0, a0
-    sd a0, -8(s0) # temp1
+    sd a0, -8(s0) # temp0
     ld t0, -8(s0)
     beq t0, zero, else_0
     li a0, 1
@@ -268,21 +267,21 @@ let%expect_test "codegen ANF factorial" =
     mv t0, a1
     li t1, 1
     sub a0, t0, t1
-    sd a0, -16(s0) # temp2
+    sd a0, -16(s0) # temp1
     ld a0, -16(s0)
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
     call fac
-    sd a0, -32(s0) # temp3
+    sd a0, -32(s0) # temp2
     ld t0, -24(s0)
     ld t1, -32(s0)
     mul a0, t0, t1
-    sd a0, -40(s0) # temp4
+    sd a0, -40(s0) # temp3
     ld a0, -40(s0)
   end_0:
-    sd a0, -48(s0) # temp5
+    sd a0, -48(s0) # temp4
     ld a0, -48(s0)
-    sd a0, -56(s0) # temp6
+    sd a0, -56(s0) # temp5
     ld a0, -56(s0)
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)

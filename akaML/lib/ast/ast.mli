@@ -8,11 +8,13 @@
 
 type 'a list_ = 'a list
 
+val pp_list_ : (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a list_ -> unit
 val show_list_ : (Format.formatter -> 'a -> unit) -> 'a list_ -> string
 
 (** Identifier *)
 type ident = string
 
+val pp_ident : Format.formatter -> ident -> unit
 val bin_op_list : string list
 val is_bin_op : ident -> bool
 val show_ident : ident -> string
@@ -23,6 +25,7 @@ type rec_flag =
   | Recursive (** Recursive value binding. *)
   | Nonrecursive (** Nonrecursive value binding. *)
 
+val pp_rec_flag : Format.formatter -> rec_flag -> unit
 val show_rec_flag : rec_flag -> string
 
 type constant =
@@ -30,6 +33,7 @@ type constant =
   | Const_char of char (** A constant character such as ['a']. *)
   | Const_string of string (** A constant string such as ["const"]. *)
 
+val pp_constant : Format.formatter -> constant -> unit
 val show_constant : constant -> string
 
 type core_type =
@@ -45,6 +49,7 @@ type core_type =
   (** [Type_tuple(T1, T2, [T3; ... ; Tn])] represents [T1 * ... * Tn]. *)
   | Type_arrow of core_type * core_type (** [Type_arrow(T1, T2)] represents [T1 -> T2]. *)
 
+val pp_core_type : Format.formatter -> core_type -> unit
 val show_core_type : core_type -> string
 
 type pattern =
@@ -69,6 +74,7 @@ type pattern =
   | Pat_constraint of pattern * core_type
   (** [Pat_constraint(P, T)] represents [P : T]. *)
 
+val pp_pattern : Format.formatter -> pattern -> unit
 val show_pattern : pattern -> string
 
 (** [{P; E}] represents [let P = E]. *)
@@ -77,11 +83,19 @@ type 'exp value_binding =
   ; exp : 'exp
   }
 
+val pp_value_binding
+  :  (Format.formatter -> 'exp -> unit)
+  -> Format.formatter
+  -> 'exp value_binding
+  -> unit
+
 (** [{P; E}] represents [P -> E]. *)
 type 'exp case =
   { left : pattern
   ; right : 'exp
   }
+
+val pp_case : (Format.formatter -> 'exp -> unit) -> Format.formatter -> 'exp case -> unit
 
 module Expression : sig
   type value_binding_exp = t value_binding
@@ -128,6 +142,10 @@ module Expression : sig
           [Some (Exp_tuple(E1, Exp_construct("::", Some (Exp_tuple(E2, Exp_construct("::", ...), []))), []))]. *)
     | Exp_sequence of t * t (** [Exp_sequence(E1, E2)] represents [E1; E2]. *)
     | Exp_constraint of t * core_type (** [Exp_constraint(E, T)] represents [(E : T)]. *)
+
+  val pp_value_binding_exp : Format.formatter -> value_binding_exp -> unit
+  val pp_case_exp : Format.formatter -> case_exp -> unit
+  val pp : Format.formatter -> t -> unit
 end
 
 val show_value_binding : Expression.value_binding_exp -> string
@@ -142,10 +160,12 @@ type structure_item =
       - [let     P1 = E1 and P2 = E2 and ... and Pn = En in E] when [flag] is [Nonrecursive],
       - [let rec P1 = E1 and P2 = E2 and ... and Pn = En in E] when [flag] is [Recursive]. *)
 
+val pp_structure_item : Format.formatter -> structure_item -> unit
 val show_structure_item : structure_item -> string
 
 type structure = structure_item list_
 
+val pp_structure : Format.formatter -> structure -> unit
 val show_structure : structure -> string
 val gen_structure : structure QCheck.Gen.t
 val arb_structure : structure QCheck.arbitrary

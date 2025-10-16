@@ -11,5 +11,5 @@ module Default : sig
 end
 
 module Anf : sig
-  val gen_a_structure : Format.formatter -> Anf.a_structure_item list -> unit
+  val gen_a_structure : Format.formatter -> Anf.Anf_core.a_structure_item list -> unit
 end

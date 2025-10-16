@@ -10,9 +10,8 @@ open Anf
 open Parser
 
 let run str =
-  reset_gen_id ();
   match parse str with
-  | Ok ast -> Format.printf "%a" Style.pp_a_structure (anf_structure ast)
+  | Ok ast -> Format.printf "%a" Anf_pprinter.pp_a_structure (Anf_core.anf_structure ast)
   | Error error -> Format.printf "%s" error
 ;;
 
@@ -34,7 +33,7 @@ let%expect_test "ANF binary operation" =
   |};
   [%expect
     {|
-  let a = let temp1 = 1 + 2 in temp1;;
+  let a = let temp0 = 1 + 2 in temp0;;
   |}]
 ;;
 
@@ -45,7 +44,7 @@ let%expect_test "ANF several binary operations" =
   |};
   [%expect
     {|
-  let a = let temp1 = 1 + 2 in (let temp2 = temp1 + 3 in temp2);;
+  let a = let temp0 = 1 + 2 in (let temp1 = temp0 + 3 in temp1);;
   |}]
 ;;
 
@@ -57,8 +56,8 @@ let%expect_test "ANF function with 1 argument" =
   |};
   [%expect
     {|
-  let f = fun a -> (let temp1 = a in temp1);;
-  let a = let temp2 = f 1 in temp2;;
+  let f = fun a -> (let temp0 = a in temp0);;
+  let a = let temp1 = f 1 in temp1;;
   |}]
 ;;
 
@@ -71,9 +70,9 @@ let%expect_test "ANF function with 2 arguments" =
   [%expect
     {|
   let f =
-    fun a -> (fun b -> (let temp1 = a + b in (let temp2 = temp1 in temp2)))
+    fun a -> (fun b -> (let temp0 = a + b in (let temp1 = temp0 in temp1)))
   ;;
-  let a = let temp3 = f 1 in (let temp4 = temp3 2 in temp4);;
+  let a = let temp2 = f 1 in (let temp3 = temp2 2 in temp3);;
   |}]
 ;;
 
@@ -85,13 +84,13 @@ let%expect_test "ANF factorial" =
   [%expect
     {|
   let rec fac =
-    fun n -> (let temp1 = n = 0 in
-    (let temp5 =
-    (if temp1 then 1 else (let temp2 =
-                       n - 1 in (let temp3 = fac temp2 in
+    fun n -> (let temp0 = n = 0 in
     (let temp4 =
-    n * temp3 in
-    temp4)))) in (let temp6 = temp5 in temp6)));;
+    (if temp0 then 1 else (let temp1 =
+                       n - 1 in (let temp2 = fac temp1 in
+    (let temp3 =
+    n * temp2 in
+    temp3)))) in (let temp5 = temp4 in temp5)));;
   |}]
 ;;
 
@@ -103,14 +102,14 @@ let%expect_test "ANF fibonacci" =
   [%expect
     {|
   let rec fib =
-    fun n -> (let temp1 = n < 2 in
-    (let temp7 =
-    (if temp1 then n else (let temp2 =
-                       n - 1 in (let temp3 = fib temp2 in
-    (let temp4 =
+    fun n -> (let temp0 = n < 2 in
+    (let temp6 =
+    (if temp0 then n else (let temp1 =
+                       n - 1 in (let temp2 = fib temp1 in
+    (let temp3 =
     n - 2 in
-    (let temp5 =
-    fib temp4 in (let temp6 = temp3 + temp5 in
-  temp6)))))) in (let temp8 = temp7 in temp8)));;
+    (let temp4 =
+    fib temp3 in (let temp5 = temp2 + temp4 in
+  temp5)))))) in (let temp7 = temp6 in temp7)));;
   |}]
 ;;

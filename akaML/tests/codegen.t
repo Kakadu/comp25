@@ -20,7 +20,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     mv a1, a0
     xor a0, t0, t1
     seqz a0, a0
-    sd a0, -8(s0) # temp1
+    sd a0, -8(s0) # temp0
     ld t0, -8(s0)
     beq t0, zero, else_0
     li a0, 1
@@ -29,21 +29,21 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     mv t0, a1
     li t1, 1
     sub a0, t0, t1
-    sd a0, -16(s0) # temp2
+    sd a0, -16(s0) # temp1
     ld a0, -16(s0)
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
     call fac
-    sd a0, -32(s0) # temp3
+    sd a0, -32(s0) # temp2
     ld t0, -24(s0)
     ld t1, -32(s0)
     mul a0, t0, t1
-    sd a0, -40(s0) # temp4
+    sd a0, -40(s0) # temp3
     ld a0, -40(s0)
   end_0:
-    sd a0, -48(s0) # temp5
+    sd a0, -48(s0) # temp4
     ld a0, -48(s0)
-    sd a0, -56(s0) # temp6
+    sd a0, -56(s0) # temp5
     ld a0, -56(s0)
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
@@ -59,7 +59,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     addi s0, sp, 8 # Prologue ends
     li a0, 4
     call fac
-    sd a0, -8(s0) # temp7
+    sd a0, -8(s0) # temp6
     ld a0, -8(s0)
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
