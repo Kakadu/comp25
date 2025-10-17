@@ -65,8 +65,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
   
 
   $ riscv64-linux-gnu-as -march=rv64gc factorial.s -o temp.o
-  $ riscv64-linux-gnu-gcc ../lib/runtime/runtime.c -c -o runtime.o
-  $ riscv64-linux-gnu-gcc temp.o runtime.o -o file.exe
+  $ riscv64-linux-gnu-gcc temp.o ../lib/runtime/rv64_runtime.a -o file.exe
   $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ./file.exe
   24
 
@@ -141,7 +140,111 @@ SPDX-License-Identifier: LGPL-3.0-or-later
   
 
   $ riscv64-linux-gnu-as -march=rv64gc fibonacci.s -o temp.o
-  $ riscv64-linux-gnu-gcc ../lib/runtime/runtime.c -c -o runtime.o
-  $ riscv64-linux-gnu-gcc temp.o runtime.o -o file.exe
+  $ riscv64-linux-gnu-gcc temp.o ../lib/runtime/rv64_runtime.a -o file.exe
   $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ./file.exe
   8
+
+====================== Ififif ======================
+  $ ../bin/akaML.exe -o ififif.s <<EOF
+  > let large x = if 0<>x then print_int 0 else print_int 1
+  > let main =
+  >   let x = if (if (if 0 = 1
+  >                   then 0 = 1 else (let t42 = print_int 42 in 1 = 1))
+  >               then 0 else 1) = 1
+  >           then 0 else 1 in
+  >   large x
+
+  $ cat ififif.s
+  .section .text
+    .globl large
+    .type large, @function
+  large:
+    addi sp, sp, -24
+    sd ra, 16(sp)
+    sd s0, 8(sp)
+    addi s0, sp, 8 # Prologue ends
+    li t0, 0
+    mv t1, a0
+    mv a1, a0
+    xor a0, t0, t1
+    snez a0, a0
+    sd a0, -8(s0) # temp0
+    ld t0, -8(s0)
+    beq t0, zero, else_0
+    li a0, 0
+    addi sp, sp, -8 # Saving 'live' regs
+    sd a1, -16(s0)
+    call print_int
+    j end_0
+  else_0:
+    li a0, 1
+    call print_int
+  end_0:
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+  
+    .globl main
+    .type main, @function
+  main:
+    addi sp, sp, -64
+    sd ra, 56(sp)
+    sd s0, 48(sp)
+    addi s0, sp, 48 # Prologue ends
+    li t0, 0
+    li t1, 1
+    xor a0, t0, t1
+    seqz a0, a0
+    sd a0, -8(s0) # temp5
+    ld t0, -8(s0)
+    beq t0, zero, else_1
+    li t0, 0
+    li t1, 1
+    xor a0, t0, t1
+    seqz a0, a0
+    j end_1
+  else_1:
+    li a0, 42
+    call print_int
+    sd a0, -16(s0) # t42
+    li t0, 1
+    li t1, 1
+    xor a0, t0, t1
+    seqz a0, a0
+  end_1:
+    sd a0, -24(s0) # temp9
+    ld t0, -24(s0)
+    beq t0, zero, else_2
+    li a0, 0
+    j end_2
+  else_2:
+    li a0, 1
+  end_2:
+    sd a0, -32(s0) # temp10
+    ld t0, -32(s0)
+    li t1, 1
+    xor a0, t0, t1
+    seqz a0, a0
+    sd a0, -40(s0) # temp11
+    ld t0, -40(s0)
+    beq t0, zero, else_3
+    li a0, 0
+    j end_3
+  else_3:
+    li a0, 1
+  end_3:
+    sd a0, -48(s0) # x
+    ld a0, -48(s0)
+    call large
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    li a0, 0
+    ret
+  
+
+  $ riscv64-linux-gnu-as -march=rv64gc ififif.s -o temp.o
+  $ riscv64-linux-gnu-gcc temp.o ../lib/runtime/rv64_runtime.a -o file.exe
+  $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ./file.exe
+  420

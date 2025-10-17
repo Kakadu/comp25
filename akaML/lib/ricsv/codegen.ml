@@ -322,6 +322,9 @@ let gen_a_structure ppf ast =
     List.fold ast ~init:init_state ~f:(fun state -> function
       | AStruct_value (Recursive, Pat_var f_id, ACExp (CIExp (IExp_fun (pat, body_exp))))
         -> gen_a_func f_id [ pat ] body_exp ppf state
+      | AStruct_value
+          (Nonrecursive, Pat_var f_id, ACExp (CIExp (IExp_fun (pat, body_exp)))) ->
+        gen_a_func f_id [ pat ] body_exp ppf state
       | AStruct_value (Nonrecursive, Pat_var f_id, body_exp) ->
         gen_a_func f_id [] body_exp ppf state
       | _ -> failwith "unsupported structure item")

@@ -29,7 +29,6 @@ and c_exp =
   | CExp_tuple of i_exp * i_exp * i_exp list
   | CExp_apply of i_exp * i_exp * i_exp list
   | CExp_ifthenelse of c_exp * a_exp * a_exp option
-(* | CExp_fun of a_pat * a_pat list * a_exp *)
 [@@deriving show { with_path = false }]
 
 (* ANF expression *)

@@ -56,4 +56,4 @@
 
 (cram
  (applies_to codegen)
- (deps ../lib/runtime/runtime.c))
+ (deps ../lib/runtime/rv64_runtime.a))

@@ -62,6 +62,32 @@ let%expect_test "ANF function with 1 argument" =
   |}]
 ;;
 
+let%expect_test "ANF ifthen" =
+  run
+    {|
+  let foo n = if n < -5 then print_int 0
+  |};
+  [%expect
+    {|
+  let foo =
+    fun n ->
+      (let temp0 = -5 in
+      let temp1 = n < temp0 in
+      if temp1 then print_int 0);;
+  |}]
+;;
+
+let%expect_test "ANF tuple" =
+  run
+    {|
+  let tup a = 1, a
+  |};
+  [%expect
+    {|
+  let tup = fun a -> ( 1, a );;
+  |}]
+;;
+
 let%expect_test "ANF function with 2 arguments" =
   run
     {|
