@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>codegen.ml &mdash; Coverage report</title>
-    <meta name="description" content="96.20% coverage in lib/codegen/codegen.ml">
+    <meta name="description" content="96.15% coverage in lib/codegen/codegen.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,16 +15,16 @@
           <span class="dirname">lib/codegen/</span>codegen.ml
         </a>
       </h1>
-      <h2>96.20%</h2>
+      <h2>96.15%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:30.83%"></span>
-      <span class="some-visited" style="bottom:45.00%"></span>
-      <span class="unvisited" style="bottom:38.75%"></span>
-      <span class="unvisited" style="bottom:33.75%"></span>
-      <span class="unvisited" style="bottom:29.17%"></span>
-      <span class="unvisited" style="bottom:17.92%"></span>
-      <span class="unvisited" style="bottom:1.25%"></span>
+      <span class="unvisited" style="top:31.49%"></span>
+      <span class="some-visited" style="bottom:43.83%"></span>
+      <span class="unvisited" style="bottom:37.45%"></span>
+      <span class="unvisited" style="bottom:32.34%"></span>
+      <span class="unvisited" style="bottom:27.66%"></span>
+      <span class="unvisited" style="bottom:16.17%"></span>
+      <span class="unvisited" style="bottom:1.28%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -227,48 +227,43 @@
 <a id="L196"></a><span class="visited"> </span>
 <a id="L197"></a><span class="unvisited"> </span>
 <a id="L198"></a><span > </span>
-<a id="L199"></a><span > </span>
+<a id="L199"></a><span class="visited"> </span>
 <a id="L200"></a><span class="visited"> </span>
-<a id="L201"></a><span > </span>
+<a id="L201"></a><span class="visited"> </span>
 <a id="L202"></a><span class="visited"> </span>
-<a id="L203"></a><span > </span>
-<a id="L204"></a><span > </span>
+<a id="L203"></a><span class="visited"> </span>
+<a id="L204"></a><span class="visited"> </span>
 <a id="L205"></a><span class="visited"> </span>
 <a id="L206"></a><span class="visited"> </span>
 <a id="L207"></a><span class="visited"> </span>
-<a id="L208"></a><span class="visited"> </span>
+<a id="L208"></a><span > </span>
 <a id="L209"></a><span class="visited"> </span>
 <a id="L210"></a><span class="visited"> </span>
 <a id="L211"></a><span class="visited"> </span>
 <a id="L212"></a><span > </span>
-<a id="L213"></a><span class="visited"> </span>
-<a id="L214"></a><span class="visited"> </span>
-<a id="L215"></a><span class="visited"> </span>
-<a id="L216"></a><span > </span>
-<a id="L217"></a><span > </span>
-<a id="L218"></a><span > </span>
+<a id="L213"></a><span > </span>
+<a id="L214"></a><span > </span>
+<a id="L215"></a><span > </span>
+<a id="L216"></a><span class="visited"> </span>
+<a id="L217"></a><span class="visited"> </span>
+<a id="L218"></a><span class="visited"> </span>
 <a id="L219"></a><span > </span>
-<a id="L220"></a><span class="visited"> </span>
-<a id="L221"></a><span class="visited"> </span>
+<a id="L220"></a><span > </span>
+<a id="L221"></a><span > </span>
 <a id="L222"></a><span class="visited"> </span>
 <a id="L223"></a><span > </span>
-<a id="L224"></a><span > </span>
-<a id="L225"></a><span > </span>
-<a id="L226"></a><span class="visited"> </span>
+<a id="L224"></a><span class="visited"> </span>
+<a id="L225"></a><span class="visited"> </span>
+<a id="L226"></a><span > </span>
 <a id="L227"></a><span class="visited"> </span>
-<a id="L228"></a><span > </span>
-<a id="L229"></a><span class="visited"> </span>
-<a id="L230"></a><span class="visited"> </span>
-<a id="L231"></a><span > </span>
-<a id="L232"></a><span class="visited"> </span>
-<a id="L233"></a><span class="visited"> </span>
-<a id="L234"></a><span > </span>
+<a id="L228"></a><span class="visited"> </span>
+<a id="L229"></a><span > </span>
+<a id="L230"></a><span > </span>
+<a id="L231"></a><span class="visited"> </span>
+<a id="L232"></a><span class="unvisited"> </span>
+<a id="L233"></a><span > </span>
+<a id="L234"></a><span class="visited"> </span>
 <a id="L235"></a><span > </span>
-<a id="L236"></a><span class="visited"> </span>
-<a id="L237"></a><span class="unvisited"> </span>
-<a id="L238"></a><span > </span>
-<a id="L239"></a><span class="visited"> </span>
-<a id="L240"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -508,11 +503,6 @@
 <a href="#L233">233</a>
 <a href="#L234">234</a>
 <a href="#L235">235</a>
-<a href="#L236">236</a>
-<a href="#L237">237</a>
-<a href="#L238">238</a>
-<a href="#L239">239</a>
-<a href="#L240">240</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2025-2026, Rodion Suvorov, Dmitriy Chirkov*)
 
@@ -712,12 +702,8 @@ let a_gen_func (state : cg_state) name args body =
     | <span data-count="3">P</span>at_var id when i &lt; 8 -&gt; <span data-count="3">M</span>ap.set env ~key:id ~data:(Loc_reg (A i))
     | <span data-count="0">_</span> -&gt; failwith "Unsupported argument pattern or too many arguments"
   in
-  let initial_env =
-    List.foldi args ~init:(Map.empt<span data-count="8">y</span> (module String)) ~f:(fun i env p -&gt; <span data-count="3">f</span> i env p)
-  in
-  <span data-count="8">l</span>et initial_cg_state =
-    { env = initial_env; frame_offset = 16; label_id = state.label_id }
-  in
+  let initial_env = List.foldi args ~init:(Map.empt<span data-count="8">y</span> (module String)) ~f in
+  <span data-count="8">l</span>et initial_cg_state = { state with env = initial_env; frame_offset = 16 } in
   let (), final_state = Codegen.run initial_cg_state (a_gen_exp<span data-count="8">r</span> a0 body) in
   <span data-count="8">e</span>mit label (name ^ "_end");
   <span data-count="8">e</span>mit ld ra (ROff (stack_size - 8, sp));
@@ -738,8 +724,7 @@ let codegen ppf (s : aprogram) =
     { env = Map.empt<span data-count="5">y</span> (module String); frame_offset = 0; label_id = 0 }
   in
   let _final_state =
-    List.fold s ~init:initial_state ~f:(fun current_state item -&gt;
-      <span data-count="8">m</span>atch item with
+    List.fold s ~init:initial_state ~f:(fun current_state -&gt; function
       | <span data-count="8">A</span>Str_value (_rec_flag, name, expr) -&gt;
         let rec extract_fun_params_body (aexp : aexpr) =
           <span data-count="11">m</span>atch aexp with
