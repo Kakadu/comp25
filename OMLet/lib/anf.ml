@@ -97,10 +97,6 @@ let rec anf (e : expr) (expr_with_hole : immexpr -> aexpr) =
       | _ -> failwith "unreachable"
     in
     ALet (id, cclams, anf body expr_with_hole)
-  (* | If_then_else(cond, thn, Some els) -> 
-    let v = gen_temp "cond" in 
-    anf cond (fun condimm ->
-      ALet(v, CIte(CImmexpr(condimm), anf thn aexpr_but_as_cexpr, anf els aexpr_but_as_cexpr), (expr_with_hole (ImmId v))))  *)
   | If_then_else (cond, thn, Some els) ->
     anf cond (fun condimm ->
       ACExpr
@@ -135,21 +131,7 @@ let anf_construction (c : construction) : aconstruction =
     let clams =
       List.fold_right (fun id body -> ACExpr (CLam (id, body))) arg_names value
     in
-    (* let lambda =
-      List.fold_right (fun arg body -> CLam (arg, body)) arg_names value
-    in *)
-    (* let lambda = CLam (arg_names, body_anf) in *)
     AStatement (flag, [ name, clams ])
-  (* let value = anf expr (fun immval -> ACExpr (CImmexpr immval)) in
-    let lambda = CLam (arg, value) in
-    AStatement (flag, [name, ACExpr lambda]) *)
-  (* | Statement (Let (flag, Let_bind((PVar name), args_list, expr), [])) ->
-  let value = anf expr (fun immval -> ACExpr (CImmexpr immval)) in
-    (* Flatten nested CLam from args_list *)
-    let lambda =
-      List.fold_right (fun (PVar Ident arg) body -> CLam ([arg], body)) args_list value
-    in
-    AStatement (flag, [name, ACExpr lambda]) *)
   | Expr e -> AExpr (anf e (fun immval -> ACExpr (CImmexpr immval)))
   | _ -> failwith "anf construction NYI"
 ;;
