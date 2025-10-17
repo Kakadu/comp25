@@ -8,17 +8,12 @@ SPDX-License-Identifier: LGPL-3.0-or-later
   let rec fac =
     fun n ->
       (let temp0 = n = 0 in
-      let temp4 =
-        if temp0 then 1
-        else (let temp1 = n - 1 in
-          let temp2 = fac temp1 in
-          let temp3 = n * temp2 in
-          temp3) in
-      let temp5 = temp4 in
-      temp5);;
+      if temp0 then 1
+      else (let temp1 = n - 1 in
+        let temp2 = fac temp1 in
+        n * temp2));;
   let main = let temp6 = fac 4 in
-             let temp7 = print_int temp6 in
-             temp7;;
+             print_int temp6;;
 
   $ ../bin/akaML.exe -anf <<EOF
   > let rec fib n = if n < 2 then n else fib (n - 1) + fib (n - 2)
@@ -27,16 +22,30 @@ SPDX-License-Identifier: LGPL-3.0-or-later
   let rec fib =
     fun n ->
       (let temp0 = n < 2 in
-      let temp6 =
-        if temp0 then n
-        else (let temp1 = n - 1 in
-          let temp2 = fib temp1 in
-          let temp3 = n - 2 in
-          let temp4 = fib temp3 in
-          let temp5 = temp2 + temp4 in
-          temp5) in
-      let temp7 = temp6 in
-      temp7);;
+      if temp0 then n
+      else (let temp1 = n - 1 in
+        let temp2 = fib temp1 in
+        let temp3 = n - 2 in
+        let temp4 = fib temp3 in
+        temp2 + temp4));;
   let main = let temp8 = fib 6 in
-             let temp9 = print_int temp8 in
-             temp9;;
+             print_int temp8;;
+
+  $ ../bin/akaML.exe -anf <<EOF
+  > let large x = if 0<>x then print_int 0 else print_int 1
+  > let main =
+  >   let x = if (if (if 0 = 1
+  >                   then 0 = 1 else (let t42 = print_int 42 in 1 = 1))
+  >               then 0 = 1 else 1 = 1)
+  >           then 0 else 1 in
+  >   large x
+  let large =
+    fun x -> (let temp0 = 0 <> x in
+             if temp0 then print_int 0 else print_int 1);;
+  let main =
+    let temp5 = 0 = 1 in
+    let temp9 = if temp5 then 0 = 1 else (let t42 = print_int 42 in
+                                      1 = 1) in
+    let temp12 = if temp9 then 0 = 1 else 1 = 1 in
+    let x = if temp12 then 0 else 1 in
+    large x;;

@@ -8,6 +8,7 @@
 
 open Ast
 open Ast.Expression
+open Base
 
 (* ANF pattern *)
 type a_pat =
@@ -95,16 +96,30 @@ let anf_pat = function
 let i_to_c_exp i = CIExp i
 let i_to_a_exp i = return @@ ACExp (i_to_c_exp i)
 
+let simplify_temp_binding name value body =
+  match body with
+  (* Case 1: let name = value in name -> value *)
+  | ACExp (CIExp (IExp_ident name')) when String.equal name name' -> ACExp value
+  (* Case 2: let name = value in let orig_name = name in body -> let orig_name = value in body *)
+  | AExp_let (rf, Pat_var orig_name, CIExp (IExp_ident name'), body)
+    when String.equal name name' -> AExp_let (rf, Pat_var orig_name, value, body)
+  | _ -> AExp_let (Nonrecursive, Pat_var name, value, body)
+;;
+
 let a_exp_let_non c_exp k =
   let* id = gen_ident in
   let* body = k @@ IExp_ident id in
-  return @@ AExp_let (Nonrecursive, Pat_var id, c_exp, body)
+  return @@ simplify_temp_binding id c_exp body
 ;;
 
 let rec anf_exp exp (k : i_exp -> a_exp State.t) =
   match exp with
   | Exp_ident id -> k @@ IExp_ident id
   | Exp_constant const -> k @@ IExp_constant const
+  | Exp_let (flag, { pat; exp }, _, body) ->
+    anf_exp exp (fun a ->
+      let* body_aexp = anf_exp body k in
+      return (AExp_let (flag, pat, i_to_c_exp a, body_aexp)))
   | Exp_apply (Exp_apply (Exp_ident opr, exp1), exp2) when is_bin_op opr ->
     anf_exp exp1 (fun i_exp1 ->
       anf_exp exp2 (fun i_exp2 ->

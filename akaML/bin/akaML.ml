@@ -66,27 +66,23 @@ let compiler options =
               env_infer)))
   in
   let env_infer = Inferencer.env_with_print_funs in
+  let match_output_file input =
+    match options.output_file with
+    | Some out_name ->
+      Out_channel.with_file out_name ~f:(fun oc ->
+        let (_ : Inferencer.TypeEnv.t) = run input env_infer oc in
+        ())
+    | None ->
+      let (_ : Inferencer.TypeEnv.t) = run input env_infer Out_channel.stdout in
+      ()
+  in
   match options.input_file with
   | Some file_name ->
     let text = In_channel.read_all file_name |> String.trim in
-    (match options.output_file with
-     | Some out_name ->
-       Out_channel.with_file out_name ~f:(fun oc ->
-         let (_ : Inferencer.TypeEnv.t) = run text env_infer oc in
-         ())
-     | None ->
-       let (_ : Inferencer.TypeEnv.t) = run text env_infer Out_channel.stdout in
-       ())
+    match_output_file text
   | None ->
     let input = In_channel.input_all stdin |> String.trim in
-    (match options.output_file with
-     | Some out_name ->
-       Out_channel.with_file out_name ~f:(fun oc ->
-         let (_ : Inferencer.TypeEnv.t) = run input env_infer oc in
-         ())
-     | None ->
-       let (_ : Inferencer.TypeEnv.t) = run input env_infer Out_channel.stdout in
-       ())
+    match_output_file input
 ;;
 
 let () =

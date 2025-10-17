@@ -97,15 +97,13 @@ let%expect_test "codegen ANF bin op" =
       .globl foo
       .type foo, @function
     foo:
-      addi sp, sp, -24
-      sd ra, 16(sp)
-      sd s0, 8(sp)
-      addi s0, sp, 8 # Prologue ends
+      addi sp, sp, -16
+      sd ra, 8(sp)
+      sd s0, 0(sp)
+      addi s0, sp, 0 # Prologue ends
       li t0, 1
       li t1, 2
       add  a0, t0, t1
-      sd a0, -8(s0) # temp0
-      ld a0, -8(s0)
       addi sp, s0, 16 # Epilogue starts
       ld ra, 8(s0)
       ld s0, 0(s0)
@@ -155,14 +153,12 @@ let%expect_test "codegen ANF main function" =
     .globl main
     .type main, @function
   main:
-    addi sp, sp, -24
-    sd ra, 16(sp)
-    sd s0, 8(sp)
-    addi s0, sp, 8 # Prologue ends
+    addi sp, sp, -16
+    sd ra, 8(sp)
+    sd s0, 0(sp)
+    addi s0, sp, 0 # Prologue ends
     li a0, 4
     call fac
-    sd a0, -8(s0) # temp0
-    ld a0, -8(s0)
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -249,10 +245,10 @@ let%expect_test "codegen ANF factorial" =
     .globl fac
     .type fac, @function
   fac:
-    addi sp, sp, -64
-    sd ra, 56(sp)
-    sd s0, 48(sp)
-    addi s0, sp, 48 # Prologue ends
+    addi sp, sp, -40
+    sd ra, 32(sp)
+    sd s0, 24(sp)
+    addi s0, sp, 24 # Prologue ends
     mv t0, a0
     li t1, 0
     mv a1, a0
@@ -276,13 +272,7 @@ let%expect_test "codegen ANF factorial" =
     ld t0, -24(s0)
     ld t1, -32(s0)
     mul a0, t0, t1
-    sd a0, -40(s0) # temp3
-    ld a0, -40(s0)
   end_0:
-    sd a0, -48(s0) # temp4
-    ld a0, -48(s0)
-    sd a0, -56(s0) # temp5
-    ld a0, -56(s0)
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
