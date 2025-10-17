@@ -138,8 +138,8 @@ let%expect_test "codegen default main function" =
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
-    li a7, 93
-    ecall
+    li a0, 0
+    ret
   |}]
 ;;
 
@@ -152,9 +152,9 @@ let%expect_test "codegen ANF main function" =
     (* run_default sample *)
     {|
   .section .text
-    .globl _start
-    .type _start, @function
-  _start:
+    .globl main
+    .type main, @function
+  main:
     addi sp, sp, -24
     sd ra, 16(sp)
     sd s0, 8(sp)
@@ -166,8 +166,8 @@ let%expect_test "codegen ANF main function" =
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
-    li a7, 93
-    ecall
+    li a0, 0
+    ret
   |}]
 ;;
 

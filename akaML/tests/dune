@@ -15,7 +15,7 @@
   (backend bisect_ppx)))
 
 (cram
- (applies_to tests inference codegen)
+ (applies_to dparsetree inference codegen anf)
  (deps
   ../bin/akaML.exe
   manytests/do_not_type/001.ml
@@ -53,3 +53,7 @@
 (cram
  (applies_to qchecker)
  (deps run_qchecker.exe))
+
+(cram
+ (applies_to codegen)
+ (deps ../lib/runtime/runtime.c))

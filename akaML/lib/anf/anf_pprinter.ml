@@ -88,7 +88,7 @@ and pp_a_exp_deep need_parens ppf = function
     fprintf ppf "@[%a =@]@ " pp_pattern pat;
     fprintf ppf "@[%a@] in@]@\n" (pp_c_exp_deep false) c_exp;
     fprintf ppf "@[%a@]" (pp_a_exp_deep false) a_exp;
-    if need_parens then fprintf ppf ")";
+    if need_parens then fprintf ppf ")"
 ;;
 
 let pp_i_exp = pp_i_exp_deep false

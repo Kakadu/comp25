@@ -157,8 +157,8 @@ module Emission = struct
     emit ld (S 0) (S 0, 0);
     if is_main
     then (
-      emit li (A 7) 93;
-      emit ecall)
+      emit li (A 0) 0;
+      emit ret)
     else emit ret
   ;;
 end
@@ -435,7 +435,6 @@ module Anf = struct
   ;;
 
   let gen_a_func f_id arg_list body_exp ppf state =
-    let f_id = if String.equal f_id "main" then "_start" else f_id in
     fprintf ppf "\n  .globl %s\n  .type %s, @function\n" f_id f_id;
     let arity = List.length arg_list in
     let reg_params, stack_params =
@@ -458,7 +457,7 @@ module Anf = struct
     emit_fn_prologue f_id stack_size;
     let init_state = { state with frame_offset = 0 } in
     let _, state = gen_a_exp env (A 0) body_exp init_state in
-    emit_fn_epilogue (String.equal f_id "_start");
+    emit_fn_epilogue (String.equal f_id "main");
     flush_queue ppf;
     state
   ;;
