@@ -6,6 +6,8 @@ open OMLet.Ast
 open OMLet.Parser
 open OMLet.Codegen
 open OMLet.CodegenTypes
+open OMLet.Anf
+open OMLet.AnfPrettyPrinter
 open Base
 open Stdio
 
@@ -34,7 +36,9 @@ let run_single dump_parsetree stop_after eval input_source =
   | Error e -> Stdlib.Format.printf "Parsing error: %s\n%!" e
   | Ok ast ->
     if dump_parsetree then print_endline (show_constructions ast);
-    let instructions = codegen ast in
+    let anf = anf_constructions ast in
+    let instructions = codegen_aconstructions anf in
+    (*let instructions = codegen ast in*)
     let _ = Stdlib.Format.fprintf Stdlib.Format.std_formatter ".global _start\n" in
     let _ = Stdlib.List.iter pp_instr instructions in
     (match stop_after with
