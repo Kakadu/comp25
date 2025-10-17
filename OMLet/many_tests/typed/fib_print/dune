@@ -1,0 +1,3 @@
+(cram
+ (applies_to fib_print_test)
+ (deps ../../../repl/repl.exe fib_print.ml ../../../lib/runtime.c))
