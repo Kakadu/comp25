@@ -54,7 +54,6 @@ let compiler options =
             env_infer)
           else (
             let ppf = Format.formatter_of_out_channel out_channel in
-            (* Format.fprintf ppf "%a\n%!" RiscV.Codegen.Default.gen_structure ast; *)
             let anf_ast = Anf.Anf_core.anf_structure ast in
             if options.anf
             then (
@@ -62,7 +61,7 @@ let compiler options =
               Out_channel.output_string out_channel (s ^ "\n");
               env_infer)
             else (
-              Format.fprintf ppf "%a\n%!" RiscV.Codegen.Anf.gen_a_structure anf_ast;
+              Format.fprintf ppf "%a\n%!" RiscV.Codegen.gen_a_structure anf_ast;
               env_infer)))
   in
   let env_infer = Inferencer.env_with_print_funs in

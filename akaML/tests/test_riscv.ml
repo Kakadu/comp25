@@ -8,22 +8,16 @@
 
 open Parser
 
-let run_default str =
-  match parse str with
-  | Ok ast -> Format.printf "%a\n%!" RiscV.Codegen.Default.gen_structure ast
-  | Error _ -> Format.printf "Parsing error\n"
-;;
-
-let run_anf str =
+let run str =
   match parse str with
   | Ok ast ->
     let anf_ast = Anf.Anf_core.anf_structure ast in
-    Format.printf "%a\n%!" RiscV.Codegen.Anf.gen_a_structure anf_ast
+    Format.printf "%a\n%!" RiscV.Codegen.gen_a_structure anf_ast
   | Error _ -> Format.printf "Parsing error\n"
 ;;
 
 let%expect_test "codegen default bin op" =
-  run_default
+  run
     {|
   let foo =
     let a = 1 + 2 in
@@ -87,7 +81,7 @@ let%expect_test "codegen default bin op" =
 ;;
 
 let%expect_test "codegen ANF bin op" =
-  run_anf
+  run
     {|
   let foo = 1 + 2
   |};
@@ -112,7 +106,7 @@ let%expect_test "codegen ANF bin op" =
 ;;
 
 let%expect_test "codegen default main function" =
-  run_default
+  run
     {|
   let main = 
     let temp1 = fac 4 in
@@ -122,9 +116,9 @@ let%expect_test "codegen default main function" =
   [%expect
     {|
   .section .text
-    .globl _start
-    .type _start, @function
-  _start:
+    .globl main
+    .type main, @function
+  main:
     addi sp, sp, -24
     sd ra, 16(sp)
     sd s0, 8(sp)
@@ -142,12 +136,11 @@ let%expect_test "codegen default main function" =
 ;;
 
 let%expect_test "codegen ANF main function" =
-  run_anf
+  run
     {|
   let main = fac 4
   |};
   [%expect
-    (* run_default sample *)
     {|
   .section .text
     .globl main
@@ -168,7 +161,7 @@ let%expect_test "codegen ANF main function" =
 ;;
 
 let%expect_test "codegen default factorial" =
-  run_default
+  run
     {|
   let rec fac =
     fun n ->
@@ -234,12 +227,11 @@ let%expect_test "codegen default factorial" =
 ;;
 
 let%expect_test "codegen ANF factorial" =
-  run_anf
+  run
     {|
   let rec fac n = if n = 0 then 1 else n * fac (n - 1)
   |};
   [%expect
-    (* run_default sample *)
     {|
   .section .text
     .globl fac
