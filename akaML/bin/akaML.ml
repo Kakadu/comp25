@@ -11,6 +11,7 @@ open Stdio
 type opts =
   { mutable dump_parsetree : bool
   ; mutable inference : bool
+  ; mutable anf : bool
   ; mutable input_file : string option
   ; mutable output_file : string option
   }
@@ -19,7 +20,7 @@ let pp_global_error ppf = function
   | #Inferencer.error as e -> Inferencer.pp_error ppf e
 ;;
 
-let compiler dump_parsetree inference input_source output_file =
+let compiler options =
   let run text env_infer out_channel =
     let ast = Parser.parse text in
     match ast with
@@ -27,7 +28,7 @@ let compiler dump_parsetree inference input_source output_file =
       Out_channel.output_string out_channel (Format.asprintf "Parsing error: %s\n" error);
       env_infer
     | Ok ast ->
-      if dump_parsetree
+      if options.dump_parsetree
       then (
         Out_channel.output_string out_channel (Ast.show_structure ast ^ "\n");
         env_infer)
@@ -39,7 +40,7 @@ let compiler dump_parsetree inference input_source output_file =
             (Format.asprintf "Inferencer error: %a\n" pp_global_error e_infer);
           env_infer
         | Ok (env_infer, out_infer_list) ->
-          if inference
+          if options.inference
           then (
             Base.List.iter out_infer_list ~f:(function
               | Some id, type' ->
@@ -55,14 +56,20 @@ let compiler dump_parsetree inference input_source output_file =
             let ppf = Format.formatter_of_out_channel out_channel in
             (* Format.fprintf ppf "%a\n%!" RiscV.Codegen.Default.gen_structure ast; *)
             let anf_ast = Anf.Anf_core.anf_structure ast in
-            Format.fprintf ppf "%a\n%!" RiscV.Codegen.Anf.gen_a_structure anf_ast;
-            env_infer))
+            if options.anf
+            then (
+              let s = Format.asprintf "%a" Anf.Anf_pprinter.pp_a_structure anf_ast in
+              Out_channel.output_string out_channel (s ^ "\n");
+              env_infer)
+            else (
+              Format.fprintf ppf "%a\n%!" RiscV.Codegen.Anf.gen_a_structure anf_ast;
+              env_infer)))
   in
   let env_infer = Inferencer.env_with_print_funs in
-  match input_source with
+  match options.input_file with
   | Some file_name ->
     let text = In_channel.read_all file_name |> String.trim in
-    (match output_file with
+    (match options.output_file with
      | Some out_name ->
        Out_channel.with_file out_name ~f:(fun oc ->
          let (_ : Inferencer.TypeEnv.t) = run text env_infer oc in
@@ -72,7 +79,7 @@ let compiler dump_parsetree inference input_source output_file =
        ())
   | None ->
     let input = In_channel.input_all stdin |> String.trim in
-    (match output_file with
+    (match options.output_file with
      | Some out_name ->
        Out_channel.with_file out_name ~f:(fun oc ->
          let (_ : Inferencer.TypeEnv.t) = run input env_infer oc in
@@ -84,7 +91,12 @@ let compiler dump_parsetree inference input_source output_file =
 
 let () =
   let options =
-    { dump_parsetree = false; inference = false; input_file = None; output_file = None }
+    { dump_parsetree = false
+    ; inference = false
+    ; anf = false
+    ; input_file = None
+    ; output_file = None
+    }
   in
   let () =
     let open Arg in
@@ -95,6 +107,9 @@ let () =
       ; ( "-inference"
         , Unit (fun () -> options.inference <- true)
         , "Inference, don't evaluate anything" )
+      ; ( "-anf"
+        , Unit (fun () -> options.anf <- true)
+        , "Show programm after anf, don't evaluate anything" )
       ; ( "-fromfile"
         , String (fun filename -> options.input_file <- Some filename)
         , "Read code from the file" )
@@ -107,5 +122,5 @@ let () =
          exit 1)
       "Compiler for custom language"
   in
-  compiler options.dump_parsetree options.inference options.input_file options.output_file
+  compiler options
 ;;
