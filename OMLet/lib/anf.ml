@@ -1,27 +1,27 @@
 open Ast
 
 type immexpr =
-  | ImmNum of int                     (* 42 *)
-  | ImmId of ident                    (* a *)
+  | ImmNum of int (* 42 *)
+  | ImmId of ident (* a *)
 
 type cbinop =
-  | CPlus   (* 42 + a *)
-  | CMinus  (* 42 - a *)
-  | CMul    (* 42 * a *)
-  | CDiv    (* 42 / a *)
-  | CEq     (* 42 = a *)
-  | CNeq    (* 42 != a *)
-  | CLt     (* 42 < a *)
-  | CLte    (* 42 <= a *)
-  | CGt     (* 42 > a *)
-  | CGte    (* 42 >= a *)
+  | CPlus (* 42 + a *)
+  | CMinus (* 42 - a *)
+  | CMul (* 42 * a *)
+  | CDiv (* 42 / a *)
+  | CEq (* 42 = a *)
+  | CNeq (* 42 != a *)
+  | CLt (* 42 < a *)
+  | CLte (* 42 <= a *)
+  | CGt (* 42 > a *)
+  | CGte (* 42 >= a *)
 
 type cexpr =
   | CBinop of cbinop * immexpr * immexpr
-  | CIte of cexpr * aexpr * aexpr     (* if (42 > a) then 42 else a *)
+  | CIte of cexpr * aexpr * aexpr option (* if (42 > a) then 42 else a *)
   | CImmexpr of immexpr
-  | CLam of ident * aexpr             (* fun a -> a + 42 *)
-  | CApp of immexpr * immexpr list    (* func_name arg1 arg2 ... argn *)
+  | CLam of ident * aexpr (* fun a -> a + 42 *)
+  | CApp of immexpr * immexpr list (* func_name arg1 arg2 ... argn *)
 
 and aexpr =
   | ALet of ident * cexpr * aexpr
@@ -103,7 +103,8 @@ let rec anf (e : expr) (expr_with_hole : immexpr -> aexpr) =
       ALet(v, CIte(CImmexpr(condimm), anf thn aexpr_but_as_cexpr, anf els aexpr_but_as_cexpr), (expr_with_hole (ImmId v))))  *)
   | If_then_else (cond, thn, Some els) ->
     anf cond (fun condimm ->
-      ACExpr (CIte (CImmexpr condimm, anf thn expr_with_hole, anf els expr_with_hole)))
+      ACExpr
+        (CIte (CImmexpr condimm, anf thn expr_with_hole, Some (anf els expr_with_hole))))
   | Apply (f, args) ->
     let f, arg_exprs = collect_app_args (Apply (f, args)) in
     anf f (fun fimm ->
