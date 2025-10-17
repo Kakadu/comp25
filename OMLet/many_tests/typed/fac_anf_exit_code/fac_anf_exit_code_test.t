@@ -1,4 +1,4 @@
-Copyright 2025, Sofya Kozyreva, Maksim Shipilov
+Copyright 2025, Ksenia Kotelnikova, Sofya Kozyreva, Vyacheslav Kochergin
 SPDX-License-Identifier: LGPL-3.0-or-later
 
   $ ../../../repl/repl.exe -fromfile fac_anf_exit_code.ml | riscv64-linux-gnu-as -march=rv64gc -o temp.o -

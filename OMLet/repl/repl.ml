@@ -7,7 +7,6 @@ open OMLet.Parser
 open OMLet.Codegen
 open OMLet.CodegenTypes
 open OMLet.Anf
-open OMLet.AnfPrettyPrinter
 open Base
 open Stdio
 
