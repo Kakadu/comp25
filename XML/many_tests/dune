@@ -1,0 +1,19 @@
+(library
+ (name XML_manytests)
+ (public_name XML.Many_tests)
+ (libraries
+  stdio
+  XML.Backend
+  XML.Common
+  qcheck-core
+  qcheck-core.runner
+  ppx_deriving_qcheck)
+ (preprocess
+  (pps ppx_expect ppx_deriving_qcheck))
+ (instrumentation
+  (backend bisect_ppx))
+ (inline_tests))
+
+(cram
+ (applies_to codegen anf)
+ (deps ../bin/XML.exe ../bin/runtime.c))

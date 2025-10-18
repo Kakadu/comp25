@@ -1,0 +1,4 @@
+(executable
+ (public_name XML)
+ (name XML)
+ (libraries XML.Backend XML.Common XML.Middleend))
