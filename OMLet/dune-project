@@ -7,9 +7,9 @@
 (source
  (github p1onerka/oMLet))
 
-(authors "Kotelnikova Ksenia" "Kozyreva Sofya")
+(authors "Kotelnikova Ksenia" "Kozyreva Sofya" "Kochergin Vyacheslav")
 
-(maintainers "Kotelnikova Ksenia" "Kozyreva Sofya")
+(maintainers "Kotelnikova Ksenia" "Kozyreva Sofya" "Kochergin Vyacheslav")
 
 (license "LGPL-3.0-or-later WITH OCaml-LGPL-linking-exception")
 

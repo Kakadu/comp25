@@ -1,0 +1,11 @@
+(cram
+ (applies_to large_print_test)
+ (deps
+  ../../../repl/repl.exe
+  large_print.ml
+  ../../../lib/runtime.c
+  ../build_and_run.sh))
+
+(cram
+ (applies_to large_anf_test)
+ (deps ../../../repl/repl.exe large_print.ml))

@@ -58,8 +58,7 @@ let rec pp_pattern fmt = function
      | Some p -> fprintf fmt "Some (%a) " pp_pattern p)
   | PConstraint (p, t) -> fprintf fmt "(%a : %a) " pp_pattern p pp_typ t
 
-and pp_expr fmt expr =
-  match expr with
+and pp_expr fmt = function
   | Const (Int_lt i) -> fprintf fmt "%d " i
   | Const (Bool_lt b) -> fprintf fmt "%b " b
   | Const (String_lt s) -> fprintf fmt "%S" s

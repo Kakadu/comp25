@@ -1,4 +1,4 @@
-(** Copyright 2025, Ksenia Kotelnikova <xeniia.ka@gmail.com>, Sofya Kozyreva <k81sofia@gmail.com> *)
+(** Copyright 2025, Ksenia Kotelnikova <xeniia.ka@gmail.com>, Sofya Kozyreva <k81sofia@gmail.com>, Vyacheslav Kochergin <vyacheslav.kochergin1@gmail.com> *)
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
@@ -28,6 +28,7 @@ type rtype_op =
   | ADD
   | SUB
   | MUL
+  | DIV
   | AND
   | OR
   | XOR
@@ -65,6 +66,8 @@ type pseudo_instr =
   | J of string
   | RET
   | CALL of string
+  | SNEZ of reg * reg (* puts 0 in rd if rs equals 0, else puts 1. is used for <> binop *)
+  | SEQZ of reg * reg (* puts 1 in rd if rs equals 0, else puts 0. is used for = binop *)
 
 type true_instr =
   | RType of rtype_op * reg * reg * reg (* op rd rs1 rs2 *)
@@ -95,6 +98,7 @@ let pp_rtype_op fmt = function
   | ADD -> fprintf fmt "add"
   | SUB -> fprintf fmt "sub"
   | MUL -> fprintf fmt "mul"
+  | DIV -> fprintf fmt "div"
   | AND -> fprintf fmt "and"
   | OR -> fprintf fmt "or"
   | XOR -> fprintf fmt "xor"
@@ -141,6 +145,8 @@ let pp_pseudo_instr fmt = function
   | J l -> fprintf fmt "@[\tj %s@]@." l
   | RET -> fprintf fmt "@[\tret @]@."
   | CALL l -> fprintf fmt "@[\tcall %s@]@." l
+  | SNEZ (r1, r2) -> fprintf fmt "@[\tsnez %a, %a@]@." pp_reg r1 pp_reg r2
+  | SEQZ (r1, r2) -> fprintf fmt "@[\tseqz %a, %a@]@." pp_reg r1 pp_reg r2
 ;;
 
 let pp_true_instr fmt = function
