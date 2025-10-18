@@ -5,8 +5,9 @@
   akaML.Parser
   akaML.Pprinter
   akaML.Inferencer
-  akaML.RiscV)
- (modules Test_parser Test_pprinter Test_inferencer Test_riscv)
+  akaML.RiscV
+  akaML.Anf)
+ (modules Test_parser Test_pprinter Test_inferencer Test_riscv Test_anf)
  (preprocess
   (pps ppx_expect))
  (inline_tests)
@@ -14,7 +15,7 @@
   (backend bisect_ppx)))
 
 (cram
- (applies_to tests inference codegen)
+ (applies_to dparsetree inference codegen anf)
  (deps
   ../bin/akaML.exe
   manytests/do_not_type/001.ml
@@ -52,3 +53,7 @@
 (cram
  (applies_to qchecker)
  (deps run_qchecker.exe))
+
+(cram
+ (applies_to codegen)
+ (deps ../lib/runtime/rv64_runtime.a))

@@ -22,7 +22,8 @@ let gen_char =
 ;;
 
 let un_op_list = [ "~-" ]
-let bin_op_list = [ "*"; "/"; "+"; "-"; ">="; "<="; "<>"; "="; ">"; "<"; "&&"; "||" ]
+let bin_op_list = [ "*"; "/"; "+"; "-"; "^"; ">="; "<="; "<>"; "="; ">"; "<"; "&&"; "||" ]
+let is_bin_op op = List.mem op bin_op_list
 let is_unary_minus op = op = "~-"
 
 let is_keyword = function

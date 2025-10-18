@@ -53,7 +53,6 @@ let is_separator = function
   | _ -> false
 ;;
 
-let bin_op_list = [ "*"; "/"; "+"; "-"; "^"; ">="; "<="; "<>"; "="; ">"; "<"; "&&"; "||" ]
 let is_operator opr = List.exists bin_op_list ~f:(fun str -> String.equal str opr)
 
 let keyword str =
