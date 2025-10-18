@@ -1018,7 +1018,7 @@ let p_binding p_expr : binding t =
   <span data-count="1159">l</span>et* body = skip_ws *<span data-count="1159">&gt;</span> strin<span data-count="1159">g</span> "=" *<span data-count="1159">&gt;</span> p_expr in
   <span data-count="1158">m</span>atch name, args with
   | <span data-count="833">P</span>Var _, args -&gt; return (name, elambd<span data-count="833">a</span> body args)
-  | <span data-count="325">_</span>, args when List.lengt<span data-count="325">h</span> args &gt; 0 -&gt;
+  | <span data-count="325">_</span>, args when List.lengt<span data-count="325">h</span> args &lt;&gt; 0 -&gt;
     <span data-count="3">f</span>ail "Args in let bind are only allowed when binding a variable name "
   | <span data-count="322">_</span> -&gt; return (name, elambd<span data-count="322">a</span> body args)
 ;;
