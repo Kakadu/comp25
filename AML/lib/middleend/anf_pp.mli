@@ -2,6 +2,4 @@
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
-open Middle.Anf
-
-val codegen : Format.formatter -> aprogram -> unit
+val pp_anf : Format.formatter -> Anf.astructure_item list -> unit

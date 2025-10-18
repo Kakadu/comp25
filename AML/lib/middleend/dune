@@ -1,0 +1,8 @@
+(library
+ (name Middle)
+ (public_name AML.Middle)
+ (libraries base Ast qcheck-core qcheck-core.runner)
+ (preprocess
+  (pps ppx_deriving.show ppx_deriving.eq ppx_deriving_qcheck))
+ (instrumentation
+  (backend bisect_ppx)))

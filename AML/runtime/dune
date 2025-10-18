@@ -1,0 +1,10 @@
+(rule
+ (target libruntime.a)
+ (deps
+  (source_tree src)
+  Cargo.toml
+  Cargo.lock)
+ (action
+  (progn
+   (system
+    "rustup run stable cargo build --target riscv64gc-unknown-linux-gnu --release && cp target/riscv64gc-unknown-linux-gnu/release/libruntime.a %{target}"))))

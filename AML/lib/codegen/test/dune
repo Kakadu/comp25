@@ -9,4 +9,4 @@
 
 (cram
  (applies_to codegen)
- (deps ../../../bin/AML.exe))
+ (deps ../../../bin/AML.exe ../../../runtime/libruntime.a))

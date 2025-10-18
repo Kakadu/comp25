@@ -1,7 +1,7 @@
 (library
  (name Codegen)
  (public_name AML.Codegen)
- (libraries base Ast)
+ (libraries base Ast Middle)
  (preprocess
   (pps ppx_deriving.eq))
  (instrumentation

@@ -1,0 +1,12 @@
+(library
+ (name MiddleTest)
+ (libraries base stdio Ast Parser Pprinter Inferencer Middle)
+ (preprocess
+  (pps ppx_expect ppx_deriving.show))
+ (inline_tests)
+ (instrumentation
+  (backend bisect_ppx)))
+
+(cram
+ (applies_to anf)
+ (deps ../../../bin/AML.exe))

@@ -20,6 +20,7 @@ val a0 : reg
 val t0 : reg
 val t1 : reg
 val t2 : reg
+val t3 : reg
 val pp_reg : Format.formatter -> reg -> unit
 
 type instr =
@@ -41,6 +42,7 @@ type instr =
   | Ecall
   | Label of string
   | Directive of string
+  | Call of string
 
 val pp_instr : Format.formatter -> instr -> unit
 val addi : (instr -> 'a) -> reg -> reg -> int -> 'a
@@ -62,6 +64,5 @@ val li : (instr -> 'a) -> reg -> int -> 'a
 val label : (instr -> 'a) -> string -> 'a
 val directive : (instr -> 'a) -> string -> 'a
 val mv : (instr -> 'a) -> reg -> reg -> 'a
-val code : (instr * string) Queue.t
-val emit : ?comm:string -> ((instr -> unit) -> 'a) -> 'a
-val flush_queue : Format.formatter -> unit
+val call : (instr -> 'a) -> string -> 'a
+val pp_instrs : Format.formatter -> instr list -> unit
