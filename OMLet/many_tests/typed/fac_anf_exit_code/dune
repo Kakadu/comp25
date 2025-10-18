@@ -1,3 +1,3 @@
 (cram
  (applies_to fac_anf_exit_code_test)
- (deps ../../../repl/repl.exe fac_anf_exit_code.ml ../../../lib/runtime.c))
+ (deps ../../../repl/repl.exe fac_anf_exit_code.ml ../../../lib/runtime.c ../build_and_run.sh))
