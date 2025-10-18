@@ -921,7 +921,7 @@ let%expect_test "parsing error" =
   <span data-count="1">[</span>%expect
     {|
   Parsing error
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check undefined variable" =
@@ -932,7 +932,7 @@ let%expect_test "type check undefined variable" =
   <span data-count="1">[</span>%expect
     {|
   Inferencer error: Undefined variable 'b'
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check negative expression" =
@@ -943,7 +943,7 @@ let%expect_test "type check negative expression" =
   <span data-count="1">[</span>%expect
     {|
   val f : bool -&gt; int -&gt; int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check definition tuple" =
@@ -955,7 +955,7 @@ let%expect_test "type check definition tuple" =
     {|
   val a : int
   val b : int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check definition variable" =
@@ -966,7 +966,7 @@ let%expect_test "type check definition variable" =
   <span data-count="1">[</span>%expect
     {|
   val a : int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check several definition variable" =
@@ -979,7 +979,7 @@ let%expect_test "type check several definition variable" =
   val f : int
   val r : string
   val q : int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check several definition variable and executable them" =
@@ -995,7 +995,7 @@ let%expect_test "type check several definition variable and executable them" =
   val a : int
   - : string
   - : int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check several recursive definition" =
@@ -1007,7 +1007,7 @@ let%expect_test "type check several recursive definition" =
     {|
   val f1 : int -&gt; int
   val f2 : int -&gt; int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check definition function" =
@@ -1018,7 +1018,7 @@ let%expect_test "type check definition function" =
   <span data-count="1">[</span>%expect
     {|
   val f : bool -&gt; 'a -&gt; 'a -&gt; 'a
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check definition construct" =
@@ -1030,7 +1030,7 @@ let%expect_test "type check definition construct" =
     {|
   val a : int
   val b : int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check simple recursive let expression" =
@@ -1041,7 +1041,7 @@ let%expect_test "type check simple recursive let expression" =
   <span data-count="1">[</span>%expect
     {|
   val x : int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check error in recursive let expression" =
@@ -1052,7 +1052,7 @@ let%expect_test "type check error in recursive let expression" =
   <span data-count="1">[</span>%expect
     {|
   Inferencer error: This kind of expression is not allowed as right-hand side of `let rec'
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check recursive let expression" =
@@ -1073,7 +1073,7 @@ let%expect_test "type check recursive let expression" =
   <span data-count="1">[</span>%expect
     {|
   val prime : int -&gt; bool
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check of operators" =
@@ -1084,7 +1084,7 @@ let%expect_test "type check of operators" =
   <span data-count="1">[</span>%expect
     {|
   val f : int -&gt; int -&gt; char -&gt; int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check pattern matching" =
@@ -1095,7 +1095,7 @@ let%expect_test "type check pattern matching" =
   <span data-count="1">[</span>%expect
     {|
   val f : ('a -&gt; int) -&gt; 'a -&gt; char
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check pattern bound the variable multiple times" =
@@ -1108,7 +1108,7 @@ let%expect_test "type check pattern bound the variable multiple times" =
   <span data-count="1">[</span>%expect
     {|
   Inferencer error: Variable 'x' is bound several times in the matching
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check of expression list" =
@@ -1119,7 +1119,7 @@ let%expect_test "type check of expression list" =
   <span data-count="1">[</span>%expect
     {|
   val f : bool -&gt; bool list
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check invalid expression list" =
@@ -1130,7 +1130,7 @@ let%expect_test "type check invalid expression list" =
   <span data-count="1">[</span>%expect
     {|
   Inferencer error: Unification failed on bool and int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check pattern and expression list construct" =
@@ -1146,7 +1146,7 @@ let%expect_test "type check pattern and expression list construct" =
   <span data-count="1">[</span>%expect
     {|
   val f : int list -&gt; bool
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check pattern-matching" =
@@ -1163,7 +1163,7 @@ let%expect_test "type check pattern-matching" =
   <span data-count="1">[</span>%expect
     {|
   val fmap : ('b -&gt; 'a) -&gt; 'b list -&gt; 'a list
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check of pattern list" =
@@ -1174,7 +1174,7 @@ let%expect_test "type check of pattern list" =
   <span data-count="1">[</span>%expect
     {|
   val f : int list -&gt; int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check Some and None" =
@@ -1189,7 +1189,7 @@ let%expect_test "type check Some and None" =
   <span data-count="1">[</span>%expect
     {|
   val f : 'a option -&gt; char option
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check definition function" =
@@ -1202,7 +1202,7 @@ let%expect_test "type check definition function" =
   <span data-count="1">[</span>%expect
     {|
   val f : bool option -&gt; bool
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check expression constraint" =
@@ -1213,7 +1213,7 @@ let%expect_test "type check expression constraint" =
   <span data-count="1">[</span>%expect
     {|
   val f : 'a -&gt; ('a -&gt; int) -&gt; int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check pattern constraint" =
@@ -1224,7 +1224,7 @@ let%expect_test "type check pattern constraint" =
   <span data-count="1">[</span>%expect
     {|
   val f : (int -&gt; 'a option) -&gt; int -&gt; 'a option
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check pattern constraint with type var" =
@@ -1239,7 +1239,7 @@ let%expect_test "type check pattern constraint with type var" =
   val f1 : ('a -&gt; 'b) -&gt; 'a -&gt; 'b
   val f2 : ('a -&gt; 'a) -&gt; 'a -&gt; 'a
   val f3 : ('a -&gt; 'b) -&gt; 'a -&gt; 'b
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check recursive struct value" =
@@ -1252,7 +1252,7 @@ let%expect_test "type check recursive struct value" =
     {|
   val factorial : int -&gt; int
   val strange_factorial : int -&gt; int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check polymorphism" =
@@ -1278,7 +1278,7 @@ let%expect_test "type check polymorphism" =
   val foo4 : int
   val foo5 : char
   val foo6 : char
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check expression constraint" =
@@ -1289,7 +1289,7 @@ let%expect_test "type check expression constraint" =
   <span data-count="1">[</span>%expect
     {|
   val f : 'a -&gt; ('a -&gt; int) -&gt; int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check sequence" =
@@ -1300,7 +1300,7 @@ let%expect_test "type check sequence" =
   <span data-count="1">[</span>%expect
     {|
   val a : int
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 
 let%expect_test "type check operator redefinition" =
@@ -1315,7 +1315,7 @@ let%expect_test "type check operator redefinition" =
   val foo1 : int -&gt; int -&gt; int
   val + : bool -&gt; bool -&gt; bool
   val foo2 : bool -&gt; bool -&gt; bool
-  |}<span data-count="11">]</span>
+  |}<span data-count="13">]</span>
 ;;
 </code></pre>
       </div>
