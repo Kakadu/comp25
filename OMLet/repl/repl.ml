@@ -21,7 +21,7 @@ type opts =
   }
 
 let eval ast =
-  ignore (show_constructions ast);
+  let _ = show_constructions ast in
   ()
 ;;
 
