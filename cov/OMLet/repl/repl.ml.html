@@ -55,7 +55,7 @@
 <a id="L22"></a><span > </span>
 <a id="L23"></a><span > </span>
 <a id="L24"></a><span class="visited"> </span>
-<a id="L25"></a><span > </span>
+<a id="L25"></a><span class="visited"> </span>
 <a id="L26"></a><span > </span>
 <a id="L27"></a><span > </span>
 <a id="L28"></a><span > </span>
@@ -201,8 +201,8 @@ type opts =
   }
 
 let eval ast =
-  <span data-count="5">i</span>gnore (show_construction<span data-count="5">s</span> ast);
-  ()
+  <span data-count="5">l</span>et _ = show_constructions ast in
+  <span data-count="5">(</span>)
 ;;
 
 let run_single dump_parsetree stop_after eval input_source =
