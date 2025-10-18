@@ -280,14 +280,6 @@ let un_chain e op =
   fix (fun self -> op >>= (fun unop -> self >>= fun e -> return (unop e)) <|> e)
 ;;
 
-let rec pbody pexpr =
-  ppattern
-  >>= fun p ->
-  many ppattern
-  >>= fun patterns ->
-  pbody pexpr <|> (pstoken "=" *> pexpr >>| fun e -> Lambda (p, patterns, e))
-;;
-
 let p_let_bind p_expr =
   let* name = ppattern <|> (pparens ppref_op >>| fun oper -> PVar oper) in
   let* args = many ppattern in

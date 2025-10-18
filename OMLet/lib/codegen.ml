@@ -36,7 +36,7 @@ let a_regs_global = [ Arg 0; Arg 1; Arg 2; Arg 3; Arg 4; Arg 5; Arg 6; Arg 7 ]
 let regs = t_regs @ s_regs
 
 module PlacementMap = Map.Make (String)
-module RegStackMap = Map.Make (Int)
+(* module RegStackMap = Map.Make (Int) *)
 
 (* return current stack tail and increment it by size being allocated *)
 let extend_stack stack size =
