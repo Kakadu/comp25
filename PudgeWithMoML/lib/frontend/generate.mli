@@ -6,6 +6,5 @@
 
 [@@@ocaml.text "/*"]
 
-open Ast
-
-val parse : string -> (program, string) result
+val gen_ident : string QCheck.Gen.t
+val gen_varname : string QCheck.Gen.t

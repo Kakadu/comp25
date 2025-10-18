@@ -1,6 +1,10 @@
+[@@@ocaml.text "/*"]
+
 (** Copyright 2025-2026, Gleb Nasretdinov, Ilhom Kombaev *)
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
+
+[@@@ocaml.text "/*"]
 
 type reg =
   | Zero
@@ -10,6 +14,8 @@ type reg =
   | S of int
   | T of int
 [@@deriving eq]
+
+let fp = S 0
 
 let pp_reg fmt =
   let open Format in
@@ -31,6 +37,7 @@ type instr =
   | Add of reg * reg * reg
   | Sub of reg * reg * reg
   | Mul of reg * reg * reg
+  | Div of reg * reg * reg
   | Li of reg * int
   | Ld of reg * offset * reg
   | Slt of reg * reg * reg
@@ -39,6 +46,11 @@ type instr =
   | Mv of reg * reg
   | Sd of reg * offset * reg
   | Xori of reg * reg * int
+  | Xor of reg * reg * reg
+  | Andi of reg * reg * int
+  | And of reg * reg * reg
+  | Ori of reg * reg * int
+  | Or of reg * reg * reg
   | Beq of reg * reg * string
   | Ble of reg * reg * string
   | J of string
@@ -54,6 +66,7 @@ let pp_instr fmt =
   | Add (rd, rs1, rs2) -> fprintf fmt "add %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | Sub (rd, rs1, rs2) -> fprintf fmt "sub %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | Mul (rd, rs1, rs2) -> fprintf fmt "mul %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | Div (rd, rs1, rs2) -> fprintf fmt "div %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | Li (rd, n) -> fprintf fmt "li %a, %d" pp_reg rd n
   | Ld (rd, offset, rs) -> fprintf fmt "ld %a, %d(%a)" pp_reg rd offset pp_reg rs
   | Slt (rd, rs1, rs2) -> fprintf fmt "slt %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
@@ -62,6 +75,11 @@ let pp_instr fmt =
   | Mv (rd, rs) -> fprintf fmt "mv %a, %a" pp_reg rd pp_reg rs
   | Sd (rs1, offset, rs2) -> fprintf fmt "sd %a, %d(%a)" pp_reg rs1 offset pp_reg rs2
   | Xori (rd, rs, n) -> fprintf fmt "xori %a, %a, %d" pp_reg rd pp_reg rs n
+  | Xor (rd, rs1, rs2) -> fprintf fmt "xor %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | Andi (rd, rs, n) -> fprintf fmt "andi %a, %a, %d" pp_reg rd pp_reg rs n
+  | And (rd, rs1, rs2) -> fprintf fmt "and %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | Ori (rd, rs, n) -> fprintf fmt "ori %a, %a, %d" pp_reg rd pp_reg rs n
+  | Or (rd, rs1, rs2) -> fprintf fmt "or %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | Beq (rs1, rs2, label) -> fprintf fmt "beq %a, %a, %s" pp_reg rs1 pp_reg rs2 label
   | Ble (rs1, rs2, label) -> fprintf fmt "ble %a, %a, %s" pp_reg rs1 pp_reg rs2 label
   | J label -> fprintf fmt "j %s" label
@@ -75,6 +93,7 @@ let addi r1 r2 n = Addi (r1, r2, n)
 let add r1 r2 r3 = Add (r1, r2, r3)
 let sub r1 r2 r3 = Sub (r1, r2, r3)
 let mul r1 r2 r3 = Mul (r1, r2, r3)
+let div r1 r2 r3 = Div (r1, r2, r3)
 let li r n = Li (r, n)
 let ld r off base = Ld (r, off, base)
 let slt r1 r2 r3 = Slt (r1, r2, r3)
@@ -83,6 +102,11 @@ let snez r1 r2 = Snez (r1, r2)
 let mv r1 r2 = Mv (r1, r2)
 let sd r1 off base = Sd (r1, off, base)
 let xori r1 r2 n = Xori (r1, r2, n)
+let xor r1 r2 r3 = Xor (r1, r2, r3)
+let andi r1 r2 n = Andi (r1, r2, n)
+let and_ r1 r2 r3 = And (r1, r2, r3)
+let ori r1 r2 n = Ori (r1, r2, n)
+let or_ r1 r2 r3 = Or (r1, r2, r3)
 let beq r1 r2 label = Beq (r1, r2, label)
 let ble r1 r2 label = Ble (r1, r2, label)
 let j label = J label

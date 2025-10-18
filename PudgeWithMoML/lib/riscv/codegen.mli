@@ -6,6 +6,4 @@
 
 [@@@ocaml.text "/*"]
 
-open Ast
-
-val parse : string -> (program, string) result
+val gen_aprogram : Middle_end.Anf.aprogram -> Format.formatter -> unit
