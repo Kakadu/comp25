@@ -5,3 +5,7 @@
   fib_print.ml
   ../../../lib/runtime.c
   ../build_and_run.sh))
+
+(cram
+ (applies_to fib_anf_test)
+ (deps ../../../repl/repl.exe fib_print.ml))

@@ -5,3 +5,7 @@
   fac_print.ml
   ../../../lib/runtime.c
   ../build_and_run.sh))
+
+(cram
+ (applies_to fac_anf_test)
+ (deps ../../../repl/repl.exe fac_print.ml))
