@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>machine.ml &mdash; Coverage report</title>
+    <meta name="description" content="42.59% coverage in lib/backend/machine.ml">
+    <link rel="stylesheet" href="../../coverage.css"/>
+    <script src="../../highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </head>
+  <body>
+    <div id="header">
+      <h1>
+        <a href="../../index.html">
+          <span class="dirname">lib/backend/</span>machine.ml
+        </a>
+      </h1>
+      <h2>42.59%</h2>
+    </div>
+    <div id="navbar">
+      <span class="unvisited" style="top:4.63%"></span>
+      <span class="unvisited" style="top:5.56%"></span>
+      <span class="unvisited" style="top:7.41%"></span>
+      <span class="unvisited" style="top:8.33%"></span>
+      <span class="unvisited" style="top:9.26%"></span>
+      <span class="unvisited" style="top:10.19%"></span>
+      <span class="unvisited" style="top:12.96%"></span>
+      <span class="unvisited" style="top:26.85%"></span>
+      <span class="unvisited" style="top:27.78%"></span>
+      <span class="unvisited" style="top:28.70%"></span>
+      <span class="unvisited" style="top:29.63%"></span>
+      <span class="unvisited" style="top:30.56%"></span>
+      <span class="unvisited" style="top:31.48%"></span>
+      <span class="unvisited" style="top:32.41%"></span>
+      <span class="unvisited" style="top:33.33%"></span>
+      <span class="unvisited" style="top:34.26%"></span>
+      <span class="unvisited" style="top:35.19%"></span>
+      <span class="unvisited" style="top:36.11%"></span>
+      <span class="unvisited" style="top:37.04%"></span>
+      <span class="unvisited" style="top:37.96%"></span>
+      <span class="unvisited" style="top:38.89%"></span>
+      <span class="unvisited" style="top:39.81%"></span>
+      <span class="unvisited" style="top:40.74%"></span>
+      <span class="unvisited" style="top:41.67%"></span>
+      <span class="unvisited" style="top:42.59%"></span>
+      <span class="unvisited" style="top:43.52%"></span>
+      <span class="unvisited" style="top:44.44%"></span>
+      <span class="unvisited" style="top:45.37%"></span>
+      <span class="unvisited" style="top:46.30%"></span>
+      <span class="unvisited" style="top:47.22%"></span>
+      <span class="unvisited" style="top:48.15%"></span>
+      <span class="unvisited" style="top:49.07%"></span>
+      <span class="unvisited" style="bottom:37.96%"></span>
+      <span class="unvisited" style="bottom:35.19%"></span>
+      <span class="unvisited" style="bottom:28.70%"></span>
+      <span class="unvisited" style="bottom:27.78%"></span>
+      <span class="unvisited" style="bottom:26.85%"></span>
+      <span class="unvisited" style="bottom:24.07%"></span>
+      <span class="unvisited" style="bottom:13.89%"></span>
+      <span class="unvisited" style="bottom:11.11%"></span>
+      <span class="unvisited" style="bottom:6.48%"></span>
+      <span class="unvisited" style="bottom:5.56%"></span>
+      <span class="unvisited" style="bottom:1.85%"></span>
+      <span class="unvisited" style="bottom:0.93%"></span>
+    </div>
+    <div id="report">
+      <div id="lines-layer">
+        <pre>
+<a id="L1"></a><span > </span>
+<a id="L2"></a><span > </span>
+<a id="L3"></a><span > </span>
+<a id="L4"></a><span > </span>
+<a id="L5"></a><span class="unvisited"> </span>
+<a id="L6"></a><span class="unvisited"> </span>
+<a id="L7"></a><span class="visited"> </span>
+<a id="L8"></a><span class="unvisited"> </span>
+<a id="L9"></a><span class="unvisited"> </span>
+<a id="L10"></a><span class="unvisited"> </span>
+<a id="L11"></a><span class="unvisited"> </span>
+<a id="L12"></a><span > </span>
+<a id="L13"></a><span > </span>
+<a id="L14"></a><span class="unvisited"> </span>
+<a id="L15"></a><span > </span>
+<a id="L16"></a><span > </span>
+<a id="L17"></a><span class="visited"> </span>
+<a id="L18"></a><span > </span>
+<a id="L19"></a><span class="visited"> </span>
+<a id="L20"></a><span class="visited"> </span>
+<a id="L21"></a><span class="visited"> </span>
+<a id="L22"></a><span class="visited"> </span>
+<a id="L23"></a><span class="visited"> </span>
+<a id="L24"></a><span class="visited"> </span>
+<a id="L25"></a><span > </span>
+<a id="L26"></a><span > </span>
+<a id="L27"></a><span class="visited"> </span>
+<a id="L28"></a><span > </span>
+<a id="L29"></a><span class="unvisited"> </span>
+<a id="L30"></a><span class="unvisited"> </span>
+<a id="L31"></a><span class="unvisited"> </span>
+<a id="L32"></a><span class="unvisited"> </span>
+<a id="L33"></a><span class="unvisited"> </span>
+<a id="L34"></a><span class="unvisited"> </span>
+<a id="L35"></a><span class="unvisited"> </span>
+<a id="L36"></a><span class="unvisited"> </span>
+<a id="L37"></a><span class="unvisited"> </span>
+<a id="L38"></a><span class="unvisited"> </span>
+<a id="L39"></a><span class="unvisited"> </span>
+<a id="L40"></a><span class="unvisited"> </span>
+<a id="L41"></a><span class="unvisited"> </span>
+<a id="L42"></a><span class="unvisited"> </span>
+<a id="L43"></a><span class="unvisited"> </span>
+<a id="L44"></a><span class="unvisited"> </span>
+<a id="L45"></a><span class="unvisited"> </span>
+<a id="L46"></a><span class="unvisited"> </span>
+<a id="L47"></a><span class="unvisited"> </span>
+<a id="L48"></a><span class="unvisited"> </span>
+<a id="L49"></a><span class="unvisited"> </span>
+<a id="L50"></a><span class="unvisited"> </span>
+<a id="L51"></a><span class="unvisited"> </span>
+<a id="L52"></a><span class="unvisited"> </span>
+<a id="L53"></a><span class="unvisited"> </span>
+<a id="L54"></a><span > </span>
+<a id="L55"></a><span > </span>
+<a id="L56"></a><span > </span>
+<a id="L57"></a><span class="visited"> </span>
+<a id="L58"></a><span > </span>
+<a id="L59"></a><span class="visited"> </span>
+<a id="L60"></a><span class="visited"> </span>
+<a id="L61"></a><span class="visited"> </span>
+<a id="L62"></a><span class="visited"> </span>
+<a id="L63"></a><span class="visited"> </span>
+<a id="L64"></a><span class="visited"> </span>
+<a id="L65"></a><span class="visited"> </span>
+<a id="L66"></a><span class="visited"> </span>
+<a id="L67"></a><span class="unvisited"> </span>
+<a id="L68"></a><span class="visited"> </span>
+<a id="L69"></a><span class="visited"> </span>
+<a id="L70"></a><span class="unvisited"> </span>
+<a id="L71"></a><span class="visited"> </span>
+<a id="L72"></a><span class="visited"> </span>
+<a id="L73"></a><span class="visited"> </span>
+<a id="L74"></a><span class="visited"> </span>
+<a id="L75"></a><span class="visited"> </span>
+<a id="L76"></a><span class="visited"> </span>
+<a id="L77"></a><span class="unvisited"> </span>
+<a id="L78"></a><span class="unvisited"> </span>
+<a id="L79"></a><span class="unvisited"> </span>
+<a id="L80"></a><span class="visited"> </span>
+<a id="L81"></a><span class="visited"> </span>
+<a id="L82"></a><span class="unvisited"> </span>
+<a id="L83"></a><span > </span>
+<a id="L84"></a><span > </span>
+<a id="L85"></a><span class="visited"> </span>
+<a id="L86"></a><span class="visited"> </span>
+<a id="L87"></a><span class="visited"> </span>
+<a id="L88"></a><span class="visited"> </span>
+<a id="L89"></a><span class="visited"> </span>
+<a id="L90"></a><span class="visited"> </span>
+<a id="L91"></a><span class="visited"> </span>
+<a id="L92"></a><span class="visited"> </span>
+<a id="L93"></a><span class="unvisited"> </span>
+<a id="L94"></a><span class="visited"> </span>
+<a id="L95"></a><span class="visited"> </span>
+<a id="L96"></a><span class="unvisited"> </span>
+<a id="L97"></a><span class="visited"> </span>
+<a id="L98"></a><span class="visited"> </span>
+<a id="L99"></a><span class="visited"> </span>
+<a id="L100"></a><span class="visited"> </span>
+<a id="L101"></a><span class="unvisited"> </span>
+<a id="L102"></a><span class="unvisited"> </span>
+<a id="L103"></a><span class="visited"> </span>
+<a id="L104"></a><span class="visited"> </span>
+<a id="L105"></a><span class="visited"> </span>
+<a id="L106"></a><span class="unvisited"> </span>
+<a id="L107"></a><span class="unvisited"> </span>
+<a id="L108"></a><span class="visited"> </span>
+</pre>
+      </div>
+      <div id="text-layer">
+        <pre id="line-numbers">
+<a href="#L1">  1</a>
+<a href="#L2">  2</a>
+<a href="#L3">  3</a>
+<a href="#L4">  4</a>
+<a href="#L5">  5</a>
+<a href="#L6">  6</a>
+<a href="#L7">  7</a>
+<a href="#L8">  8</a>
+<a href="#L9">  9</a>
+<a href="#L10"> 10</a>
+<a href="#L11"> 11</a>
+<a href="#L12"> 12</a>
+<a href="#L13"> 13</a>
+<a href="#L14"> 14</a>
+<a href="#L15"> 15</a>
+<a href="#L16"> 16</a>
+<a href="#L17"> 17</a>
+<a href="#L18"> 18</a>
+<a href="#L19"> 19</a>
+<a href="#L20"> 20</a>
+<a href="#L21"> 21</a>
+<a href="#L22"> 22</a>
+<a href="#L23"> 23</a>
+<a href="#L24"> 24</a>
+<a href="#L25"> 25</a>
+<a href="#L26"> 26</a>
+<a href="#L27"> 27</a>
+<a href="#L28"> 28</a>
+<a href="#L29"> 29</a>
+<a href="#L30"> 30</a>
+<a href="#L31"> 31</a>
+<a href="#L32"> 32</a>
+<a href="#L33"> 33</a>
+<a href="#L34"> 34</a>
+<a href="#L35"> 35</a>
+<a href="#L36"> 36</a>
+<a href="#L37"> 37</a>
+<a href="#L38"> 38</a>
+<a href="#L39"> 39</a>
+<a href="#L40"> 40</a>
+<a href="#L41"> 41</a>
+<a href="#L42"> 42</a>
+<a href="#L43"> 43</a>
+<a href="#L44"> 44</a>
+<a href="#L45"> 45</a>
+<a href="#L46"> 46</a>
+<a href="#L47"> 47</a>
+<a href="#L48"> 48</a>
+<a href="#L49"> 49</a>
+<a href="#L50"> 50</a>
+<a href="#L51"> 51</a>
+<a href="#L52"> 52</a>
+<a href="#L53"> 53</a>
+<a href="#L54"> 54</a>
+<a href="#L55"> 55</a>
+<a href="#L56"> 56</a>
+<a href="#L57"> 57</a>
+<a href="#L58"> 58</a>
+<a href="#L59"> 59</a>
+<a href="#L60"> 60</a>
+<a href="#L61"> 61</a>
+<a href="#L62"> 62</a>
+<a href="#L63"> 63</a>
+<a href="#L64"> 64</a>
+<a href="#L65"> 65</a>
+<a href="#L66"> 66</a>
+<a href="#L67"> 67</a>
+<a href="#L68"> 68</a>
+<a href="#L69"> 69</a>
+<a href="#L70"> 70</a>
+<a href="#L71"> 71</a>
+<a href="#L72"> 72</a>
+<a href="#L73"> 73</a>
+<a href="#L74"> 74</a>
+<a href="#L75"> 75</a>
+<a href="#L76"> 76</a>
+<a href="#L77"> 77</a>
+<a href="#L78"> 78</a>
+<a href="#L79"> 79</a>
+<a href="#L80"> 80</a>
+<a href="#L81"> 81</a>
+<a href="#L82"> 82</a>
+<a href="#L83"> 83</a>
+<a href="#L84"> 84</a>
+<a href="#L85"> 85</a>
+<a href="#L86"> 86</a>
+<a href="#L87"> 87</a>
+<a href="#L88"> 88</a>
+<a href="#L89"> 89</a>
+<a href="#L90"> 90</a>
+<a href="#L91"> 91</a>
+<a href="#L92"> 92</a>
+<a href="#L93"> 93</a>
+<a href="#L94"> 94</a>
+<a href="#L95"> 95</a>
+<a href="#L96"> 96</a>
+<a href="#L97"> 97</a>
+<a href="#L98"> 98</a>
+<a href="#L99"> 99</a>
+<a href="#L100">100</a>
+<a href="#L101">101</a>
+<a href="#L102">102</a>
+<a href="#L103">103</a>
+<a href="#L104">104</a>
+<a href="#L105">105</a>
+<a href="#L106">106</a>
+<a href="#L107">107</a>
+<a href="#L108">108</a>
+</pre>
+<pre><code class="ocaml">(** Copyright 2024, Mikhail Gavrilenko, Danila Rudnev-Stepanyan*)
+
+(** SPDX-License-Identifier: LGPL-3.0-or-later *)
+
+<span data-count="0">t</span>ype reg =
+  <span data-count="0">|</span> A of int (*function args*)
+  <span data-count="82">|</span> T of int (*temporary*)
+  <span data-count="0">|</span> S of int (*saved*)
+  <span data-count="0">|</span> RA
+  <span data-count="0">|</span> SP
+  <span data-count="0">|</span> Zero
+[@@deriving eq]
+
+<span data-count="0">t</span>ype offset = reg * int [@@deriving eq]
+
+let pp_reg ppf =
+  <span data-count="1283">l</span>et open Format in
+  function
+  | <span data-count="163">A</span> n -&gt; fprintf ppf "a%d" n
+  | <span data-count="438">T</span> n -&gt; fprintf ppf "t%d" n
+  | <span data-count="350">S</span> n -&gt; fprintf ppf "s%d" n
+  | <span data-count="24">Z</span>ero -&gt; fprintf ppf "zero"
+  | <span data-count="56">R</span>A -&gt; fprintf ppf "ra"
+  | <span data-count="252">S</span>P -&gt; fprintf ppf "sp"
+;;
+
+let pp_offset ppf (reg, off) = <span data-count="322">F</span>ormat.fprintf ppf "%d(%a)" off pp_reg reg
+
+<span data-count="0">t</span>ype instr =
+  <span data-count="0">|</span> Addi of reg * reg * in<span data-count="0">t</span> (* ADD immediate *)
+  <span data-count="0">|</span> Add of reg * reg * re<span data-count="0">g</span> (* ADD *)
+  <span data-count="0">|</span> Sub of reg * reg * re<span data-count="0">g</span> (* SUB *)
+  <span data-count="0">|</span> Mul of reg * reg * re<span data-count="0">g</span> (* MUL *)
+  <span data-count="0">|</span> Slt of reg * reg * re<span data-count="0">g</span> (* SLT: set less than (signed) *)
+  <span data-count="0">|</span> Seqz of reg * re<span data-count="0">g</span> (* SEQZ: set equal zero *)
+  <span data-count="0">|</span> Snez of reg * re<span data-count="0">g</span> (* SNEZ: set not equal zero *)
+  <span data-count="0">|</span> Xor of reg * reg * re<span data-count="0">g</span> (* XOR *)
+  <span data-count="0">|</span> Xori of reg * reg * in<span data-count="0">t</span> (* XOR immediate *)
+  <span data-count="0">|</span> Beq of reg * reg * strin<span data-count="0">g</span> (* BEQ: branch if equal *)
+  <span data-count="0">|</span> Blt of reg * reg * strin<span data-count="0">g</span> (* BLT: branch if less than *)
+  <span data-count="0">|</span> Ble of reg * reg * strin<span data-count="0">g</span> (* BLE: branch if less or equal *)
+  <span data-count="0">|</span> Lla of reg * strin<span data-count="0">g</span> (* LLA: load address *)
+  <span data-count="0">|</span> Li of reg * in<span data-count="0">t</span> (* LI: load immediate *)
+  <span data-count="0">|</span> Ld of reg * offse<span data-count="0">t</span> (* LD: load doubleword *)
+  <span data-count="0">|</span> Sd of reg * offse<span data-count="0">t</span> (* SD: store doubleword *)
+  <span data-count="0">|</span> Mv of reg * re<span data-count="0">g</span> (* MV: move *)
+  <span data-count="0">|</span> Comment of string (* Assembler comment *)
+  <span data-count="0">|</span> Label of string (* Assembler label *)
+  <span data-count="0">|</span> Call of string (* CALL *)
+  <span data-count="0">|</span> J of string (* J: jump *)
+  <span data-count="0">|</span> Ecall (* ECALL *)
+  <span data-count="0">|</span> Ret (* return *)
+  <span data-count="0">|</span> La of reg * strin<span data-count="0">g</span> (* Load Address of labeled function into the reg *)
+[@@deriving eq]
+
+let pp_instr ppf =
+  <span data-count="844">l</span>et open Format in
+  function
+  | <span data-count="112">A</span>ddi (r1, r2, im) -&gt; fprintf ppf "addi %a, %a, %d" pp_reg r1 pp_reg r2 im
+  | <span data-count="4">A</span>dd (rd, r1, r2) -&gt; fprintf ppf "add %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
+  | <span data-count="8">S</span>ub (rd, r1, r2) -&gt; fprintf ppf "sub %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
+  | <span data-count="3">M</span>ul (rd, r1, r2) -&gt; fprintf ppf "mul %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
+  | <span data-count="10">S</span>lt (rd, r1, r2) -&gt; fprintf ppf "slt %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
+  | <span data-count="9">X</span>or (rd, r1, r2) -&gt; fprintf ppf "xor %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
+  | <span data-count="7">X</span>ori (rd, r1, im) -&gt; fprintf ppf "xori %a, %a, %d" pp_reg rd pp_reg r1 im
+  | <span data-count="101">L</span>i (r1, n) -&gt; fprintf ppf "li %a, %d" pp_reg r1 n
+  | <span data-count="0">E</span>call -&gt; fprintf ppf "ecall"
+  | <span data-count="41">C</span>all s -&gt; fprintf ppf "call %s" s
+  | <span data-count="28">R</span>et -&gt; fprintf ppf "ret"
+  | <span data-count="0">L</span>la (r1, s) -&gt; fprintf ppf "lla %a, %s" pp_reg r1 s
+  | <span data-count="153">L</span>d (r1, offset) -&gt; fprintf ppf "ld %a, %a" pp_reg r1 pp_offset offset
+  | <span data-count="169">S</span>d (r1, offset) -&gt; fprintf ppf "sd %a, %a" pp_reg r1 pp_offset offset
+  | <span data-count="6">S</span>eqz (rd, r1) -&gt; fprintf ppf "seqz %a, %a" pp_reg rd pp_reg r1
+  | <span data-count="3">S</span>nez (rd, r1) -&gt; fprintf ppf "snez %a, %a" pp_reg rd pp_reg r1
+  | <span data-count="66">M</span>v (r1, r2) -&gt; fprintf ppf "mv %a, %a" pp_reg r1 pp_reg r2
+  | <span data-count="24">B</span>eq (r1, r2, s) -&gt; fprintf ppf "beq %a, %a, %s" pp_reg r1 pp_reg r2 s
+  | <span data-count="0">B</span>lt (r1, r2, s) -&gt; fprintf ppf "blt %a, %a, %s" pp_reg r1 pp_reg r2 s
+  | <span data-count="0">B</span>le (r1, r2, s) -&gt; fprintf ppf "ble %a, %a, %s" pp_reg r1 pp_reg r2 s
+  | <span data-count="0">L</span>a (r, label) -&gt; fprintf ppf "la %a, %s" pp_reg r label
+  | <span data-count="24">J</span> s -&gt; fprintf ppf "j %s" s
+  | <span data-count="76">L</span>abel s -&gt; fprintf ppf "%s:" s
+  | <span data-count="0">C</span>omment s -&gt; fprintf ppf " # %s" s
+;;
+
+let addi k r1 r2 n = <span data-count="112">k</span> @@ Addi (r1, r2, n)
+let add k rd r1 r2 = <span data-count="4">k</span> @@ Add (rd, r1, r2)
+let sub k rd r1 r2 = <span data-count="8">k</span> @@ Sub (rd, r1, r2)
+let mul k rd r1 r2 = <span data-count="3">k</span> @@ Mul (rd, r1, r2)
+let slt k rd r1 r2 = <span data-count="10">k</span> @@ Slt (rd, r1, r2)
+let xor k rd r1 r2 = <span data-count="9">k</span> @@ Xor (rd, r1, r2)
+let xori k rd r1 im = <span data-count="7">k</span> @@ Xori (rd, r1, im)
+let li k r n = <span data-count="101">k</span> (Li (r, n))
+let ecall k = <span data-count="0">k</span> Ecall
+let call k name = <span data-count="41">k</span> (Call name)
+let ret k = <span data-count="28">k</span> Ret
+let lla k a s = <span data-count="0">k</span> (Lla (a, s))
+let ld k a b = <span data-count="153">k</span> (Ld (a, b))
+let sd k a b = <span data-count="169">k</span> (Sd (a, b))
+let mv k a b = <span data-count="66">k</span> (Mv (a, b))
+let beq k r1 r2 r3 = <span data-count="24">k</span> @@ Beq (r1, r2, r3)
+let blt k r1 r2 r3 = <span data-count="0">k</span> @@ Blt (r1, r2, r3)
+let ble k r1 r2 r3 = <span data-count="0">k</span> @@ Ble (r1, r2, r3)
+let seqz k rd r1 = <span data-count="6">k</span> (Seqz (rd, r1))
+let snez k rd r1 = <span data-count="3">k</span> (Snez (rd, r1))
+let j k s = <span data-count="24">k</span> @@ J s
+let la k r label = <span data-count="0">k</span> (La (r, label))
+let comment k s = <span data-count="0">k</span> (Comment s)
+let label k s = <span data-count="76">k</span> (Label s)
+</code></pre>
+      </div>
+    </div>
+    <script src="../../coverage.js"></script>
+  </body>
+</html>
