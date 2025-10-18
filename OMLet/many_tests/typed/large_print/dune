@@ -2,6 +2,6 @@
  (applies_to large_print_test)
  (deps
   ../../../repl/repl.exe
-  fac_anf_exit_code.ml
+  large_print.ml
   ../../../lib/runtime.c
   ../build_and_run.sh))
