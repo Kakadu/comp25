@@ -303,15 +303,15 @@
 let fp = S 0
 
 let pp_reg fmt =
-  <span data-count="328">l</span>et open Format in
+  <span data-count="360">l</span>et open Format in
   function
   | <span data-count="10">Z</span>ero -&gt; fprintf fmt "zero"
   | <span data-count="6">R</span>a -&gt; fprintf fmt "ra"
-  | <span data-count="31">S</span>p -&gt; fprintf fmt "sp"
-  | <span data-count="40">A</span> n when n &gt;= 0 &amp;&amp; <span data-count="40">n</span> &lt;= 7 -&gt; <span data-count="40">f</span>printf fmt "a%d" n
-  | <span data-count="83">S</span> n when n &gt;= 1 &amp;&amp; <span data-count="0">n</span> &lt;= 11 -&gt; <span data-count="0">f</span>printf fmt "s%d" n
-  | <span data-count="83">S</span> n when n = 0 -&gt; <span data-count="83">f</span>printf fmt "fp"
-  | <span data-count="158">T</span> n when n &gt;= 0 &amp;&amp; <span data-count="158">n</span> &lt;= 6 -&gt; <span data-count="158">f</span>printf fmt "t%d" n
+  | <span data-count="42">S</span>p -&gt; fprintf fmt "sp"
+  | <span data-count="45">A</span> n when n &gt;= 0 &amp;&amp; <span data-count="45">n</span> &lt;= 7 -&gt; <span data-count="45">f</span>printf fmt "a%d" n
+  | <span data-count="91">S</span> n when n &gt;= 1 &amp;&amp; <span data-count="0">n</span> &lt;= 11 -&gt; <span data-count="0">f</span>printf fmt "s%d" n
+  | <span data-count="91">S</span> n when n = 0 -&gt; <span data-count="91">f</span>printf fmt "fp"
+  | <span data-count="166">T</span> n when n &gt;= 0 &amp;&amp; <span data-count="166">n</span> &lt;= 6 -&gt; <span data-count="166">f</span>printf fmt "t%d" n
   | <span data-count="0">_</span> -&gt; failwith "invalid register"
 ;;
 
@@ -345,20 +345,20 @@ type instr =
   | Label of string
 
 let pp_instr fmt =
-  <span data-count="218">l</span>et open Format in
+  <span data-count="240">l</span>et open Format in
   function
-  | <span data-count="9">A</span>ddi (rd, rs, n) -&gt; fprintf fmt "addi %a, %a, %d" pp_reg rd pp_reg rs n
+  | <span data-count="14">A</span>ddi (rd, rs, n) -&gt; fprintf fmt "addi %a, %a, %d" pp_reg rd pp_reg rs n
   | <span data-count="1">A</span>dd (rd, rs1, rs2) -&gt; fprintf fmt "add %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | <span data-count="11">S</span>ub (rd, rs1, rs2) -&gt; fprintf fmt "sub %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | <span data-count="1">M</span>ul (rd, rs1, rs2) -&gt; fprintf fmt "mul %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | <span data-count="0">D</span>iv (rd, rs1, rs2) -&gt; fprintf fmt "div %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
-  | <span data-count="43">L</span>i (rd, n) -&gt; fprintf fmt "li %a, %d" pp_reg rd n
-  | <span data-count="43">L</span>d (rd, offset, rs) -&gt; fprintf fmt "ld %a, %d(%a)" pp_reg rd offset pp_reg rs
+  | <span data-count="47">L</span>i (rd, n) -&gt; fprintf fmt "li %a, %d" pp_reg rd n
+  | <span data-count="46">L</span>d (rd, offset, rs) -&gt; fprintf fmt "ld %a, %d(%a)" pp_reg rd offset pp_reg rs
   | <span data-count="2">S</span>lt (rd, rs1, rs2) -&gt; fprintf fmt "slt %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | <span data-count="7">S</span>eqz (rd, rs) -&gt; fprintf fmt "seqz %a, %a" pp_reg rd pp_reg rs
   | <span data-count="1">S</span>nez (rd, rs) -&gt; fprintf fmt "snez %a, %a" pp_reg rd pp_reg rs
-  | <span data-count="10">M</span>v (rd, rs) -&gt; fprintf fmt "mv %a, %a" pp_reg rd pp_reg rs
-  | <span data-count="39">S</span>d (rs1, offset, rs2) -&gt; fprintf fmt "sd %a, %d(%a)" pp_reg rs1 offset pp_reg rs2
+  | <span data-count="12">M</span>v (rd, rs) -&gt; fprintf fmt "mv %a, %a" pp_reg rd pp_reg rs
+  | <span data-count="43">S</span>d (rs1, offset, rs2) -&gt; fprintf fmt "sd %a, %d(%a)" pp_reg rs1 offset pp_reg rs2
   | <span data-count="1">X</span>ori (rd, rs, n) -&gt; fprintf fmt "xori %a, %a, %d" pp_reg rd pp_reg rs n
   | <span data-count="0">X</span>or (rd, rs1, rs2) -&gt; fprintf fmt "xor %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | <span data-count="0">A</span>ndi (rd, rs, n) -&gt; fprintf fmt "andi %a, %a, %d" pp_reg rd pp_reg rs n
@@ -368,24 +368,24 @@ let pp_instr fmt =
   | <span data-count="10">B</span>eq (rs1, rs2, label) -&gt; fprintf fmt "beq %a, %a, %s" pp_reg rs1 pp_reg rs2 label
   | <span data-count="0">B</span>le (rs1, rs2, label) -&gt; fprintf fmt "ble %a, %a, %s" pp_reg rs1 pp_reg rs2 label
   | <span data-count="10">J</span> label -&gt; fprintf fmt "j %s" label
-  | <span data-count="4">E</span>call -&gt; fprintf fmt "ecall"
-  | <span data-count="23">C</span>all symbol -&gt; fprintf fmt "call %s" symbol
+  | <span data-count="5">E</span>call -&gt; fprintf fmt "ecall"
+  | <span data-count="26">C</span>all symbol -&gt; fprintf fmt "call %s" symbol
   | <span data-count="3">R</span>et -&gt; fprintf fmt "ret"
   | <span data-count="0">L</span>abel label -&gt; fprintf fmt "%s:" label
 ;;
 
-let addi r1 r2 n = <span data-count="9">A</span>ddi (r1, r2, n)
+let addi r1 r2 n = <span data-count="14">A</span>ddi (r1, r2, n)
 let add r1 r2 r3 = <span data-count="1">A</span>dd (r1, r2, r3)
 let sub r1 r2 r3 = <span data-count="11">S</span>ub (r1, r2, r3)
 let mul r1 r2 r3 = <span data-count="1">M</span>ul (r1, r2, r3)
 let div r1 r2 r3 = <span data-count="0">D</span>iv (r1, r2, r3)
-let li r n = <span data-count="43">L</span>i (r, n)
-let ld r off base = <span data-count="43">L</span>d (r, off, base)
+let li r n = <span data-count="47">L</span>i (r, n)
+let ld r off base = <span data-count="46">L</span>d (r, off, base)
 let slt r1 r2 r3 = <span data-count="2">S</span>lt (r1, r2, r3)
 let seqz r1 r2 = <span data-count="7">S</span>eqz (r1, r2)
 let snez r1 r2 = <span data-count="1">S</span>nez (r1, r2)
-let mv r1 r2 = <span data-count="10">M</span>v (r1, r2)
-let sd r1 off base = <span data-count="39">S</span>d (r1, off, base)
+let mv r1 r2 = <span data-count="12">M</span>v (r1, r2)
+let sd r1 off base = <span data-count="43">S</span>d (r1, off, base)
 let xori r1 r2 n = <span data-count="1">X</span>ori (r1, r2, n)
 let xor r1 r2 r3 = <span data-count="0">X</span>or (r1, r2, r3)
 let andi r1 r2 n = <span data-count="0">A</span>ndi (r1, r2, n)
@@ -396,9 +396,9 @@ let beq r1 r2 label = <span data-count="10">B</span>eq (r1, r2, label)
 let ble r1 r2 label = <span data-count="0">B</span>le (r1, r2, label)
 let j label = <span data-count="10">J</span> label
 let ecall = Ecall
-let call symbol = <span data-count="23">C</span>all symbol
+let call symbol = <span data-count="26">C</span>all symbol
 let ret = Ret
-let label l = <span data-count="27">L</span>abel l
+let label l = <span data-count="28">L</span>abel l
 </code></pre>
       </div>
     </div>

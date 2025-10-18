@@ -1572,45 +1572,45 @@ end = struct
 
   let bind m ~f =
     fun st -&gt;
-    <span data-count="48947">l</span>et last, r = m st in
-    <span data-count="48947">m</span>atch r with
+    <span data-count="49185">l</span>et last, r = m st in
+    <span data-count="49185">m</span>atch r with
     | <span data-count="45">R</span>esult.Error x -&gt; last, Error x
-    | <span data-count="48902">O</span>k a -&gt; f a last
+    | <span data-count="49140">O</span>k a -&gt; f a last
   ;;
 
   (* is called to cover result in fail or ok constructions *)
   let fail e st = <span data-count="6">s</span>t, Base.Result.fai<span data-count="6">l</span> e
-  let return x last = <span data-count="48171">l</span>ast, Base.Result.retur<span data-count="48171">n</span> x
+  let return x last = <span data-count="48404">l</span>ast, Base.Result.retur<span data-count="48404">n</span> x
 
   module Syntax = struct
     let ( &gt;&gt;= ) x f = <span data-count="0">b</span>ind x ~f
-    let ( let* ) x f = <span data-count="48947">b</span>ind x ~f
+    let ( let* ) x f = <span data-count="49185">b</span>ind x ~f
 
     let ( &gt;&gt;| ) : 'a 'b. 'a t -&gt; ('a -&gt; 'b) -&gt; 'b t =
       fun x f st -&gt;
-      <span data-count="899">m</span>atch x st with
-      | <span data-count="899">s</span>t, Ok x -&gt; st, Ok (<span data-count="899">f</span> x)
+      <span data-count="909">m</span>atch x st with
+      | <span data-count="909">s</span>t, Ok x -&gt; st, Ok (<span data-count="909">f</span> x)
       | <span data-count="0">s</span>t, Result.Error e -&gt; st, Result.Error e
     ;;
   end
 
   let fold xs ~init ~f =
-    <span data-count="471">l</span>et open Syntax in
+    <span data-count="473">l</span>et open Syntax in
     Base.List.fold_left xs ~init ~f:(fun acc x -&gt;
-      <span data-count="1451">l</span>et* acc = acc in
-      <span data-count="1450">f</span> acc x)
+      <span data-count="1457">l</span>et* acc = acc in
+      <span data-count="1456">f</span> acc x)
   ;;
 
   let fold_map map ~init ~f =
-    <span data-count="5771">l</span>et open Syntax in
+    <span data-count="5815">l</span>et open Syntax in
     Map.fold map ~init ~f:(fun ~key ~data acc -&gt;
-      <span data-count="18258">l</span>et* acc = acc in
-      <span data-count="18258">f</span> key data acc)
+      <span data-count="18322">l</span>et* acc = acc in
+      <span data-count="18322">f</span> key data acc)
   ;;
 
   (* takes current state, returns state + 1 *)
-  let fresh : int t = fun last -&gt; <span data-count="757">l</span>ast + 1, Result.Ok last
-  let run m = <span data-count="32">m</span>
+  let fresh : int t = fun last -&gt; <span data-count="763">l</span>ast + 1, Result.Ok last
+  let run m = <span data-count="33">m</span>
 end
 
 type fresh = int
@@ -1626,7 +1626,7 @@ end = struct
   (* check that v is not inside of second type.
      Runs during substitution to ensure that there are no cycles*)
   let rec occurs_in v = function
-    | <span data-count="26803">P</span>rimitive _ -&gt; false
+    | <span data-count="26873">P</span>rimitive _ -&gt; false
     | <span data-count="10081">T</span>ype_var b -&gt; b = v
     | <span data-count="16870">A</span>rrow (fst, snd) -&gt; occurs_i<span data-count="16870">n</span> v fs<span data-count="1">t</span> || occurs_in v snd
     | <span data-count="2616">T</span>ype_list typ -&gt; occurs_in v typ
@@ -1637,14 +1637,14 @@ end = struct
   (* collects all type variables *)
   let free_vars =
     let rec helper acc = function
-      | <span data-count="5299">P</span>rimitive _ -&gt; acc
-      | <span data-count="1838">T</span>ype_var b -&gt; VarSet.add b acc
-      | <span data-count="4461">A</span>rrow (fst, snd) -&gt; helper (helpe<span data-count="4461">r</span> acc fst) snd
-      | <span data-count="490">T</span>ype_list typ -&gt; helper acc typ
+      | <span data-count="5456">P</span>rimitive _ -&gt; acc
+      | <span data-count="1866">T</span>ype_var b -&gt; VarSet.add b acc
+      | <span data-count="4577">A</span>rrow (fst, snd) -&gt; helper (helpe<span data-count="4577">r</span> acc fst) snd
+      | <span data-count="498">T</span>ype_list typ -&gt; helper acc typ
       | <span data-count="112">T</span>ype_tuple (fst, snd, rest) -&gt; List.fold (fst :: snd :: rest) ~init:acc ~f:helper
       | <span data-count="0">T</span>Option t -&gt; helper acc t
     in
-    helpe<span data-count="81">r</span> VarSet.empty
+    helpe<span data-count="82">r</span> VarSet.empty
   ;;
 end
 
@@ -1667,17 +1667,17 @@ end = struct
   (* substitutions itself: map fresh to typ *)
   type t = (fresh, typ, Int.comparator_witness) Map.t
 
-  let empty = Map.empt<span data-count="81">y</span> (module Int)
+  let empty = Map.empt<span data-count="82">y</span> (module Int)
   (* let pp fmt s = Map.iteri s ~f:(fun ~key ~data -&gt; fprintf fmt "%d: %a" key pp_typ data) *)
 
   (* perform mapping of fresh var to typ with occurs check, if correct,
      output new pair *)
-  let mapping k v = <span data-count="19005">i</span>f Type.occurs_in k v then <span data-count="1">f</span>ail `Occurs_check else <span data-count="19004">r</span>eturn (k, v)
+  let mapping k v = <span data-count="19075">i</span>f Type.occurs_in k v then <span data-count="1">f</span>ail `Occurs_check else <span data-count="19074">r</span>eturn (k, v)
 
   (* perform mapping, if correct, create map w 1 element as described in type t *)
   let singleton k v =
-    <span data-count="4333">l</span>et* k, v = mappin<span data-count="4333">g</span> k v in
-    <span data-count="4332">r</span>eturn (Map.singleto<span data-count="4332">n</span> (module Int) k v)
+    <span data-count="4364">l</span>et* k, v = mappin<span data-count="4364">g</span> k v in
+    <span data-count="4363">r</span>eturn (Map.singleto<span data-count="4363">n</span> (module Int) k v)
   ;;
 
   let find = Map.find
@@ -1687,16 +1687,16 @@ end = struct
      input type, else output found typ value associated w this key.
      Basically narrow given type to conditions given in substitution *)
   let apply map =
-    <span data-count="34835">l</span>et rec helper = function
-      | <span data-count="21487">T</span>ype_var b as typ -&gt;
+    <span data-count="35084">l</span>et rec helper = function
+      | <span data-count="21567">T</span>ype_var b as typ -&gt;
         (match find map b with
-         | <span data-count="20204">N</span>one -&gt; typ
-         | <span data-count="1283">S</span>ome x -&gt; x)
-      | <span data-count="43662">A</span>rrow (fst, snd) -&gt; Arrow (helpe<span data-count="43662">r</span> fst, helpe<span data-count="43662">r</span> snd)
-      | <span data-count="5146">T</span>ype_list t -&gt; Type_list (helpe<span data-count="5146">r</span> t)
+         | <span data-count="20278">N</span>one -&gt; typ
+         | <span data-count="1289">S</span>ome x -&gt; x)
+      | <span data-count="43954">A</span>rrow (fst, snd) -&gt; Arrow (helpe<span data-count="43954">r</span> fst, helpe<span data-count="43954">r</span> snd)
+      | <span data-count="5166">T</span>ype_list t -&gt; Type_list (helpe<span data-count="5166">r</span> t)
       | <span data-count="1577">T</span>ype_tuple (fst, snd, rest) -&gt;
         Type_tuple (helpe<span data-count="1577">r</span> fst, helpe<span data-count="1577">r</span> snd, List.ma<span data-count="1577">p</span> rest ~f:helper)
-      | <span data-count="58587">P</span>rimitive t -&gt; Primitive t
+      | <span data-count="59048">P</span>rimitive t -&gt; Primitive t
       | <span data-count="0">T</span>Option t -&gt; TOption (helpe<span data-count="0">r</span> t)
     in
     helper
@@ -1705,14 +1705,14 @@ end = struct
   (* check that two types are compatible. in third case put new pair of type_var
      and type into context (map) *)
   let rec unify fst snd =
-    <span data-count="1627">m</span>atch fst, snd with
-    | <span data-count="318">P</span>rimitive fst, Primitive snd when String.equa<span data-count="318">l</span> fst snd -&gt; <span data-count="316">r</span>eturn empty
+    <span data-count="1637">m</span>atch fst, snd with
+    | <span data-count="320">P</span>rimitive fst, Primitive snd when String.equa<span data-count="320">l</span> fst snd -&gt; <span data-count="318">r</span>eturn empty
     | <span data-count="166">T</span>ype_var f, Type_var s when Int.equa<span data-count="166">l</span> f s -&gt; <span data-count="68">r</span>eturn empty
-    | <span data-count="316">T</span>ype_var b, t | <span data-count="438">t</span>, Type_var b -&gt; singleton b t
-    | <span data-count="423">A</span>rrow (f1, s1), Arrow (f2, s2) -&gt;
-      let* subst1 = unif<span data-count="423">y</span> f1 f2 in
-      <span data-count="422">l</span>et* subst2 = unif<span data-count="422">y</span> s1 s2 in
-      <span data-count="422">c</span>ompose subst1 subst2
+    | <span data-count="320">T</span>ype_var b, t | <span data-count="440">t</span>, Type_var b -&gt; singleton b t
+    | <span data-count="425">A</span>rrow (f1, s1), Arrow (f2, s2) -&gt;
+      let* subst1 = unif<span data-count="425">y</span> f1 f2 in
+      <span data-count="424">l</span>et* subst2 = unif<span data-count="424">y</span> s1 s2 in
+      <span data-count="424">c</span>ompose subst1 subst2
     | <span data-count="58">T</span>ype_list t1, Type_list t2 -&gt; unify t1 t2
     | <span data-count="0">T</span>Option t1, TOption t2 -&gt; unify t1 t2
     | <span data-count="6">T</span>ype_tuple (t1_1, t1_2, t1_rest), Type_tuple (t2_1, t2_2, t2_rest)
@@ -1731,20 +1731,20 @@ end = struct
   (* if value associated w this key exists in map, try to unify them, otherwise
      get old substitution, form new singleton, update map so in contains new info *)
   and extend key value map =
-    <span data-count="3586">m</span>atch find map key with
+    <span data-count="3611">m</span>atch find map key with
     | <span data-count="64">S</span>ome value2 -&gt;
       let* map2 = unif<span data-count="64">y</span> value value2 in
       <span data-count="63">c</span>ompose map map2
-    | <span data-count="3522">N</span>one -&gt;
+    | <span data-count="3547">N</span>one -&gt;
       let value = apply map value in
-      <span data-count="3522">l</span>et* map2 = singleto<span data-count="3522">n</span> key value in
-      <span data-count="3522">f</span>old_map map ~init:(retur<span data-count="3522">n</span> map2) ~f:(fun key value acc -&gt;
-        <span data-count="14672">l</span>et value = apply map2 value in
-        <span data-count="14672">l</span>et* key, value = mappin<span data-count="14672">g</span> key value in
-        <span data-count="14672">r</span>eturn (Map.updat<span data-count="14672">e</span> acc key ~f:(fun _ -&gt; <span data-count="14672">v</span>alue)))
+      <span data-count="3547">l</span>et* map2 = singleto<span data-count="3547">n</span> key value in
+      <span data-count="3547">f</span>old_map map ~init:(retur<span data-count="3547">n</span> map2) ~f:(fun key value acc -&gt;
+        <span data-count="14711">l</span>et value = apply map2 value in
+        <span data-count="14711">l</span>et* key, value = mappin<span data-count="14711">g</span> key value in
+        <span data-count="14711">r</span>eturn (Map.updat<span data-count="14711">e</span> acc key ~f:(fun _ -&gt; <span data-count="14711">v</span>alue)))
 
-  and compose map1 map2 = <span data-count="2249">f</span>old_map map2 ~init:(retur<span data-count="2249">n</span> map1) ~f:extend
-  and compose_all maps = <span data-count="471">f</span>old maps ~init:(retur<span data-count="471">n</span> empty) ~f:compose
+  and compose map1 map2 = <span data-count="2268">f</span>old_map map2 ~init:(retur<span data-count="2268">n</span> map1) ~f:extend
+  and compose_all maps = <span data-count="473">f</span>old maps ~init:(retur<span data-count="473">n</span> empty) ~f:compose
 end
 
 module Scheme : sig
@@ -1760,14 +1760,14 @@ end = struct
 
   (* take all vars that are not bound in typ *)
   let free_vars = function
-    | <span data-count="2436">S</span>cheme (vars, t) -&gt; VarSet.diff (Type.free_var<span data-count="2436">s</span> t) vars
+    | <span data-count="2501">S</span>cheme (vars, t) -&gt; VarSet.diff (Type.free_var<span data-count="2501">s</span> t) vars
   ;;
 
   (* take substitution and scheme, remove its free vars from substitution,
      form new scheme according to substitution (apply it to typ) *)
   let apply subst (Scheme (vars, t)) =
-    <span data-count="15338">l</span>et subst2 = VarSet.fold (fun key s -&gt; <span data-count="3639">S</span>ubstitution.remove s key) vars subst in
-    <span data-count="15338">S</span>cheme (vars, Substitution.appl<span data-count="15338">y</span> subst2 t)
+    <span data-count="15511">l</span>et subst2 = VarSet.fold (fun key s -&gt; <span data-count="3669">S</span>ubstitution.remove s key) vars subst in
+    <span data-count="15511">S</span>cheme (vars, Substitution.appl<span data-count="15511">y</span> subst2 t)
   ;;
 
   (* let pp = pp_scheme *)
@@ -1796,10 +1796,10 @@ end = struct
 
   (* if pair (key, some old value) exists in map env, then replace old value
      with new, else add pair (key, value) into map *)
-  let extend env key value = <span data-count="374">M</span>ap.update env key ~f:(fun _ -&gt; <span data-count="374">v</span>alue)
+  let extend env key value = <span data-count="382">M</span>ap.update env key ~f:(fun _ -&gt; <span data-count="382">v</span>alue)
 
   let extend_many env list =
-    <span data-count="142">L</span>ist.fold list ~init:env ~f:(fun env (k, v) -&gt; <span data-count="128">e</span>xtend env k v)
+    <span data-count="146">L</span>ist.fold list ~init:env ~f:(fun env (k, v) -&gt; <span data-count="132">e</span>xtend env k v)
   ;;
 
   let pp fmt (env : t) =
@@ -1808,33 +1808,33 @@ end = struct
       | <span data-count="53">S</span>cheme (_, typ) -&gt; fprintf fmt "val %s : %a\n" key pp_typ typ)
   ;;
 
-  let diff env1 env2 = <span data-count="26">M</span>ap.filter_keys env1 ~f:(fun k -&gt; <span data-count="483">n</span>ot (Map.me<span data-count="483">m</span> env2 k))
+  let diff env1 env2 = <span data-count="27">M</span>ap.filter_keys env1 ~f:(fun k -&gt; <span data-count="500">n</span>ot (Map.me<span data-count="500">m</span> env2 k))
   let remove = Map.remove
-  let remove_many t keys = <span data-count="119">L</span>ist.fold ~init:t keys ~f:remove
+  let remove_many t keys = <span data-count="123">L</span>ist.fold ~init:t keys ~f:remove
 
   let default : t * fresh =
-    let fresh st = <span data-count="243">s</span>t + 1 in
+    let fresh st = <span data-count="246">s</span>t + 1 in
     let tv = 0 in
     let eq_s =
-      Scheme (VarSet.singleto<span data-count="81">n</span> tv, arrow_<span data-count="81">t</span> [ typeva<span data-count="81">r</span> tv; typeva<span data-count="81">r</span> tv ] bool_typ)
+      Scheme (VarSet.singleto<span data-count="82">n</span> tv, arrow_<span data-count="82">t</span> [ typeva<span data-count="82">r</span> tv; typeva<span data-count="82">r</span> tv ] bool_typ)
     in
     let tv = fresh tv in
-    <span data-count="81">l</span>et uneq_s =
-      Scheme (VarSet.singleto<span data-count="81">n</span> tv, arrow_<span data-count="81">t</span> [ typeva<span data-count="81">r</span> tv; typeva<span data-count="81">r</span> tv ] bool_typ)
+    <span data-count="82">l</span>et uneq_s =
+      Scheme (VarSet.singleto<span data-count="82">n</span> tv, arrow_<span data-count="82">t</span> [ typeva<span data-count="82">r</span> tv; typeva<span data-count="82">r</span> tv ] bool_typ)
     in
-    let bcomp_s = Scheme (VarSet.empty, arrow_<span data-count="81">t</span> [ int_typ; int_typ ] bool_typ) in
-    let bint_s = Scheme (VarSet.empty, arrow_<span data-count="81">t</span> [ int_typ; int_typ ] int_typ) in
-    let bbool_s = Scheme (VarSet.empty, arrow_<span data-count="81">t</span> [ bool_typ; bool_typ ] bool_typ) in
+    let bcomp_s = Scheme (VarSet.empty, arrow_<span data-count="82">t</span> [ int_typ; int_typ ] bool_typ) in
+    let bint_s = Scheme (VarSet.empty, arrow_<span data-count="82">t</span> [ int_typ; int_typ ] int_typ) in
+    let bbool_s = Scheme (VarSet.empty, arrow_<span data-count="82">t</span> [ bool_typ; bool_typ ] bool_typ) in
     let tv = fresh tv in
-    <span data-count="81">l</span>et cons_s =
+    <span data-count="82">l</span>et cons_s =
       Scheme
-        ( VarSet.singleto<span data-count="81">n</span> tv
-        , arrow_<span data-count="81">t</span> [ typeva<span data-count="81">r</span> tv; Type_list (typeva<span data-count="81">r</span> tv) ] (Type_list (typeva<span data-count="81">r</span> tv)) )
+        ( VarSet.singleto<span data-count="82">n</span> tv
+        , arrow_<span data-count="82">t</span> [ typeva<span data-count="82">r</span> tv; Type_list (typeva<span data-count="82">r</span> tv) ] (Type_list (typeva<span data-count="82">r</span> tv)) )
     in
-    let uminus_s = Scheme (VarSet.empty, arrow_<span data-count="81">t</span> [ int_typ ] int_typ) in
-    let bool_not = Scheme (VarSet.empty, arrow_<span data-count="81">t</span> [ bool_typ ] bool_typ) in
-    let print_int_s = Scheme (VarSet.empty, arrow_<span data-count="81">t</span> [ int_typ ] unit_typ) in
-    ( Map.of_alist_ex<span data-count="81">n</span>
+    let uminus_s = Scheme (VarSet.empty, arrow_<span data-count="82">t</span> [ int_typ ] int_typ) in
+    let bool_not = Scheme (VarSet.empty, arrow_<span data-count="82">t</span> [ bool_typ ] bool_typ) in
+    let print_int_s = Scheme (VarSet.empty, arrow_<span data-count="82">t</span> [ int_typ ] unit_typ) in
+    ( Map.of_alist_ex<span data-count="82">n</span>
         (module String)
         [ "=", eq_s
         ; "&lt;&gt;", uneq_s
@@ -1853,10 +1853,10 @@ end = struct
         ; "~-", uminus_s
         ; "print_int", print_int_s
         ]
-    , fres<span data-count="81">h</span> tv )
+    , fres<span data-count="82">h</span> tv )
   ;;
 
-  let apply subst env = <span data-count="766">M</span>ap.map env ~f:(Scheme.appl<span data-count="766">y</span> subst)
+  let apply subst env = <span data-count="776">M</span>ap.map env ~f:(Scheme.appl<span data-count="776">y</span> subst)
   let find = Map.find
   let find_exn = Map.find_exn
 
@@ -1867,13 +1867,13 @@ end = struct
   ;;
 
   let find_typ_exn env key =
-    <span data-count="128">m</span>atch find_exn env key with
-    | <span data-count="128">S</span>cheme (_, typ) -&gt; typ
+    <span data-count="132">m</span>atch find_exn env key with
+    | <span data-count="132">S</span>cheme (_, typ) -&gt; typ
   ;;
 
   let free_vars : t -&gt; VarSet.t =
     Map.fold ~init:VarSet.empty ~f:(fun ~key:_ ~data:s acc -&gt;
-      <span data-count="2436">V</span>arSet.union acc (Scheme.free_var<span data-count="2436">s</span> s))
+      <span data-count="2501">V</span>arSet.union acc (Scheme.free_var<span data-count="2501">s</span> s))
   ;;
 end
 
@@ -1882,27 +1882,27 @@ open R.Syntax
 module ExtractIdents = ExtractIdents.Make (R)
 open ExtractIdents
 
-let make_fresh_var = fresh &gt;&gt;<span data-count="81">|</span> fun n -&gt; <span data-count="757">T</span>ype_var n
+let make_fresh_var = fresh &gt;&gt;<span data-count="82">|</span> fun n -&gt; <span data-count="763">T</span>ype_var n
 let unify = Substitution.unify
 
 (* replace all type vars with fresh ones *)
 let instantiate : scheme -&gt; typ R.t =
   fun (Scheme (vars, t)) -&gt;
-  <span data-count="438">V</span>arSet.fold
+  <span data-count="442">V</span>arSet.fold
     (fun name typ -&gt;
        <span data-count="57">l</span>et* typ = typ in
        <span data-count="57">l</span>et* fr_var = make_fresh_var in
        <span data-count="57">l</span>et* subst = Substitution.singleto<span data-count="57">n</span> name fr_var in
        <span data-count="57">r</span>eturn (Substitution.appl<span data-count="57">y</span> subst typ))
     vars
-    (retur<span data-count="438">n</span> t)
+    (retur<span data-count="442">n</span> t)
 ;;
 
 (* take free vars of type t and environment, put difference between them
    in S constructor so all vars are context independent *)
 let generalize env typ =
-  <span data-count="128">l</span>et free = VarSet.diff (Type.free_var<span data-count="128">s</span> typ) (TypeEnv.free_var<span data-count="128">s</span> env) in
-  <span data-count="128">S</span>cheme (free, typ)
+  <span data-count="132">l</span>et free = VarSet.diff (Type.free_var<span data-count="132">s</span> typ) (TypeEnv.free_var<span data-count="132">s</span> env) in
+  <span data-count="132">S</span>cheme (free, typ)
 ;;
 
 let rec find_args_type = function
@@ -1912,7 +1912,7 @@ let rec find_args_type = function
 ;;
 
 let infer_lt = function
-  | <span data-count="164">I</span>nt_lt _ -&gt; return int_typ
+  | <span data-count="166">I</span>nt_lt _ -&gt; return int_typ
   | <span data-count="8">B</span>ool_lt _ -&gt; return bool_typ
   | <span data-count="30">U</span>nit_lt -&gt; return unit_typ
 ;;
@@ -1924,12 +1924,12 @@ let rec infer_pattern env ~shadow = function
   | <span data-count="28">P</span>Const lt -&gt;
     let* t = infer_l<span data-count="28">t</span> lt in
     <span data-count="28">r</span>eturn (env, t)
-  | <span data-count="270">P</span>Var name -&gt;
+  | <span data-count="274">P</span>Var name -&gt;
     let* fresh = make_fresh_var in
-    <span data-count="270">l</span>et scheme = Scheme (VarSet.empty, fresh) in
+    <span data-count="274">l</span>et scheme = Scheme (VarSet.empty, fresh) in
     let env, typ =
       if shadow
-      then <span data-count="246">T</span>ypeEnv.exten<span data-count="246">d</span> env name scheme, fresh
+      then <span data-count="250">T</span>ypeEnv.exten<span data-count="250">d</span> env name scheme, fresh
       else <span data-count="24">(</span>
         let typ = TypeEnv.find_typ env name in
         <span data-count="24">e</span>nv, Option.valu<span data-count="24">e</span> typ ~default:fresh)
@@ -2009,21 +2009,21 @@ let extend_env_with_bind_names env binds =
 ;;
 
 let check_bind_correctness is_rec (bind : binding) =
-  <span data-count="125">m</span>atch bind, is_rec with
-  | <span data-count="95">(</span>PVar _, _), _ -&gt; return bind
+  <span data-count="129">m</span>atch bind, is_rec with
+  | <span data-count="99">(</span>PVar _, _), _ -&gt; return bind
   | <span data-count="2">_</span>, Rec -&gt; fail `Not_allowed_left_hand_side_let_rec
   | <span data-count="28">_</span> -&gt; return bind
 ;;
 
 let rec infer_expr env = function
-  | <span data-count="174">C</span>onst lt -&gt;
-    let* t = infer_l<span data-count="174">t</span> lt in
-    <span data-count="174">r</span>eturn (Substitution.empty, t)
-  | <span data-count="439">V</span>ariable varname -&gt;
+  | <span data-count="176">C</span>onst lt -&gt;
+    let* t = infer_l<span data-count="176">t</span> lt in
+    <span data-count="176">r</span>eturn (Substitution.empty, t)
+  | <span data-count="443">V</span>ariable varname -&gt;
     (match TypeEnv.find env varname with
-     | <span data-count="438">S</span>ome s -&gt;
-       let* t = instantiat<span data-count="438">e</span> s in
-       <span data-count="438">r</span>eturn (Substitution.empty, t)
+     | <span data-count="442">S</span>ome s -&gt;
+       let* t = instantiat<span data-count="442">e</span> s in
+       <span data-count="442">r</span>eturn (Substitution.empty, t)
      | <span data-count="1">N</span>one -&gt; fail (`Undef_var varname))
   | <span data-count="0">O</span>ption None -&gt;
     let* fresh_typ = make_fresh_var in
@@ -2081,14 +2081,14 @@ let rec infer_expr env = function
     <span data-count="0">l</span>et* subst3 = unif<span data-count="0">y</span> typ1 bool_typ in
     <span data-count="0">l</span>et* subst_result = Substitution.compose_al<span data-count="0">l</span> [ subst1; subst2; subst3 ] in
     <span data-count="0">r</span>eturn (subst_result, Substitution.appl<span data-count="0">y</span> subst2 typ2)
-  | <span data-count="409">A</span>pply (f, arg) -&gt;
-    let* subst1, typ1 = infer_exp<span data-count="409">r</span> env f in
-    <span data-count="405">l</span>et* subst2, typ2 = infer_exp<span data-count="405">r</span> (TypeEnv.appl<span data-count="405">y</span> subst1 env) arg in
-    <span data-count="403">l</span>et typ1 = Substitution.apply subst2 typ1 in
-    <span data-count="403">l</span>et* fresh_var = make_fresh_var in
-    <span data-count="403">l</span>et* subst3 = unif<span data-count="403">y</span> typ1 (Arrow (typ2, fresh_var)) in
-    <span data-count="402">l</span>et* subst_result = Substitution.compose_al<span data-count="402">l</span> [ subst1; subst2; subst3 ] in
-    <span data-count="402">r</span>eturn (subst_result, Substitution.appl<span data-count="402">y</span> subst3 fresh_var)
+  | <span data-count="411">A</span>pply (f, arg) -&gt;
+    let* subst1, typ1 = infer_exp<span data-count="411">r</span> env f in
+    <span data-count="407">l</span>et* subst2, typ2 = infer_exp<span data-count="407">r</span> (TypeEnv.appl<span data-count="407">y</span> subst1 env) arg in
+    <span data-count="405">l</span>et typ1 = Substitution.apply subst2 typ1 in
+    <span data-count="405">l</span>et* fresh_var = make_fresh_var in
+    <span data-count="405">l</span>et* subst3 = unif<span data-count="405">y</span> typ1 (Arrow (typ2, fresh_var)) in
+    <span data-count="404">l</span>et* subst_result = Substitution.compose_al<span data-count="404">l</span> [ subst1; subst2; subst3 ] in
+    <span data-count="404">r</span>eturn (subst_result, Substitution.appl<span data-count="404">y</span> subst3 fresh_var)
   | <span data-count="119">L</span>ambda (arg, e) -&gt;
     let* env, arg_types = infer_pattern<span data-count="119">s</span> env ~shadow:true [ arg ] in
     <span data-count="119">l</span>et* subst, e_type = infer_exp<span data-count="119">r</span> env e in
@@ -2099,11 +2099,11 @@ let rec infer_expr env = function
     <span data-count="2">l</span>et* subst2, typ = infer_exp<span data-count="2">r</span> env e in
     <span data-count="2">l</span>et* subst_final = Substitution.compos<span data-count="2">e</span> subst1 subst2 in
     <span data-count="2">r</span>eturn (subst_final, typ)
-  | <span data-count="49">L</span>etIn (Nonrec, bind, e) -&gt;
-    let* env, subst1 = extend_env_with_bind<span data-count="49">s</span> env Nonrec [ bind ] in
-    <span data-count="49">l</span>et* subst2, typ = infer_exp<span data-count="49">r</span> env e in
-    <span data-count="49">l</span>et* subst_final = Substitution.compos<span data-count="49">e</span> subst1 subst2 in
-    <span data-count="49">r</span>eturn (subst_final, typ)
+  | <span data-count="52">L</span>etIn (Nonrec, bind, e) -&gt;
+    let* env, subst1 = extend_env_with_bind<span data-count="52">s</span> env Nonrec [ bind ] in
+    <span data-count="52">l</span>et* subst2, typ = infer_exp<span data-count="52">r</span> env e in
+    <span data-count="52">l</span>et* subst_final = Substitution.compos<span data-count="52">e</span> subst1 subst2 in
+    <span data-count="52">r</span>eturn (subst_final, typ)
   | <span data-count="0">F</span>unction ((p1, e1), rest) -&gt;
     let* match_t = make_fresh_var in
     <span data-count="0">l</span>et* return_t = make_fresh_var in
@@ -2153,67 +2153,67 @@ and infer_matching_expr env cases subst_init match_t return_t ~with_arg =
   return (subst, final_typ)
 
 and extend_env_with_binds env is_rec binds =
-  <span data-count="124">L</span>ist.fold
+  <span data-count="128">L</span>ist.fold
     binds
-    ~init:(retur<span data-count="124">n</span> (env, Substitution.empty))
+    ~init:(retur<span data-count="128">n</span> (env, Substitution.empty))
     ~f:(fun acc bind -&gt;
-      <span data-count="125">l</span>et* env, subst_acc = acc in
-      <span data-count="125">l</span>et* subst, names_schemes_list = infer_bin<span data-count="125">d</span> env is_rec bind in
-      <span data-count="119">l</span>et env = TypeEnv.extend_many env names_schemes_list in
-      <span data-count="119">l</span>et env = TypeEnv.apply subst env in
-      <span data-count="119">l</span>et* subst_acc = Substitution.compos<span data-count="119">e</span> subst_acc subst in
-      <span data-count="119">r</span>eturn (env, subst_acc))
+      <span data-count="129">l</span>et* env, subst_acc = acc in
+      <span data-count="129">l</span>et* subst, names_schemes_list = infer_bin<span data-count="129">d</span> env is_rec bind in
+      <span data-count="123">l</span>et env = TypeEnv.extend_many env names_schemes_list in
+      <span data-count="123">l</span>et env = TypeEnv.apply subst env in
+      <span data-count="123">l</span>et* subst_acc = Substitution.compos<span data-count="123">e</span> subst_acc subst in
+      <span data-count="123">r</span>eturn (env, subst_acc))
 
 and infer_bind env is_rec bind =
-  <span data-count="125">l</span>et* name, e = check_bind_correctnes<span data-count="125">s</span> is_rec bind in
-  <span data-count="123">l</span>et* subst1, rvalue_type = infer_exp<span data-count="123">r</span> env e in
-  <span data-count="119">l</span>et bind_type = Substitution.apply subst1 rvalue_type in
+  <span data-count="129">l</span>et* name, e = check_bind_correctnes<span data-count="129">s</span> is_rec bind in
+  <span data-count="127">l</span>et* subst1, rvalue_type = infer_exp<span data-count="127">r</span> env e in
+  <span data-count="123">l</span>et bind_type = Substitution.apply subst1 rvalue_type in
   (* If bind is recursive, then name was already in environment *)
-  <span data-count="119">l</span>et* env, name_type =
+  <span data-count="123">l</span>et* env, name_type =
     match is_rec with
-    | <span data-count="95">N</span>onrec -&gt; infer_patter<span data-count="95">n</span> env ~shadow:true name
+    | <span data-count="99">N</span>onrec -&gt; infer_patter<span data-count="99">n</span> env ~shadow:true name
     | <span data-count="24">R</span>ec -&gt; infer_patter<span data-count="24">n</span> env ~shadow:false name
   in
-  <span data-count="119">l</span>et* subst2 = unif<span data-count="119">y</span> (Substitution.appl<span data-count="119">y</span> subst1 name_type) bind_type in
-  <span data-count="119">l</span>et* subst = Substitution.compos<span data-count="119">e</span> subst1 subst2 in
-  <span data-count="119">l</span>et env = TypeEnv.apply subst env in
-  <span data-count="119">l</span>et* names = extract_names_from_patter<span data-count="119">n</span> name &gt;&gt;<span data-count="119">|</span> elements in
-  <span data-count="119">l</span>et names_types = List.map names ~f:(fun n -&gt; <span data-count="99">n</span>, TypeEnv.find_typ_ex<span data-count="99">n</span> env n) in
-  <span data-count="119">l</span>et env = TypeEnv.remove_many env names in
-  <span data-count="119">l</span>et names_schemes_list =
-    List.map names_types ~f:(fun (name, name_type) -&gt; <span data-count="99">n</span>ame, generaliz<span data-count="99">e</span> env name_type)
+  <span data-count="123">l</span>et* subst2 = unif<span data-count="123">y</span> (Substitution.appl<span data-count="123">y</span> subst1 name_type) bind_type in
+  <span data-count="123">l</span>et* subst = Substitution.compos<span data-count="123">e</span> subst1 subst2 in
+  <span data-count="123">l</span>et env = TypeEnv.apply subst env in
+  <span data-count="123">l</span>et* names = extract_names_from_patter<span data-count="123">n</span> name &gt;&gt;<span data-count="123">|</span> elements in
+  <span data-count="123">l</span>et names_types = List.map names ~f:(fun n -&gt; <span data-count="103">n</span>, TypeEnv.find_typ_ex<span data-count="103">n</span> env n) in
+  <span data-count="123">l</span>et env = TypeEnv.remove_many env names in
+  <span data-count="123">l</span>et names_schemes_list =
+    List.map names_types ~f:(fun (name, name_type) -&gt; <span data-count="103">n</span>ame, generaliz<span data-count="103">e</span> env name_type)
   in
-  <span data-count="119">r</span>eturn (subst, names_schemes_list)
+  <span data-count="123">r</span>eturn (subst, names_schemes_list)
 ;;
 
 let infer_str_item env = function
-  | <span data-count="73">r</span>ec_flag, bind, binds -&gt;
+  | <span data-count="74">r</span>ec_flag, bind, binds -&gt;
     let binds = bind :: binds in
     let* env =
       match rec_flag with
       | <span data-count="23">R</span>ec -&gt; extend_env_with_bind_name<span data-count="23">s</span> env binds
-      | <span data-count="50">N</span>onrec -&gt; retur<span data-count="50">n</span> env
+      | <span data-count="51">N</span>onrec -&gt; retur<span data-count="51">n</span> env
     in
-    <span data-count="73">l</span>et* env, _ = extend_env_with_bind<span data-count="73">s</span> env rec_flag binds in
-    <span data-count="67">r</span>eturn env
+    <span data-count="74">l</span>et* env, _ = extend_env_with_bind<span data-count="74">s</span> env rec_flag binds in
+    <span data-count="68">r</span>eturn env
 ;;
 
 let infer_program env (program : program) =
-  <span data-count="32">l</span>et* env =
-    List.fol<span data-count="32">d</span> program ~init:(retur<span data-count="32">n</span> env) ~f:(fun env item -&gt;
-      <span data-count="75">l</span>et* env = env in
-      <span data-count="73">i</span>nfer_str_item env item)
+  <span data-count="33">l</span>et* env =
+    List.fol<span data-count="33">d</span> program ~init:(retur<span data-count="33">n</span> env) ~f:(fun env item -&gt;
+      <span data-count="76">l</span>et* env = env in
+      <span data-count="74">i</span>nfer_str_item env item)
   in
-  <span data-count="26">r</span>eturn env
+  <span data-count="27">r</span>eturn env
 ;;
 
 let infer program =
-  <span data-count="32">l</span>et default, st = TypeEnv.default in
-  let res = run (infer_progra<span data-count="32">m</span> default program) st in
-  <span data-count="32">m</span>atch res with
-  | <span data-count="26">_</span>, Ok m -&gt;
+  <span data-count="33">l</span>et default, st = TypeEnv.default in
+  let res = run (infer_progra<span data-count="33">m</span> default program) st in
+  <span data-count="33">m</span>atch res with
+  | <span data-count="27">_</span>, Ok m -&gt;
     let diff = TypeEnv.diff m default in
-    <span data-count="26">O</span>k diff
+    <span data-count="27">O</span>k diff
   | <span data-count="6">_</span>, Error e -&gt; Error e
 ;;
 </code></pre>

@@ -295,28 +295,28 @@ open Base
 <span data-count="0">t</span>ype aprogram = <span data-count="0">a</span>str_item lis<span data-count="0">t</span> [@@deriving show { with_path = false }]
 
 let mk_alet rf name1 v body =
-  <span data-count="62">m</span>atch rf, body with
+  <span data-count="67">m</span>atch rf, body with
   (* let x = v in x*)
-  | <span data-count="16">N</span>onrec, ACExpr (CImm (ImmVar name2)) when String.equa<span data-count="16">l</span> name1 name2 -&gt; <span data-count="16">A</span>CExpr v
-  | <span data-count="46">_</span> -&gt; ALet (rf, name1, v, body)
+  | <span data-count="17">N</span>onrec, ACExpr (CImm (ImmVar name2)) when String.equa<span data-count="17">l</span> name1 name2 -&gt; <span data-count="17">A</span>CExpr v
+  | <span data-count="50">_</span> -&gt; ALet (rf, name1, v, body)
 ;;
 
 open Common.Monad.Counter
 
 let make_temp =
   let+ fresh = make_fresh in
-  <span data-count="48">"</span>anf_t" ^ Int.to_strin<span data-count="48">g</span> fresh
+  <span data-count="50">"</span>anf_t" ^ Int.to_strin<span data-count="50">g</span> fresh
 ;;
 
 let is_op name = <span data-count="31">L</span>ist.mem (String.to_lis<span data-count="31">t</span> op_chars) name.[0] ~equal:Char.equal
 
 let rec anf (e : expr) (expr_with_hole : imm -&gt; aexpr t) : aexpr t =
-  <span data-count="163">m</span>atch e with
-  | <span data-count="53">C</span>onst c -&gt; expr_with_hole (ImmConst c)
-  | <span data-count="40">V</span>ariable n -&gt; expr_with_hole (ImmVar n)
-  | <span data-count="7">L</span>etIn (rec_flag, (PVar name, value), body) -&gt;
-    let* body = an<span data-count="7">f</span> body expr_with_hole in
-    <span data-count="7">a</span>nf value (fun immv -&gt; <span data-count="14">m</span>k_alet rec_flag name (CImm immv) body |&gt; <span data-count="14">r</span>eturn)
+  <span data-count="174">m</span>atch e with
+  | <span data-count="55">C</span>onst c -&gt; expr_with_hole (ImmConst c)
+  | <span data-count="44">V</span>ariable n -&gt; expr_with_hole (ImmVar n)
+  | <span data-count="10">L</span>etIn (rec_flag, (PVar name, value), body) -&gt;
+    let* body = an<span data-count="10">f</span> body expr_with_hole in
+    <span data-count="10">a</span>nf value (fun immv -&gt; <span data-count="17">m</span>k_alet rec_flag name (CImm immv) body |&gt; <span data-count="17">r</span>eturn)
   | <span data-count="31">A</span>pply (Apply (Variable f, arg1), arg2) when is_o<span data-count="31">p</span> f -&gt;
     <span data-count="30">a</span>nf arg1 (fun i1 -&gt;
       <span data-count="30">a</span>nf arg2 (fun i2 -&gt;
@@ -327,12 +327,12 @@ let rec anf (e : expr) (expr_with_hole : imm -&gt; aexpr t) : aexpr t =
     let+ body' = an<span data-count="7">f</span> body expr_with_hole in
     <span data-count="7">l</span>et lambda = CLambda (arg, body') in
     ACExpr lambda
-  | <span data-count="18">A</span>pply (f, arg) -&gt;
+  | <span data-count="20">A</span>pply (f, arg) -&gt;
     anf f (fun i1 -&gt;
-      <span data-count="18">a</span>nf arg (fun i2 -&gt;
-        <span data-count="18">l</span>et* temp = make_temp in
-        <span data-count="18">l</span>et* ehole = expr_with_hol<span data-count="18">e</span> (ImmVar temp) in
-        <span data-count="18">m</span>k_alet Nonrec temp (CApp (i1, i2)) ehole |&gt; <span data-count="18">r</span>eturn))
+      <span data-count="20">a</span>nf arg (fun i2 -&gt;
+        <span data-count="20">l</span>et* temp = make_temp in
+        <span data-count="20">l</span>et* ehole = expr_with_hol<span data-count="20">e</span> (ImmVar temp) in
+        <span data-count="20">m</span>k_alet Nonrec temp (CApp (i1, i2)) ehole |&gt; <span data-count="20">r</span>eturn))
   | <span data-count="8">I</span>f_then_else (i, t, e) -&gt;
     anf i (fun i' -&gt;
       <span data-count="12">l</span>et* t' = an<span data-count="12">f</span> t expr_with_hole in
@@ -346,23 +346,23 @@ let rec anf (e : expr) (expr_with_hole : imm -&gt; aexpr t) : aexpr t =
 ;;
 
 let anf_str_item : structure_item -&gt; astr_item t = function
-  | <span data-count="14">r</span>ec_flag, (PVar name, v), [] -&gt;
-    let+ v' = an<span data-count="14">f</span> v (fun i -&gt; <span data-count="19">A</span>CExpr (CImm i) |&gt; return) in
-    <span data-count="14">r</span>ec_flag, (name, v'), []
+  | <span data-count="15">r</span>ec_flag, (PVar name, v), [] -&gt;
+    let+ v' = an<span data-count="15">f</span> v (fun i -&gt; <span data-count="20">A</span>CExpr (CImm i) |&gt; return) in
+    <span data-count="15">r</span>ec_flag, (name, v'), []
   | <span data-count="0">_</span> -&gt; failwith "Not implemented"
 ;;
 
 let anf_program program : aprogram =
-  <span data-count="9">l</span>et program' =
+  <span data-count="10">l</span>et program' =
     List.fold_right
       ~f:(fun item acc -&gt;
-        <span data-count="14">l</span>et* acc = acc in
-        <span data-count="14">l</span>et+ item' = anf_str_ite<span data-count="14">m</span> item in
-        <span data-count="14">i</span>tem' :: acc)
-      ~init:(retur<span data-count="9">n</span> [])
+        <span data-count="15">l</span>et* acc = acc in
+        <span data-count="15">l</span>et+ item' = anf_str_ite<span data-count="15">m</span> item in
+        <span data-count="15">i</span>tem' :: acc)
+      ~init:(retur<span data-count="10">n</span> [])
       program
   in
-  <span data-count="9">r</span>un program' 0 |&gt; <span data-count="9">s</span>nd
+  <span data-count="10">r</span>un program' 0 |&gt; <span data-count="10">s</span>nd
 ;;
 </code></pre>
       </div>

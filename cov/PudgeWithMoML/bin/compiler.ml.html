@@ -211,31 +211,31 @@ type opts =
   }
 
 let compiler opts =
-  <span data-count="75">l</span>et input =
+  <span data-count="76">l</span>et input =
     if opts.input_file &lt;&gt; ""
     then <span data-count="49">I</span>n_channel.read_al<span data-count="49">l</span> opts.input_file
-    else <span data-count="26">I</span>n_channel.input_al<span data-count="26">l</span> stdin
+    else <span data-count="27">I</span>n_channel.input_al<span data-count="27">l</span> stdin
   in
   let program = parse input in
-  <span data-count="75">m</span>atch program with
+  <span data-count="76">m</span>atch program with
   | <span data-count="4">E</span>rror e -&gt; eprintf "Parsing error: %s\n" e
-  | <span data-count="71">O</span>k program -&gt;
+  | <span data-count="72">O</span>k program -&gt;
     if opts.dump_parsetree
     then <span data-count="44">(</span>
       PudgeWithMoML.Frontend.Ast.pp_program std_formatter program;
       <span data-count="44">p</span>rintf "\n")
-    else <span data-count="27">(</span>
+    else <span data-count="28">(</span>
       match infer program with
       | <span data-count="6">E</span>rror e -&gt; fprintf std_formatter "Type error: %a\n" pp_error e
-      | <span data-count="21">O</span>k env -&gt;
+      | <span data-count="22">O</span>k env -&gt;
         if opts.dump_types
         then <span data-count="17">T</span>ypeEnv.pp std_formatter env
-        else <span data-count="4">(</span>
+        else <span data-count="5">(</span>
           let oc = Out_channel.create opts.output_file in
-          <span data-count="4">l</span>et fmt = Format.formatter_of_out_channel oc in
-          <span data-count="4">l</span>et a_converted = convert_program program in
-          <span data-count="4">l</span>et anf = anf_program a_converted in
-          <span data-count="4">g</span>en_aprogram anf fmt))
+          <span data-count="5">l</span>et fmt = Format.formatter_of_out_channel oc in
+          <span data-count="5">l</span>et a_converted = convert_program program in
+          <span data-count="5">l</span>et anf = anf_program a_converted in
+          <span data-count="5">g</span>en_aprogram anf fmt))
 ;;
 
 let () =
@@ -249,7 +249,7 @@ let () =
   let open Stdlib.Arg in
   let speclist =
     [ "-fromfile", String (fun filename -&gt; <span data-count="49">o</span>pts.input_file &lt;- filename), "Input file name"
-    ; "-o", String (fun filename -&gt; <span data-count="4">o</span>pts.output_file &lt;- filename), "Output file name"
+    ; "-o", String (fun filename -&gt; <span data-count="5">o</span>pts.output_file &lt;- filename), "Output file name"
     ; ( "-dparsetree"
       , Unit (fun _ -&gt; <span data-count="48">o</span>pts.dump_parsetree &lt;- true)
       , "Dump parse tree, don't typecheck and evaluate anything" )
@@ -264,7 +264,7 @@ let () =
   in
   let usage_msg = "Mini-ml to riscv compiler" in
   let () = parse speclist anon_func usage_msg in
-  <span data-count="75">c</span>ompile<span data-count="75">r</span> opts
+  <span data-count="76">c</span>ompile<span data-count="76">r</span> opts
 ;;
 </code></pre>
       </div>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>codegen.ml &mdash; Coverage report</title>
-    <meta name="description" content="80.00% coverage in lib/riscv/codegen.ml">
+    <meta name="description" content="80.37% coverage in lib/riscv/codegen.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,29 +15,29 @@
           <span class="dirname">lib/riscv/</span>codegen.ml
         </a>
       </h1>
-      <h2>80.00%</h2>
+      <h2>80.37%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:7.41%"></span>
-      <span class="unvisited" style="top:38.10%"></span>
-      <span class="unvisited" style="top:38.62%"></span>
-      <span class="unvisited" style="top:39.15%"></span>
-      <span class="unvisited" style="top:44.97%"></span>
-      <span class="unvisited" style="bottom:42.86%"></span>
-      <span class="unvisited" style="bottom:42.33%"></span>
-      <span class="unvisited" style="bottom:40.21%"></span>
-      <span class="unvisited" style="bottom:38.62%"></span>
-      <span class="unvisited" style="bottom:38.10%"></span>
-      <span class="unvisited" style="bottom:37.57%"></span>
-      <span class="unvisited" style="bottom:37.04%"></span>
-      <span class="unvisited" style="bottom:36.51%"></span>
-      <span class="unvisited" style="bottom:35.98%"></span>
-      <span class="unvisited" style="bottom:35.45%"></span>
-      <span class="unvisited" style="bottom:33.33%"></span>
-      <span class="unvisited" style="bottom:31.75%"></span>
-      <span class="unvisited" style="bottom:26.98%"></span>
-      <span class="unvisited" style="bottom:11.11%"></span>
-      <span class="unvisited" style="bottom:10.05%"></span>
+      <span class="unvisited" style="top:7.37%"></span>
+      <span class="unvisited" style="top:37.89%"></span>
+      <span class="unvisited" style="top:38.42%"></span>
+      <span class="unvisited" style="top:38.95%"></span>
+      <span class="unvisited" style="top:44.74%"></span>
+      <span class="unvisited" style="bottom:43.16%"></span>
+      <span class="unvisited" style="bottom:42.63%"></span>
+      <span class="unvisited" style="bottom:40.53%"></span>
+      <span class="unvisited" style="bottom:38.95%"></span>
+      <span class="unvisited" style="bottom:38.42%"></span>
+      <span class="unvisited" style="bottom:37.89%"></span>
+      <span class="unvisited" style="bottom:37.37%"></span>
+      <span class="unvisited" style="bottom:36.84%"></span>
+      <span class="unvisited" style="bottom:36.32%"></span>
+      <span class="unvisited" style="bottom:35.79%"></span>
+      <span class="unvisited" style="bottom:33.68%"></span>
+      <span class="unvisited" style="bottom:32.11%"></span>
+      <span class="unvisited" style="bottom:27.37%"></span>
+      <span class="unvisited" style="bottom:11.05%"></span>
+      <span class="unvisited" style="bottom:10.00%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -207,30 +207,31 @@
 <a id="L163"></a><span class="visited"> </span>
 <a id="L164"></a><span class="visited"> </span>
 <a id="L165"></a><span class="visited"> </span>
-<a id="L166"></a><span > </span>
-<a id="L167"></a><span class="visited"> </span>
-<a id="L168"></a><span class="unvisited"> </span>
-<a id="L169"></a><span > </span>
-<a id="L170"></a><span class="unvisited"> </span>
-<a id="L171"></a><span > </span>
+<a id="L166"></a><span class="visited"> </span>
+<a id="L167"></a><span > </span>
+<a id="L168"></a><span class="visited"> </span>
+<a id="L169"></a><span class="unvisited"> </span>
+<a id="L170"></a><span > </span>
+<a id="L171"></a><span class="unvisited"> </span>
 <a id="L172"></a><span > </span>
 <a id="L173"></a><span > </span>
-<a id="L174"></a><span class="visited"> </span>
+<a id="L174"></a><span > </span>
 <a id="L175"></a><span class="visited"> </span>
 <a id="L176"></a><span class="visited"> </span>
 <a id="L177"></a><span class="visited"> </span>
 <a id="L178"></a><span class="visited"> </span>
-<a id="L179"></a><span > </span>
+<a id="L179"></a><span class="visited"> </span>
 <a id="L180"></a><span > </span>
 <a id="L181"></a><span > </span>
-<a id="L182"></a><span class="visited"> </span>
-<a id="L183"></a><span > </span>
-<a id="L184"></a><span class="visited"> </span>
+<a id="L182"></a><span > </span>
+<a id="L183"></a><span class="visited"> </span>
+<a id="L184"></a><span > </span>
 <a id="L185"></a><span class="visited"> </span>
 <a id="L186"></a><span class="visited"> </span>
 <a id="L187"></a><span class="visited"> </span>
 <a id="L188"></a><span class="visited"> </span>
-<a id="L189"></a><span > </span>
+<a id="L189"></a><span class="visited"> </span>
+<a id="L190"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -424,6 +425,7 @@
 <a href="#L187">187</a>
 <a href="#L188">188</a>
 <a href="#L189">189</a>
+<a href="#L190">190</a>
 </pre>
 <pre><code class="ocaml">[@@@ocaml.text "/*"]
 
@@ -457,7 +459,7 @@ module M = struct
       type state = st
     end)
 
-  let default = { env = Map.empt<span data-count="76">y</span> (module String); frame_offset = 0; fresh = 0 }
+  let default = { env = Map.empt<span data-count="77">y</span> (module String); frame_offset = 0; fresh = 0 }
 
   let fresh : string t =
     let* st = get in
@@ -467,17 +469,17 @@ module M = struct
 
   let alloc_frame_slot : int t =
     let* st = get in
-    <span data-count="33">l</span>et off = st.frame_offset + word_size in
-    pu<span data-count="33">t</span> { st with frame_offset = off } &gt;&gt;| fun _ -&gt; <span data-count="33">o</span>ff
+    <span data-count="37">l</span>et off = st.frame_offset + word_size in
+    pu<span data-count="37">t</span> { st with frame_offset = off } &gt;&gt;| fun _ -&gt; <span data-count="37">o</span>ff
   ;;
 
   let add_binding name loc : unit t =
-    <span data-count="33">m</span>odify (fun st -&gt; <span data-count="33">{</span> st with env = Map.se<span data-count="33">t</span> st.env ~key:name ~data:loc })
+    <span data-count="37">m</span>odify (fun st -&gt; <span data-count="37">{</span> st with env = Map.se<span data-count="37">t</span> st.env ~key:name ~data:loc })
   ;;
 
   let get_frame_offset : int t =
     let+ st = get in
-    <span data-count="6">s</span>t.frame_offset
+    <span data-count="11">s</span>t.frame_offset
   ;;
 
   let set_frame_offset (off : int) : unit t =
@@ -485,35 +487,35 @@ module M = struct
   ;;
 
   let save_var_on_stack name : int t =
-    <span data-count="33">l</span>et* off = alloc_frame_slot in
-    <span data-count="33">a</span>dd_bindin<span data-count="33">g</span> name (Stack off) &gt;&gt;| fun _ -&gt; <span data-count="33">o</span>ff
+    <span data-count="37">l</span>et* off = alloc_frame_slot in
+    <span data-count="37">a</span>dd_bindin<span data-count="37">g</span> name (Stack off) &gt;&gt;| fun _ -&gt; <span data-count="37">o</span>ff
   ;;
 
-  let lookup name : location option t = <span data-count="37">g</span>et &gt;&gt;| fun st -&gt; <span data-count="37">M</span>ap.find st.env name
+  let lookup name : location option t = <span data-count="40">g</span>et &gt;&gt;| fun st -&gt; <span data-count="40">M</span>ap.find st.env name
 end
 
 open M
 
 let imm_of_literal : literal -&gt; int = function
-  | <span data-count="35">I</span>nt_lt n -&gt; n
+  | <span data-count="37">I</span>nt_lt n -&gt; n
   | <span data-count="0">B</span>ool_lt true -&gt; 1
   | <span data-count="0">B</span>ool_lt false -&gt; 0
   | <span data-count="0">U</span>nit_lt -&gt; 1
 ;;
 
 let gen_imm dst = function
-  | <span data-count="35">I</span>mmConst lt -&gt;
+  | <span data-count="37">I</span>mmConst lt -&gt;
     let imm = imm_of_literal lt in
-    <span data-count="35">M</span>.return [ l<span data-count="35">i</span> dst imm ]
-  | <span data-count="37">I</span>mmVar x -&gt;
-    let+ loc = M.looku<span data-count="37">p</span> x in
-    <span data-count="37">(</span>match loc with
-     | <span data-count="37">S</span>ome (Stack off) -&gt; [ l<span data-count="37">d</span> dst (<span data-count="37">-</span>off) fp ]
+    <span data-count="37">M</span>.return [ l<span data-count="37">i</span> dst imm ]
+  | <span data-count="40">I</span>mmVar x -&gt;
+    let+ loc = M.looku<span data-count="40">p</span> x in
+    <span data-count="40">(</span>match loc with
+     | <span data-count="40">S</span>ome (Stack off) -&gt; [ l<span data-count="40">d</span> dst (<span data-count="40">-</span>off) fp ]
      | <span data-count="0">_</span> -&gt; failwith ("unbound variable: " ^ x))
 ;;
 
 let rec gen_cexpr dst = function
-  | <span data-count="13">C</span>Imm imm -&gt; gen_imm dst imm
+  | <span data-count="16">C</span>Imm imm -&gt; gen_imm dst imm
   | <span data-count="10">C</span>Ite (c, th, el) -&gt;
     let* cond_code = gen_im<span data-count="10">m</span> (T 0) c in
     <span data-count="10">l</span>et* then_code = gen_aexp<span data-count="10">r</span> dst th in
@@ -547,21 +549,21 @@ let rec gen_cexpr dst = function
     let* e1_c = gen_im<span data-count="0">m</span> (A 0) e1 in
     <span data-count="0">l</span>et+ e2_c = gen_im<span data-count="0">m</span> (A 1) e2 in
     <span data-count="0">e</span>1_c @ e2_c @ [ cal<span data-count="0">l</span> op ] @ if dst = A 0 then <span data-count="0">[</span>] else <span data-count="0">[</span> m<span data-count="0">v</span> dst (A 0) ]
-  | <span data-count="19">C</span>App (ImmVar f, arg) -&gt;
-    let+ arg_c = gen_im<span data-count="19">m</span> (A 0) arg in
-    <span data-count="19">a</span>rg_c @ [ cal<span data-count="19">l</span> f ] @ if dst = A 0 then <span data-count="13">[</span>] else <span data-count="6">[</span> m<span data-count="6">v</span> dst (A 0) ]
+  | <span data-count="21">C</span>App (ImmVar f, arg) -&gt;
+    let+ arg_c = gen_im<span data-count="21">m</span> (A 0) arg in
+    <span data-count="21">a</span>rg_c @ [ cal<span data-count="21">l</span> f ] @ if dst = A 0 then <span data-count="14">[</span>] else <span data-count="7">[</span> m<span data-count="7">v</span> dst (A 0) ]
   | <span data-count="0">c</span>expr -&gt;
     (* TODO: replace it with Anf.pp_cexpr without \n prints *)
     failwith
       (Format.asprint<span data-count="0">f</span> "gen_cexpr case not implemented yet: %a" AnfPP.pp_cexpr cexpr)
 
 and gen_aexpr dst = function
-  | <span data-count="27">A</span>CExpr cexpr -&gt; gen_cexpr dst cexpr
-  | <span data-count="30">A</span>Let (Nonrec, name, cexpr, body) -&gt;
-    let* cexpr_c = gen_cexp<span data-count="30">r</span> (T 0) cexpr in
-    <span data-count="30">l</span>et* off = save_var_on_stac<span data-count="30">k</span> name in
-    <span data-count="30">l</span>et+ body_c = gen_aexp<span data-count="30">r</span> dst body in
-    <span data-count="30">c</span>expr_c @ [ s<span data-count="30">d</span> (T 0) (<span data-count="30">-</span>off) fp ] @ body_c
+  | <span data-count="28">A</span>CExpr cexpr -&gt; gen_cexpr dst cexpr
+  | <span data-count="34">A</span>Let (Nonrec, name, cexpr, body) -&gt;
+    let* cexpr_c = gen_cexp<span data-count="34">r</span> (T 0) cexpr in
+    <span data-count="34">l</span>et* off = save_var_on_stac<span data-count="34">k</span> name in
+    <span data-count="34">l</span>et+ body_c = gen_aexp<span data-count="34">r</span> dst body in
+    <span data-count="34">c</span>expr_c @ [ s<span data-count="34">d</span> (T 0) (<span data-count="34">-</span>off) fp ] @ body_c
   | <span data-count="0">_</span> -&gt; failwith "gen_aexpr case not implemented yet"
 ;;
 
@@ -587,32 +589,33 @@ let gen_astr_item : astr_item -&gt; instr list M.t = function
       [ l<span data-count="3">d</span> Ra (frame - 8) Sp; l<span data-count="3">d</span> fp (frame - 16) Sp; add<span data-count="3">i</span> Sp Sp frame; ret ]
     in
     [ labe<span data-count="3">l</span> f ] @ prologue @ body_code @ epilogue
-  | <span data-count="4">N</span>onrec, (_, e), [] -&gt;
-    let+ body_code = gen_aexp<span data-count="4">r</span> (A 0) e in
-    <span data-count="4">[</span> labe<span data-count="4">l</span> "_start"; m<span data-count="4">v</span> fp Sp ]
+  | <span data-count="5">N</span>onrec, (_, e), [] -&gt;
+    let* body_code = gen_aexp<span data-count="5">r</span> (A 0) e in
+    <span data-count="5">l</span>et+ frame = M.get_frame_offset in
+    <span data-count="5">[</span> labe<span data-count="5">l</span> "_start"; m<span data-count="5">v</span> fp Sp; add<span data-count="5">i</span> Sp Sp (<span data-count="5">-</span>frame) ]
     @ body_code
-    @ [ cal<span data-count="4">l</span> "flush"; l<span data-count="4">i</span> (A 0) 0; l<span data-count="4">i</span> (A 7) 94; ecall ]
+    @ [ cal<span data-count="5">l</span> "flush"; l<span data-count="5">i</span> (A 0) 0; l<span data-count="5">i</span> (A 7) 94; ecall ]
   | <span data-count="0">i</span> -&gt;
     (* TODO: replace it with Anf.pp_astr_item without \n prints *)
     failwith (Format.asprint<span data-count="0">f</span> "not implemented codegen for astr item: %a" pp_astr_item i)
 ;;
 
 let rec gather : aprogram -&gt; instr list M.t = function
-  | <span data-count="4">[</span>] -&gt; M.return []
-  | <span data-count="7">i</span>tem :: rest -&gt;
-    let* code1 = gen_astr_ite<span data-count="7">m</span> item in
-    <span data-count="7">l</span>et+ code2 = gathe<span data-count="7">r</span> rest in
-    <span data-count="7">c</span>ode1 @ code2
+  | <span data-count="5">[</span>] -&gt; M.return []
+  | <span data-count="8">i</span>tem :: rest -&gt;
+    let* code1 = gen_astr_ite<span data-count="8">m</span> item in
+    <span data-count="8">l</span>et+ code2 = gathe<span data-count="8">r</span> rest in
+    <span data-count="8">c</span>ode1 @ code2
 ;;
 
 let gen_aprogram (pr : aprogram) fmt =
-  <span data-count="4">l</span>et open Format in
+  <span data-count="5">l</span>et open Format in
   fprintf fmt ".text\n";
-  <span data-count="4">f</span>printf fmt ".globl _start\n";
-  <span data-count="4">l</span>et _, code = M.run (gathe<span data-count="4">r</span> pr) M.default in
-  <span data-count="4">B</span>ase.List.iter code ~f:(function
-    | <span data-count="27">L</span>abel l -&gt; fprintf fmt "%s:\n" l
-    | <span data-count="218">i</span> -&gt; fprintf fmt "  %a\n" pp_instr i)
+  <span data-count="5">f</span>printf fmt ".globl _start\n";
+  <span data-count="5">l</span>et _, code = M.run (gathe<span data-count="5">r</span> pr) M.default in
+  <span data-count="5">B</span>ase.List.iter code ~f:(function
+    | <span data-count="28">L</span>abel l -&gt; fprintf fmt "%s:\n" l
+    | <span data-count="240">i</span> -&gt; fprintf fmt "  %a\n" pp_instr i)
 ;;
 </code></pre>
       </div>
