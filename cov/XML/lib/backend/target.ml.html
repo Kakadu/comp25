@@ -31,19 +31,21 @@
 <a id="L7"></a><span > </span>
 <a id="L8"></a><span > </span>
 <a id="L9"></a><span > </span>
+<a id="L10"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
         <pre id="line-numbers">
-<a href="#L1">1</a>
-<a href="#L2">2</a>
-<a href="#L3">3</a>
-<a href="#L4">4</a>
-<a href="#L5">5</a>
-<a href="#L6">6</a>
-<a href="#L7">7</a>
-<a href="#L8">8</a>
-<a href="#L9">9</a>
+<a href="#L1"> 1</a>
+<a href="#L2"> 2</a>
+<a href="#L3"> 3</a>
+<a href="#L4"> 4</a>
+<a href="#L5"> 5</a>
+<a href="#L6"> 6</a>
+<a href="#L7"> 7</a>
+<a href="#L8"> 8</a>
+<a href="#L9"> 9</a>
+<a href="#L10">10</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2024, Mikhail Gavrilenko, Danila Rudnev-Stepanyan*)
 
@@ -51,6 +53,7 @@
 
 module Target = struct
   let word_size = 8
+  let arg_regs_count = 8
   let arg_regs = [| "a0"; "a1"; "a2"; "a3"; "a4"; "a5"; "a6"; "a7" |]
   let temp_regs = [| "t0"; "t1"; "t2"; "t3"; "t4"; "t5"; "t6" |]
 end
