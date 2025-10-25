@@ -194,25 +194,25 @@ module State (S : sig
   type state = S.state
   type 'a t = state -&gt; state * 'a
 
-  let return v st = <span data-count="1004">s</span>t, v
+  let return v st = <span data-count="2489">s</span>t, v
 
   let ( &gt;&gt;= ) m f st =
-    <span data-count="1394">l</span>et s1, v = m st in
-    <span data-count="1394">f</span> v s1
+    <span data-count="3743">l</span>et s1, v = m st in
+    <span data-count="3743">f</span> v s1
   ;;
 
-  let ( &gt;&gt;| ) m f = <span data-count="794">m</span> &gt;&gt;= fun x -&gt; <span data-count="696">r</span>eturn (<span data-count="696">f</span> x)
+  let ( &gt;&gt;| ) m f = <span data-count="1761">m</span> &gt;&gt;= fun x -&gt; <span data-count="1798">r</span>eturn (<span data-count="1798">f</span> x)
   let ( let* ) = ( &gt;&gt;= )
   let ( let+ ) = ( &gt;&gt;| )
-  let get s = <span data-count="233">s</span>, s
-  let put s v = <span data-count="182">s</span>, v
+  let get s = <span data-count="777">s</span>, s
+  let put s v = <span data-count="519">s</span>, v
 
   let modify f =
-    <span data-count="43">l</span>et* s = get in
-    <span data-count="43">p</span>u<span data-count="43">t</span> (<span data-count="43">f</span> s) &gt;&gt;| fun _ -&gt; <span data-count="43">(</span>)
+    <span data-count="250">l</span>et* s = get in
+    <span data-count="250">p</span>u<span data-count="250">t</span> (<span data-count="250">f</span> s) &gt;&gt;| fun _ -&gt; <span data-count="250">(</span>)
   ;;
 
-  let run m = <span data-count="25">m</span>
+  let run m = <span data-count="42">m</span>
 end
 
 module Counter = struct
@@ -222,7 +222,7 @@ module Counter = struct
 
   let make_fresh : state t =
     let* st = get in
-    <span data-count="82">p</span>u<span data-count="82">t</span> (st + 1) &gt;&gt;| fun _ -&gt; <span data-count="82">s</span>t
+    <span data-count="153">p</span>u<span data-count="153">t</span> (st + 1) &gt;&gt;| fun _ -&gt; <span data-count="153">s</span>t
   ;;
 end
 </code></pre>

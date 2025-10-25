@@ -799,73 +799,73 @@ open Keywords
 (* TECHNICAL FUNCTIONS *)
 
 let is_ws = function
-  | <span data-count="391520">'</span> ' -&gt; true
-  | <span data-count="83590">'</span>\n' -&gt; true
+  | <span data-count="393509">'</span> ' -&gt; true
+  | <span data-count="85262">'</span>\n' -&gt; true
   | <span data-count="0">'</span>\t' -&gt; true
   | <span data-count="0">'</span>\r' -&gt; true
-  | <span data-count="624738">_</span> -&gt; false
+  | <span data-count="631649">_</span> -&gt; false
 ;;
 
-let skip_ws = skip_whil<span data-count="83">e</span> is_ws
-let p_parens p = <span data-count="826">s</span>kip_ws *<span data-count="826">&gt;</span> cha<span data-count="826">r</span> '(' *<span data-count="826">&gt;</span> skip_ws *<span data-count="826">&gt;</span> p &lt;<span data-count="826">*</span> skip_ws &lt;* cha<span data-count="826">r</span> ')'
+let skip_ws = skip_whil<span data-count="88">e</span> is_ws
+let p_parens p = <span data-count="860">s</span>kip_ws *<span data-count="860">&gt;</span> cha<span data-count="860">r</span> '(' *<span data-count="860">&gt;</span> skip_ws *<span data-count="860">&gt;</span> p &lt;<span data-count="860">*</span> skip_ws &lt;* cha<span data-count="860">r</span> ')'
 
 let peek_sep1 =
   peek_char
-  &gt;&gt;<span data-count="83">=</span> function
-  | <span data-count="122">N</span>one -&gt; return None
-  | <span data-count="22425">S</span>ome c -&gt;
+  &gt;&gt;<span data-count="88">=</span> function
+  | <span data-count="126">N</span>one -&gt; return None
+  | <span data-count="22788">S</span>ome c -&gt;
     (match c with
-     | <span data-count="19">'</span>(' | <span data-count="4240">'</span>)' | <span data-count="0">'</span>[' | <span data-count="352">'</span>]' | <span data-count="656">'</span>;' | <span data-count="152">'</span>:' | <span data-count="116">'</span>,' -&gt; return (Some c)
-     | <span data-count="16890">_</span> -&gt; if is_ws c then <span data-count="14646">r</span>eturn (Some c) else <span data-count="2244">f</span>ail "need a delimiter")
+     | <span data-count="19">'</span>(' | <span data-count="4328">'</span>)' | <span data-count="0">'</span>[' | <span data-count="352">'</span>]' | <span data-count="656">'</span>;' | <span data-count="152">'</span>:' | <span data-count="116">'</span>,' -&gt; return (Some c)
+     | <span data-count="17165">_</span> -&gt; if is_ws c then <span data-count="14921">r</span>eturn (Some c) else <span data-count="2244">f</span>ail "need a delimiter")
 ;;
 
-let skip_ws_sep1 = peek_sep1 *<span data-count="83">&gt;</span> skip_ws
+let skip_ws_sep1 = peek_sep1 *<span data-count="88">&gt;</span> skip_ws
 
 let chainl1 e op =
-  <span data-count="574">l</span>et rec go acc = <span data-count="97465">l</span>ift<span data-count="97465">2</span> (fun f x -&gt; <span data-count="8917">f</span> acc x) op e &gt;&gt;<span data-count="97465">=</span> go &lt;|&gt; retur<span data-count="97465">n</span> acc in
+  <span data-count="595">l</span>et rec go acc = <span data-count="98545">l</span>ift<span data-count="98545">2</span> (fun f x -&gt; <span data-count="9131">f</span> acc x) op e &gt;&gt;<span data-count="98545">=</span> go &lt;|&gt; retur<span data-count="98545">n</span> acc in
   e &gt;&gt;= go
 ;;
 
 let rec chainr1 e op =
-  <span data-count="450">l</span>et* left = e in
-  <span data-count="18680">(</span>let* f = op in
+  <span data-count="456">l</span>et* left = e in
+  <span data-count="18922">(</span>let* f = op in
    <span data-count="282">l</span>et* right = chainr<span data-count="282">1</span> e op in
    <span data-count="282">r</span>eturn (<span data-count="282">f</span> left right))
-  &lt;|&gt; retur<span data-count="18680">n</span> left
+  &lt;|&gt; retur<span data-count="18922">n</span> left
 ;;
 
 let rec unary_chain op e =
-  <span data-count="87">o</span>p &gt;&gt;<span data-count="87">=</span> (fun unexpr -&gt; <span data-count="5">u</span>nary_chai<span data-count="5">n</span> op e &gt;&gt;= fun expr -&gt; <span data-count="5">r</span>eturn (unexp<span data-count="5">r</span> expr)) &lt;|&gt; e
+  <span data-count="90">o</span>p &gt;&gt;<span data-count="90">=</span> (fun unexpr -&gt; <span data-count="5">u</span>nary_chai<span data-count="5">n</span> op e &gt;&gt;= fun expr -&gt; <span data-count="5">r</span>eturn (unexp<span data-count="5">r</span> expr)) &lt;|&gt; e
 ;;
 
 (* SIMPLE PARSERS *)
-let expr_const p = <span data-count="249">p</span> &gt;&gt;| fun lit -&gt; <span data-count="9531">C</span>onst lit
-let pat_const p = <span data-count="249">p</span> &gt;&gt;| fun lit -&gt; <span data-count="554">P</span>Const lit
+let expr_const p = <span data-count="264">p</span> &gt;&gt;| fun lit -&gt; <span data-count="9607">C</span>onst lit
+let pat_const p = <span data-count="264">p</span> &gt;&gt;| fun lit -&gt; <span data-count="554">P</span>Const lit
 
 let p_int =
   skip_ws
-  *<span data-count="83">&gt;</span> let* sign = optio<span data-count="83">n</span> "" (strin<span data-count="83">g</span> "+" &lt;|<span data-count="83">&gt;</span> strin<span data-count="83">g</span> "-") in
-     <span data-count="35524">l</span>et* number = take_while<span data-count="35524">1</span> Char.is_digit in
-     <span data-count="9336">I</span>nt.of_string (sign ^ number) |&gt; <span data-count="9336">r</span>eturn
+  *<span data-count="88">&gt;</span> let* sign = optio<span data-count="88">n</span> "" (strin<span data-count="88">g</span> "+" &lt;|<span data-count="88">&gt;</span> strin<span data-count="88">g</span> "-") in
+     <span data-count="35890">l</span>et* number = take_while<span data-count="35890">1</span> Char.is_digit in
+     <span data-count="9412">I</span>nt.of_string (sign ^ number) |&gt; <span data-count="9412">r</span>eturn
 ;;
 
-let p_int_expr = expr_cons<span data-count="83">t</span> (p_int &gt;&gt;<span data-count="83">|</span> fun x -&gt; <span data-count="9318">I</span>nt_lt x)
-let p_int_pat = pat_cons<span data-count="83">t</span> (p_int &gt;&gt;<span data-count="83">|</span> fun x -&gt; <span data-count="4">I</span>nt_lt x)
+let p_int_expr = expr_cons<span data-count="88">t</span> (p_int &gt;&gt;<span data-count="88">|</span> fun x -&gt; <span data-count="9394">I</span>nt_lt x)
+let p_int_pat = pat_cons<span data-count="88">t</span> (p_int &gt;&gt;<span data-count="88">|</span> fun x -&gt; <span data-count="4">I</span>nt_lt x)
 
 let p_bool =
-  skip_ws *<span data-count="83">&gt;</span> strin<span data-count="83">g</span> "true"
-  &lt;|<span data-count="83">&gt;</span> skip_ws *<span data-count="83">&gt;</span> strin<span data-count="83">g</span> "false"
-  &gt;&gt;<span data-count="83">|</span> fun s -&gt; <span data-count="198">B</span>ool_lt (Bool.of_strin<span data-count="198">g</span> s)
+  skip_ws *<span data-count="88">&gt;</span> strin<span data-count="88">g</span> "true"
+  &lt;|<span data-count="88">&gt;</span> skip_ws *<span data-count="88">&gt;</span> strin<span data-count="88">g</span> "false"
+  &gt;&gt;<span data-count="88">|</span> fun s -&gt; <span data-count="198">B</span>ool_lt (Bool.of_strin<span data-count="198">g</span> s)
 ;;
 
-let p_bool_expr = expr_cons<span data-count="83">t</span> p_bool
-let p_bool_pat = pat_cons<span data-count="83">t</span> p_bool
-let p_unit = skip_ws *<span data-count="83">&gt;</span> strin<span data-count="83">g</span> "(" *<span data-count="83">&gt;</span> skip_ws *<span data-count="83">&gt;</span> strin<span data-count="83">g</span> ")" *<span data-count="83">&gt;</span> retur<span data-count="83">n</span> Unit_lt
-let p_unit_expr = expr_cons<span data-count="83">t</span> p_unit
-let p_unit_pat = pat_cons<span data-count="83">t</span> p_unit
+let p_bool_expr = expr_cons<span data-count="88">t</span> p_bool
+let p_bool_pat = pat_cons<span data-count="88">t</span> p_bool
+let p_unit = skip_ws *<span data-count="88">&gt;</span> strin<span data-count="88">g</span> "(" *<span data-count="88">&gt;</span> skip_ws *<span data-count="88">&gt;</span> strin<span data-count="88">g</span> ")" *<span data-count="88">&gt;</span> retur<span data-count="88">n</span> Unit_lt
+let p_unit_expr = expr_cons<span data-count="88">t</span> p_unit
+let p_unit_pat = pat_cons<span data-count="88">t</span> p_unit
 
 let p_oper =
-  let* oper = skip_ws *<span data-count="83">&gt;</span> take_while<span data-count="83">1</span> (String.contain<span data-count="83">s</span> op_chars) in
+  let* oper = skip_ws *<span data-count="88">&gt;</span> take_while<span data-count="88">1</span> (String.contain<span data-count="88">s</span> op_chars) in
   <span data-count="320">i</span>f is_keyword oper
   then <span data-count="300">f</span>ail "keywords are not allowed as variable names"
   else <span data-count="20">r</span>eturn oper
@@ -874,46 +874,46 @@ let p_oper =
 let p_varname =
   let p_fst_letter =
     take_while1 (function
-      | <span data-count="63999">'</span>a' .. 'z' | <span data-count="2374">'</span>_' -&gt; true
-      | <span data-count="45684">_</span> -&gt; false)
+      | <span data-count="65277">'</span>a' .. 'z' | <span data-count="2476">'</span>_' -&gt; true
+      | <span data-count="46310">_</span> -&gt; false)
   in
-  <span data-count="83">l</span>et* name =
+  <span data-count="88">l</span>et* name =
     skip_ws
-    *<span data-count="83">&gt;</span> lift<span data-count="83">2</span>
+    *<span data-count="88">&gt;</span> lift<span data-count="88">2</span>
          ( ^ )
          p_fst_letter
-         (take_whil<span data-count="83">e</span> (function
-            | <span data-count="0">'</span>a' .. 'z' | <span data-count="0">'</span>A' .. 'Z' | <span data-count="0">'</span>_' | <span data-count="2260">'</span>0' .. '9' -&gt; true
-            | <span data-count="23554">_</span> -&gt; false))
+         (take_whil<span data-count="88">e</span> (function
+            | <span data-count="0">'</span>a' .. 'z' | <span data-count="0">'</span>A' .. 'Z' | <span data-count="0">'</span>_' | <span data-count="2352">'</span>0' .. '9' -&gt; true
+            | <span data-count="23972">_</span> -&gt; false))
   in
-  <span data-count="23562">i</span>f is_keyword name
-  then <span data-count="8488">f</span>ail "keywords are not allowed as variable names"
-  else <span data-count="15074">r</span>eturn name
+  <span data-count="23980">i</span>f is_keyword name
+  then <span data-count="8542">f</span>ail "keywords are not allowed as variable names"
+  else <span data-count="15438">r</span>eturn name
 ;;
 
-let p_var_expr = p_varname &gt;&gt;<span data-count="83">|</span> fun ident -&gt; <span data-count="11106">V</span>ariable ident
-let p_var_pat = p_varname &gt;&gt;<span data-count="83">|</span> fun ident -&gt; <span data-count="3914">P</span>Var ident
-let p_oper_expr = p_paren<span data-count="83">s</span> p_oper &gt;&gt;<span data-count="83">|</span> fun s -&gt; <span data-count="6">V</span>ariable s
-let p_oper_pat = p_paren<span data-count="83">s</span> p_oper &gt;&gt;<span data-count="83">|</span> fun s -&gt; <span data-count="4">P</span>Var s
-let p_wild_pat = skip_ws *<span data-count="83">&gt;</span> strin<span data-count="83">g</span> "_" *<span data-count="83">&gt;</span> retur<span data-count="83">n</span> Wild
-let p_pat_atom = choic<span data-count="83">e</span> [ p_int_pat; p_bool_pat; p_unit_pat; p_var_pat; p_wild_pat ]
-let p_expr_atom = choic<span data-count="83">e</span> [ p_var_expr; p_oper_expr; p_int_expr; p_unit_expr; p_bool_expr ]
+let p_var_expr = p_varname &gt;&gt;<span data-count="88">|</span> fun ident -&gt; <span data-count="11374">V</span>ariable ident
+let p_var_pat = p_varname &gt;&gt;<span data-count="88">|</span> fun ident -&gt; <span data-count="4010">P</span>Var ident
+let p_oper_expr = p_paren<span data-count="88">s</span> p_oper &gt;&gt;<span data-count="88">|</span> fun s -&gt; <span data-count="6">V</span>ariable s
+let p_oper_pat = p_paren<span data-count="88">s</span> p_oper &gt;&gt;<span data-count="88">|</span> fun s -&gt; <span data-count="4">P</span>Var s
+let p_wild_pat = skip_ws *<span data-count="88">&gt;</span> strin<span data-count="88">g</span> "_" *<span data-count="88">&gt;</span> retur<span data-count="88">n</span> Wild
+let p_pat_atom = choic<span data-count="88">e</span> [ p_int_pat; p_bool_pat; p_unit_pat; p_var_pat; p_wild_pat ]
+let p_expr_atom = choic<span data-count="88">e</span> [ p_var_expr; p_oper_expr; p_int_expr; p_unit_expr; p_bool_expr ]
 
 (* COMPLEX PARSERS *)
 
-let p_type_primitive = skip_ws *<span data-count="83">&gt;</span> p_varname &gt;&gt;<span data-count="83">|</span> fun s -&gt; <span data-count="54">P</span>rimitive s
+let p_type_primitive = skip_ws *<span data-count="88">&gt;</span> p_varname &gt;&gt;<span data-count="88">|</span> fun s -&gt; <span data-count="54">P</span>rimitive s
 
 let p_type_var =
   skip_ws
-  *<span data-count="83">&gt;</span> cha<span data-count="83">r</span> '\''
-  *<span data-count="83">&gt;</span> let* n = p_int in
+  *<span data-count="88">&gt;</span> cha<span data-count="88">r</span> '\''
+  *<span data-count="88">&gt;</span> let* n = p_int in
      <span data-count="14">r</span>eturn (Type_var n)
 ;;
 
 let p_suffix_type =
-  choic<span data-count="83">e</span>
-    [ skip_ws *<span data-count="83">&gt;</span> strin<span data-count="83">g</span> "list" *<span data-count="83">&gt;</span> retur<span data-count="83">n</span> (fun t -&gt; <span data-count="8">T</span>ype_list t)
-    ; skip_ws *<span data-count="83">&gt;</span> strin<span data-count="83">g</span> "option" *<span data-count="83">&gt;</span> retur<span data-count="83">n</span> (fun t -&gt; <span data-count="8">T</span>Option t)
+  choic<span data-count="88">e</span>
+    [ skip_ws *<span data-count="88">&gt;</span> strin<span data-count="88">g</span> "list" *<span data-count="88">&gt;</span> retur<span data-count="88">n</span> (fun t -&gt; <span data-count="8">T</span>ype_list t)
+    ; skip_ws *<span data-count="88">&gt;</span> strin<span data-count="88">g</span> "option" *<span data-count="88">&gt;</span> retur<span data-count="88">n</span> (fun t -&gt; <span data-count="8">T</span>Option t)
     ]
 ;;
 
@@ -924,8 +924,8 @@ let chain_postfix term suffix =
 
 let p_type =
   skip_ws
-  *<span data-count="83">&gt;</span> strin<span data-count="83">g</span> ":"
-  *<span data-count="83">&gt;</span> fi<span data-count="83">x</span> (fun self -&gt;
+  *<span data-count="88">&gt;</span> strin<span data-count="88">g</span> ":"
+  *<span data-count="88">&gt;</span> fi<span data-count="88">x</span> (fun self -&gt;
     <span data-count="4">l</span>et atom = choice [ p_type_primitive; p_type_var; p_paren<span data-count="4">s</span> self ] in
     <span data-count="4">l</span>et list_option = chain_postfix atom p_suffix_type in
     <span data-count="4">l</span>et tuple =
@@ -943,107 +943,107 @@ let p_type =
 ;;
 
 let p_semicolon_list p_elem =
-  <span data-count="164">s</span>kip_ws
-  *<span data-count="164">&gt;</span> strin<span data-count="164">g</span> "["
-  *<span data-count="164">&gt;</span> skip_ws
-  *&gt; let+ list = sep_b<span data-count="164">y</span> (skip_ws *<span data-count="164">&gt;</span> strin<span data-count="164">g</span> ";") p_elem &lt;<span data-count="164">*</span> skip_ws &lt;<span data-count="164">*</span> strin<span data-count="164">g</span> "]" in
+  <span data-count="170">s</span>kip_ws
+  *<span data-count="170">&gt;</span> strin<span data-count="170">g</span> "["
+  *<span data-count="170">&gt;</span> skip_ws
+  *&gt; let+ list = sep_b<span data-count="170">y</span> (skip_ws *<span data-count="170">&gt;</span> strin<span data-count="170">g</span> ";") p_elem &lt;<span data-count="170">*</span> skip_ws &lt;<span data-count="170">*</span> strin<span data-count="170">g</span> "]" in
      <span data-count="336">l</span>ist
 ;;
 
-let p_semicolon_list_expr p_expr = <span data-count="82">p</span>_semicolon_lis<span data-count="82">t</span> p_expr &gt;&gt;| fun l -&gt; <span data-count="216">L</span>ist l
-let p_semicolon_list_pat p_pat = <span data-count="82">p</span>_semicolon_lis<span data-count="82">t</span> p_pat &gt;&gt;| fun l -&gt; <span data-count="120">P</span>List l
+let p_semicolon_list_expr p_expr = <span data-count="85">p</span>_semicolon_lis<span data-count="85">t</span> p_expr &gt;&gt;| fun l -&gt; <span data-count="216">L</span>ist l
+let p_semicolon_list_pat p_pat = <span data-count="85">p</span>_semicolon_lis<span data-count="85">t</span> p_pat &gt;&gt;| fun l -&gt; <span data-count="120">P</span>List l
 
 let p_cons_list_pat p_pat =
-  <span data-count="82">c</span>hainr1 p_pat (skip_ws *<span data-count="82">&gt;</span> strin<span data-count="82">g</span> "::" *<span data-count="82">&gt;</span> retur<span data-count="82">n</span> (fun l r -&gt; <span data-count="168">P</span>Cons (l, r)))
+  <span data-count="85">c</span>hainr1 p_pat (skip_ws *<span data-count="85">&gt;</span> strin<span data-count="85">g</span> "::" *<span data-count="85">&gt;</span> retur<span data-count="85">n</span> (fun l r -&gt; <span data-count="168">P</span>Cons (l, r)))
 ;;
 
-let uminus = skip_ws *<span data-count="83">&gt;</span> (strin<span data-count="83">g</span> "-" &lt;|<span data-count="83">&gt;</span> strin<span data-count="83">g</span> "~-") *<span data-count="83">&gt;</span> retur<span data-count="83">n</span> euminus
+let uminus = skip_ws *<span data-count="88">&gt;</span> (strin<span data-count="88">g</span> "-" &lt;|<span data-count="88">&gt;</span> strin<span data-count="88">g</span> "~-") *<span data-count="88">&gt;</span> retur<span data-count="88">n</span> euminus
 
 let p_tuple make p =
-  <span data-count="164">l</span>et tuple =
+  <span data-count="170">l</span>et tuple =
     let* fst = p in
-    <span data-count="8414">l</span>et* snd = skip_ws *<span data-count="8414">&gt;</span> strin<span data-count="8414">g</span> "," *<span data-count="8414">&gt;</span> p in
+    <span data-count="8535">l</span>et* snd = skip_ws *<span data-count="8535">&gt;</span> strin<span data-count="8535">g</span> "," *<span data-count="8535">&gt;</span> p in
     <span data-count="171">l</span>et* rest = man<span data-count="171">y</span> (skip_ws *<span data-count="171">&gt;</span> strin<span data-count="171">g</span> "," *<span data-count="171">&gt;</span> p) in
     <span data-count="171">r</span>eturn (mak<span data-count="171">e</span> fst snd rest)
   in
-  tuple &lt;|&gt; p_paren<span data-count="164">s</span> tuple
+  tuple &lt;|&gt; p_paren<span data-count="170">s</span> tuple
 ;;
 
-let p_tuple_expr p_expr = <span data-count="82">p</span>_tuple (fun e1 e2 rest -&gt; <span data-count="111">T</span>uple (e1, e2, rest)) p_expr
-let p_tuple_pat p_pat = <span data-count="82">p</span>_tuple (fun p1 p2 rest -&gt; <span data-count="60">P</span>Tuple (p1, p2, rest)) p_pat
+let p_tuple_expr p_expr = <span data-count="85">p</span>_tuple (fun e1 e2 rest -&gt; <span data-count="111">T</span>uple (e1, e2, rest)) p_expr
+let p_tuple_pat p_pat = <span data-count="85">p</span>_tuple (fun p1 p2 rest -&gt; <span data-count="60">P</span>Tuple (p1, p2, rest)) p_pat
 
 let p_if p_expr =
-  <span data-count="82">l</span>ift3
+  <span data-count="85">l</span>ift3
     (fun cond th el -&gt; <span data-count="290">I</span>f_then_else (cond, th, el))
-    (skip_ws *<span data-count="82">&gt;</span> strin<span data-count="82">g</span> "if" *<span data-count="82">&gt;</span> peek_sep1 *<span data-count="82">&gt;</span> p_expr)
-    (skip_ws *<span data-count="82">&gt;</span> strin<span data-count="82">g</span> "then" *<span data-count="82">&gt;</span> peek_sep1 *<span data-count="82">&gt;</span> p_expr)
+    (skip_ws *<span data-count="85">&gt;</span> strin<span data-count="85">g</span> "if" *<span data-count="85">&gt;</span> peek_sep1 *<span data-count="85">&gt;</span> p_expr)
+    (skip_ws *<span data-count="85">&gt;</span> strin<span data-count="85">g</span> "then" *<span data-count="85">&gt;</span> peek_sep1 *<span data-count="85">&gt;</span> p_expr)
     (skip_ws
-     *<span data-count="82">&gt;</span> strin<span data-count="82">g</span> "else"
-     *<span data-count="82">&gt;</span> peek_sep1
-     *<span data-count="82">&gt;</span> (p_expr &lt;<span data-count="82">*</span> peek_sep1 &gt;&gt;<span data-count="82">=</span> fun e -&gt; <span data-count="283">r</span>eturn (Some e))
-     &lt;|<span data-count="82">&gt;</span> retur<span data-count="82">n</span> None)
+     *<span data-count="85">&gt;</span> strin<span data-count="85">g</span> "else"
+     *<span data-count="85">&gt;</span> peek_sep1
+     *<span data-count="85">&gt;</span> (p_expr &lt;<span data-count="85">*</span> peek_sep1 &gt;&gt;<span data-count="85">=</span> fun e -&gt; <span data-count="283">r</span>eturn (Some e))
+     &lt;|<span data-count="85">&gt;</span> retur<span data-count="85">n</span> None)
 ;;
 
 let p_option p make_option =
-  <span data-count="164">s</span>kip_ws *<span data-count="164">&gt;</span> strin<span data-count="164">g</span> "None" *<span data-count="164">&gt;</span> peek_sep1 *<span data-count="164">&gt;</span> retur<span data-count="164">n</span> (make_optio<span data-count="164">n</span> None)
-  &lt;|&gt; let+ inner = skip_ws *<span data-count="164">&gt;</span> strin<span data-count="164">g</span> "Some" *<span data-count="164">&gt;</span> peek_sep1 *<span data-count="164">&gt;</span> p in
+  <span data-count="170">s</span>kip_ws *<span data-count="170">&gt;</span> strin<span data-count="170">g</span> "None" *<span data-count="170">&gt;</span> peek_sep1 *<span data-count="170">&gt;</span> retur<span data-count="170">n</span> (make_optio<span data-count="170">n</span> None)
+  &lt;|&gt; let+ inner = skip_ws *<span data-count="170">&gt;</span> strin<span data-count="170">g</span> "Some" *<span data-count="170">&gt;</span> peek_sep1 *<span data-count="170">&gt;</span> p in
       <span data-count="14">m</span>ake_option (Some inner)
 ;;
 
-let p_option_expr p = <span data-count="82">p</span>_option p (fun e -&gt; <span data-count="86">O</span>ption e)
-let p_option_pat p = <span data-count="82">p</span>_option p (fun e -&gt; <span data-count="92">P</span>Option e)
+let p_option_expr p = <span data-count="85">p</span>_option p (fun e -&gt; <span data-count="89">O</span>ption e)
+let p_option_pat p = <span data-count="85">p</span>_option p (fun e -&gt; <span data-count="95">P</span>Option e)
 
 let p_constraint_pat p_pat =
-  <span data-count="82">l</span>et* pat = p_pat in
+  <span data-count="85">l</span>et* pat = p_pat in
   <span data-count="16">l</span>et* typ = p_type in
   <span data-count="16">r</span>eturn (PConstraint (pat, typ))
 ;;
 
 let p_pat =
   skip_ws
-  *<span data-count="83">&gt;</span> fi<span data-count="83">x</span> (fun self -&gt;
-    <span data-count="82">l</span>et atom =
-      choice [ p_pat_atom; p_oper_pat; p_paren<span data-count="82">s</span> self; p_paren<span data-count="82">s</span> (p_constraint_pa<span data-count="82">t</span> self) ]
+  *<span data-count="88">&gt;</span> fi<span data-count="88">x</span> (fun self -&gt;
+    <span data-count="85">l</span>et atom =
+      choice [ p_pat_atom; p_oper_pat; p_paren<span data-count="85">s</span> self; p_paren<span data-count="85">s</span> (p_constraint_pa<span data-count="85">t</span> self) ]
     in
-    <span data-count="82">l</span>et semicolon_list = p_semicolon_list_pa<span data-count="82">t</span> (self &lt;|<span data-count="82">&gt;</span> atom) &lt;|&gt; atom in
-    <span data-count="82">l</span>et opt = p_option_pa<span data-count="82">t</span> semicolon_list &lt;|&gt; semicolon_list in
-    <span data-count="82">l</span>et cons = p_cons_list_pat opt in
-    <span data-count="82">l</span>et tuple = p_tuple_pa<span data-count="82">t</span> cons &lt;|&gt; cons in
-    <span data-count="82">t</span>uple)
+    <span data-count="85">l</span>et semicolon_list = p_semicolon_list_pa<span data-count="85">t</span> (self &lt;|<span data-count="85">&gt;</span> atom) &lt;|&gt; atom in
+    <span data-count="85">l</span>et opt = p_option_pa<span data-count="85">t</span> semicolon_list &lt;|&gt; semicolon_list in
+    <span data-count="85">l</span>et cons = p_cons_list_pat opt in
+    <span data-count="85">l</span>et tuple = p_tuple_pa<span data-count="85">t</span> cons &lt;|&gt; cons in
+    <span data-count="85">t</span>uple)
 ;;
 
 let p_binding p_expr : binding t =
-  <span data-count="1346">l</span>et* name = p_pat in
-  <span data-count="1186">l</span>et* args = man<span data-count="1186">y</span> p_pat in
-  <span data-count="1186">l</span>et* body = skip_ws *<span data-count="1186">&gt;</span> strin<span data-count="1186">g</span> "=" *<span data-count="1186">&gt;</span> p_expr in
-  <span data-count="1185">m</span>atch name, args with
-  | <span data-count="860">P</span>Var _, args -&gt; return (name, elambd<span data-count="860">a</span> body args)
-  | <span data-count="325">_</span>, args when List.lengt<span data-count="325">h</span> args &lt;&gt; 0 -&gt;
+  <span data-count="1380">l</span>et* name = p_pat in
+  <span data-count="1205">l</span>et* args = man<span data-count="1205">y</span> p_pat in
+  <span data-count="1205">l</span>et* body = skip_ws *<span data-count="1205">&gt;</span> strin<span data-count="1205">g</span> "=" *<span data-count="1205">&gt;</span> p_expr in
+  <span data-count="1204">m</span>atch name, args with
+  | <span data-count="873">P</span>Var _, args -&gt; return (name, elambd<span data-count="873">a</span> body args)
+  | <span data-count="331">_</span>, args when List.lengt<span data-count="331">h</span> args &lt;&gt; 0 -&gt;
     <span data-count="3">f</span>ail "Args in let bind are only allowed when binding a variable name "
-  | <span data-count="322">_</span> -&gt; return (name, elambd<span data-count="322">a</span> body args)
+  | <span data-count="328">_</span> -&gt; return (name, elambd<span data-count="328">a</span> body args)
 ;;
 
 let p_letin p_expr =
-  <span data-count="82">s</span>kip_ws
-  *<span data-count="82">&gt;</span> strin<span data-count="82">g</span> "let"
-  *<span data-count="82">&gt;</span> skip_ws_sep1
+  <span data-count="85">s</span>kip_ws
+  *<span data-count="85">&gt;</span> strin<span data-count="85">g</span> "let"
+  *<span data-count="85">&gt;</span> skip_ws_sep1
   *&gt;
-  let* rec_flag = strin<span data-count="82">g</span> "rec" *<span data-count="82">&gt;</span> peek_sep1 *<span data-count="82">&gt;</span> retur<span data-count="82">n</span> Rec &lt;|<span data-count="82">&gt;</span> retur<span data-count="82">n</span> Nonrec in
-  <span data-count="1018">l</span>et* bind = p_bindin<span data-count="1018">g</span> p_expr in
-  <span data-count="1016">l</span>et* inner_expr = skip_ws *<span data-count="1016">&gt;</span> strin<span data-count="1016">g</span> "in" *<span data-count="1016">&gt;</span> peek_sep1 *<span data-count="1016">&gt;</span> p_expr in
-  <span data-count="1016">L</span>etIn (rec_flag, bind, inner_expr) |&gt; return
+  let* rec_flag = strin<span data-count="85">g</span> "rec" *<span data-count="85">&gt;</span> peek_sep1 *<span data-count="85">&gt;</span> retur<span data-count="85">n</span> Rec &lt;|<span data-count="85">&gt;</span> retur<span data-count="85">n</span> Nonrec in
+  <span data-count="1022">l</span>et* bind = p_bindin<span data-count="1022">g</span> p_expr in
+  <span data-count="1020">l</span>et* inner_expr = skip_ws *<span data-count="1020">&gt;</span> strin<span data-count="1020">g</span> "in" *<span data-count="1020">&gt;</span> peek_sep1 *<span data-count="1020">&gt;</span> p_expr in
+  <span data-count="1020">L</span>etIn (rec_flag, bind, inner_expr) |&gt; return
 ;;
 
 let p_apply p_expr self =
-  <span data-count="82">c</span>hainl1
-    (p_paren<span data-count="82">s</span> (p_expr &lt;|<span data-count="82">&gt;</span> self) &lt;|<span data-count="82">&gt;</span> (p_expr &lt;<span data-count="82">*</span> peek_sep1))
-    (retur<span data-count="82">n</span> (fun expr1 expr2 -&gt; <span data-count="5596">A</span>pply (expr1, expr2)))
+  <span data-count="85">c</span>hainl1
+    (p_paren<span data-count="85">s</span> (p_expr &lt;|<span data-count="85">&gt;</span> self) &lt;|<span data-count="85">&gt;</span> (p_expr &lt;<span data-count="85">*</span> peek_sep1))
+    (retur<span data-count="85">n</span> (fun expr1 expr2 -&gt; <span data-count="5848">A</span>pply (expr1, expr2)))
 ;;
 
 let p_lambda p_expr =
-  <span data-count="82">s</span>kip_ws
-  *<span data-count="82">&gt;</span> strin<span data-count="82">g</span> "fun"
-  *<span data-count="82">&gt;</span> peek_sep1
+  <span data-count="85">s</span>kip_ws
+  *<span data-count="85">&gt;</span> strin<span data-count="85">g</span> "fun"
+  *<span data-count="85">&gt;</span> peek_sep1
   *&gt;
   let* arg1 = p_pat in
   <span data-count="564">l</span>et* args = man<span data-count="564">y</span> p_pat &lt;<span data-count="564">*</span> skip_ws &lt;<span data-count="564">*</span> strin<span data-count="564">g</span> "-&gt;" in
@@ -1058,34 +1058,34 @@ let p_case p_expr =
 ;;
 
 let p_first_case p_expr =
-  <span data-count="132">l</span>et* pat = skip_ws *<span data-count="132">&gt;</span> (strin<span data-count="132">g</span> "|" *<span data-count="132">&gt;</span> p_pat &lt;|<span data-count="132">&gt;</span> p_pat) &lt;<span data-count="132">*</span> skip_ws &lt;<span data-count="132">*</span> strin<span data-count="132">g</span> "-&gt;" in
+  <span data-count="135">l</span>et* pat = skip_ws *<span data-count="135">&gt;</span> (strin<span data-count="135">g</span> "|" *<span data-count="135">&gt;</span> p_pat &lt;|<span data-count="135">&gt;</span> p_pat) &lt;<span data-count="135">*</span> skip_ws &lt;<span data-count="135">*</span> strin<span data-count="135">g</span> "-&gt;" in
   <span data-count="70">l</span>et* expr = p_expr in
   <span data-count="70">r</span>eturn (pat, expr)
 ;;
 
 let p_match p_expr =
-  <span data-count="82">l</span>et* value = skip_ws *<span data-count="82">&gt;</span> strin<span data-count="82">g</span> "match" *<span data-count="82">&gt;</span> p_expr &lt;<span data-count="82">*</span> skip_ws &lt;<span data-count="82">*</span> strin<span data-count="82">g</span> "with" in
+  <span data-count="85">l</span>et* value = skip_ws *<span data-count="85">&gt;</span> strin<span data-count="85">g</span> "match" *<span data-count="85">&gt;</span> p_expr &lt;<span data-count="85">*</span> skip_ws &lt;<span data-count="85">*</span> strin<span data-count="85">g</span> "with" in
   <span data-count="50">l</span>et* pat1, expr1 = p_first_cas<span data-count="50">e</span> p_expr in
   <span data-count="50">l</span>et* cases = man<span data-count="50">y</span> (p_cas<span data-count="50">e</span> p_expr) in
   <span data-count="50">M</span>atch (value, (pat1, expr1), cases) |&gt; return
 ;;
 
 let p_function p_expr =
-  <span data-count="82">s</span>kip_ws
-  *<span data-count="82">&gt;</span> strin<span data-count="82">g</span> "function"
+  <span data-count="85">s</span>kip_ws
+  *<span data-count="85">&gt;</span> strin<span data-count="85">g</span> "function"
   *&gt;
-  let* pat1, expr1 = p_first_cas<span data-count="82">e</span> p_expr in
+  let* pat1, expr1 = p_first_cas<span data-count="85">e</span> p_expr in
   <span data-count="20">l</span>et* cases = man<span data-count="20">y</span> (p_cas<span data-count="20">e</span> p_expr) in
   <span data-count="20">F</span>unction ((pat1, expr1), cases) |&gt; return
 ;;
 
 let p_constraint_expr p_expr =
-  <span data-count="82">l</span>et* expr = p_expr in
+  <span data-count="85">l</span>et* expr = p_expr in
   <span data-count="44">l</span>et* typ = p_type in
   <span data-count="44">E</span>Constraint (expr, typ) |&gt; return
 ;;
 
-let infix_op (op, func) = <span data-count="1079">s</span>kip_ws *<span data-count="1079">&gt;</span> strin<span data-count="1079">g</span> op *&gt; retur<span data-count="1079">n</span> func
+let infix_op (op, func) = <span data-count="1144">s</span>kip_ws *<span data-count="1144">&gt;</span> strin<span data-count="1144">g</span> op *&gt; retur<span data-count="1144">n</span> func
 
 <span data-count="0">t</span>ype associativity =
   <span data-count="0">|</span> L
@@ -1101,61 +1101,61 @@ let infix_precedence_list =
     ; [ "&amp;&amp;", eland ], L
     ; [ "||", elor ], L
     ]
-    |&gt; List.map ~f:(fun (l, assoc) -&gt; <span data-count="498">L</span>ist.ma<span data-count="498">p</span> l ~f:infix_op, assoc)
+    |&gt; List.map ~f:(fun (l, assoc) -&gt; <span data-count="528">L</span>ist.ma<span data-count="528">p</span> l ~f:infix_op, assoc)
   in
-  <span data-count="83">l</span>et custom = [ [ (p_oper &gt;&gt;<span data-count="83">|</span> fun s -&gt; <span data-count="10">e</span>app2 (Variable s)) ], L ] in
+  <span data-count="88">l</span>et custom = [ [ (p_oper &gt;&gt;<span data-count="88">|</span> fun s -&gt; <span data-count="10">e</span>app2 (Variable s)) ], L ] in
   default @ custom
 ;;
 
 let p_infix_expr p_expr =
-  <span data-count="82">f</span>ix (fun self -&gt;
-    <span data-count="82">l</span>et atom = p_expr &lt;|&gt; p_paren<span data-count="82">s</span> self in
-    <span data-count="82">L</span>ist.fold_left infix_precedence_list ~init:atom ~f:(fun acc (ops, assoc) -&gt;
-      <span data-count="574">m</span>atch assoc with
-      | <span data-count="492">L</span> -&gt; chainl1 acc (choic<span data-count="492">e</span> ops)
-      | <span data-count="82">R</span> -&gt; chainr1 acc (choic<span data-count="82">e</span> ops)))
+  <span data-count="85">f</span>ix (fun self -&gt;
+    <span data-count="85">l</span>et atom = p_expr &lt;|&gt; p_paren<span data-count="85">s</span> self in
+    <span data-count="85">L</span>ist.fold_left infix_precedence_list ~init:atom ~f:(fun acc (ops, assoc) -&gt;
+      <span data-count="595">m</span>atch assoc with
+      | <span data-count="510">L</span> -&gt; chainl1 acc (choic<span data-count="510">e</span> ops)
+      | <span data-count="85">R</span> -&gt; chainr1 acc (choic<span data-count="85">e</span> ops)))
 ;;
 
 let p_expr =
   skip_ws
-  *<span data-count="83">&gt;</span> fi<span data-count="83">x</span> (fun self -&gt;
-    <span data-count="82">l</span>et simple =
+  *<span data-count="88">&gt;</span> fi<span data-count="88">x</span> (fun self -&gt;
+    <span data-count="85">l</span>et simple =
       fix (fun simple -&gt;
-        <span data-count="82">l</span>et atom =
+        <span data-count="85">l</span>et atom =
           choice
             [ p_expr_atom
-            ; p_paren<span data-count="82">s</span> self
-            ; p_semicolon_list_exp<span data-count="82">r</span> self
-            ; p_paren<span data-count="82">s</span> (p_constraint_exp<span data-count="82">r</span> self)
+            ; p_paren<span data-count="85">s</span> self
+            ; p_semicolon_list_exp<span data-count="85">r</span> self
+            ; p_paren<span data-count="85">s</span> (p_constraint_exp<span data-count="85">r</span> self)
             ]
         in
-        <span data-count="82">l</span>et option = p_option_exp<span data-count="82">r</span> simple &lt;|&gt; atom in
-        <span data-count="82">o</span>ption)
+        <span data-count="85">l</span>et option = p_option_exp<span data-count="85">r</span> simple &lt;|&gt; atom in
+        <span data-count="85">o</span>ption)
     in
-    <span data-count="82">l</span>et heavy =
-      choice [ p_i<span data-count="82">f</span> self; p_leti<span data-count="82">n</span> self; p_functio<span data-count="82">n</span> self; p_matc<span data-count="82">h</span> self; p_lambd<span data-count="82">a</span> self ]
+    <span data-count="85">l</span>et heavy =
+      choice [ p_i<span data-count="85">f</span> self; p_leti<span data-count="85">n</span> self; p_functio<span data-count="85">n</span> self; p_matc<span data-count="85">h</span> self; p_lambd<span data-count="85">a</span> self ]
     in
-    <span data-count="82">l</span>et apply = p_appl<span data-count="82">y</span> simple self &lt;|<span data-count="82">&gt;</span> simple &lt;|&gt; heavy in
-    <span data-count="82">l</span>et unary = unary_chain uminus apply in
-    <span data-count="82">l</span>et infix = p_infix_expr unary in
-    <span data-count="82">l</span>et tuple = p_tuple_exp<span data-count="82">r</span> infix &lt;|&gt; infix in
-    <span data-count="82">t</span>uple)
+    <span data-count="85">l</span>et apply = p_appl<span data-count="85">y</span> simple self &lt;|<span data-count="85">&gt;</span> simple &lt;|&gt; heavy in
+    <span data-count="85">l</span>et unary = unary_chain uminus apply in
+    <span data-count="85">l</span>et infix = p_infix_expr unary in
+    <span data-count="85">l</span>et tuple = p_tuple_exp<span data-count="85">r</span> infix &lt;|&gt; infix in
+    <span data-count="85">t</span>uple)
 ;;
 
 let str_item : structure_item t =
   skip_ws
-  *<span data-count="83">&gt;</span> strin<span data-count="83">g</span> "let"
-  *<span data-count="83">&gt;</span> skip_ws_sep1
-  *<span data-count="83">&gt;</span>
-  let* rec_flag = strin<span data-count="83">g</span> "rec" *<span data-count="83">&gt;</span> peek_sep1 *<span data-count="83">&gt;</span> retur<span data-count="83">n</span> Rec &lt;|<span data-count="83">&gt;</span> retur<span data-count="83">n</span> Nonrec in
-  <span data-count="165">l</span>et* bind = p_bindin<span data-count="165">g</span> p_expr in
-  <span data-count="163">l</span>et* binds_rest = man<span data-count="163">y</span> (skip_ws *<span data-count="163">&gt;</span> strin<span data-count="163">g</span> "and" *<span data-count="163">&gt;</span> peek_sep1 *<span data-count="163">&gt;</span> p_bindin<span data-count="163">g</span> p_expr) in
-  <span data-count="163">l</span>et* () = optio<span data-count="163">n</span> () (skip_ws &lt;<span data-count="163">*</span> strin<span data-count="163">g</span> ";;") in
-  <span data-count="163">r</span>eturn (rec_flag, bind, binds_rest)
+  *<span data-count="88">&gt;</span> strin<span data-count="88">g</span> "let"
+  *<span data-count="88">&gt;</span> skip_ws_sep1
+  *<span data-count="88">&gt;</span>
+  let* rec_flag = strin<span data-count="88">g</span> "rec" *<span data-count="88">&gt;</span> peek_sep1 *<span data-count="88">&gt;</span> retur<span data-count="88">n</span> Rec &lt;|<span data-count="88">&gt;</span> retur<span data-count="88">n</span> Nonrec in
+  <span data-count="180">l</span>et* bind = p_bindin<span data-count="180">g</span> p_expr in
+  <span data-count="178">l</span>et* binds_rest = man<span data-count="178">y</span> (skip_ws *<span data-count="178">&gt;</span> strin<span data-count="178">g</span> "and" *<span data-count="178">&gt;</span> peek_sep1 *<span data-count="178">&gt;</span> p_bindin<span data-count="178">g</span> p_expr) in
+  <span data-count="178">l</span>et* () = optio<span data-count="178">n</span> () (skip_ws &lt;<span data-count="178">*</span> strin<span data-count="178">g</span> ";;") in
+  <span data-count="178">r</span>eturn (rec_flag, bind, binds_rest)
 ;;
 
-let program : program t = many<span data-count="83">1</span> str_item &lt;<span data-count="83">*</span> skip_ws
-let parse (str : string) = <span data-count="82">p</span>arse_string ~consume:All program str
+let program : program t = many<span data-count="88">1</span> str_item &lt;<span data-count="88">*</span> skip_ws
+let parse (str : string) = <span data-count="85">p</span>arse_string ~consume:All program str
 </code></pre>
       </div>
     </div>
