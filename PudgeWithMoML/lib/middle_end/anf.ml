@@ -17,11 +17,11 @@ type imm =
 
 type cexpr =
   | CImm of imm
-  | CTuple of imm * imm * imm list
+  (* | CTuple of imm * imm * imm list *)
   | CBinop of ident * imm * imm
   | CNot of imm
   | CLambda of ident * aexpr
-  | CApp of imm * imm
+  | CApp of imm * imm * imm list
   | CIte of imm * aexpr * aexpr
 [@@deriving show { with_path = false }]
 
@@ -44,7 +44,7 @@ let mk_alet rf name1 v body =
   | _ -> ALet (rf, name1, v, body)
 ;;
 
-open Common.Monad.Counter
+open Common.Monad.CounterR
 
 let make_temp =
   let+ fresh = make_fresh in
@@ -60,6 +60,9 @@ let rec anf (e : expr) (expr_with_hole : imm -> aexpr t) : aexpr t =
   | LetIn (rec_flag, (PVar name, value), body) ->
     let* body = anf body expr_with_hole in
     anf value (fun immv -> mk_alet rec_flag name (CImm immv) body |> return)
+  | LetIn (_, (Wild, value), body) ->
+    let* body = anf body expr_with_hole in
+    anf value (fun _ -> body |> return)
   | Apply (Apply (Variable f, arg1), arg2) when is_op f ->
     anf arg1 (fun i1 ->
       anf arg2 (fun i2 ->
@@ -70,12 +73,35 @@ let rec anf (e : expr) (expr_with_hole : imm -> aexpr t) : aexpr t =
     let+ body' = anf body expr_with_hole in
     let lambda = CLambda (arg, body') in
     ACExpr lambda
+  | Apply ((Apply (_, _) as app), arg1) ->
+    let f, args =
+      let rec helper e =
+        match e with
+        | Apply (f, arg) ->
+          let f', args = helper f in
+          f', args @ [ arg ]
+        | _ -> e, []
+      in
+      helper (Apply (app, arg1))
+    in
+    let rec anf_list (l : expr list) (k : imm list -> aexpr t) =
+      match l with
+      | hd :: tl -> anf hd (fun i -> anf_list tl (fun res -> k (i :: res)))
+      | [] -> k []
+    in
+    anf f (fun i1 ->
+      anf_list args (fun l ->
+        let* temp = make_temp in
+        let* ehole = expr_with_hole (ImmVar temp) in
+        match l with
+        | arg :: args -> mk_alet Nonrec temp (CApp (i1, arg, args)) ehole |> return
+        | [] -> fail "Apply must contain at least one argument"))
   | Apply (f, arg) ->
     anf f (fun i1 ->
       anf arg (fun i2 ->
         let* temp = make_temp in
         let* ehole = expr_with_hole (ImmVar temp) in
-        mk_alet Nonrec temp (CApp (i1, i2)) ehole |> return))
+        mk_alet Nonrec temp (CApp (i1, i2, [])) ehole |> return))
   | If_then_else (i, t, e) ->
     anf i (fun i' ->
       let* t' = anf t expr_with_hole in
@@ -85,17 +111,21 @@ let rec anf (e : expr) (expr_with_hole : imm -> aexpr t) : aexpr t =
         | None -> ACExpr (CImm (ImmConst Unit_lt)) |> return
       in
       ACExpr (CIte (i', t', e')) |> return)
-  | _ -> failwith "Not implemented"
+  | other -> fail (Stdlib.Format.asprintf "Not implemented %a" pp_expr other)
 ;;
 
 let anf_str_item : structure_item -> astr_item t = function
   | rec_flag, (PVar name, v), [] ->
     let+ v' = anf v (fun i -> ACExpr (CImm i) |> return) in
     rec_flag, (name, v'), []
-  | _ -> failwith "Not implemented"
+  | rec_flag, (Wild, v), [] ->
+    (* TODO: alpha conversion must keep wildcard variable but exec code *)
+    let+ v' = anf v (fun i -> ACExpr (CImm i) |> return) in
+    rec_flag, ("_", v'), []
+  | other -> fail (Stdlib.Format.asprintf "Not implemented %a" pp_structure_item other)
 ;;
 
-let anf_program program : aprogram =
+let anf_program program : (aprogram, error) Base.Result.t =
   let program' =
     List.fold_right
       ~f:(fun item acc ->

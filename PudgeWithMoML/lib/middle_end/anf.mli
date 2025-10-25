@@ -14,11 +14,11 @@ type imm =
 
 type cexpr =
   | CImm of imm
-  | CTuple of imm * imm * imm list
+  (* | CTuple of imm * imm * imm list *)
   | CBinop of string * imm * imm
   | CNot of imm
   | CLambda of string * aexpr
-  | CApp of imm * imm
+  | CApp of imm * imm * imm list
   | CIte of imm * aexpr * aexpr
 
 and aexpr =
@@ -32,5 +32,4 @@ type astr_item = is_recursive * binding * binding list
 
 type aprogram = astr_item list [@@deriving show { with_path = false }]
 
-val anf_str_item : structure_item -> astr_item Common.Monad.Counter.t
-val anf_program : structure_item list -> aprogram
+val anf_program : structure_item list -> (aprogram, string) Base.Result.t

@@ -17,14 +17,15 @@ let pp_imm fmt = function
 
 let rec pp_cexpr fmt = function
   | CImm imm -> pp_imm fmt imm
-  | CTuple (i1, i2, rest) ->
+  (* | CTuple (i1, i2, rest) ->
     fprintf fmt "(";
     pp_print_list ~pp_sep:(fun fmt () -> fprintf fmt ", ") pp_imm fmt (i1 :: i2 :: rest);
-    fprintf fmt ")"
+    fprintf fmt ")" *)
   | CLambda (arg, body) -> fprintf fmt "fun %s ->@\n%a" arg pp_aexpr body
   | CBinop (op, left, right) -> fprintf fmt "%a %s %a" pp_imm left op pp_imm right
   | CNot i -> fprintf fmt "not %a" pp_imm i
-  | CApp (f, arg) -> fprintf fmt "%a %a" pp_imm f pp_imm arg
+  | CApp (f, arg, args) ->
+    pp_print_list ~pp_sep:(fun fmt () -> fprintf fmt " ") pp_imm fmt (f :: arg :: args)
   | CIte (i, t, e) ->
     fprintf fmt "if %a then (%a)@\nelse %a" pp_imm i pp_aexpr t pp_aexpr e
 
@@ -60,5 +61,6 @@ let pp_aprogram fmt (program : aprogram) =
       fprintf fmt "@\n")
     pp_astr_item
     fmt
-    program
+    program;
+  pp_print_flush fmt ()
 ;;
