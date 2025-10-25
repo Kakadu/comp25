@@ -115,6 +115,9 @@ let rec anf_exp exp (k : i_exp -> a_exp State.t) =
   match exp with
   | Exp_ident id -> k @@ IExp_ident id
   | Exp_constant const -> k @@ IExp_constant const
+  | Exp_let (_, { pat = Pat_any; exp }, _, body) -> anf_exp exp (fun _ -> anf_exp body k)
+  | Exp_let (_, { pat = Pat_construct ("()", None); exp }, _, body) ->
+    anf_exp exp (fun _ -> anf_exp body k)
   | Exp_let (flag, { pat; exp }, _, body) ->
     anf_exp exp (fun a ->
       let* body_aexp = anf_exp body k in

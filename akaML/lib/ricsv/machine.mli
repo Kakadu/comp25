@@ -42,6 +42,8 @@ type instr =
   | Snez of reg * reg (** [snez rd, rs] Sets [rd] = 1 if [rs] != 0, else [rd] = 0 *)
   (* === Immediate loading === *)
   | Li of reg * int (** [li rd, imm] Loads immediate [imm] into register [rd] *)
+  | La of reg * string
+  (** [la rd, label] Loads the address of [label] into register [rd] *)
   | Mv of reg * reg
   (** [mv rd, rs] Copies the value from register [rs] into register [rd] *)
   (* === Memory access === *)
@@ -73,6 +75,7 @@ val slt : (instr -> 'a) -> reg -> reg -> reg -> 'a
 val seqz : (instr -> 'a) -> reg -> reg -> 'a
 val snez : (instr -> 'a) -> reg -> reg -> 'a
 val li : (instr -> 'a) -> reg -> int -> 'a
+val la : (instr -> 'a) -> reg -> string -> 'a
 val mv : (instr -> 'a) -> reg -> reg -> 'a
 val ld : (instr -> 'a) -> reg -> offset -> 'a
 val sd : (instr -> 'a) -> reg -> offset -> 'a

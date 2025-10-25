@@ -41,6 +41,7 @@ type instr =
   | Seqz of reg * reg
   | Snez of reg * reg
   | Li of reg * int
+  | La of reg * string
   | Mv of reg * reg
   | Ld of reg * offset
   | Sd of reg * offset
@@ -64,6 +65,7 @@ let pp_instr ppf =
   | Seqz (rd, rs) -> fprintf ppf "seqz %a, %a" pp_reg rd pp_reg rs
   | Snez (rd, rs) -> fprintf ppf "snez %a, %a" pp_reg rd pp_reg rs
   | Li (rd, imm) -> fprintf ppf "li %a, %d" pp_reg rd imm
+  | La (rd, s) -> fprintf ppf "la %a, %s" pp_reg rd s
   | Mv (rd, rs) -> fprintf ppf "mv %a, %a" pp_reg rd pp_reg rs
   | Ld (rd, ofs) -> fprintf ppf "ld %a, %a" pp_reg rd pp_offset ofs
   | Sd (rs, ofs) -> fprintf ppf "sd %a, %a" pp_reg rs pp_offset ofs
@@ -85,6 +87,7 @@ let slt k rd rs1 rs2 = k @@ Slt (rd, rs1, rs2)
 let seqz k rd rs = k (Seqz (rd, rs))
 let snez k rd rs = k (Snez (rd, rs))
 let li k rd imm = k (Li (rd, imm))
+let la k rd s = k (La (rd, s))
 let mv k rd rs = k (Mv (rd, rs))
 let ld k rd ofs = k (Ld (rd, ofs))
 let sd k rd ofs = k (Sd (rd, ofs))

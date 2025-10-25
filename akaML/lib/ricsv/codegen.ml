@@ -42,6 +42,7 @@ type codegen_state =
   { frame_offset : int
     (* Stores the current offset from FP for local variables and some caller-regs *)
   ; fresh_id : int
+  ; arity_map : (ident, int, String.comparator_witness) Map.t
   }
 
 module State = struct
@@ -110,7 +111,15 @@ module Emission = struct
     | "<>" ->
       emit xor dst r1 r2;
       emit snez dst dst
+    | "<" -> emit slt dst r1 r2
+    | ">" -> emit slt dst r2 r1
     | _ -> failwith ("unsupported binary operator: " ^ op)
+  ;;
+
+  let emit_load_reg (dst_reg : reg) = function
+    | Loc_reg src_reg when equal_reg src_reg dst_reg -> emit mv dst_reg src_reg
+    | Loc_mem ofs -> emit ld dst_reg ofs
+    | _ -> ()
   ;;
 
   let emit_store ?(comm = "") reg =
@@ -207,7 +216,18 @@ let rec gen_i_exp env dst = function
      | Some (Loc_mem ofs) ->
        emit ld dst ofs;
        return env
-     | None -> failwith ("unbound variable: " ^ x))
+     | None ->
+       let* state = get in
+       (match Map.find state.arity_map x with
+        | Some 0 ->
+          emit call x;
+          return env
+        | Some arity ->
+          emit la (A 0) x;
+          emit li (A 1) arity;
+          emit call "alloc_closure";
+          return env
+        | _ -> failwith ("unbound variable: " ^ x)))
   | _ -> failwith "GenIExp: Not implemented"
 
 and gen_c_exp env dst = function
@@ -220,17 +240,80 @@ and gen_c_exp env dst = function
     return env
   | CExp_apply (IExp_ident fname, i_exp, i_exp_list) ->
     let args = i_exp :: i_exp_list in
-    let* env =
-      List.foldi args ~init:(return env) ~f:(fun i acc arg ->
-        let* env = acc in
-        if i < Platform.arg_regs_count
-        then gen_i_exp env (A i) arg
-        else failwith "too many args")
-    in
     let* env = emit_save_caller_regs env in
-    emit call fname;
-    if not (equal_reg dst (A 0)) then emit mv dst (A 0);
-    return env
+    let* state = get in
+    let arity = Map.find state.arity_map fname in
+    (match List.length args, arity with
+     | args_received, Some args_count when args_received = args_count ->
+       let* env =
+         List.foldi args ~init:(return env) ~f:(fun i acc arg ->
+           let* env = acc in
+           if i < Platform.arg_regs_count
+           then gen_i_exp env (A i) arg
+           else failwith "too many args")
+       in
+       emit call fname;
+       if not (equal_reg dst (A 0)) then emit mv dst (A 0);
+       return env
+     | args_received, _ ->
+       let arg_regs = [ A 2; A 3; A 4; A 5; A 6; A 7 ] in
+       (* determine which args can overwrite regs *)
+       let is_rewrites_regs = function
+         | IExp_constant _ -> false
+         | IExp_ident id ->
+           (match Map.find state.arity_map id with
+            | Some _ -> true
+            | None -> false)
+         | _ -> false
+       in
+       (* save all “dangerous” args on the stack and remember where *)
+       let rw_arg = List.filter args ~f:is_rewrites_regs in
+       let rw_arg_size = List.length rw_arg in
+       if rw_arg_size > 0
+       then emit addi SP SP (-rw_arg_size * 8) ~comm:"Saving 'dangerous' args";
+       let* rw_arg_locs =
+         List.filter args ~f:is_rewrites_regs
+         |> List.fold ~init:(return Map.Poly.empty) ~f:(fun acc arg ->
+           let* acc = acc in
+           let* _ = gen_i_exp env (A 0) arg in
+           let* loc = emit_store (A 0) in
+           return (Map.set acc ~key:arg ~data:loc))
+       in
+       let* env = gen_i_exp env (A 0) (IExp_ident fname) in
+       emit li (A 1) args_received;
+       (* load args into regs *)
+       let num_reg_args = min args_received (List.length arg_regs) in
+       let* env =
+         List.foldi (List.take args num_reg_args) ~init:(return env) ~f:(fun i acc arg ->
+           let* env = acc in
+           if is_rewrites_regs arg
+           then (
+             emit_load_reg (List.nth_exn arg_regs i) (Map.find_exn rw_arg_locs arg);
+             return env)
+           else
+             let* env = gen_i_exp env (List.nth_exn arg_regs i) arg in
+             return env)
+       in
+       (* if there are stack args, prepare space for them *)
+       let stack_args = List.drop args num_reg_args in
+       let stack_size = List.length stack_args in
+       if stack_size > 0
+       then emit addi SP SP (-stack_size * 8) ~comm:"Stack space for variadic args";
+       let* env =
+         List.foldi stack_args ~init:(return env) ~f:(fun i acc arg ->
+           let* env = acc in
+           let offset = i * 8 in
+           let* env = gen_i_exp env (T 0) arg in
+           emit sd (T 0) (SP, offset);
+           return env)
+       in
+       emit call "applyN";
+       if stack_size > 0
+       then emit addi SP SP (stack_size * 8) ~comm:"Restore stack after applyN";
+       if rw_arg_size > 0
+       then emit addi SP SP (rw_arg_size * 8) ~comm:"Restore stack after 'dangerous' args";
+       if not (equal_reg dst (A 0)) then emit mv dst (A 0);
+       return env)
   | CExp_ifthenelse (cond, then_e, Some else_e) ->
     let* env = gen_c_exp env (T 0) cond in
     let* id = fresh in
@@ -238,11 +321,11 @@ and gen_c_exp env dst = function
     and end_lbl = Printf.sprintf "end_%d" id in
     emit beq (T 0) Zero else_lbl;
     (* then case *)
-    let* env = gen_a_exp env dst then_e in
+    let* _ = gen_a_exp env dst then_e in
     emit j end_lbl;
     (* else case *)
     emit label else_lbl;
-    let* env = gen_a_exp env dst else_e in
+    let* _ = gen_a_exp env dst else_e in
     emit label end_lbl;
     return env
   | _ -> failwith "GenCExp: Not implemented"
@@ -315,18 +398,45 @@ let gen_a_func f_id arg_list body_exp ppf state =
   state
 ;;
 
+let init_arity_map ast =
+  let env =
+    List.fold
+      ast
+      ~init:(Map.empty (module String))
+      ~f:(fun env -> function
+        | AStruct_value (_, Pat_var f_id, a_exp) ->
+          let rec extract_f_params exp ~acc =
+            match exp with
+            | ACExp (CIExp (IExp_fun (_, a_exp))) ->
+              let acc = acc + 1 in
+              extract_f_params a_exp ~acc
+            | _ -> acc
+          in
+          let params_count = extract_f_params a_exp ~acc:0 in
+          Map.set env ~key:f_id ~data:params_count
+        | _ -> env)
+  in
+  env
+;;
+
 let gen_a_structure ppf ast =
   fprintf ppf ".section .text";
-  let init_state = { frame_offset = 0; fresh_id = 0 } in
+  let arity_map = init_arity_map ast in
+  let arity_map = Map.set arity_map ~key:"print_int" ~data:1 in
+  let init_state = { frame_offset = 0; fresh_id = 0; arity_map } in
   let _ =
     List.fold ast ~init:init_state ~f:(fun state -> function
-      | AStruct_value (Recursive, Pat_var f_id, ACExp (CIExp (IExp_fun (pat, body_exp))))
-        -> gen_a_func f_id [ pat ] body_exp ppf state
-      | AStruct_value
-          (Nonrecursive, Pat_var f_id, ACExp (CIExp (IExp_fun (pat, body_exp)))) ->
-        gen_a_func f_id [ pat ] body_exp ppf state
-      | AStruct_value (Nonrecursive, Pat_var f_id, body_exp) ->
-        gen_a_func f_id [] body_exp ppf state
+      | AStruct_value (_, Pat_var f_id, body_exp) ->
+        let extract_fun_params body_exp =
+          let rec helper acc exp =
+            match exp with
+            | ACExp (CIExp (IExp_fun (pat, body))) -> helper (pat :: acc) body
+            | other -> List.rev acc, other
+          in
+          helper [] body_exp
+        in
+        let pat_list, body_exp = extract_fun_params body_exp in
+        gen_a_func f_id pat_list body_exp ppf state
       | _ -> failwith "unsupported structure item")
   in
   pp_print_flush ppf ()
