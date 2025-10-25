@@ -30,27 +30,7 @@ and pp_cexpr fmt = function
   | CIte (c, t, Some e) ->
     fprintf fmt "@[<v 2>if %a@ then %a@ else %a@]" pp_cexpr c pp_aexpr t pp_aexpr e
   | CIte (c, t, None) -> fprintf fmt "@[<v 2>if %a@ then %a@]" pp_cexpr c pp_aexpr t
-  | CLam _ as lam ->
-    let rec collect_args acc = function
-      | CLam (Ident arg, body) ->
-        (match body with
-         | ACExpr (CLam _) ->
-           collect_args
-             (arg :: acc)
-             (match body with
-              | ACExpr c -> c
-              | _ -> CImmexpr (ImmId (Ident "")))
-         | _ -> List.rev (arg :: acc), body)
-      | _ -> [], ACExpr (CImmexpr (ImmId (Ident "")))
-    in
-    let args, body = collect_args [] lam in
-    fprintf
-      fmt
-      "@[<2>fun %a -> @,%a@]"
-      (pp_print_list ~pp_sep:(fun fmt () -> fprintf fmt " ") pp_print_string)
-      args
-      pp_aexpr
-      body
+  | CLam (Ident arg, body) -> fprintf fmt "@[<2>fun %s -> @,%a@]" arg pp_aexpr body
   | CApp (fn, args) ->
     fprintf
       fmt
