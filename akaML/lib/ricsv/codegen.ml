@@ -241,81 +241,103 @@ and gen_c_exp env dst = function
   | CExp_apply (IExp_ident fname, args) ->
     let* env = emit_save_caller_regs env in
     let* state = get in
+    (* Determine which args can overwrite regs *)
+    let is_rewrites_regs_cache =
+      List.mapi args ~f:(fun i arg ->
+        let rew =
+          match arg with
+          | IExp_constant _ -> false
+          | IExp_ident id ->
+            (match Map.find state.arity_map id with
+             | Some _ -> true
+             | None -> false)
+          | _ -> false
+        in
+        i, rew)
+    in
+    let rw_idxs =
+      is_rewrites_regs_cache
+      |> List.filter_map ~f:(fun (i, rew) -> if rew then Some i else None)
+    in
+    let rw_count = List.length rw_idxs in
+    (* Save all 'dangerous' args on the stack and remember where *)
+    let dangerous_bytes = rw_count * Platform.word_size in
+    if dangerous_bytes > 0
+    then emit addi SP SP (-dangerous_bytes) ~comm:"Saving 'dangerous' args";
+    let* rw_locs =
+      List.foldi args ~init:(return Map.Poly.empty) ~f:(fun i acc arg ->
+        let* acc = acc in
+        if List.mem rw_idxs i ~equal:Int.equal
+        then
+          let* _ = gen_i_exp env (A 0) arg in
+          let* loc = emit_store (A 0) in
+          return (Map.set acc ~key:i ~data:loc)
+        else return acc)
+    in
+    (* helper: prepare registers for first N args from 'arg_regs' *)
+    let load_into_regs env arg_regs args_list =
+      let num_reg_args = min (List.length args_list) (List.length arg_regs) in
+      List.foldi
+        (List.take args_list num_reg_args)
+        ~init:(return env)
+        ~f:(fun i acc arg ->
+          let* env = acc in
+          let reg = List.nth_exn arg_regs i in
+          if Map.mem rw_locs i
+          then (
+            let loc = Map.find_exn rw_locs i in
+            emit_load_reg reg loc;
+            return env)
+          else
+            let* env = gen_i_exp env reg arg in
+            return env)
+    in
+    (* helper: push stack args (those exceeding register count) *)
+    let push_stack_args env stack_args =
+      let stack_count = List.length stack_args in
+      if stack_count = 0
+      then return (env, 0)
+      else (
+        let stack_bytes = stack_count * Platform.word_size in
+        emit addi SP SP (-stack_bytes) ~comm:"Stack space for variadic args";
+        let* env =
+          List.foldi stack_args ~init:(return env) ~f:(fun i acc arg ->
+            let* env = acc in
+            let offset = i * Platform.word_size in
+            let* env = gen_i_exp env (T 0) arg in
+            emit sd (T 0) (SP, offset);
+            return env)
+        in
+        return (env, stack_bytes))
+    in
     let arity = Map.find state.arity_map fname in
-    let args_received = List.length args in
-    (* (match List.length args, arity with
-     | args_received, Some args_count when args_received = args_count + 15 ->
-       let* env =
-         List.foldi args ~init:(return env) ~f:(fun i acc arg ->
-           let* env = acc in
-           if i < Platform.arg_regs_count
-           then gen_i_exp env (A i) arg
-           else failwith "too many args")
-       in
+    (match List.length args, arity with
+     (* Branch on whether fname has arity known and matches exact args_received *)
+     | args_received, Some args_count when args_received = args_count ->
+       let arg_regs = [ A 0; A 1; A 2; A 3; A 4; A 5; A 6; A 7 ] in
+       let env = load_into_regs env arg_regs args in
+       let stack_args = List.drop args (List.length arg_regs) in
+       let* env = env in
+       let* env, extra_reserved = push_stack_args env stack_args in
        emit call fname;
        if not (equal_reg dst (A 0)) then emit mv dst (A 0);
+       if extra_reserved > 0
+       then emit addi SP SP extra_reserved ~comm:"Restore stack after call";
        return env
-     | args_received, _ -> *)
-    let arg_regs = [ A 2; A 3; A 4; A 5; A 6; A 7 ] in
-    (* determine which args can overwrite regs *)
-    let is_rewrites_regs = function
-      | IExp_constant _ -> false
-      | IExp_ident id ->
-        (match Map.find state.arity_map id with
-         | Some _ -> true
-         | None -> false)
-      | _ -> false
-    in
-    (* save all “dangerous” args on the stack and remember where *)
-    let rw_arg = List.filter args ~f:is_rewrites_regs in
-    let rw_arg_size = List.length rw_arg in
-    if rw_arg_size > 0
-    then emit addi SP SP (-rw_arg_size * 8) ~comm:"Saving 'dangerous' args";
-    let* rw_arg_locs =
-      List.filter args ~f:is_rewrites_regs
-      |> List.fold ~init:(return Map.Poly.empty) ~f:(fun acc arg ->
-        let* acc = acc in
-        let* _ = gen_i_exp env (A 0) arg in
-        let* loc = emit_store (A 0) in
-        return (Map.set acc ~key:arg ~data:loc))
-    in
-    let* env = gen_i_exp env (A 0) (IExp_ident fname) in
-    emit li (A 1) args_received;
-    (* load args into regs *)
-    let num_reg_args = min args_received (List.length arg_regs) in
-    let* env =
-      List.foldi (List.take args num_reg_args) ~init:(return env) ~f:(fun i acc arg ->
-        let* env = acc in
-        if is_rewrites_regs arg
-        then (
-          emit_load_reg (List.nth_exn arg_regs i) (Map.find_exn rw_arg_locs arg);
-          return env)
-        else
-          let* env = gen_i_exp env (List.nth_exn arg_regs i) arg in
-          return env)
-    in
-    (* if there are stack args, prepare space for them *)
-    let stack_args = List.drop args num_reg_args in
-    let stack_size = List.length stack_args in
-    if stack_size > 0
-    then emit addi SP SP (-stack_size * 8) ~comm:"Stack space for variadic args";
-    let* env =
-      List.foldi stack_args ~init:(return env) ~f:(fun i acc arg ->
-        let* env = acc in
-        let offset = i * 8 in
-        let* env = gen_i_exp env (T 0) arg in
-        emit sd (T 0) (SP, offset);
-        return env)
-    in
-    (* (if rw_arg_size > 0
-     then
-       let* () = put { st with frame_offset = rw_arg_size * 8 } in
-       emit addi SP SP (rw_arg_size * 8) ~comm:"Restore stack after 'dangerous' args"); *)
-    emit call "applyN";
-    if stack_size > 0
-    then emit addi SP SP (stack_size * 8) ~comm:"Restore stack after applyN";
-    if not (equal_reg dst (A 0)) then emit mv dst (A 0);
-    return env
+     (* Branch for closure *)
+     | args_received, _ ->
+       let arg_regs = [ A 2; A 3; A 4; A 5; A 6; A 7 ] in
+       let* env = gen_i_exp env (A 0) (IExp_ident fname) in
+       emit li (A 1) args_received;
+       let env = load_into_regs env arg_regs args in
+       let stack_args = List.drop args (List.length arg_regs) in
+       let* env = env in
+       let* env, extra_reserved = push_stack_args env stack_args in
+       emit call "applyN";
+       if extra_reserved > 0
+       then emit addi SP SP extra_reserved ~comm:"Restore stack after applyN";
+       if not (equal_reg dst (A 0)) then emit mv dst (A 0);
+       return env)
   | CExp_ifthenelse (cond, then_e, Some else_e) ->
     let* env = gen_c_exp env (T 0) cond in
     let* id = fresh in

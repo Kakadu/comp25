@@ -33,12 +33,8 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd a0, -16(s0) # temp1
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
-    la a0, fac
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    ld a2, -16(s0)
-    call applyN
+    ld a0, -16(s0)
+    call fac
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
     ld t1, -32(s0)
@@ -56,19 +52,11 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd ra, 16(sp)
     sd s0, 8(sp)
     addi s0, sp, 8 # Prologue ends
-    la a0, fac
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    li a2, 4
-    call applyN
+    li a0, 4
+    call fac
     sd a0, -8(s0) # temp6
-    la a0, print_int
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    ld a2, -8(s0)
-    call applyN
+    ld a0, -8(s0)
+    call print_int
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -113,23 +101,15 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd a0, -16(s0) # temp1
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
-    la a0, fib
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    ld a2, -16(s0)
-    call applyN
+    ld a0, -16(s0)
+    call fib
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
     li t1, 2
     sub a0, t0, t1
     sd a0, -40(s0) # temp3
-    la a0, fib
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    ld a2, -40(s0)
-    call applyN
+    ld a0, -40(s0)
+    call fib
     sd a0, -48(s0) # temp4
     ld t0, -32(s0)
     ld t1, -48(s0)
@@ -147,19 +127,11 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd ra, 16(sp)
     sd s0, 8(sp)
     addi s0, sp, 8 # Prologue ends
-    la a0, fib
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    li a2, 6
-    call applyN
+    li a0, 6
+    call fib
     sd a0, -8(s0) # temp8
-    la a0, print_int
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    ld a2, -8(s0)
-    call applyN
+    ld a0, -8(s0)
+    call print_int
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -201,22 +173,14 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     beq t0, zero, else_0
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -16(s0)
-    la a0, print_int
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    li a2, 0
-    call applyN
+    li a0, 0
+    call print_int
     j end_0
   else_0:
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -16(s0)
-    la a0, print_int
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    li a2, 1
-    call applyN
+    li a0, 1
+    call print_int
   end_0:
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
@@ -243,12 +207,8 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     seqz a0, a0
     j end_1
   else_1:
-    la a0, print_int
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    li a2, 42
-    call applyN
+    li a0, 42
+    call print_int
     sd a0, -16(s0) # t42
     li t0, 1
     li t1, 1
@@ -277,12 +237,8 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li a0, 1
   end_3:
     sd a0, -48(s0) # x
-    la a0, large
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    ld a2, -48(s0)
-    call applyN
+    ld a0, -48(s0)
+    call large
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -296,7 +252,6 @@ SPDX-License-Identifier: LGPL-3.0-or-later
   420
 
 ====================== Simple closure ======================
-
   $ ../bin/akaML.exe -o closure.s <<EOF
   > let plus x y = x + y
   > 
@@ -343,12 +298,8 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li a2, 3
     call applyN
     sd a0, -16(s0) # temp2
-    la a0, print_int
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    ld a2, -16(s0)
-    call applyN
+    ld a0, -16(s0)
+    call print_int
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -442,13 +393,9 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     ld a3, -24(s0)
     call applyN
     sd a0, -40(s0) # temp7
-    la a0, fac_cps
-    li a1, 2
-    call alloc_closure
-    li a1, 2
-    ld a2, -16(s0)
-    ld a3, -40(s0)
-    call applyN
+    ld a0, -16(s0)
+    ld a1, -40(s0)
+    call fac_cps
   end_0:
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
@@ -467,20 +414,12 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li a1, 1
     call alloc_closure
     sd a0, -8(s0)
-    la a0, fac_cps
-    li a1, 2
-    call alloc_closure
-    li a1, 2
-    li a2, 4
-    ld a3, -8(s0)
-    call applyN
+    li a0, 4
+    ld a1, -8(s0)
+    call fac_cps
     sd a0, -16(s0) # temp11
-    la a0, print_int
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    ld a2, -16(s0)
-    call applyN
+    ld a0, -16(s0)
+    call print_int
     sd a0, -24(s0) # temp12
     li a0, 0
     addi sp, s0, 16 # Epilogue starts
@@ -557,11 +496,9 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     ld a3, -24(s0)
     call applyN
     sd a0, -48(s0) # temp5
-    ld a0, -16(s0)
-    li a1, 2
-    ld a2, -8(s0)
-    ld a3, -48(s0)
-    call applyN
+    ld a0, -8(s0)
+    ld a1, -48(s0)
+    call fib
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -611,13 +548,9 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     ld a4, -40(s0)
     call applyN
     sd a0, -48(s0) # temp11
-    la a0, fib
-    li a1, 2
-    call alloc_closure
-    li a1, 2
-    ld a2, -16(s0)
-    ld a3, -48(s0)
-    call applyN
+    ld a0, -16(s0)
+    ld a1, -48(s0)
+    call fib
   end_0:
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
@@ -636,20 +569,12 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li a1, 1
     call alloc_closure
     sd a0, -8(s0)
-    la a0, fib
-    li a1, 2
-    call alloc_closure
-    li a1, 2
-    li a2, 6
-    ld a3, -8(s0)
-    call applyN
+    li a0, 6
+    ld a1, -8(s0)
+    call fib
     sd a0, -16(s0) # temp15
-    la a0, print_int
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    ld a2, -16(s0)
-    call applyN
+    ld a0, -16(s0)
+    call print_int
     sd a0, -24(s0) # z
     li a0, 0
     addi sp, s0, 16 # Epilogue starts
@@ -658,3 +583,32 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li a0, 0
     ret
   
+====================== Plus with 10 args ======================
+  $ ../bin/akaML.exe -o plus_with_10_args.s <<EOF
+  > let plus a b c d e f h i j k = a + b + c + d + e + f + h + i + j + k
+  > 
+  > let main =
+  >   let res = plus 1 2 3 4 5 6 7 8 9 10 in
+  >   print_int res
+  > ;;
+
+  $ riscv64-linux-gnu-as -march=rv64gc plus_with_10_args.s -o temp.o
+  $ riscv64-linux-gnu-gcc temp.o ../lib/runtime/rv64_runtime.a -o file.exe
+  $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ./file.exe
+  55
+
+====================== Closure plus with 10 args ======================
+  $ ../bin/akaML.exe -o closure_plus_with_10_args.s <<EOF
+  > let plus a b c d e f h i j k = a + b + c + d + e + f + h + i + j + k
+  > 
+  > let main =
+  >  let clos1 = plus 1 2 3 4 5 6 7 in
+  >  let clos2 = clos1 8 in
+  >  let clos3 = clos2 9 10 in
+  >  print_int clos3
+  > ;;
+
+  $ riscv64-linux-gnu-as -march=rv64gc closure_plus_with_10_args.s -o temp.o
+  $ riscv64-linux-gnu-gcc temp.o ../lib/runtime/rv64_runtime.a -o file.exe
+  $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ./file.exe
+  55

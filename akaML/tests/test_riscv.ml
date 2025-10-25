@@ -137,12 +137,8 @@ let%expect_test "codegen default main function" =
     sd ra, 16(sp)
     sd s0, 8(sp)
     addi s0, sp, 8 # Prologue ends
-    la a0, id
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    li a2, 4
-    call applyN
+    li a0, 4
+    call id
     sd a0, -8(s0) # temp1
     ld a0, -8(s0)
     addi sp, s0, 16 # Epilogue starts
@@ -199,12 +195,8 @@ let%expect_test "codegen default factorial" =
     sd a0, -16(s0) # temp2
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
-    la a0, fac
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    ld a2, -16(s0)
-    call applyN
+    ld a0, -16(s0)
+    call fac
     sd a0, -32(s0) # temp3
     ld t0, -24(s0)
     ld t1, -32(s0)
@@ -255,12 +247,8 @@ let%expect_test "codegen ANF factorial" =
     sd a0, -16(s0) # temp1
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
-    la a0, fac
-    li a1, 1
-    call alloc_closure
-    li a1, 1
-    ld a2, -16(s0)
-    call applyN
+    ld a0, -16(s0)
+    call fac
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
     ld t1, -32(s0)
@@ -305,12 +293,209 @@ let%expect_test "codegen constant" =
       addi sp, sp, -8 # Saving 'dangerous' args
       call a
       sd a0, -8(s0)
-      la a0, print_int
-      li a1, 1
+      ld a0, -8(s0)
+      call print_int
+      addi sp, s0, 16 # Epilogue starts
+      ld ra, 8(s0)
+      ld s0, 0(s0)
+      li a0, 0
+      ret
+  |}]
+;;
+
+let%expect_test "codegen closure fn with 10 arg" =
+  run
+    {|
+  let plus a b c d e f h i j k = a + b + c + d + e + f + h + i + j + k
+
+  let main =
+    let clos1 = plus 1 2 3 4 5 6 7 in
+    let clos2 = clos1 8 in
+    let clos3 = clos2 9 10 in
+    print_int clos3
+  ;;
+  |};
+  [%expect
+    {|
+    .section .text
+      .globl plus
+      .type plus, @function
+    plus:
+      addi sp, sp, -80
+      sd ra, 72(sp)
+      sd s0, 64(sp)
+      addi s0, sp, 64 # Prologue ends
+      mv t0, a0
+      mv t1, a1
+      sd a0, -8(s0)
+      add  a0, t0, t1
+      sd a0, -16(s0) # temp0
+      ld t0, -16(s0)
+      mv t1, a2
+      add  a0, t0, t1
+      sd a0, -24(s0) # temp1
+      ld t0, -24(s0)
+      mv t1, a3
+      add  a0, t0, t1
+      sd a0, -32(s0) # temp2
+      ld t0, -32(s0)
+      mv t1, a4
+      add  a0, t0, t1
+      sd a0, -40(s0) # temp3
+      ld t0, -40(s0)
+      mv t1, a5
+      add  a0, t0, t1
+      sd a0, -48(s0) # temp4
+      ld t0, -48(s0)
+      mv t1, a6
+      add  a0, t0, t1
+      sd a0, -56(s0) # temp5
+      ld t0, -56(s0)
+      mv t1, a7
+      add  a0, t0, t1
+      sd a0, -64(s0) # temp6
+      ld t0, -64(s0)
+      ld t1, 16(s0)
+      add  a0, t0, t1
+      sd a0, -72(s0) # temp7
+      ld t0, -72(s0)
+      ld t1, 24(s0)
+      add  a0, t0, t1
+      addi sp, s0, 16 # Epilogue starts
+      ld ra, 8(s0)
+      ld s0, 0(s0)
+      ret
+
+      .globl main
+      .type main, @function
+    main:
+      addi sp, sp, -40
+      sd ra, 32(sp)
+      sd s0, 24(sp)
+      addi s0, sp, 24 # Prologue ends
+      la a0, plus
+      li a1, 10
       call alloc_closure
-      li a1, 1
-      ld a2, -8(s0)
+      li a1, 7
+      li a2, 1
+      li a3, 2
+      li a4, 3
+      li a5, 4
+      li a6, 5
+      li a7, 6
+      addi sp, sp, -8 # Stack space for variadic args
+      li t0, 7
+      sd t0, 0(sp)
       call applyN
+      addi sp, sp, 8 # Restore stack after applyN
+      sd a0, -8(s0) # clos1
+      ld a0, -8(s0)
+      li a1, 1
+      li a2, 8
+      call applyN
+      sd a0, -16(s0) # clos2
+      ld a0, -16(s0)
+      li a1, 2
+      li a2, 9
+      li a3, 10
+      call applyN
+      sd a0, -24(s0) # clos3
+      ld a0, -24(s0)
+      call print_int
+      addi sp, s0, 16 # Epilogue starts
+      ld ra, 8(s0)
+      ld s0, 0(s0)
+      li a0, 0
+      ret
+  |}]
+;;
+
+let%expect_test "codegen fn with 10 arg" =
+  run
+    {|
+  let plus a b c d e f h i j k = a + b + c + d + e + f + h + i + j + k
+
+  let main =
+    let res = plus 1 2 3 4 5 6 7 8 9 10 in
+    print_int res
+  ;;
+  |};
+  [%expect
+    {|
+    .section .text
+      .globl plus
+      .type plus, @function
+    plus:
+      addi sp, sp, -80
+      sd ra, 72(sp)
+      sd s0, 64(sp)
+      addi s0, sp, 64 # Prologue ends
+      mv t0, a0
+      mv t1, a1
+      sd a0, -8(s0)
+      add  a0, t0, t1
+      sd a0, -16(s0) # temp0
+      ld t0, -16(s0)
+      mv t1, a2
+      add  a0, t0, t1
+      sd a0, -24(s0) # temp1
+      ld t0, -24(s0)
+      mv t1, a3
+      add  a0, t0, t1
+      sd a0, -32(s0) # temp2
+      ld t0, -32(s0)
+      mv t1, a4
+      add  a0, t0, t1
+      sd a0, -40(s0) # temp3
+      ld t0, -40(s0)
+      mv t1, a5
+      add  a0, t0, t1
+      sd a0, -48(s0) # temp4
+      ld t0, -48(s0)
+      mv t1, a6
+      add  a0, t0, t1
+      sd a0, -56(s0) # temp5
+      ld t0, -56(s0)
+      mv t1, a7
+      add  a0, t0, t1
+      sd a0, -64(s0) # temp6
+      ld t0, -64(s0)
+      ld t1, 16(s0)
+      add  a0, t0, t1
+      sd a0, -72(s0) # temp7
+      ld t0, -72(s0)
+      ld t1, 24(s0)
+      add  a0, t0, t1
+      addi sp, s0, 16 # Epilogue starts
+      ld ra, 8(s0)
+      ld s0, 0(s0)
+      ret
+
+      .globl main
+      .type main, @function
+    main:
+      addi sp, sp, -24
+      sd ra, 16(sp)
+      sd s0, 8(sp)
+      addi s0, sp, 8 # Prologue ends
+      li a0, 1
+      li a1, 2
+      li a2, 3
+      li a3, 4
+      li a4, 5
+      li a5, 6
+      li a6, 7
+      li a7, 8
+      addi sp, sp, -16 # Stack space for variadic args
+      li t0, 9
+      sd t0, 0(sp)
+      li t0, 10
+      sd t0, 8(sp)
+      call plus
+      addi sp, sp, 16 # Restore stack after call
+      sd a0, -8(s0) # res
+      ld a0, -8(s0)
+      call print_int
       addi sp, s0, 16 # Epilogue starts
       ld ra, 8(s0)
       ld s0, 0(s0)
