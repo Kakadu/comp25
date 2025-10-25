@@ -51,17 +51,17 @@ let run_single dump_parsetree dump_anf stop_after eval input_source =
           ())
         else (
           let () =
-          match codegen_program anf with
-          | Error e -> Stdlib.Format.printf "Codegen error: %s\n%!" e
-          | Ok (_, instructions) ->
-            let () =
-              Stdlib.Format.fprintf Stdlib.Format.std_formatter ".global _start\n"
-            in
-            Stdlib.List.iter pp_instr instructions
-        in
-        match stop_after with
-        | SA_parsing -> ()
-        | SA_never -> eval ast))
+            match codegen_program anf with
+            | Error e -> Stdlib.Format.printf "Codegen error: %s\n%!" e
+            | Ok (_, instructions) ->
+              let () =
+                Stdlib.Format.fprintf Stdlib.Format.std_formatter ".global _start\n"
+              in
+              Stdlib.List.iter pp_instr instructions
+          in
+          match stop_after with
+          | SA_parsing -> ()
+          | SA_never -> eval ast))
 ;;
 
 let () =
