@@ -607,8 +607,8 @@ open Parser
 open Format
 
 let pp_rec_flag ppf = function
-  | <span data-count="31">R</span>ecursive -&gt; fprintf ppf "let rec "
-  | <span data-count="109">N</span>onrecursive -&gt; fprintf ppf "let "
+  | <span data-count="33">R</span>ecursive -&gt; fprintf ppf "let rec "
+  | <span data-count="130">N</span>onrecursive -&gt; fprintf ppf "let "
 ;;
 
 let pp_comma ppf () = <span data-count="939">f</span>printf ppf "@,, "
@@ -620,24 +620,24 @@ let pp_and indent ppf () =
 ;;
 
 let pp_ident ppf = function
-  | <span data-count="1641">o</span>p when is_operato<span data-count="1641">r</span> op -&gt; <span data-count="64">f</span>printf ppf "( %s )" op
-  | <span data-count="1577">o</span>p -&gt; fprintf ppf "%s" op
+  | <span data-count="1729">o</span>p when is_operato<span data-count="1729">r</span> op -&gt; <span data-count="64">f</span>printf ppf "( %s )" op
+  | <span data-count="1665">o</span>p -&gt; fprintf ppf "%s" op
 ;;
 
 let pp_constant ppf = function
-  | <span data-count="381">C</span>onst_integer n -&gt; fprintf ppf "%d" n
+  | <span data-count="392">C</span>onst_integer n -&gt; fprintf ppf "%d" n
   | <span data-count="215">C</span>onst_char c -&gt; fprintf ppf "'%c'" c
   | <span data-count="214">C</span>onst_string s -&gt; fprintf ppf "%S" s
 ;;
 
 let rec pp_core_type_deep n ppf = function
   | <span data-count="102">T</span>ype_unit -&gt; fprintf ppf "unit"
-  | <span data-count="223">T</span>ype_int -&gt; fprintf ppf "int"
+  | <span data-count="240">T</span>ype_int -&gt; fprintf ppf "int"
   | <span data-count="72">T</span>ype_char -&gt; fprintf ppf "char"
   | <span data-count="69">T</span>ype_string -&gt; fprintf ppf "string"
   | <span data-count="102">T</span>ype_bool -&gt; fprintf ppf "bool"
   | <span data-count="45">T</span>ype_option type' -&gt; fprintf ppf "%a option" (pp_core_type_dee<span data-count="45">p</span> 2) type'
-  | <span data-count="190">T</span>ype_var type' -&gt; pp_ident ppf type'
+  | <span data-count="206">T</span>ype_var type' -&gt; pp_ident ppf type'
   | <span data-count="62">T</span>ype_list type' -&gt; fprintf ppf "%a list" (pp_core_type_dee<span data-count="62">p</span> 2) type'
   | <span data-count="45">T</span>ype_tuple (fst_type, snd_type, type_list) -&gt;
     if n = 2 then <span data-count="6">f</span>print<span data-count="6">f</span> ppf "(";
@@ -648,17 +648,17 @@ let rec pp_core_type_deep n ppf = function
          <span data-count="202">f</span>printf ppf "%a" (pp_core_type_dee<span data-count="202">p</span> 2) type')
       (snd_type :: type_list);
     <span data-count="45">i</span>f n = 2 then <span data-count="6">f</span>printf ppf ")"
-  | <span data-count="204">T</span>ype_arrow (fst_type, snd_type) -&gt;
-    if n &lt;&gt; 0 then <span data-count="47">f</span>print<span data-count="47">f</span> ppf "(";
-    <span data-count="204">f</span>printf ppf "%a -&gt; %a" (pp_core_type_dee<span data-count="204">p</span> 1) fst_type (pp_core_type_dee<span data-count="204">p</span> 0) snd_type;
-    <span data-count="204">i</span>f n &lt;&gt; 0 then <span data-count="47">f</span>printf ppf ")"
+  | <span data-count="228">T</span>ype_arrow (fst_type, snd_type) -&gt;
+    if n &lt;&gt; 0 then <span data-count="54">f</span>print<span data-count="54">f</span> ppf "(";
+    <span data-count="228">f</span>printf ppf "%a -&gt; %a" (pp_core_type_dee<span data-count="228">p</span> 1) fst_type (pp_core_type_dee<span data-count="228">p</span> 0) snd_type;
+    <span data-count="228">i</span>f n &lt;&gt; 0 then <span data-count="54">f</span>printf ppf ")"
 ;;
 
-let pp_core_type = pp_core_type_dee<span data-count="38">p</span> 0
+let pp_core_type = pp_core_type_dee<span data-count="50">p</span> 0
 
 let rec pp_pattern_deep need_parens ppf = function
   | <span data-count="396">P</span>at_any -&gt; fprintf ppf "_"
-  | <span data-count="869">P</span>at_var var -&gt; pp_ident ppf var
+  | <span data-count="892">P</span>at_var var -&gt; pp_ident ppf var
   | <span data-count="338">P</span>at_constant const -&gt; pp_constant ppf const
   | <span data-count="133">P</span>at_tuple (fst_pat, snd_pat, pat_list) -&gt;
     pp_open_hvbox ppf 0;
@@ -689,7 +689,7 @@ let rec pp_pattern_deep need_parens ppf = function
     <span data-count="222">i</span>f need_parens then <span data-count="92">f</span>printf ppf ")"
 ;;
 
-let pp_pattern = pp_pattern_dee<span data-count="38">p</span> false
+let pp_pattern = pp_pattern_dee<span data-count="50">p</span> false
 
 let rec pp_expression_deep need_cut need_parens ppf = function
   | <span data-count="523">E</span>xp_ident id -&gt; pp_ident ppf id
@@ -852,7 +852,7 @@ and pp_value_binding_list indent ppf = function
       value_binding_list
 ;;
 
-let pp_expression = pp_expression_dee<span data-count="38">p</span> false false
+let pp_expression = pp_expression_dee<span data-count="50">p</span> false false
 
 let pp_structure_item ppf = function
   | <span data-count="49">S</span>truct_eval exp -&gt;
