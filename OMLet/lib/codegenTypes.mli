@@ -15,7 +15,7 @@ type reg =
 
 type meta_info =
   | Var of int
-  | Function of string * int
+  | Func of string * int
   | Value of reg
 
 val temp : int -> reg

@@ -16,7 +16,7 @@ type reg =
 (* for mapping names with the way they can be reached *)
 type meta_info =
   | Var of int (* represents stack offset of a variable *)
-  | Function of string * int (* represents label and arity of a function *)
+  | Func of string * int (* represents label and arity of a function *)
   | Value of reg (* represents value in a register *)
 
 let temp i = Temp i

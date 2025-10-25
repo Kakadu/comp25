@@ -70,7 +70,7 @@ let init_state =
   (* a_regs are used as a "bridge" to new values, so it is unstable to use them for storing *)
   let stack = 0 in
   let info = InfoMap.empty in
-  let info = InfoMap.add "print_int" (Function ("print_int", 1)) info in
+  let info = InfoMap.add "print_int" (Func ("print_int", 1)) info in
   let compiled = [] in
   { label_factory; is_start_label_put; a_regs; free_regs; stack; info; compiled }
 ;;
@@ -161,7 +161,7 @@ let codegen_immexpr immexpr =
      | Some (Var o) ->
        add_instr (True (StackType (LD, a_regs_hd, Stack o)))
        (* change back to Arg 0 here? *)
-     | Some (Function (l, arity)) ->
+     | Some (Func (l, arity)) ->
        (* for function identifier: create a closure via runtime *)
        (* load the function label address into a0, put arity into a1 *)
        let* () = add_instr (Pseudo (LA (Arg 0, l))) in
@@ -365,7 +365,7 @@ let codegen_astatement astmt =
     let* func_label = make_label name in
     let arity, _ = lambda_arity_of_aexpr st in
     let* () = add_instr (True (Label func_label)) in
-    let new_info = InfoMap.add name (Function (func_label, arity)) state.info in
+    let new_info = InfoMap.add name (Func (func_label, arity)) state.info in
     let* () = update_info new_info in
     let required_stack = 64 in
     let* () = add_instr (True (IType (ADDI, Sp, Sp, -required_stack))) in
