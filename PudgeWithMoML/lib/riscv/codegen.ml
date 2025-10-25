@@ -30,8 +30,9 @@ module M = struct
     ; fresh : int
     }
 
-  include Common.Monad.State (struct
+  include Common.Monad.StateR (struct
       type state = st
+      type error = string
     end)
 
   let default = { env = Map.empty (module String); frame_offset = 0; fresh = 0 }
@@ -88,21 +89,22 @@ let gen_imm dst = function
     let imm = imm_of_literal lt in
     M.return [ li dst imm ]
   | ImmVar x ->
-    let+ loc = M.lookup x in
+    let* loc = M.lookup x in
     (match loc with
-     | Some (Stack off) -> [ ld dst (-off) fp ]
+     | Some (Stack off) -> return [ ld dst (-off) fp ]
      (* if we meet function (it's top level) -- call alloc_closure function *)
      | Some (Function arity) ->
-       [ addi Sp Sp (-16)
-       ; la (T 0) x
-       ; li (T 1) arity
-       ; sd (T 0) 0 Sp
-       ; sd (T 1) 8 Sp
-       ; call "alloc_closure"
-       ; mv dst (A 0)
-       ; addi Sp Sp 16
-       ]
-     | _ -> failwith ("unbound variable: " ^ x))
+       return
+         [ addi Sp Sp (-16)
+         ; la (T 0) x
+         ; li (T 1) arity
+         ; sd (T 0) 0 Sp
+         ; sd (T 1) 8 Sp
+         ; call "alloc_closure"
+         ; mv dst (A 0)
+         ; addi Sp Sp 16
+         ]
+     | _ -> fail ("unbound variable: " ^ x))
 ;;
 
 (* Get args list and put these args on stack for future function exec *)
@@ -144,10 +146,12 @@ let%expect_test "even args" =
       ; ImmConst (Int_lt 4)
       ]
   in
-  let _, code = run code default in
-  pp_instrs code Format.std_formatter;
-  [%expect
-    {|
+  match run code default |> snd with
+  | Error msg -> Format.eprintf "Error: %s\n" msg
+  | Ok code ->
+    pp_instrs code Format.std_formatter;
+    [%expect
+      {|
     # Load args on stack
       addi sp, sp, -32
       li t0, 5
@@ -166,10 +170,12 @@ let%expect_test "not even args" =
   let code =
     load_args_on_stack [ ImmConst (Int_lt 4); ImmConst (Int_lt 2); ImmConst (Int_lt 1) ]
   in
-  let _, code = run code default in
-  pp_instrs code Format.std_formatter;
-  [%expect
-    {|
+  match run code default |> snd with
+  | Error msg -> Format.eprintf "Error: %s\n" msg
+  | Ok code ->
+    pp_instrs code Format.std_formatter;
+    [%expect
+      {|
     # Load args on stack
       addi sp, sp, -32
       li t0, 4
@@ -231,13 +237,14 @@ let%expect_test "alloc_closure_test" =
     assert (curr_off = prev_off);
     return code
   in
-  let open Base in
-  let env = Map.empty (module String) in
-  let env = Map.add_exn env ~key:"homka" ~data:(Function 5) in
-  let _, code = run code { frame_offset = 0; env; fresh = 0 } in
-  pp_instrs code Stdlib.Format.std_formatter;
-  [%expect
-    {|
+  let env = Base.Map.empty (module Base.String) in
+  let env = Base.Map.add_exn env ~key:"homka" ~data:(Function 5) in
+  match run code { frame_offset = 0; env; fresh = 0 } |> snd with
+  | Error msg -> Format.eprintf "Error: %s\n" msg
+  | Ok code ->
+    pp_instrs code Format.std_formatter;
+    [%expect
+      {|
     # Load args on stack
       addi sp, sp, -16
       addi sp, sp, -16
@@ -276,21 +283,21 @@ let rec gen_cexpr (is_top_level : string -> bool * int) dst = function
     @ [ label l_end ]
   | CBinop (op, e1, e2) when Base.List.mem std_binops op ~equal:String.equal ->
     let* c1 = gen_imm (T 0) e1 in
-    let+ c2 = gen_imm (T 1) e2 in
+    let* c2 = gen_imm (T 1) e2 in
     (match op with
-     | "<=" -> c1 @ c2 @ [ slt dst (T 1) (T 0); xori dst dst 1 ]
-     | "<" -> c1 @ c2 @ [ slt dst (T 0) (T 1) ]
-     | ">=" -> c1 @ c2 @ [ slt dst (T 0) (T 1); xori dst dst 1 ]
-     | ">" -> c1 @ c2 @ [ slt dst (T 1) (T 0) ]
-     | "+" -> c1 @ c2 @ [ add dst (T 0) (T 1) ]
-     | "-" -> c1 @ c2 @ [ sub dst (T 0) (T 1) ]
-     | "*" -> c1 @ c2 @ [ mul dst (T 0) (T 1) ]
-     | "/" -> c1 @ c2 @ [ div dst (T 0) (T 1) ]
-     | "<>" -> c1 @ c2 @ [ sub dst (T 0) (T 1); snez dst dst ]
-     | "=" -> c1 @ c2 @ [ sub dst (T 0) (T 1); seqz dst dst ]
-     | "&&" -> c1 @ c2 @ [ and_ dst (T 0) (T 1) ]
-     | "||" -> c1 @ c2 @ [ or_ dst (T 0) (T 1) ]
-     | _ -> failwith ("std binop is not implemented yet: " ^ op))
+     | "<=" -> c1 @ c2 @ [ slt dst (T 1) (T 0); xori dst dst 1 ] |> return
+     | "<" -> c1 @ c2 @ [ slt dst (T 0) (T 1) ] |> return
+     | ">=" -> c1 @ c2 @ [ slt dst (T 0) (T 1); xori dst dst 1 ] |> return
+     | ">" -> c1 @ c2 @ [ slt dst (T 1) (T 0) ] |> return
+     | "+" -> c1 @ c2 @ [ add dst (T 0) (T 1) ] |> return
+     | "-" -> c1 @ c2 @ [ sub dst (T 0) (T 1) ] |> return
+     | "*" -> c1 @ c2 @ [ mul dst (T 0) (T 1) ] |> return
+     | "/" -> c1 @ c2 @ [ div dst (T 0) (T 1) ] |> return
+     | "<>" -> c1 @ c2 @ [ sub dst (T 0) (T 1); snez dst dst ] |> return
+     | "=" -> c1 @ c2 @ [ sub dst (T 0) (T 1); seqz dst dst ] |> return
+     | "&&" -> c1 @ c2 @ [ and_ dst (T 0) (T 1) ] |> return
+     | "||" -> c1 @ c2 @ [ or_ dst (T 0) (T 1) ] |> return
+     | _ -> fail ("std binop is not implemented yet: " ^ op))
   | CBinop (op, e1, e2) ->
     let* e1_c = gen_imm (A 0) e1 in
     let+ e2_c = gen_imm (A 1) e2 in
@@ -372,8 +379,7 @@ let rec gen_cexpr (is_top_level : string -> bool * int) dst = function
     prologue @ body_code @ epilogue |> return
   | cexpr ->
     (* TODO: replace it with Anf.pp_cexpr without \n prints *)
-    failwith
-      (Format.asprintf "gen_cexpr case not implemented yet: %a" AnfPP.pp_cexpr cexpr)
+    fail (Format.asprintf "gen_cexpr case not implemented yet: %a" AnfPP.pp_cexpr cexpr)
 
 and gen_aexpr (is_top_level : string -> bool * int) dst = function
   | ACExpr cexpr -> gen_cexpr is_top_level dst cexpr
@@ -382,7 +388,7 @@ and gen_aexpr (is_top_level : string -> bool * int) dst = function
     let* off = save_var_on_stack name in
     let+ body_c = gen_aexpr is_top_level dst body in
     cexpr_c @ [ sd (T 0) (-off) fp ] @ body_c
-  | _ -> failwith "gen_aexpr case not implemented yet"
+  | _ -> fail "gen_aexpr case not implemented yet"
 ;;
 
 let gen_astr_item (is_top_level : string -> bool * int) : astr_item -> instr list M.t
@@ -398,7 +404,7 @@ let gen_astr_item (is_top_level : string -> bool * int) : astr_item -> instr lis
     [ sd (A 0) (-off) fp ] @ code
   | i ->
     (* TODO: replace it with Anf.pp_astr_item without \n prints *)
-    failwith (Format.asprintf "not implemented codegen for astr item: %a" pp_astr_item i)
+    fail (Format.asprintf "not implemented codegen for astr item: %a" pp_astr_item i)
 ;;
 
 let rec gather is_top_level : aprogram -> instr list M.t = function
@@ -438,6 +444,7 @@ let gen_aprogram fmt (pr : aprogram) =
   in
   fprintf fmt ".text\n";
   fprintf fmt ".globl _start\n";
-  let _, code = M.run (gather is_top_level pr) M.default in
-  pp_instrs code fmt
+  match M.run (gather is_top_level pr) M.default |> snd with
+  | Error msg -> Error msg
+  | Ok code -> Ok (pp_instrs code fmt)
 ;;

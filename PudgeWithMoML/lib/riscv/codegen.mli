@@ -6,4 +6,7 @@
 
 [@@@ocaml.text "/*"]
 
-val gen_aprogram : Format.formatter -> Middle_end.Anf.aprogram -> unit
+val gen_aprogram
+  :  Format.formatter
+  -> Middle_end.Anf.aprogram
+  -> (unit, string) Base.Result.t

@@ -32,5 +32,4 @@ type astr_item = is_recursive * binding * binding list
 
 type aprogram = astr_item list [@@deriving show { with_path = false }]
 
-val anf_str_item : structure_item -> astr_item Common.Monad.Counter.t
-val anf_program : structure_item list -> aprogram
+val anf_program : structure_item list -> (aprogram, string) Base.Result.t
