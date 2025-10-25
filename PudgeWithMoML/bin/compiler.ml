@@ -38,16 +38,20 @@ let compiler opts =
       printf "\n")
     else (
       match infer program with
-      | Error e -> fprintf std_formatter "Type error: %a\n" pp_error e
+      | Error e -> eprintf "Type error: %a\n" pp_error e
       | Ok env when opts.dump_types -> TypeEnv.pp std_formatter env
       | Ok _ ->
-        let anf = program |> convert_program |> anf_program in
-        if opts.dump_anf
-        then
-          Out_channel.with_file "main.anf" ~f:(fun oc ->
-            pp_aprogram (Format.formatter_of_out_channel oc) anf);
-        Out_channel.with_file opts.output_file ~f:(fun oc ->
-          gen_aprogram (Format.formatter_of_out_channel oc) anf))
+        (match program |> convert_program |> anf_program with
+         | Error e -> eprintf "ANF conversion error: %s\n" e
+         | Ok anf ->
+           if opts.dump_anf
+           then
+             Out_channel.with_file "main.anf" ~f:(fun oc ->
+               pp_aprogram (Format.formatter_of_out_channel oc) anf);
+           Out_channel.with_file opts.output_file ~f:(fun oc ->
+             match gen_aprogram (Format.formatter_of_out_channel oc) anf with
+             | Error e -> eprintf "Codegen error: %s\n" e
+             | Ok () -> ())))
 ;;
 
 let () =

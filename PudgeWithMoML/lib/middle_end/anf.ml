@@ -44,7 +44,7 @@ let mk_alet rf name1 v body =
   | _ -> ALet (rf, name1, v, body)
 ;;
 
-open Common.Monad.Counter
+open Common.Monad.CounterR
 
 let make_temp =
   let+ fresh = make_fresh in
@@ -95,7 +95,7 @@ let rec anf (e : expr) (expr_with_hole : imm -> aexpr t) : aexpr t =
         let* ehole = expr_with_hole (ImmVar temp) in
         match l with
         | arg :: args -> mk_alet Nonrec temp (CApp (i1, arg, args)) ehole |> return
-        | [] -> failwith "Apply must contain at least one argument"))
+        | [] -> fail "Apply must contain at least one argument"))
   | Apply (f, arg) ->
     anf f (fun i1 ->
       anf arg (fun i2 ->
@@ -111,7 +111,7 @@ let rec anf (e : expr) (expr_with_hole : imm -> aexpr t) : aexpr t =
         | None -> ACExpr (CImm (ImmConst Unit_lt)) |> return
       in
       ACExpr (CIte (i', t', e')) |> return)
-  | other -> failwith (Stdlib.Format.asprintf "Not implemented %a" pp_expr other)
+  | other -> fail (Stdlib.Format.asprintf "Not implemented %a" pp_expr other)
 ;;
 
 let anf_str_item : structure_item -> astr_item t = function
@@ -122,11 +122,10 @@ let anf_str_item : structure_item -> astr_item t = function
     (* TODO: alpha conversion must keep wildcard variable but exec code *)
     let+ v' = anf v (fun i -> ACExpr (CImm i) |> return) in
     rec_flag, ("_", v'), []
-  | other ->
-    failwith (Stdlib.Format.asprintf "Not implemented %a" pp_structure_item other)
+  | other -> fail (Stdlib.Format.asprintf "Not implemented %a" pp_structure_item other)
 ;;
 
-let anf_program program : aprogram =
+let anf_program program : (aprogram, error) Base.Result.t =
   let program' =
     List.fold_right
       ~f:(fun item acc ->
