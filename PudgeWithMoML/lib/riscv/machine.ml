@@ -23,11 +23,10 @@ let pp_reg fmt =
   | Zero -> fprintf fmt "zero"
   | Ra -> fprintf fmt "ra"
   | Sp -> fprintf fmt "sp"
-  | A n when n >= 0 && n <= 7 -> fprintf fmt "a%d" n
-  | S n when n >= 1 && n <= 11 -> fprintf fmt "s%d" n
+  | A n -> fprintf fmt "a%d" n
   | S n when n = 0 -> fprintf fmt "fp"
-  | T n when n >= 0 && n <= 6 -> fprintf fmt "t%d" n
-  | _ -> failwith "invalid register"
+  | S n -> fprintf fmt "s%d" n
+  | T n -> fprintf fmt "t%d" n
 ;;
 
 type offset = int
