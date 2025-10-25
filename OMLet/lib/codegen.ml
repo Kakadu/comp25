@@ -5,7 +5,7 @@
 open Ast
 open Anf
 open CodegenTypes
-module PlacementMap = Map.Make (String)
+module InfoMap = Map.Make (String)
 (* module RegStackMap = Map.Make (Int) *)
 
 type state =
@@ -15,7 +15,7 @@ type state =
   ; a_regs : reg list
   ; free_regs : reg list
   ; stack : int
-  ; placement : storage_place PlacementMap.t
+  ; info : meta_info InfoMap.t
   ; compiled : instr list
   }
 
@@ -69,17 +69,17 @@ let init_state =
   let free_regs = t_regs @ s_regs in
   (* a_regs are used as a "bridge" to new values, so it is unstable to use them for storing *)
   let stack = 0 in
-  let placement = PlacementMap.empty in
-  let placement = PlacementMap.add "print_int" (FuncLabel ("print_int", 1)) placement in
+  let info = InfoMap.empty in
+  let info = InfoMap.add "print_int" (Function ("print_int", 1)) info in
   let compiled = [] in
-  { label_factory; is_start_label_put; a_regs; free_regs; stack; placement; compiled }
+  { label_factory; is_start_label_put; a_regs; free_regs; stack; info; compiled }
 ;;
 
 let start_label = "_start"
 
-let update_placement new_placement =
+let update_info new_info =
   let* state = read in
-  let new_state = { state with placement = new_placement } in
+  let new_state = { state with info = new_info } in
   write new_state
 ;;
 
@@ -115,7 +115,7 @@ let extend_stack size =
   return curr_stack
 ;;
 
-(* placement will probably be used later, when there is logic for pushing something into stack *)
+(* info will probably be used later, when there is logic for pushing something into stack *)
 let find_free_reg =
   let* state = read in
   match state.free_regs with
@@ -156,18 +156,18 @@ let codegen_immexpr immexpr =
   match immexpr with
   | ImmNum n -> add_instr (Pseudo (LI (a_regs_hd, n)))
   | ImmId (Ident name) ->
-    (match PlacementMap.find_opt name state.placement with
+    (match InfoMap.find_opt name state.info with
      | None -> fail "Panic: undefined var in codegen!"
-     | Some (Offset o) ->
+     | Some (Var o) ->
        add_instr (True (StackType (LD, a_regs_hd, Stack o)))
        (* change back to Arg 0 here? *)
-     | Some (FuncLabel (l, arity)) ->
+     | Some (Function (l, arity)) ->
        (* for function identifier: create a closure via runtime *)
        (* load the function label address into a0, put arity into a1 *)
        let* () = add_instr (Pseudo (LA (Arg 0, l))) in
        let* () = add_instr (Pseudo (LI (Arg 1, arity))) in
        add_instr (Pseudo (CALL "alloc_closure"))
-     | Some (Register reg) -> add_instr (Pseudo (MV (a_regs_hd, reg))))
+     | Some (Value reg) -> add_instr (Pseudo (MV (a_regs_hd, reg))))
 ;;
 
 (* change back to Arg 0 here? *)
@@ -254,8 +254,8 @@ let rec codegen_cexpr cexpr =
   | CLam (Ident name, ae) ->
     let* arg_reg = find_argument in
     let* cur_offset = extend_stack 8 in
-    let new_placement = PlacementMap.add name (Offset cur_offset) state.placement in
-    let* () = update_placement new_placement in
+    let new_info = InfoMap.add name (Var cur_offset) state.info in
+    let* () = update_info new_info in
     let* () = add_instr (True (StackType (SD, arg_reg, Stack cur_offset))) in
     let* state = read in
     let new_a_regs =
@@ -271,10 +271,10 @@ let rec codegen_cexpr cexpr =
   | CApp (func, args) ->
     (* find all t* registers that should be stored *)
     let used_temps =
-      PlacementMap.bindings state.placement
+      InfoMap.bindings state.info
       |> List.filter_map (fun (name, sp) ->
         match sp with
-        | Register (Temp i) -> Some (name, Temp i)
+        | Value (Temp i) -> Some (name, Temp i)
         | _ -> None)
     in
     (* store them on stack with mapping of who is who *)
@@ -345,8 +345,8 @@ and codegen_aexpr = function
     let* () = update_free_regs old_free_regs in
     let* cur_offset = extend_stack 8 in
     let* state = read in
-    let new_placement = PlacementMap.add name (Offset cur_offset) state.placement in
-    let* () = update_placement new_placement in
+    let new_info = InfoMap.add name (Var cur_offset) state.info in
+    let* () = update_info new_info in
     let* () = add_instr (True (StackType (SD, List.hd state.a_regs, Stack cur_offset))) in
     let* () = codegen_aexpr body in
     let* () = update_a_regs old_a_regs in
@@ -365,10 +365,8 @@ let codegen_astatement astmt =
     let* func_label = make_label name in
     let arity, _ = lambda_arity_of_aexpr st in
     let* () = add_instr (True (Label func_label)) in
-    let new_placement =
-      PlacementMap.add name (FuncLabel (func_label, arity)) state.placement
-    in
-    let* () = update_placement new_placement in
+    let new_info = InfoMap.add name (Function (func_label, arity)) state.info in
+    let* () = update_info new_info in
     let required_stack = 64 in
     let* () = add_instr (True (IType (ADDI, Sp, Sp, -required_stack))) in
     let* () = add_instr (True (StackType (SD, Ra, Stack 0))) in
@@ -394,7 +392,7 @@ let codegen_astatement astmt =
         return true
     in
     let* () = update_stack 0 in
-    (* TODO: maybe put it in placement here? *)
+    (* TODO: maybe put it in info here? *)
     let old_a_regs = state.a_regs in
     let old_free_regs = state.free_regs in
     let* () = codegen_aexpr st in

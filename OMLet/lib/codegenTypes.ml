@@ -14,10 +14,10 @@ type reg =
   | Arg of int
 
 (* for mapping names with the way they can be reached *)
-type storage_place =
-  | Offset of int (* for variables on stack *)
-  | FuncLabel of string * int (* for functions with labels *)
-  | Register of reg (* for values (typically, patterns) in registers *)
+type meta_info =
+  | Var of int (* represents stack offset of a variable *)
+  | Function of string * int (* represents label and arity of a function *)
+  | Value of reg (* represents value in a register *)
 
 let temp i = Temp i
 let saved i = Saved i

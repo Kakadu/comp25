@@ -13,10 +13,10 @@ type reg =
   | Saved of int
   | Arg of int
 
-type storage_place =
-  | Offset of int
-  | FuncLabel of string * int
-  | Register of reg
+type meta_info =
+  | Var of int
+  | Function of string * int
+  | Value of reg
 
 val temp : int -> reg
 val saved : int -> reg

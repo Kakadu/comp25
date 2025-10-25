@@ -2,7 +2,7 @@
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
-module PlacementMap : Map.S with type key = string
+module InfoMap : Map.S with type key = string
 
 type state =
   { label_factory : int (* for creating unique ite and function labels *)
@@ -11,7 +11,7 @@ type state =
   ; a_regs : CodegenTypes.reg list
   ; free_regs : CodegenTypes.reg list
   ; stack : int
-  ; placement : CodegenTypes.storage_place PlacementMap.t
+  ; info : CodegenTypes.meta_info InfoMap.t
   ; compiled : CodegenTypes.instr list
   }
 
