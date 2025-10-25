@@ -29,5 +29,6 @@ compile:
 
 	@riscv64-linux-gnu-as -march=rv64gc main.s -o main.o
 	@riscv64-linux-gnu-as -march=rv64gc runtime.s -o runtime.o
+	@riscv64-linux-gnu-as -march=rv64gc lib/runtime/call_closure.s -o call_closure.o
 
-	@riscv64-linux-gnu-gcc -nostartfiles main.o runtime.o -o main.exe
+	@riscv64-linux-gnu-gcc -nostartfiles main.o runtime.o call_closure.o -o main.exe

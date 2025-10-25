@@ -45,8 +45,13 @@
 
 (cram
  (applies_to anf)
- (deps ../Makefile ../lib/runtime/runtime.c))
+ (deps
+  ../Makefile
+  (glob_files ../lib/runtime/*)))
 
 (cram
  (applies_to codegen)
- (deps ../bin/compiler.exe ../Makefile ../lib/runtime/runtime.c))
+ (deps
+  ../bin/compiler.exe
+  ../Makefile
+  (glob_files ../lib/runtime/*)))

@@ -1,6 +1,6 @@
 /_build
 /_coverage
-*.s
+/*.s
 *.o
 *.exe
 *.anf

@@ -10,6 +10,6 @@
  (deps
   ./compiler.exe
   ../Makefile
-  ../lib/runtime/runtime.c
+  (glob_files ../lib/runtime/*)
   (glob_files tests/*)
   (glob_files ../test/manytests/typed/*.ml)))
