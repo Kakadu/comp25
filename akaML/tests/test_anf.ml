@@ -26,6 +26,20 @@ let%expect_test "ANF constant" =
   |}]
 ;;
 
+let%expect_test "ANF Pat_any" =
+  run
+    {|
+  let a =
+    let _ = 3 in
+    0
+  ;;
+  |};
+  [%expect
+    {|
+  let a = 0;;
+  |}]
+;;
+
 let%expect_test "ANF binary operation" =
   run
     {|

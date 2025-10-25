@@ -31,9 +31,9 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li t1, 1
     sub a0, t0, t1
     sd a0, -16(s0) # temp1
-    ld a0, -16(s0)
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
+    ld a0, -16(s0)
     call fac
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
@@ -99,9 +99,9 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li t1, 1
     sub a0, t0, t1
     sd a0, -16(s0) # temp1
-    ld a0, -16(s0)
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
+    ld a0, -16(s0)
     call fib
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
@@ -171,12 +171,14 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd a0, -8(s0) # temp0
     ld t0, -8(s0)
     beq t0, zero, else_0
-    li a0, 0
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -16(s0)
+    li a0, 0
     call print_int
     j end_0
   else_0:
+    addi sp, sp, -8 # Saving 'live' regs
+    sd a1, -24(s0)
     li a0, 1
     call print_int
   end_0:
@@ -248,3 +250,65 @@ SPDX-License-Identifier: LGPL-3.0-or-later
   $ riscv64-linux-gnu-gcc temp.o ../lib/runtime/rv64_runtime.a -o file.exe
   $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ./file.exe
   420
+
+====================== Simple closure ======================
+
+  $ ../bin/akaML.exe -o closure.s <<EOF
+  > let plus x y = x + y
+  > 
+  > let main =
+  >   let temp = plus 1 in
+  >   let temp2 = temp 3 in 
+  >   print_int temp2
+  > ;;
+
+  $ cat closure.s
+  .section .text
+    .globl plus
+    .type plus, @function
+  plus:
+    addi sp, sp, -16
+    sd ra, 8(sp)
+    sd s0, 0(sp)
+    addi s0, sp, 0 # Prologue ends
+    mv t0, a0
+    mv t1, a1
+    mv a2, a0
+    add  a0, t0, t1
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+  
+    .globl main
+    .type main, @function
+  main:
+    addi sp, sp, -32
+    sd ra, 24(sp)
+    sd s0, 16(sp)
+    addi s0, sp, 16 # Prologue ends
+    la a0, plus
+    li a1, 2
+    call alloc_closure
+    li a1, 1
+    li a2, 1
+    call applyN
+    sd a0, -8(s0) # temp
+    ld a0, -8(s0)
+    li a1, 1
+    li a2, 3
+    call applyN
+    sd a0, -16(s0) # temp2
+    ld a0, -16(s0)
+    call print_int
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    li a0, 0
+    ret
+  
+
+  $ riscv64-linux-gnu-as -march=rv64gc closure.s -o temp.o
+  $ riscv64-linux-gnu-gcc temp.o ../lib/runtime/rv64_runtime.a -o file.exe
+  $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ./file.exe
+  4

@@ -71,6 +71,19 @@ typed:
   val fac : int -> int
   val main : int
 
+  $ ../bin/akaML.exe -inference -fromfile manytests/typed/010faccps_ll.ml
+  val id : 'a -> 'a
+  val fresh_1 : int -> (int -> 'a) -> int -> 'a
+  val fac_cps : int -> (int -> 'a) -> 'a
+  val main : int
+
+  $ ../bin/akaML.exe -inference -fromfile manytests/typed/010fibcps_ll.ml
+  val id : 'a -> 'a
+  val fresh_2 : int -> (int -> 'a) -> int -> 'a
+  val fresh_1 : int -> (int -> 'a) -> (int -> (int -> 'a) -> 'b) -> int -> 'b
+  val fib : int -> (int -> 'a) -> 'a
+  val main : int
+
   $ ../bin/akaML.exe -inference -fromfile manytests/typed/010sukharev.ml
   Inferencer error: Unification failed on int * int * int and 'ty18 * 'ty19
 

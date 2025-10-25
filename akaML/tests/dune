@@ -15,7 +15,7 @@
   (backend bisect_ppx)))
 
 (cram
- (applies_to dparsetree inference codegen anf)
+ (applies_to dparsetree inference codegen anf pipeline)
  (deps
   ../bin/akaML.exe
   manytests/do_not_type/001.ml
@@ -36,6 +36,8 @@
   manytests/typed/008ascription.ml
   manytests/typed/009let_poly.ml
   manytests/typed/010fac_anf.ml
+  manytests/typed/010faccps_ll.ml
+  manytests/typed/010fibcps_ll.ml
   manytests/typed/010sukharev.ml
   manytests/typed/011mapcps.ml
   manytests/typed/012fibcps.ml
@@ -55,5 +57,5 @@
  (deps run_qchecker.exe))
 
 (cram
- (applies_to codegen)
+ (applies_to codegen pipeline)
  (deps ../lib/runtime/rv64_runtime.a))

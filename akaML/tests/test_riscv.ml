@@ -108,14 +108,28 @@ let%expect_test "codegen ANF bin op" =
 let%expect_test "codegen default main function" =
   run
     {|
+  let id x = x
+
   let main = 
-    let temp1 = fac 4 in
+    let temp1 = id 4 in
     temp1
   ;;
   |};
   [%expect
     {|
   .section .text
+    .globl id
+    .type id, @function
+  id:
+    addi sp, sp, -16
+    sd ra, 8(sp)
+    sd s0, 0(sp)
+    addi s0, sp, 0 # Prologue ends
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+
     .globl main
     .type main, @function
   main:
@@ -124,34 +138,9 @@ let%expect_test "codegen default main function" =
     sd s0, 8(sp)
     addi s0, sp, 8 # Prologue ends
     li a0, 4
-    call fac
+    call id
     sd a0, -8(s0) # temp1
     ld a0, -8(s0)
-    addi sp, s0, 16 # Epilogue starts
-    ld ra, 8(s0)
-    ld s0, 0(s0)
-    li a0, 0
-    ret
-  |}]
-;;
-
-let%expect_test "codegen ANF main function" =
-  run
-    {|
-  let main = fac 4
-  |};
-  [%expect
-    {|
-  .section .text
-    .globl main
-    .type main, @function
-  main:
-    addi sp, sp, -16
-    sd ra, 8(sp)
-    sd s0, 0(sp)
-    addi s0, sp, 0 # Prologue ends
-    li a0, 4
-    call fac
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -204,9 +193,9 @@ let%expect_test "codegen default factorial" =
     li t1, 1
     sub a0, t0, t1
     sd a0, -16(s0) # temp2
-    ld a0, -16(s0)
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
+    ld a0, -16(s0)
     call fac
     sd a0, -32(s0) # temp3
     ld t0, -24(s0)
@@ -256,9 +245,9 @@ let%expect_test "codegen ANF factorial" =
     li t1, 1
     sub a0, t0, t1
     sd a0, -16(s0) # temp1
-    ld a0, -16(s0)
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
+    ld a0, -16(s0)
     call fac
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
@@ -269,5 +258,45 @@ let%expect_test "codegen ANF factorial" =
     ld ra, 8(s0)
     ld s0, 0(s0)
     ret
+  |}]
+;;
+
+let%expect_test "codegen constant" =
+  run
+    {|
+  let a = 1
+
+  let main = print_int a
+  |};
+  [%expect
+    {|
+    .section .text
+      .globl a
+      .type a, @function
+    a:
+      addi sp, sp, -16
+      sd ra, 8(sp)
+      sd s0, 0(sp)
+      addi s0, sp, 0 # Prologue ends
+      li a0, 1
+      addi sp, s0, 16 # Epilogue starts
+      ld ra, 8(s0)
+      ld s0, 0(s0)
+      ret
+
+      .globl main
+      .type main, @function
+    main:
+      addi sp, sp, -16
+      sd ra, 8(sp)
+      sd s0, 0(sp)
+      addi s0, sp, 0 # Prologue ends
+      call a
+      call print_int
+      addi sp, s0, 16 # Epilogue starts
+      ld ra, 8(s0)
+      ld s0, 0(s0)
+      li a0, 0
+      ret
   |}]
 ;;
