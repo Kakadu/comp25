@@ -150,6 +150,11 @@ and transform_expr expr k =
     transform_expr expr (fun a ->
       let* res = transform_expr exp k in
       return (ALet (flag, "()", CImm a, res)))
+  | Exp_let (flag, ({ pat = Pattern.Pat_any; expr }, _), exp) ->
+    transform_expr expr (fun a ->
+      let* res = transform_expr exp k in
+      let* tmp = fresh_temp in
+      return (ALet (flag, tmp, CImm a, res)))
   | Exp_if (cond, then_expr, Some else_expr) ->
     transform_expr cond (fun cond_res ->
       let* then_res = transform_expr then_expr k in

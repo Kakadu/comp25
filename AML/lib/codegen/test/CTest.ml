@@ -116,3 +116,74 @@ let%expect_test "some branches" =
       addi sp, sp, 56
       ret |}]
 ;;
+
+let%expect_test "many args" =
+  run
+    {|
+  let f a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 =
+    a0+a1+a2+a3+a4+a5+a6+a7+a8+a9+a10
+  ;;
+  |};
+  [%expect
+    {|
+      .text
+      .globl f
+      .type f, @function
+    f:
+      addi sp, sp, -152
+      sd ra, 144(sp)
+      sd s0, 136(sp)
+      addi s0, sp, 152
+      sd a0, -24(s0)
+      sd a1, -32(s0)
+      sd a2, -40(s0)
+      sd a3, -48(s0)
+      sd a4, -56(s0)
+      sd a5, -64(s0)
+      sd a6, -72(s0)
+      sd a7, -80(s0)
+      ld t0, -24(s0)
+      ld t1, -32(s0)
+      add t0, t0, t1
+      sd t0, -88(s0)
+      ld t0, -88(s0)
+      ld t1, -40(s0)
+      add t0, t0, t1
+      sd t0, -96(s0)
+      ld t0, -96(s0)
+      ld t1, -48(s0)
+      add t0, t0, t1
+      sd t0, -104(s0)
+      ld t0, -104(s0)
+      ld t1, -56(s0)
+      add t0, t0, t1
+      sd t0, -112(s0)
+      ld t0, -112(s0)
+      ld t1, -64(s0)
+      add t0, t0, t1
+      sd t0, -120(s0)
+      ld t0, -120(s0)
+      ld t1, -72(s0)
+      add t0, t0, t1
+      sd t0, -128(s0)
+      ld t0, -128(s0)
+      ld t1, -80(s0)
+      add t0, t0, t1
+      sd t0, -136(s0)
+      ld t0, -136(s0)
+      ld t1, 0(s0)
+      add t0, t0, t1
+      sd t0, -144(s0)
+      ld t0, -144(s0)
+      ld t1, 8(s0)
+      add t0, t0, t1
+      sd t0, -152(s0)
+      ld t0, -152(s0)
+      ld t1, 16(s0)
+      add a0, t0, t1
+    f_end:
+      ld ra, 144(sp)
+      ld s0, 136(sp)
+      addi sp, sp, 152
+      ret |}]
+;;

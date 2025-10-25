@@ -108,3 +108,45 @@
         else
           let x = 1 in
           large x
+
+  $ cat >faccps_ll.ml <<EOF
+  > let id x = x
+  > let fresh_1 n k p = k (p * n)
+  > 
+  > let rec fac_cps n k =
+  >   if n = 1
+  >   then k 1
+  >  else fac_cps (n-1) (fresh_1 n k)
+  > 
+  > let main =
+  >   let () = print_int (fac_cps 4 id) in
+  >   0
+  > EOF
+  $ ../../../bin/AML.exe --dump-anf faccps_ll.ml
+  let id =
+    fun x ->
+      x
+  
+  let fresh_1 =
+    fun n ->
+      fun k ->
+        fun p ->
+          let t_0 = p * n in
+          k t_0
+  
+  let rec fac_cps =
+    fun n ->
+      fun k ->
+        let t_2 = n = 1 in
+        if t_2 then
+          k 1
+        else
+          let t_4 = n - 1 in
+          let t_5 = fresh_1 n k in
+          fac_cps t_4 t_5
+  
+  let main =
+    let t_7 = fac_cps 4 id in
+    let t_8 = print_int t_7 in
+    let () = t_8 in
+    0

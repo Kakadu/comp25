@@ -1,0 +1,3 @@
+-no-exc_failwith
+-no-var_should_not_be_used 
+-no-tuple_matching

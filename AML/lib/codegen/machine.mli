@@ -17,6 +17,8 @@ val ra : reg
 val sp : reg
 val fp : reg
 val a0 : reg
+val a1 : reg
+val a2 : reg
 val t0 : reg
 val t1 : reg
 val t2 : reg
@@ -35,10 +37,12 @@ type instr =
   | Blt of reg * reg * string
   | Jal of reg * string
   | J of string
+  | Jalr of reg
   | Ret
   | Ld of reg * reg
   | Sd of reg * reg
   | Li of reg * int
+  | La of reg * string
   | Ecall
   | Label of string
   | Directive of string
@@ -65,4 +69,6 @@ val label : (instr -> 'a) -> string -> 'a
 val directive : (instr -> 'a) -> string -> 'a
 val mv : (instr -> 'a) -> reg -> reg -> 'a
 val call : (instr -> 'a) -> string -> 'a
+val la : (instr -> 'a) -> reg -> string -> 'a
+val jalr : (instr -> 'a) -> reg -> 'a
 val pp_instrs : Format.formatter -> instr list -> unit
