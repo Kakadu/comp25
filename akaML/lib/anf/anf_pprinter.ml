@@ -40,9 +40,9 @@ and pp_c_exp_deep need_parens ppf = function
       (pp_print_list ~pp_sep:pp_comma (pp_i_exp_deep true))
       (i_exp1 :: i_exp2 :: i_exp_list);
     if need_parens then fprintf ppf " )"
-  | CExp_apply (i_exp1, i_exp2, i_exp_list) ->
+  | CExp_apply (i_exp1, i_exp_list) ->
     pp_open_box ppf 2;
-    (pp_c_exp_apply ~need_parens) ppf (i_exp1, i_exp2, i_exp_list);
+    (pp_c_exp_apply ~need_parens) ppf (i_exp1, i_exp_list);
     pp_close_box ppf ()
   | CExp_ifthenelse (c_exp, a_exp, None) ->
     if need_parens then fprintf ppf "(";
@@ -61,22 +61,22 @@ and pp_c_exp_deep need_parens ppf = function
     pp_close_box ppf ()
 
 and pp_c_exp_apply ?(need_parens = false) ppf = function
-  | IExp_ident opr, i_exp, [] when is_unary_minus opr ->
+  | IExp_ident opr, [ i_exp ] when is_unary_minus opr ->
     fprintf ppf "-%a" (pp_i_exp_deep need_parens) i_exp
-  | IExp_ident opr, i_exp1, [] when is_bin_op opr ->
+  | IExp_ident opr, [ i_exp1 ] when is_bin_op opr ->
     fprintf ppf "( %s )" opr;
     fprintf ppf " %a" (pp_i_exp_deep need_parens) i_exp1
-  | IExp_ident opr, i_exp1, [ i_exp2 ] when is_bin_op opr ->
+  | IExp_ident opr, [ i_exp1; i_exp2 ] when is_bin_op opr ->
     fprintf ppf "%a" (pp_i_exp_deep need_parens) i_exp1;
     fprintf ppf " %s " opr;
     fprintf ppf "%a" (pp_i_exp_deep need_parens) i_exp2
-  | IExp_ident f_exp, arg_exp, arg_exp_list ->
+  | IExp_ident f_exp, arg_exp_list ->
     fprintf ppf "%s" f_exp;
     fprintf
       ppf
       " %a"
       (pp_print_list ~pp_sep:pp_print_space (pp_i_exp_deep need_parens))
-      (arg_exp :: arg_exp_list)
+      arg_exp_list
   | _ -> failwith "Not implemented"
 
 and pp_a_exp_deep need_parens ppf = function

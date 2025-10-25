@@ -111,8 +111,7 @@ let%expect_test "ANF function with 2 arguments" =
   [%expect
     {|
   let f = fun a -> (fun b -> a + b);;
-  let a = let temp2 = f 1 in
-          temp2 2;;
+  let a = f 1 2;;
   |}]
 ;;
 

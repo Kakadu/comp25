@@ -33,8 +33,12 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd a0, -16(s0) # temp1
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
-    ld a0, -16(s0)
-    call fac
+    la a0, fac
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    ld a2, -16(s0)
+    call applyN
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
     ld t1, -32(s0)
@@ -52,11 +56,19 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd ra, 16(sp)
     sd s0, 8(sp)
     addi s0, sp, 8 # Prologue ends
-    li a0, 4
-    call fac
+    la a0, fac
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    li a2, 4
+    call applyN
     sd a0, -8(s0) # temp6
-    ld a0, -8(s0)
-    call print_int
+    la a0, print_int
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    ld a2, -8(s0)
+    call applyN
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -101,15 +113,23 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd a0, -16(s0) # temp1
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
-    ld a0, -16(s0)
-    call fib
+    la a0, fib
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    ld a2, -16(s0)
+    call applyN
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
     li t1, 2
     sub a0, t0, t1
     sd a0, -40(s0) # temp3
-    ld a0, -40(s0)
-    call fib
+    la a0, fib
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    ld a2, -40(s0)
+    call applyN
     sd a0, -48(s0) # temp4
     ld t0, -32(s0)
     ld t1, -48(s0)
@@ -127,11 +147,19 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd ra, 16(sp)
     sd s0, 8(sp)
     addi s0, sp, 8 # Prologue ends
-    li a0, 6
-    call fib
+    la a0, fib
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    li a2, 6
+    call applyN
     sd a0, -8(s0) # temp8
-    ld a0, -8(s0)
-    call print_int
+    la a0, print_int
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    ld a2, -8(s0)
+    call applyN
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -173,14 +201,22 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     beq t0, zero, else_0
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -16(s0)
-    li a0, 0
-    call print_int
+    la a0, print_int
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    li a2, 0
+    call applyN
     j end_0
   else_0:
     addi sp, sp, -8 # Saving 'live' regs
-    sd a1, -24(s0)
-    li a0, 1
-    call print_int
+    sd a1, -16(s0)
+    la a0, print_int
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    li a2, 1
+    call applyN
   end_0:
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
@@ -207,8 +243,12 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     seqz a0, a0
     j end_1
   else_1:
-    li a0, 42
-    call print_int
+    la a0, print_int
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    li a2, 42
+    call applyN
     sd a0, -16(s0) # t42
     li t0, 1
     li t1, 1
@@ -237,8 +277,12 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li a0, 1
   end_3:
     sd a0, -48(s0) # x
-    ld a0, -48(s0)
-    call large
+    la a0, large
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    ld a2, -48(s0)
+    call applyN
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -299,8 +343,12 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li a2, 3
     call applyN
     sd a0, -16(s0) # temp2
-    ld a0, -16(s0)
-    call print_int
+    la a0, print_int
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    ld a2, -16(s0)
+    call applyN
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -312,3 +360,301 @@ SPDX-License-Identifier: LGPL-3.0-or-later
   $ riscv64-linux-gnu-gcc temp.o ../lib/runtime/rv64_runtime.a -o file.exe
   $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ./file.exe
   4
+
+====================== CPS Factorial ======================
+  $ ../bin/akaML.exe -fromfile manytests/typed/010faccps_ll.ml -o 010faccps_ll.s
+
+  $ cat 010faccps_ll.s
+  .section .text
+    .globl id
+    .type id, @function
+  id:
+    addi sp, sp, -16
+    sd ra, 8(sp)
+    sd s0, 0(sp)
+    addi s0, sp, 0 # Prologue ends
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+  
+    .globl fresh_1
+    .type fresh_1, @function
+  fresh_1:
+    addi sp, sp, -24
+    sd ra, 16(sp)
+    sd s0, 8(sp)
+    addi s0, sp, 8 # Prologue ends
+    mv t0, a2
+    mv t1, a0
+    mv a3, a0
+    mul a0, t0, t1
+    sd a0, -8(s0) # temp1
+    addi sp, sp, -24 # Saving 'live' regs
+    sd a1, -16(s0)
+    sd a3, -24(s0)
+    sd a2, -32(s0)
+    ld a0, -16(s0)
+    li a1, 1
+    ld a2, -8(s0)
+    call applyN
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+  
+    .globl fac_cps
+    .type fac_cps, @function
+  fac_cps:
+    addi sp, sp, -40
+    sd ra, 32(sp)
+    sd s0, 24(sp)
+    addi s0, sp, 24 # Prologue ends
+    mv t0, a0
+    li t1, 1
+    mv a2, a0
+    xor a0, t0, t1
+    seqz a0, a0
+    sd a0, -8(s0) # temp4
+    ld t0, -8(s0)
+    beq t0, zero, else_0
+    addi sp, sp, -16 # Saving 'live' regs
+    sd a1, -16(s0)
+    sd a2, -24(s0)
+    ld a0, -16(s0)
+    li a1, 1
+    li a2, 1
+    call applyN
+    j end_0
+  else_0:
+    mv t0, a2
+    li t1, 1
+    sub a0, t0, t1
+    sd a0, -16(s0) # temp6
+    addi sp, sp, -16 # Saving 'live' regs
+    sd a1, -24(s0)
+    sd a2, -32(s0)
+    la a0, fresh_1
+    li a1, 3
+    call alloc_closure
+    li a1, 2
+    ld a2, -32(s0)
+    ld a3, -24(s0)
+    call applyN
+    sd a0, -40(s0) # temp7
+    la a0, fac_cps
+    li a1, 2
+    call alloc_closure
+    li a1, 2
+    ld a2, -16(s0)
+    ld a3, -40(s0)
+    call applyN
+  end_0:
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+  
+    .globl main
+    .type main, @function
+  main:
+    addi sp, sp, -32
+    sd ra, 24(sp)
+    sd s0, 16(sp)
+    addi s0, sp, 16 # Prologue ends
+    addi sp, sp, -8 # Saving 'dangerous' args
+    la a0, id
+    li a1, 1
+    call alloc_closure
+    sd a0, -8(s0)
+    la a0, fac_cps
+    li a1, 2
+    call alloc_closure
+    li a1, 2
+    li a2, 4
+    ld a3, -8(s0)
+    call applyN
+    sd a0, -16(s0) # temp11
+    la a0, print_int
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    ld a2, -16(s0)
+    call applyN
+    sd a0, -24(s0) # temp12
+    li a0, 0
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    li a0, 0
+    ret
+  
+
+====================== CPS Fibonacci ======================
+  $ ../bin/akaML.exe -fromfile manytests/typed/010fibcps_ll.ml -o 010fibcps_ll.s
+
+  $ cat 010fibcps_ll.s
+  .section .text
+    .globl id
+    .type id, @function
+  id:
+    addi sp, sp, -16
+    sd ra, 8(sp)
+    sd s0, 0(sp)
+    addi s0, sp, 0 # Prologue ends
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+  
+    .globl fresh_2
+    .type fresh_2, @function
+  fresh_2:
+    addi sp, sp, -24
+    sd ra, 16(sp)
+    sd s0, 8(sp)
+    addi s0, sp, 8 # Prologue ends
+    mv t0, a0
+    mv t1, a2
+    mv a3, a0
+    add  a0, t0, t1
+    sd a0, -8(s0) # temp1
+    addi sp, sp, -24 # Saving 'live' regs
+    sd a1, -16(s0)
+    sd a3, -24(s0)
+    sd a2, -32(s0)
+    ld a0, -16(s0)
+    li a1, 1
+    ld a2, -8(s0)
+    call applyN
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+  
+    .globl fresh_1
+    .type fresh_1, @function
+  fresh_1:
+    addi sp, sp, -32
+    sd ra, 24(sp)
+    sd s0, 16(sp)
+    addi s0, sp, 16 # Prologue ends
+    mv t0, a0
+    li t1, 2
+    mv a4, a0
+    sub a0, t0, t1
+    sd a0, -8(s0) # temp4
+    addi sp, sp, -32 # Saving 'live' regs
+    sd a2, -16(s0)
+    sd a1, -24(s0)
+    sd a4, -32(s0)
+    sd a3, -40(s0)
+    la a0, fresh_2
+    li a1, 3
+    call alloc_closure
+    li a1, 2
+    ld a2, -40(s0)
+    ld a3, -24(s0)
+    call applyN
+    sd a0, -48(s0) # temp5
+    ld a0, -16(s0)
+    li a1, 2
+    ld a2, -8(s0)
+    ld a3, -48(s0)
+    call applyN
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+  
+    .globl fib
+    .type fib, @function
+  fib:
+    addi sp, sp, -40
+    sd ra, 32(sp)
+    sd s0, 24(sp)
+    addi s0, sp, 24 # Prologue ends
+    mv t0, a0
+    li t1, 2
+    mv a2, a0
+    slt a0, t0, t1
+    sd a0, -8(s0) # temp8
+    ld t0, -8(s0)
+    beq t0, zero, else_0
+    addi sp, sp, -16 # Saving 'live' regs
+    sd a1, -16(s0)
+    sd a2, -24(s0)
+    ld a0, -16(s0)
+    li a1, 1
+    ld a2, -24(s0)
+    call applyN
+    j end_0
+  else_0:
+    mv t0, a2
+    li t1, 1
+    sub a0, t0, t1
+    sd a0, -16(s0) # temp10
+    addi sp, sp, -16 # Saving 'live' regs
+    sd a1, -24(s0)
+    sd a2, -32(s0)
+    addi sp, sp, -8 # Saving 'dangerous' args
+    la a0, fib
+    li a1, 2
+    call alloc_closure
+    sd a0, -40(s0)
+    la a0, fresh_1
+    li a1, 4
+    call alloc_closure
+    li a1, 3
+    ld a2, -32(s0)
+    ld a3, -24(s0)
+    ld a4, -40(s0)
+    call applyN
+    sd a0, -48(s0) # temp11
+    la a0, fib
+    li a1, 2
+    call alloc_closure
+    li a1, 2
+    ld a2, -16(s0)
+    ld a3, -48(s0)
+    call applyN
+  end_0:
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    ret
+  
+    .globl main
+    .type main, @function
+  main:
+    addi sp, sp, -32
+    sd ra, 24(sp)
+    sd s0, 16(sp)
+    addi s0, sp, 16 # Prologue ends
+    addi sp, sp, -8 # Saving 'dangerous' args
+    la a0, id
+    li a1, 1
+    call alloc_closure
+    sd a0, -8(s0)
+    la a0, fib
+    li a1, 2
+    call alloc_closure
+    li a1, 2
+    li a2, 6
+    ld a3, -8(s0)
+    call applyN
+    sd a0, -16(s0) # temp15
+    la a0, print_int
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    ld a2, -16(s0)
+    call applyN
+    sd a0, -24(s0) # z
+    li a0, 0
+    addi sp, s0, 16 # Epilogue starts
+    ld ra, 8(s0)
+    ld s0, 0(s0)
+    li a0, 0
+    ret
+  

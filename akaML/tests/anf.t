@@ -49,3 +49,44 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     let temp12 = if temp9 then 0 = 1 else 1 = 1 in
     let x = if temp12 then 0 else 1 in
     large x;;
+
+  $ ../bin/akaML.exe -anf -fromfile manytests/typed/010faccps_ll.ml
+  let id = fun x -> x;;
+  let fresh_1 = fun n -> (fun k -> (fun p -> (let temp1 = p * n in
+                                             k temp1)));;
+  let rec fac_cps =
+    fun n ->
+      (fun k ->
+         (let temp4 = n = 1 in
+         if temp4 then k 1
+         else (let temp6 = n - 1 in
+           let temp7 = fresh_1 n k in
+           fac_cps temp6 temp7)));;
+  let main = let temp11 = fac_cps 4 id in
+             let temp12 = print_int temp11 in
+             0;;
+
+  $ ../bin/akaML.exe -anf -fromfile manytests/typed/010fibcps_ll.ml
+  let id = fun x -> x;;
+  let fresh_2 =
+    fun p1 -> (fun k -> (fun p2 -> (let temp1 = p1 + p2 in
+                                   k temp1)));;
+  let fresh_1 =
+    fun n ->
+      (fun k ->
+         (fun fib ->
+            (fun p1 ->
+               (let temp4 = n - 2 in
+               let temp5 = fresh_2 p1 k in
+               fib temp4 temp5))));;
+  let rec fib =
+    fun n ->
+      (fun k ->
+         (let temp8 = n < 2 in
+         if temp8 then k n
+         else (let temp10 = n - 1 in
+           let temp11 = fresh_1 n k fib in
+           fib temp10 temp11)));;
+  let main = let temp15 = fib 6 id in
+             let z = print_int temp15 in
+             0;;

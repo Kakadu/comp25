@@ -20,7 +20,7 @@ type i_exp =
 and c_exp =
   | CIExp of i_exp
   | CExp_tuple of i_exp * i_exp * i_exp list
-  | CExp_apply of i_exp * i_exp * i_exp list
+  | CExp_apply of i_exp * i_exp list
   | CExp_ifthenelse of c_exp * a_exp * a_exp option
 
 and a_exp =

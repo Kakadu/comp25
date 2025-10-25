@@ -27,7 +27,7 @@ type i_exp =
 and c_exp =
   | CIExp of i_exp
   | CExp_tuple of i_exp * i_exp * i_exp list
-  | CExp_apply of i_exp * i_exp * i_exp list
+  | CExp_apply of i_exp * i_exp list
   | CExp_ifthenelse of c_exp * a_exp * a_exp option
 [@@deriving show { with_path = false }]
 
@@ -111,6 +111,13 @@ let a_exp_let_non c_exp k =
   return @@ simplify_temp_binding id c_exp body
 ;;
 
+let rec collect_app_args = function
+  | Exp_apply (f, arg) ->
+    let fn, args = collect_app_args f in
+    fn, args @ [ arg ]
+  | exp -> exp, []
+;;
+
 let rec anf_exp exp (k : i_exp -> a_exp State.t) =
   match exp with
   | Exp_ident id -> k @@ IExp_ident id
@@ -125,16 +132,24 @@ let rec anf_exp exp (k : i_exp -> a_exp State.t) =
   | Exp_apply (Exp_apply (Exp_ident opr, exp1), exp2) when is_bin_op opr ->
     anf_exp exp1 (fun i_exp1 ->
       anf_exp exp2 (fun i_exp2 ->
-        let c_exp = CExp_apply (IExp_ident opr, i_exp1, [ i_exp2 ]) in
+        let c_exp = CExp_apply (IExp_ident opr, [ i_exp1; i_exp2 ]) in
         a_exp_let_non c_exp k))
   | Exp_apply (Exp_ident opr, exp) when is_unary_minus opr ->
     anf_exp exp (fun i_exp ->
-      let c_exp = CExp_apply (IExp_ident opr, i_exp, []) in
+      let c_exp = CExp_apply (IExp_ident opr, [ i_exp ]) in
       a_exp_let_non c_exp k)
   | Exp_apply (exp1, exp2) ->
+    let rec anf_list exp_list k =
+      match exp_list with
+      | hd :: tl ->
+        anf_exp hd (fun i_exp_head ->
+          anf_list tl (fun i_exp_tail -> k (i_exp_head :: i_exp_tail)))
+      | [] -> k []
+    in
+    let exp1, exp_list = collect_app_args (Exp_apply (exp1, exp2)) in
     anf_exp exp1 (fun i_exp1 ->
-      anf_exp exp2 (fun i_exp2 ->
-        let c_exp = CExp_apply (i_exp1, i_exp2, []) in
+      anf_list exp_list (fun i_exp_list ->
+        let c_exp = CExp_apply (i_exp1, i_exp_list) in
         a_exp_let_non c_exp k))
   | Exp_ifthenelse (cond, then_exp, None) ->
     anf_exp cond (fun i_cond ->

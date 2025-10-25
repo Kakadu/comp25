@@ -137,8 +137,12 @@ let%expect_test "codegen default main function" =
     sd ra, 16(sp)
     sd s0, 8(sp)
     addi s0, sp, 8 # Prologue ends
-    li a0, 4
-    call id
+    la a0, id
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    li a2, 4
+    call applyN
     sd a0, -8(s0) # temp1
     ld a0, -8(s0)
     addi sp, s0, 16 # Epilogue starts
@@ -195,8 +199,12 @@ let%expect_test "codegen default factorial" =
     sd a0, -16(s0) # temp2
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
-    ld a0, -16(s0)
-    call fac
+    la a0, fac
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    ld a2, -16(s0)
+    call applyN
     sd a0, -32(s0) # temp3
     ld t0, -24(s0)
     ld t1, -32(s0)
@@ -247,8 +255,12 @@ let%expect_test "codegen ANF factorial" =
     sd a0, -16(s0) # temp1
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
-    ld a0, -16(s0)
-    call fac
+    la a0, fac
+    li a1, 1
+    call alloc_closure
+    li a1, 1
+    ld a2, -16(s0)
+    call applyN
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
     ld t1, -32(s0)
@@ -265,7 +277,6 @@ let%expect_test "codegen constant" =
   run
     {|
   let a = 1
-
   let main = print_int a
   |};
   [%expect
@@ -291,8 +302,15 @@ let%expect_test "codegen constant" =
       sd ra, 8(sp)
       sd s0, 0(sp)
       addi s0, sp, 0 # Prologue ends
+      addi sp, sp, -8 # Saving 'dangerous' args
       call a
-      call print_int
+      sd a0, -8(s0)
+      la a0, print_int
+      li a1, 1
+      call alloc_closure
+      li a1, 1
+      ld a2, -8(s0)
+      call applyN
       addi sp, s0, 16 # Epilogue starts
       ld ra, 8(s0)
       ld s0, 0(s0)
