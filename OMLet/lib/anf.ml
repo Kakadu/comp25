@@ -42,8 +42,7 @@ type anf_error =
   | Unreachable
   | Not_Yet_Implemented of string
 
-let pp_anf_error fmt e =
-  match e with
+let pp_anf_error fmt = function
   | Unreachable -> fprintf fmt "Panic: reached unreachable state in ANF computation"
   | Not_Yet_Implemented str ->
     fprintf fmt "ANF for this structure is not yet implemented: %s" str

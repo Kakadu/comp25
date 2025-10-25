@@ -31,7 +31,7 @@ module ResultCounterMonad : ResultCounterMonadType = struct
   let fail e _ = Result.Error e
   let read c = Result.Ok (c, c)
   let write c _ = Result.Ok ((), c)
-  let run m init = m init
+  let run m = m
 
   module Syntax = struct
     let ( let* ) = ( >>= )

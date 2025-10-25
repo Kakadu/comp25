@@ -39,9 +39,9 @@ and pp_cexpr fmt = function
              (arg :: acc)
              (match body with
               | ACExpr c -> c
-              | _ -> assert false)
+              | _ -> CImmexpr (ImmId (Ident "")))
          | _ -> List.rev (arg :: acc), body)
-      | _ -> failwith "NYI"
+      | _ -> [], ACExpr (CImmexpr (ImmId (Ident "")))
     in
     let args, body = collect_args [] lam in
     fprintf
