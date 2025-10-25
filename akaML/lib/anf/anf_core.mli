@@ -40,4 +40,4 @@ val show_a_structure_item : a_structure_item -> string
 type a_structure = a_structure_item list
 
 val show_a_structure : a_structure -> string
-val anf_structure : Ast.structure -> a_structure_item list
+val anf_structure : Ast.structure -> (a_structure_item list, string) result

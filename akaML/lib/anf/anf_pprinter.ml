@@ -77,7 +77,7 @@ and pp_c_exp_apply ?(need_parens = false) ppf = function
       " %a"
       (pp_print_list ~pp_sep:pp_print_space (pp_i_exp_deep need_parens))
       arg_exp_list
-  | _ -> failwith "Not implemented"
+  | _ -> fprintf ppf "In progress"
 
 and pp_a_exp_deep need_parens ppf = function
   | ACExp c_exp -> pp_c_exp_deep need_parens ppf c_exp

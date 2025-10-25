@@ -46,17 +46,20 @@ type a_structure_item =
 type a_structure = a_structure_item list [@@deriving show { with_path = false }]
 
 module State = struct
-  type 'a t = int -> 'a * int
+  type 'a t = int -> ('a * int, string) result
 
-  let return x st = x, st
+  let return x st = Ok (x, st)
+  let fail e = fun _ -> Error e
 
-  let bind m f st =
-    let x, st' = m st in
-    f x st'
+  let bind m f =
+    fun st ->
+    match m st with
+    | Error e -> Error e
+    | Ok (x, st') -> f x st'
   ;;
 
   let ( let* ) = bind
-  let fresh st = st, st + 1
+  let fresh = fun st -> Ok (st, st + 1)
 
   let rec state_map f = function
     | [] -> return []
@@ -76,7 +79,11 @@ module State = struct
     aux f [] l
   ;;
 
-  let run m = fst (m 0)
+  let run m =
+    match m 0 with
+    | Ok (x, _) -> Ok x
+    | Error e -> Error e
+  ;;
 end
 
 open State
@@ -87,9 +94,9 @@ let gen_ident =
 ;;
 
 let anf_pat = function
-  | Pat_var var -> APat_var var
-  | Pat_constant const -> APat_constant const
-  | _ -> failwith "Pat: Not implemented"
+  | Pat_var var -> return @@ APat_var var
+  | Pat_constant const -> return @@ APat_constant const
+  | _ -> fail "Pat: Not implemented"
 ;;
 
 let i_to_c_exp i = CIExp i
@@ -118,7 +125,7 @@ let rec collect_app_args = function
   | exp -> exp, []
 ;;
 
-let rec anf_exp exp (k : i_exp -> a_exp State.t) =
+let rec anf_exp exp k =
   match exp with
   | Exp_ident id -> k @@ IExp_ident id
   | Exp_constant const -> k @@ IExp_constant const
@@ -169,14 +176,17 @@ let rec anf_exp exp (k : i_exp -> a_exp State.t) =
         a_exp_let_non c_exp k))
   | Exp_fun (pat, pat_list, body) ->
     let* body_aexp = anf_exp body (fun i_body -> a_exp_let_non (i_to_c_exp i_body) k) in
-    let folded =
+    let* folded =
       Base.List.fold_right
-        ~init:body_aexp
-        ~f:(fun p acc -> ACExp (CIExp (IExp_fun (anf_pat p, acc))))
+        ~init:(return body_aexp)
+        ~f:(fun p acc ->
+          let* acc = acc in
+          let* i_pat = anf_pat p in
+          return @@ ACExp (CIExp (IExp_fun (i_pat, acc))))
         (pat :: pat_list)
     in
     return folded
-  | _ -> failwith "Exp: Not implemented"
+  | _ -> fail "Exp: Not implemented"
 ;;
 
 let anf_structure_item = function

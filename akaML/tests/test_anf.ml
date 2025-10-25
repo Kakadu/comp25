@@ -11,7 +11,10 @@ open Parser
 
 let run str =
   match parse str with
-  | Ok ast -> Format.printf "%a" Anf_pprinter.pp_a_structure (Anf_core.anf_structure ast)
+  | Ok ast ->
+    (match Anf.Anf_core.anf_structure ast with
+     | Error e_anf -> Format.eprintf "ANF transformation error: %s\n%!" e_anf
+     | Ok anf_ast -> Format.printf "%a" Anf_pprinter.pp_a_structure anf_ast)
   | Error error -> Format.printf "%s" error
 ;;
 

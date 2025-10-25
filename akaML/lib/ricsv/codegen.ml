@@ -46,19 +46,21 @@ type codegen_state =
   }
 
 module State = struct
-  type 'a t = codegen_state -> 'a * codegen_state
+  type 'a t = codegen_state -> ('a * codegen_state, string) result
 
-  let return x st = x, st
+  let return x st = Ok (x, st)
+  let fail e = fun _ -> Error e
 
   let bind m f =
     fun state ->
-    let x, st = m state in
-    f x st
+    match m state with
+    | Ok (x, st') -> f x st'
+    | Error e -> Error e
   ;;
 
   let ( let* ) = bind
-  let get st = st, st
-  let put st = fun _ -> (), st
+  let get st = Ok (st, st)
+  let put st = fun _ -> Ok ((), st)
 
   let modify_frame_offset f =
     let* st = get in
@@ -75,6 +77,8 @@ module State = struct
     let* () = modify_fresh_id Int.succ in
     return st.fresh_id
   ;;
+
+  let run m = m
 end
 
 open State
@@ -96,24 +100,24 @@ module Emission = struct
 
   let emit_bin_op dst op r1 r2 =
     match op with
-    | "+" -> emit add dst r1 r2
-    | "-" -> emit sub dst r1 r2
-    | "*" -> emit mul dst r1 r2
+    | "+" -> return @@ emit add dst r1 r2
+    | "-" -> return @@ emit sub dst r1 r2
+    | "*" -> return @@ emit mul dst r1 r2
     | "<=" ->
       emit slt dst r2 r1;
-      emit xori dst dst 1
+      return @@ emit xori dst dst 1
     | ">=" ->
       emit slt dst r1 r2;
-      emit xori dst dst 1
+      return @@ emit xori dst dst 1
     | "=" ->
       emit xor dst r1 r2;
-      emit seqz dst dst
+      return @@ emit seqz dst dst
     | "<>" ->
       emit xor dst r1 r2;
-      emit snez dst dst
-    | "<" -> emit slt dst r1 r2
-    | ">" -> emit slt dst r2 r1
-    | _ -> failwith ("unsupported binary operator: " ^ op)
+      return @@ emit snez dst dst
+    | "<" -> return @@ emit slt dst r1 r2
+    | ">" -> return @@ emit slt dst r2 r1
+    | _ -> fail ("unsupported binary operator: " ^ op)
   ;;
 
   let emit_load_reg (dst_reg : reg) = function
@@ -227,8 +231,8 @@ let rec gen_i_exp env dst = function
           emit li (A 1) arity;
           emit call "alloc_closure";
           return env
-        | _ -> failwith ("unbound variable: " ^ x)))
-  | _ -> failwith "GenIExp: Not implemented"
+        | _ -> fail ("unbound variable: " ^ x)))
+  | _ -> fail "GenIExp: Not implemented"
 
 and gen_c_exp env dst = function
   | CIExp i_exp -> gen_i_exp env dst i_exp
@@ -236,7 +240,7 @@ and gen_c_exp env dst = function
     let* env = gen_i_exp env (T 0) i_exp1 in
     let* env = gen_i_exp env (T 1) i_exp2 in
     let* env = ensure_reg_free env dst in
-    emit_bin_op dst op (T 0) (T 1);
+    let* () = emit_bin_op dst op (T 0) (T 1) in
     return env
   | CExp_apply (IExp_ident fname, args) ->
     let* env = emit_save_caller_regs env in
@@ -355,7 +359,7 @@ and gen_c_exp env dst = function
     let* _ = gen_a_exp env dst else_e in
     emit label end_lbl;
     return env
-  | _ -> failwith "GenCExp: Not implemented"
+  | _ -> fail "GenCExp: Not implemented"
 
 and gen_a_exp env dst = function
   | ACExp c_exp -> gen_c_exp env dst c_exp
@@ -364,7 +368,7 @@ and gen_a_exp env dst = function
     let* loc = emit_store (A 0) ~comm:id in
     let env = Map.set env ~key:id ~data:loc in
     gen_a_exp env dst exp_in
-  | _ -> failwith "GenAExp: Not implemented"
+  | _ -> fail "GenAExp: Not implemented"
 ;;
 
 let rec count_loc_vars_i_exp = function
@@ -405,24 +409,28 @@ let gen_a_func f_id arg_list body_exp ppf state =
   in
   let stack_size = (2 + count_loc_vars_a_exp body_exp) * Platform.word_size in
   let env = Map.empty (module String) in
-  let env =
-    List.foldi reg_params ~init:env ~f:(fun i env -> function
-      | APat_var name -> Map.set env ~key:name ~data:(Loc_reg (A i))
-      | _ -> failwith "unsupported pattern")
-  in
-  let env =
-    List.foldi stack_params ~init:env ~f:(fun i env -> function
+  let* env =
+    List.foldi reg_params ~init:(return env) ~f:(fun i acc -> function
       | APat_var name ->
+        let* env = acc in
+        return @@ Map.set env ~key:name ~data:(Loc_reg (A i))
+      | _ -> fail "unsupported pattern")
+  in
+  let* env =
+    List.foldi stack_params ~init:(return env) ~f:(fun i acc -> function
+      | APat_var name ->
+        let* env = acc in
         let offset = (i + 2) * Platform.word_size in
-        Map.set env ~key:name ~data:(Loc_mem (S 0, offset))
-      | _ -> failwith "unsupported pattern")
+        return @@ Map.set env ~key:name ~data:(Loc_mem (S 0, offset))
+      | _ -> fail "unsupported pattern")
   in
   emit_fn_prologue f_id stack_size;
-  let init_state = { state with frame_offset = 0 } in
-  let _, state = gen_a_exp env (A 0) body_exp init_state in
+  let* st = get in
+  let* () = put { st with frame_offset = 0 } in
+  let* _ = gen_a_exp env (A 0) body_exp in
   emit_fn_epilogue (String.equal f_id "main");
   flush_queue ppf;
-  state
+  return state
 ;;
 
 let init_arity_map ast =
@@ -451,19 +459,26 @@ let gen_a_structure ppf ast =
   let arity_map = init_arity_map ast in
   let arity_map = Map.set arity_map ~key:"print_int" ~data:1 in
   let init_state = { frame_offset = 0; fresh_id = 0; arity_map } in
-  let _ =
-    List.fold ast ~init:init_state ~f:(fun state -> function
-      | AStruct_value (_, Pat_var f_id, body_exp) ->
-        let extract_fun_params body_exp =
-          let rec helper acc = function
-            | ACExp (CIExp (IExp_fun (pat, body))) -> helper (pat :: acc) body
+  let program =
+    let* _ =
+      List.fold ast ~init:(return init_state) ~f:(fun acc -> function
+        | AStruct_value (_, Pat_var f_id, body_exp) ->
+          let* state = acc in
+          let rec extract_fun_params acc = function
+            | ACExp (CIExp (IExp_fun (pat, body))) -> extract_fun_params (pat :: acc) body
             | other -> List.rev acc, other
           in
-          helper [] body_exp
-        in
-        let pat_list, body_exp = extract_fun_params body_exp in
-        gen_a_func f_id pat_list body_exp ppf state
-      | _ -> failwith "unsupported structure item")
+          let pat_list, body_exp = extract_fun_params [] body_exp in
+          gen_a_func f_id pat_list body_exp ppf state
+        | _ -> fail "unsupported structure item")
+    in
+    pp_print_flush ppf ();
+    return ()
   in
-  pp_print_flush ppf ()
+  run program init_state
+  |> function
+  | Ok _ -> ()
+  | Error msg ->
+    Format.eprintf "Codegen error: %s\n%!" msg;
+    exit 1
 ;;

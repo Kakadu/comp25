@@ -54,15 +54,19 @@ let compiler options =
             env_infer)
           else (
             let ppf = Format.formatter_of_out_channel out_channel in
-            let anf_ast = Anf.Anf_core.anf_structure ast in
-            if options.anf
-            then (
-              let s = Format.asprintf "%a" Anf.Anf_pprinter.pp_a_structure anf_ast in
-              Out_channel.output_string out_channel (s ^ "\n");
-              env_infer)
-            else (
-              Format.fprintf ppf "%a\n%!" RiscV.Codegen.gen_a_structure anf_ast;
-              env_infer)))
+            match Anf.Anf_core.anf_structure ast with
+            | Error e_anf ->
+              Format.eprintf "ANF transformation error: %s\n%!" e_anf;
+              env_infer
+            | Ok anf_ast ->
+              if options.anf
+              then (
+                let s = Format.asprintf "%a" Anf.Anf_pprinter.pp_a_structure anf_ast in
+                Out_channel.output_string out_channel (s ^ "\n");
+                env_infer)
+              else (
+                Format.fprintf ppf "%a\n%!" RiscV.Codegen.gen_a_structure anf_ast;
+                env_infer)))
   in
   let env_infer = Inferencer.env_with_print_funs in
   let match_output_file input =

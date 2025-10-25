@@ -11,8 +11,9 @@ open Parser
 let run str =
   match parse str with
   | Ok ast ->
-    let anf_ast = Anf.Anf_core.anf_structure ast in
-    Format.printf "%a\n%!" RiscV.Codegen.gen_a_structure anf_ast
+    (match Anf.Anf_core.anf_structure ast with
+     | Error e_anf -> Format.eprintf "ANF transformation error: %s\n%!" e_anf
+     | Ok anf_ast -> Format.printf "%a\n%!" RiscV.Codegen.gen_a_structure anf_ast)
   | Error _ -> Format.printf "Parsing error\n"
 ;;
 
