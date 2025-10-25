@@ -201,77 +201,77 @@ open Anf
 
 let pp_binop ppf = function
   | <span data-count="1">A</span>dd -&gt; pp_print_string ppf "+"
-  | <span data-count="3">S</span>ub -&gt; pp_print_string ppf "-"
-  | <span data-count="1">M</span>ul -&gt; pp_print_string ppf "*"
+  | <span data-count="4">S</span>ub -&gt; pp_print_string ppf "-"
+  | <span data-count="2">M</span>ul -&gt; pp_print_string ppf "*"
   | <span data-count="1">L</span>e -&gt; pp_print_string ppf "&lt;="
   | <span data-count="1">L</span>t -&gt; pp_print_string ppf "&lt;"
-  | <span data-count="7">E</span>q -&gt; pp_print_string ppf "="
+  | <span data-count="8">E</span>q -&gt; pp_print_string ppf "="
   | <span data-count="1">N</span>eq -&gt; pp_print_string ppf "&lt;&gt;"
 ;;
 
 let pp_immexpr ppf = function
-  | <span data-count="35">I</span>mmNum i -&gt; pp_print_int ppf i
-  | <span data-count="56">I</span>mmId id -&gt; pp_print_string ppf id
+  | <span data-count="40">I</span>mmNum i -&gt; pp_print_int ppf i
+  | <span data-count="76">I</span>mmId id -&gt; pp_print_string ppf id
 ;;
 
-let pp_indent ppf indent = <span data-count="77">p</span>p_print_string ppf (String.mak<span data-count="77">e</span> indent ' ')
+let pp_indent ppf indent = <span data-count="101">p</span>p_print_string ppf (String.mak<span data-count="101">e</span> indent ' ')
 
 let rec pp_aexpr ppf indent = function
-  | <span data-count="29">A</span>CE cexpr -&gt;
+  | <span data-count="41">A</span>CE cexpr -&gt;
     pp_indent ppf indent;
-    <span data-count="29">p</span>p_cexpr ppf indent cexpr
-  | <span data-count="32">A</span>Let (flag, id, cexpr, body) -&gt;
+    <span data-count="41">p</span>p_cexpr ppf indent cexpr
+  | <span data-count="39">A</span>Let (flag, id, cexpr, body) -&gt;
     let rec_str =
       match flag with
       | <span data-count="0">R</span>ecursive -&gt; " rec"
-      | <span data-count="32">_</span> -&gt; ""
+      | <span data-count="39">_</span> -&gt; ""
     in
     pp_indent ppf indent;
-    <span data-count="32">f</span>printf ppf "let%s %s = " rec_str id;
-    <span data-count="32">p</span>p_cexpr ppf indent cexpr;
-    <span data-count="32">f</span>printf ppf " in\n";
-    <span data-count="32">p</span>p_aexpr ppf indent body
+    <span data-count="39">f</span>printf ppf "let%s %s = " rec_str id;
+    <span data-count="39">p</span>p_cexpr ppf indent cexpr;
+    <span data-count="39">f</span>printf ppf " in\n";
+    <span data-count="39">p</span>p_aexpr ppf indent body
 
 and pp_cexpr ppf indent = function
-  | <span data-count="15">C</span>Imm imm -&gt; pp_immexpr ppf imm
-  | <span data-count="15">C</span>Binop (op, i1, i2) -&gt; fprintf ppf "%a %a %a" pp_immexpr i1 pp_binop op pp_immexpr i2
-  | <span data-count="18">C</span>App (f, args) -&gt;
+  | <span data-count="18">C</span>Imm imm -&gt; pp_immexpr ppf imm
+  | <span data-count="18">C</span>Binop (op, i1, i2) -&gt; fprintf ppf "%a %a %a" pp_immexpr i1 pp_binop op pp_immexpr i2
+  | <span data-count="24">C</span>App (f, args) -&gt;
     fprintf ppf "%a" pp_immexpr f;
-    <span data-count="18">L</span>ist.iter (fprint<span data-count="18">f</span> ppf " %a" pp_immexpr) args
-  | <span data-count="10">C</span>Ite (cond, then_expr, else_expr) -&gt;
+    <span data-count="24">L</span>ist.iter (fprint<span data-count="24">f</span> ppf " %a" pp_immexpr) args
+  | <span data-count="11">C</span>Ite (cond, then_expr, else_expr) -&gt;
     let new_indent = indent + 2 in
     fprintf ppf "if %a then\n" pp_immexpr cond;
-    <span data-count="10">p</span>p_aexpr ppf new_indent then_expr;
-    <span data-count="10">f</span>printf ppf "\n";
-    <span data-count="10">p</span>p_indent ppf indent;
-    <span data-count="10">f</span>printf ppf "else\n";
-    <span data-count="10">p</span>p_aexpr ppf new_indent else_expr
-  | <span data-count="3">C</span>Fun (param, body) -&gt;
+    <span data-count="11">p</span>p_aexpr ppf new_indent then_expr;
+    <span data-count="11">f</span>printf ppf "\n";
+    <span data-count="11">p</span>p_indent ppf indent;
+    <span data-count="11">f</span>printf ppf "else\n";
+    <span data-count="11">p</span>p_aexpr ppf new_indent else_expr
+  | <span data-count="9">C</span>Fun (param, body) -&gt;
     let new_indent = indent + 2 in
     fprintf ppf "fun %s -&gt;\n" param;
-    <span data-count="3">p</span>p_aexpr ppf new_indent body
+    <span data-count="9">p</span>p_aexpr ppf new_indent body
 ;;
 
 let pp_astructure_item ppf indent = function
-  | <span data-count="6">A</span>Str_value (flag, name, expr) -&gt;
+  | <span data-count="10">A</span>Str_value (flag, name, expr) -&gt;
     let rec_str =
       match flag with
-      | <span data-count="2">R</span>ecursive -&gt; " rec"
-      | <span data-count="4">_</span> -&gt; ""
+      | <span data-count="3">R</span>ecursive -&gt; " rec"
+      | <span data-count="7">_</span> -&gt; ""
     in
     pp_indent ppf indent;
-    <span data-count="6">f</span>printf ppf "let%s %s =" rec_str name;
-    <span data-count="6">f</span>printf ppf "\n";
-    <span data-count="6">p</span>p_aexpr ppf (indent + 2) expr
+    <span data-count="10">f</span>printf ppf "let%s %s =" rec_str name;
+    <span data-count="10">f</span>printf ppf "\n";
+    <span data-count="10">p</span>p_aexpr ppf (indent + 2) expr
   | <span data-count="0">A</span>Str_eval expr -&gt;
     pp_indent ppf indent;
     <span data-count="0">p</span>p_aexpr ppf (indent + 2) expr
 ;;
 
 let pp_anf ppf anf =
-  <span data-count="3">l</span>et pp_sep ppf () = <span data-count="3">f</span>printf ppf "\n\n" in
-  let pp_item_with_indent ppf item = <span data-count="6">p</span>p_astructure_item ppf 0 item in
-  fprintf ppf "%a" (pp_print_lis<span data-count="3">t</span> ~pp_sep pp_item_with_indent) anf
+  <span data-count="4">l</span>et pp_sep ppf () = <span data-count="6">f</span>printf ppf "\n\n" in
+  let pp_item_with_indent ppf item = <span data-count="10">p</span>p_astructure_item ppf 0 item in
+  fprintf ppf "%a" (pp_print_lis<span data-count="4">t</span> ~pp_sep pp_item_with_indent) anf
 ;;
 </code></pre>
       </div>
