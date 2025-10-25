@@ -18,21 +18,20 @@
       <h2>75.49%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:9.29%"></span>
-      <span class="unvisited" style="top:12.86%"></span>
-      <span class="unvisited" style="top:17.14%"></span>
-      <span class="unvisited" style="top:20.00%"></span>
-      <span class="unvisited" style="top:23.57%"></span>
-      <span class="unvisited" style="top:25.00%"></span>
-      <span class="unvisited" style="top:27.14%"></span>
-      <span class="unvisited" style="bottom:30.00%"></span>
-      <span class="unvisited" style="bottom:20.71%"></span>
-      <span class="unvisited" style="bottom:18.57%"></span>
-      <span class="unvisited" style="bottom:13.57%"></span>
-      <span class="unvisited" style="bottom:12.14%"></span>
-      <span class="unvisited" style="bottom:11.43%"></span>
-      <span class="unvisited" style="bottom:10.71%"></span>
-      <span class="unvisited" style="bottom:10.00%"></span>
+      <span class="unvisited" style="top:9.35%"></span>
+      <span class="unvisited" style="top:12.95%"></span>
+      <span class="unvisited" style="top:17.27%"></span>
+      <span class="unvisited" style="top:20.14%"></span>
+      <span class="unvisited" style="top:23.74%"></span>
+      <span class="unvisited" style="top:25.18%"></span>
+      <span class="unvisited" style="top:27.34%"></span>
+      <span class="unvisited" style="bottom:29.50%"></span>
+      <span class="unvisited" style="bottom:20.14%"></span>
+      <span class="unvisited" style="bottom:17.99%"></span>
+      <span class="unvisited" style="bottom:12.95%"></span>
+      <span class="unvisited" style="bottom:11.51%"></span>
+      <span class="unvisited" style="bottom:10.79%"></span>
+      <span class="unvisited" style="bottom:10.07%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -162,21 +161,20 @@
 <a id="L123"></a><span class="unvisited"> </span>
 <a id="L124"></a><span class="unvisited"> </span>
 <a id="L125"></a><span class="unvisited"> </span>
-<a id="L126"></a><span class="unvisited"> </span>
+<a id="L126"></a><span > </span>
 <a id="L127"></a><span > </span>
 <a id="L128"></a><span > </span>
-<a id="L129"></a><span > </span>
-<a id="L130"></a><span class="visited"> </span>
+<a id="L129"></a><span class="visited"> </span>
+<a id="L130"></a><span > </span>
 <a id="L131"></a><span > </span>
-<a id="L132"></a><span > </span>
+<a id="L132"></a><span class="visited"> </span>
 <a id="L133"></a><span class="visited"> </span>
 <a id="L134"></a><span class="visited"> </span>
 <a id="L135"></a><span class="visited"> </span>
-<a id="L136"></a><span class="visited"> </span>
+<a id="L136"></a><span > </span>
 <a id="L137"></a><span > </span>
-<a id="L138"></a><span > </span>
-<a id="L139"></a><span class="visited"> </span>
-<a id="L140"></a><span > </span>
+<a id="L138"></a><span class="visited"> </span>
+<a id="L139"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -320,7 +318,6 @@
 <a href="#L137">137</a>
 <a href="#L138">138</a>
 <a href="#L139">139</a>
-<a href="#L140">140</a>
 </pre>
 <pre><code class="ocaml">[@@@ocaml.text "/*"]
 
@@ -368,7 +365,7 @@ let mk_alet rf name1 v body =
   | <span data-count="61">_</span> -&gt; ALet (rf, name1, v, body)
 ;;
 
-open Common.Monad.Counter
+open Common.Monad.CounterR
 
 let make_temp =
   let+ fresh = make_fresh in
@@ -419,7 +416,7 @@ let rec anf (e : expr) (expr_with_hole : imm -&gt; aexpr t) : aexpr t =
         <span data-count="12">l</span>et* ehole = expr_with_hol<span data-count="12">e</span> (ImmVar temp) in
         <span data-count="12">m</span>atch l with
         | <span data-count="12">a</span>rg :: args -&gt; mk_alet Nonrec temp (CApp (i1, arg, args)) ehole |&gt; <span data-count="12">r</span>eturn
-        | <span data-count="0">[</span>] -&gt; failwith "Apply must contain at least one argument"))
+        | <span data-count="0">[</span>] -&gt; fail "Apply must contain at least one argument"))
   | <span data-count="33">A</span>pply (f, arg) -&gt;
     anf f (fun i1 -&gt;
       <span data-count="33">a</span>nf arg (fun i2 -&gt;
@@ -435,7 +432,7 @@ let rec anf (e : expr) (expr_with_hole : imm -&gt; aexpr t) : aexpr t =
         | <span data-count="0">N</span>one -&gt; ACExpr (CImm (ImmConst Unit_lt)) |&gt; retur<span data-count="0">n</span>
       in
       <span data-count="12">A</span>CExpr (CIte (i', t', e')) |&gt; return)
-  | <span data-count="0">o</span>ther -&gt; failwith (Stdlib.Format.asprint<span data-count="0">f</span> "Not implemented %a" pp_expr other)
+  | <span data-count="0">o</span>ther -&gt; fail (Stdlib.Format.asprint<span data-count="0">f</span> "Not implemented %a" pp_expr other)
 ;;
 
 let anf_str_item : structure_item -&gt; astr_item t = function
@@ -446,11 +443,10 @@ let anf_str_item : structure_item -&gt; astr_item t = function
     (* TODO: alpha conversion must keep wildcard variable but exec code *)
     let+ v' = an<span data-count="0">f</span> v (fun i -&gt; <span data-count="0">A</span>CExpr (CImm i) |&gt; return) in
     <span data-count="0">r</span>ec_flag, ("_", v'), []
-  | <span data-count="0">o</span>ther -&gt;
-    failwith (Stdlib.Format.asprint<span data-count="0">f</span> "Not implemented %a" pp_structure_item other)
+  | <span data-count="0">o</span>ther -&gt; fail (Stdlib.Format.asprint<span data-count="0">f</span> "Not implemented %a" pp_structure_item other)
 ;;
 
-let anf_program program : aprogram =
+let anf_program program : (aprogram, error) Base.Result.t =
   <span data-count="13">l</span>et program' =
     List.fold_right
       ~f:(fun item acc -&gt;
