@@ -13,9 +13,8 @@ open Middle_end.Anf
 
 type location =
   | Stack of int
-  (* arity of function *)
-  | Function of int
-[@@deriving eq] [@@warning "-37"]
+  | Function of int (* arity of function *)
+[@@deriving eq]
 
 let word_size = 8
 
