@@ -688,7 +688,7 @@ and norm_list_to_imm
       (fun imm st1 -&gt; <span data-count="130">n</span>orm_list_to_imm tl (fun imms st2 -&gt; <span data-count="130">k</span> (imm :: imms) st2) st1)
       st
 
-and norm_body expr  (st : nstate) : anf_expr * nstate =
+and norm_body expr (st : nstate) : anf_expr * nstate =
   <span data-count="186">n</span>orm_to_imm expr (fun imm st -&gt; <span data-count="186">A</span>nf_comp_expr (Comp_imm imm), st) st
 ;;
 
