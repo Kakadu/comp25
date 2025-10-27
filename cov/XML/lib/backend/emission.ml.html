@@ -224,7 +224,7 @@ module Emission = struct
       emit xor temp r1 r2;
       (* temp = 0 if r1 == r2, non-zero otherwise *)
       <span data-count="3">e</span>mit snez rd temp (* dst = 1 if temp != 0, else 0 *)
-    | <span data-count="0">_</span> -&gt; failwith ("Unknown binary operator: " ^ op)
+    | <span data-count="0">_</span> -&gt; invalid_arg ("Unknown binary operator: " ^ op)
   ;;
 
   (*миша я переписал через емит чтобы у нас вся оработка шла черз один модуль*)
