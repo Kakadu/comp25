@@ -1133,8 +1133,8 @@ and gen_comp_expr (state : cg_state) (dst : reg) (cexpr : comp_expr) : cg_state 
               (* внешняя функция для того чтобы не было ошибки с вызовом рантайма *)
               List.iter
                 (fun arg_imm -&gt;
-                   <span data-count="30">i</span>gnore (gen_im_exp<span data-count="30">r</span> state (T 0) arg_imm);
-                   emit addi SP SP (<span data-count="30">-</span>Target.word_size);
+                   <span data-count="30">l</span>et (_ : unit r) = gen_im_expr state (T 0) arg_imm in
+                   <span data-count="30">e</span>mit addi SP SP (<span data-count="30">-</span>Target.word_size);
                    <span data-count="30">e</span>mit sd (T 0) (SP, 0))
                 (List.re<span data-count="30">v</span> args_imms);
               <span data-count="30">l</span>et rec load_args i = function

@@ -788,14 +788,14 @@ let rec norm_comp expr (k : comp_expr -&gt; nstate -&gt; (anf_expr * nstate) r) 
      | <span data-count="35">_</span> -&gt;
        let* body_anf, st' = norm_bod<span data-count="35">y</span> body st in
        <span data-count="35">k</span> (Comp_func (params, body_anf)) st')
-  | <span data-count="30">E</span>xp_let (rec_flag, (first_binding, other_bindings), body) -&gt;
+| <span data-count="30">E</span>xp_let (rec_flag, (first_binding, other_bindings), body) -&gt;
     let* () =
       match other_bindings with
       | <span data-count="30">[</span>] -&gt; o<span data-count="30">k</span> ()
       | <span data-count="0">_</span> -&gt; er<span data-count="0">r</span> `Let_and_not_supported
     in
-    <span data-count="30">l</span>et { pat; expr = vb_expr } = first_binding in
-    (match pat with
+    <span data-count="30">l</span>et { pattern; expr = vb_expr } = first_binding in
+    (match pattern with
      | <span data-count="12">P</span>attern.Pat_var x -&gt;
        norm_comp
          vb_expr
@@ -824,7 +824,7 @@ let rec norm_comp expr (k : comp_expr -&gt; nstate -&gt; (anf_expr * nstate) r) 
             <span data-count="18">l</span>et* body_anf, st2 = norm_com<span data-count="18">p</span> body k st1 in
             <span data-count="18">o</span>k (Anf_let (Nonrecursive, tmp, ce, body_anf), st2))
          st
-     | <span data-count="0">_</span> -&gt; err (`Unsupported_let_pattern (Pattern.sho<span data-count="0">w</span> pat)))
+     | <span data-count="0">_</span> -&gt; err (`Unsupported_let_pattern (Pattern.sho<span data-count="0">w</span> pattern)))
   | <span data-count="0">_</span> -&gt; err `Unsupported_expr_in_normaliser
 
 and norm_to_imm expr (k : im_expr -&gt; nstate -&gt; (anf_expr * nstate) r) (st : nstate)
@@ -872,8 +872,8 @@ let norm_item (item : structure_item) (st : nstate) : (astructure_item * nstate)
       | <span data-count="71">[</span>] -&gt; o<span data-count="71">k</span> ()
       | <span data-count="0">_</span> -&gt; er<span data-count="0">r</span> `Mutual_rec_not_supported
     in
-    <span data-count="71">l</span>et { pat; expr } = first_binding in
-    (match pat with
+    <span data-count="71">l</span>et { pattern; expr } = first_binding in
+    (match pattern with
      | <span data-count="71">P</span>attern.Pat_var name -&gt;
        let* body_anf, st' = norm_bod<span data-count="71">y</span> expr st in
        <span data-count="71">o</span>k (Anf_str_value (rec_flag, name, body_anf), st')

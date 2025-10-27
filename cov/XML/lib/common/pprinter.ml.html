@@ -974,7 +974,7 @@ and pprint_value_binding fmt n vb =
     fmt
     "%a = %a"
     pprint_pattern
-    vb.pat
+    vb.pattern
     (fun fmt -&gt; <span data-count="0">p</span>print_expression fmt (n + 1))
     vb.expr
 
@@ -984,9 +984,9 @@ and pprint_case fmt n case =
     fmt
     "%a -&gt; %a"
     pprint_pattern
-    case.first
+    case.pattern
     (fun fmt -&gt; <span data-count="0">p</span>print_expression fmt (n + 1))
-    case.second
+    case.body
 
 and pprint_function_with_cases fmt (cs, csl, n) =
   <span data-count="0">f</span>printf
