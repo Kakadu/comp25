@@ -336,15 +336,15 @@ let t2 = T 2
 let t3 = T 3
 
 let rec pp_reg ppf =
-  <span data-count="1887">l</span>et open Format in
+  <span data-count="1728">l</span>et open Format in
   function
   | <span data-count="31">X</span>0 -&gt; fprintf ppf "x0"
-  | <span data-count="165">A</span> n -&gt; fprintf ppf "a%d" n
-  | <span data-count="648">T</span> n -&gt; fprintf ppf "t%d" n
-  | <span data-count="279">S</span> n -&gt; fprintf ppf "s%d" n
-  | <span data-count="36">R</span>A -&gt; fprintf ppf "ra"
-  | <span data-count="346">S</span>P -&gt; fprintf ppf "sp"
-  | <span data-count="382">R</span>Off (n, r) -&gt; fprintf ppf "%d(%a)" n pp_reg r
+  | <span data-count="156">A</span> n -&gt; fprintf ppf "a%d" n
+  | <span data-count="590">T</span> n -&gt; fprintf ppf "t%d" n
+  | <span data-count="239">S</span> n -&gt; fprintf ppf "s%d" n
+  | <span data-count="34">R</span>A -&gt; fprintf ppf "ra"
+  | <span data-count="337">S</span>P -&gt; fprintf ppf "sp"
+  | <span data-count="341">R</span>Off (n, r) -&gt; fprintf ppf "%d(%a)" n pp_reg r
 ;;
 
 type instr =
@@ -386,10 +386,10 @@ type instr =
   | Call of string
 
 let pp_instr ppf =
-  <span data-count="935">l</span>et open Format in
+  <span data-count="875">l</span>et open Format in
   function
-  | <span data-count="195">A</span>ddi (r1, r2, n) -&gt; fprintf ppf "addi %a, %a, %d" pp_reg r1 pp_reg r2 n
-  | <span data-count="32">A</span>dd (r1, r2, r3) -&gt; fprintf ppf "add %a, %a, %a" pp_reg r1 pp_reg r2 pp_reg r3
+  | <span data-count="192">A</span>ddi (r1, r2, n) -&gt; fprintf ppf "addi %a, %a, %d" pp_reg r1 pp_reg r2 n
+  | <span data-count="22">A</span>dd (r1, r2, r3) -&gt; fprintf ppf "add %a, %a, %a" pp_reg r1 pp_reg r2 pp_reg r3
   | <span data-count="15">S</span>ub (r1, r2, r3) -&gt; fprintf ppf "sub %a, %a, %a" pp_reg r1 pp_reg r2 pp_reg r3
   | <span data-count="2">M</span>ul (r1, r2, r3) -&gt; fprintf ppf "mul %a, %a, %a" pp_reg r1 pp_reg r2 pp_reg r3
   | <span data-count="22">S</span>lt (r1, r2, r3) -&gt; fprintf ppf "slt %a, %a, %a" pp_reg r1 pp_reg r2 pp_reg r3
@@ -400,19 +400,19 @@ let pp_instr ppf =
   | <span data-count="0">J</span>al (r1, s) -&gt; fprintf ppf "jal %a, %s" pp_reg r1 s
   | <span data-count="12">J</span> s -&gt; fprintf ppf "j %s" s
   | <span data-count="0">J</span>alr r -&gt; fprintf ppf "jalr %a" pp_reg r
-  | <span data-count="13">R</span>et -&gt; fprintf ppf "ret\n  "
-  | <span data-count="195">S</span>d (r1, r2) -&gt; fprintf ppf "sd %a, %a" pp_reg r1 pp_reg r2
-  | <span data-count="187">L</span>d (r1, r2) -&gt; fprintf ppf "ld %a, %a" pp_reg r1 pp_reg r2
+  | <span data-count="12">R</span>et -&gt; fprintf ppf "ret\n  "
+  | <span data-count="176">S</span>d (r1, r2) -&gt; fprintf ppf "sd %a, %a" pp_reg r1 pp_reg r2
+  | <span data-count="165">L</span>d (r1, r2) -&gt; fprintf ppf "ld %a, %a" pp_reg r1 pp_reg r2
   | <span data-count="88">L</span>i (r1, n) -&gt; fprintf ppf "li %a, %d" pp_reg r1 n
   | <span data-count="6">L</span>a (r1, s) -&gt; fprintf ppf "la %a, %s" pp_reg r1 s
   | <span data-count="5">E</span>call -&gt; fprintf ppf "ecall"
-  | <span data-count="60">L</span>abel s -&gt; fprintf ppf "%s:" s
-  | <span data-count="44">D</span>irective s -&gt; fprintf ppf "%s" s
+  | <span data-count="58">L</span>abel s -&gt; fprintf ppf "%s:" s
+  | <span data-count="41">D</span>irective s -&gt; fprintf ppf "%s" s
   | <span data-count="37">C</span>all l -&gt; fprintf ppf "call %s" l
 ;;
 
-let addi k r1 r2 n = <span data-count="153">k</span> @@ Addi (r1, r2, n)
-let add k r1 r2 r3 = <span data-count="32">k</span> @@ Add (r1, r2, r3)
+let addi k r1 r2 n = <span data-count="150">k</span> @@ Addi (r1, r2, n)
+let add k r1 r2 r3 = <span data-count="22">k</span> @@ Add (r1, r2, r3)
 let sub k r1 r2 r3 = <span data-count="15">k</span> @@ Sub (r1, r2, r3)
 let mul k r1 r2 r3 = <span data-count="2">k</span> @@ Mul (r1, r2, r3)
 let slt k r1 r2 r3 = <span data-count="22">k</span> @@ Slt (r1, r2, r3)
@@ -421,27 +421,27 @@ let beq k r1 r2 s = <span data-count="12">k</span> @@ Beq (r1, r2, s)
 let bne k r1 r2 s = <span data-count="0">k</span> @@ Bne (r1, r2, s)
 let blt k r1 r2 s = <span data-count="0">k</span> @@ Blt (r1, r2, s)
 let ecall k = <span data-count="5">k</span> Ecall
-let ret k = <span data-count="13">k</span> Ret
+let ret k = <span data-count="12">k</span> Ret
 let jal k r1 s = <span data-count="0">k</span> @@ Jal (r1, s)
 let j k s = <span data-count="12">k</span> (J s)
-let ld k rd rs = <span data-count="187">k</span> (Ld (rd, rs))
-let sd k rs rd = <span data-count="195">k</span> (Sd (rs, rd))
+let ld k rd rs = <span data-count="165">k</span> (Ld (rd, rs))
+let sd k rs rd = <span data-count="176">k</span> (Sd (rs, rd))
 let li k r n = <span data-count="88">k</span> (Li (r, n))
-let label k s = <span data-count="60">k</span> (Label s)
-let directive k s = <span data-count="44">k</span> (Directive s)
+let label k s = <span data-count="58">k</span> (Label s)
+let directive k s = <span data-count="41">k</span> (Directive s)
 let mv k rd rs = <span data-count="42">k</span> @@ Addi (rd, rs, 0)
 let call k l = <span data-count="37">k</span> (Call l)
 let la k r s = <span data-count="6">k</span> (La (r, s))
 let jalr k r = <span data-count="0">k</span> (Jalr r)
 
 let pp_instrs ppf (instrs : instr list) =
-  <span data-count="8">l</span>et open Format in
+  <span data-count="7">l</span>et open Format in
   List.iter
     (fun i -&gt;
-       <span data-count="935">m</span>atch i with
-       | <span data-count="60">L</span>abel _ -&gt; fprintf ppf "%a\n" pp_instr i
-       | <span data-count="875">_</span> -&gt; fprintf ppf "  %a\n" pp_instr i)
-    (List.re<span data-count="8">v</span> instrs)
+       <span data-count="875">m</span>atch i with
+       | <span data-count="58">L</span>abel _ -&gt; fprintf ppf "%a\n" pp_instr i
+       | <span data-count="817">_</span> -&gt; fprintf ppf "  %a\n" pp_instr i)
+    (List.re<span data-count="7">v</span> instrs)
 ;;
 </code></pre>
       </div>
