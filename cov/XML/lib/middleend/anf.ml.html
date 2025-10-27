@@ -788,7 +788,7 @@ let rec norm_comp expr (k : comp_expr -&gt; nstate -&gt; (anf_expr * nstate) r) 
      | <span data-count="35">_</span> -&gt;
        let* body_anf, st' = norm_bod<span data-count="35">y</span> body st in
        <span data-count="35">k</span> (Comp_func (params, body_anf)) st')
-| <span data-count="30">E</span>xp_let (rec_flag, (first_binding, other_bindings), body) -&gt;
+  | <span data-count="30">E</span>xp_let (rec_flag, (first_binding, other_bindings), body) -&gt;
     let* () =
       match other_bindings with
       | <span data-count="30">[</span>] -&gt; o<span data-count="30">k</span> ()
