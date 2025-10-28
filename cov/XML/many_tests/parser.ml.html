@@ -496,7 +496,7 @@ let%expect_test "factorial" =
   <span data-count="1">[</span>%expect
     {|
     [(Str_value (Recursive,
-        ({ pattern = (Pat_var "fact");
+        ({ pat = (Pat_var "fact");
            expr =
            (Exp_fun (((Pat_var "n"), []),
               (Exp_if (
@@ -538,7 +538,7 @@ let main =
 |};
     <span data-count="1">[</span>%expect {|
       [(Str_value (Recursive,
-          ({ pattern = (Pat_var "fac");
+          ({ pat = (Pat_var "fac");
              expr =
              (Exp_fun (((Pat_var "n"), []),
                 (Exp_if (
@@ -566,10 +566,10 @@ let main =
            [])
           ));
         (Str_value (Nonrecursive,
-           ({ pattern = (Pat_var "main");
+           ({ pat = (Pat_var "main");
               expr =
               (Exp_let (Nonrecursive,
-                 ({ pattern = (Pat_construct ("()", None));
+                 ({ pat = (Pat_construct ("()", None));
                     expr =
                     (Exp_apply ((Exp_ident "print_int"),
                        (Exp_apply ((Exp_ident "fac"),
@@ -597,7 +597,7 @@ let%expect_test "ifs" =
         ;; |};
   <span data-count="1">[</span>%expect {|
     [(Str_value (Nonrecursive,
-        ({ pattern = (Pat_var "large");
+        ({ pat = (Pat_var "large");
            expr =
            (Exp_fun (((Pat_var "x"), []),
               (Exp_if (
@@ -615,17 +615,17 @@ let%expect_test "ifs" =
          [])
         ));
       (Str_value (Nonrecursive,
-         ({ pattern = (Pat_var "main");
+         ({ pat = (Pat_var "main");
             expr =
             (Exp_let (Nonrecursive,
-               ({ pattern = (Pat_var "x");
+               ({ pat = (Pat_var "x");
                   expr =
                   (Exp_if (
                      (Exp_if (
                         (Exp_if ((Exp_constant (Const_integer 0)),
                            (Exp_constant (Const_integer 0)),
                            (Some (Exp_let (Nonrecursive,
-                                    ({ pattern = (Pat_var "t42");
+                                    ({ pat = (Pat_var "t42");
                                        expr =
                                        (Exp_apply ((Exp_ident "print_int"),
                                           (Exp_constant (Const_integer 42))))
@@ -659,7 +659,7 @@ let%expect_test "ifs" =
       ;;|};
       <span data-count="1">[</span>%expect {|
         [(Str_value (Nonrecursive,
-            ({ pattern = (Pat_var "large");
+            ({ pat = (Pat_var "large");
                expr =
                (Exp_fun (((Pat_var "x"), []),
                   (Exp_if (
@@ -677,17 +677,17 @@ let%expect_test "ifs" =
              [])
             ));
           (Str_value (Nonrecursive,
-             ({ pattern = (Pat_var "main");
+             ({ pat = (Pat_var "main");
                 expr =
                 (Exp_let (Nonrecursive,
-                   ({ pattern = (Pat_var "x");
+                   ({ pat = (Pat_var "x");
                       expr =
                       (Exp_if (
                          (Exp_if (
                             (Exp_if ((Exp_constant (Const_integer 0)),
                                (Exp_constant (Const_integer 0)),
                                (Some (Exp_let (Nonrecursive,
-                                        ({ pattern = (Pat_var "t42");
+                                        ({ pat = (Pat_var "t42");
                                            expr =
                                            (Exp_apply ((Exp_ident "print_int"),
                                               (Exp_constant (Const_integer 42))))

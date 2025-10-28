@@ -3653,7 +3653,7 @@ let main =
  <span data-count="1">[</span>%expect
     {|
       [(Str_value (Nonrecursive,
-          ({ pattern = (Pat_var "simplesum");
+          ({ pat = (Pat_var "simplesum");
              expr =
              (Exp_fun (((Pat_var "x"), [(Pat_var "y"); (Pat_var "z")]),
                 (Exp_apply ((Exp_ident "+"),
@@ -3667,10 +3667,10 @@ let main =
            [])
           ));
         (Str_value (Nonrecursive,
-           ({ pattern = (Pat_var "main");
+           ({ pat = (Pat_var "main");
               expr =
               (Exp_let (Nonrecursive,
-                 ({ pattern = (Pat_construct ("()", None));
+                 ({ pat = (Pat_construct ("()", None));
                     expr =
                     (Exp_apply ((Exp_ident "print_int"),
                        (Exp_apply (

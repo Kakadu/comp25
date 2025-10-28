@@ -1777,7 +1777,7 @@ let pcase pexpr =
   *&gt;
   let* first = pass_ws *<span data-count="22">&gt;</span> ppattern in
   <span data-count="0">l</span>et* second = toke<span data-count="0">n</span> "-&gt;" *<span data-count="0">&gt;</span> pass_ws *<span data-count="0">&gt;</span> pexpr in
-  <span data-count="0">r</span>eturn { Expression.pattern = first; body = second }
+  <span data-count="0">r</span>eturn { Expression.first; second }
 ;;
 
 let pfunction pexpr =
@@ -1799,7 +1799,7 @@ let pletbinding pexpr =
   <span data-count="8720">l</span>et psimple =
     let* pat = ppattern in
     <span data-count="4360">l</span>et* expr = toke<span data-count="4360">n</span> "=" *<span data-count="4360">&gt;</span> pexpr in
-    <span data-count="3770">r</span>eturn { Expression.pattern = pat; expr }
+    <span data-count="3770">r</span>eturn { Expression.pat; expr }
   in
   let pfun =
     let* pat = pass_ws *<span data-count="8720">&gt;</span> ppatvar in
@@ -1807,7 +1807,7 @@ let pletbinding pexpr =
     <span data-count="590">l</span>et* parametertl = man<span data-count="590">y</span> ppattern in
     <span data-count="590">l</span>et* exprw = toke<span data-count="590">n</span> "=" *<span data-count="590">&gt;</span> pexpr in
     <span data-count="590">l</span>et expr = Expression.Exp_fun ((parameterfs, parametertl), exprw) in
-    return { Expression.pattern = pat; expr }
+    return { Expression.pat; expr }
   in
   choice [ psimple; pfun ]
 ;;
