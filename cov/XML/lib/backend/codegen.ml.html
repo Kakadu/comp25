@@ -928,10 +928,10 @@ module Env = struct
 
   type t = loc M.t
 
-  let empty () : t = <span data-count="72">M</span>.empty
-  let bind (t : t) (x : string) (loc : loc) : t = <span data-count="182">M</span>.add x loc t
-  let find (t : t) (x : string) : loc option = <span data-count="251">M</span>.find_opt x t
-  let fold (f : string -&gt; loc -&gt; 'a -&gt; 'a) (t : t) (acc : 'a) : 'a = <span data-count="65">M</span>.fold f t acc
+  let empty () : t = <span data-count="24">M</span>.empty
+  let bind (t : t) (x : string) (loc : loc) : t = <span data-count="77">M</span>.add x loc t
+  let find (t : t) (x : string) : loc option = <span data-count="117">M</span>.find_opt x t
+  let fold (f : string -&gt; loc -&gt; 'a -&gt; 'a) (t : t) (acc : 'a) : 'a = <span data-count="28">M</span>.fold f t acc
 end
 
 module ArityMap = struct
@@ -945,9 +945,9 @@ module ArityMap = struct
 
   type t = int M.t
 
-  let empty () : t = <span data-count="25">M</span>.empty
-  let bind (t : t) (x : ident) (arity : int) : t = <span data-count="47">M</span>.add x arity t
-  let find (t : t) (x : ident) : int option = <span data-count="63">M</span>.find_opt x t
+  let empty () : t = <span data-count="6">M</span>.empty
+  let bind (t : t) (x : ident) (arity : int) : t = <span data-count="18">M</span>.add x arity t
+  let find (t : t) (x : ident) : int option = <span data-count="26">M</span>.find_opt x t
 end
 
 type cg_state =
@@ -970,29 +970,29 @@ type cg_error =
 
 type 'a r = ('a, cg_error) result
 
-let ok x = <span data-count="859">O</span>k x
+let ok x = <span data-count="328">O</span>k x
 let err e = <span data-count="0">E</span>rror e
 let ( let* ) = Result.bind
 let ( let+ ) x f = <span data-count="0">R</span>esult.map f x
 
 let fresh_label (prefix : string) (st : cg_state) : string * cg_state =
-  <span data-count="52">l</span>et n = st.next_label in
-  prefix ^ "_" ^ string_of_in<span data-count="52">t</span> n, { st with next_label = n + 1 }
+  <span data-count="16">l</span>et n = st.next_label in
+  prefix ^ "_" ^ string_of_in<span data-count="16">t</span> n, { st with next_label = n + 1 }
 ;;
 
 let gen_im_expr (state : cg_state) (dst : reg) (imm : im_expr) : unit r =
-  <span data-count="314">m</span>atch imm with
-  | <span data-count="128">I</span>mm_num n -&gt;
+  <span data-count="124">m</span>atch imm with
+  | <span data-count="35">I</span>mm_num n -&gt;
     emit li dst n;
-    <span data-count="128">o</span>k ()
-  | <span data-count="186">I</span>mm_ident x -&gt;
+    <span data-count="35">o</span>k ()
+  | <span data-count="89">I</span>mm_ident x -&gt;
     (match Env.find state.env x with
-     | <span data-count="62">S</span>ome (Reg r) -&gt;
-       if not (equal_re<span data-count="62">g</span> r dst) then <span data-count="60">e</span>mi<span data-count="60">t</span> mv dst r;
-       <span data-count="62">o</span>k ()
-     | <span data-count="121">S</span>ome (Stack_offset offset) -&gt;
+     | <span data-count="33">S</span>ome (Reg r) -&gt;
+       if not (equal_re<span data-count="33">g</span> r dst) then <span data-count="31">e</span>mi<span data-count="31">t</span> mv dst r;
+       <span data-count="33">o</span>k ()
+     | <span data-count="53">S</span>ome (Stack_offset offset) -&gt;
        emit ld dst (S 0, offset);
-       <span data-count="121">o</span>k ()
+       <span data-count="53">o</span>k ()
      | <span data-count="3">N</span>one -&gt;
        (match ArityMap.find state.arity x with
         | <span data-count="0">S</span>ome 0 -&gt;
@@ -1009,166 +1009,166 @@ let gen_im_expr (state : cg_state) (dst : reg) (imm : im_expr) : unit r =
 ;;
 
 let rec gen_anf_expr (state : cg_state) (dst : reg) (aexpr : anf_expr) : cg_state r =
-  <span data-count="241">m</span>atch aexpr with
-  | <span data-count="142">A</span>nf_let (_rec_flag, name, comp_expr, body) -&gt;
-    let* state_after_cexpr = gen_comp_exp<span data-count="142">r</span> state (T 0) comp_expr in
-    <span data-count="142">l</span>et new_offset = state_after_cexpr.stack_offset - Target.word_size in
+  <span data-count="90">m</span>atch aexpr with
+  | <span data-count="56">A</span>nf_let (_rec_flag, name, comp_expr, body) -&gt;
+    let* state_after_cexpr = gen_comp_exp<span data-count="56">r</span> state (T 0) comp_expr in
+    <span data-count="56">l</span>et new_offset = state_after_cexpr.stack_offset - Target.word_size in
     emit sd (T 0) (S 0, new_offset);
-    <span data-count="142">l</span>et env' = Env.bind state_after_cexpr.env name (Stack_offset new_offset) in
-    <span data-count="142">l</span>et new_state = { state_after_cexpr with stack_offset = new_offset; env = env' } in
+    <span data-count="56">l</span>et env' = Env.bind state_after_cexpr.env name (Stack_offset new_offset) in
+    <span data-count="56">l</span>et new_state = { state_after_cexpr with stack_offset = new_offset; env = env' } in
     gen_anf_expr new_state dst body
-  | <span data-count="99">A</span>nf_comp_expr comp_expr -&gt; gen_comp_expr state dst comp_expr
+  | <span data-count="34">A</span>nf_comp_expr comp_expr -&gt; gen_comp_expr state dst comp_expr
 
 and gen_comp_expr (state : cg_state) (dst : reg) (cexpr : comp_expr) : cg_state r =
-  <span data-count="241">m</span>atch cexpr with
-  | <span data-count="99">C</span>omp_imm imm -&gt;
-    let* () = gen_im_exp<span data-count="99">r</span> state dst imm in
-    <span data-count="99">o</span>k state
-  | <span data-count="51">C</span>omp_binop (op, v1, v2) -&gt;
-    let* () = gen_im_exp<span data-count="51">r</span> state (T 0) v1 in
-    <span data-count="51">l</span>et* () = gen_im_exp<span data-count="51">r</span> state (T 1) v2 in
-    <span data-count="51">e</span>mit_bin_op op dst (T 0) (T 1);
-    <span data-count="51">o</span>k state
-  | <span data-count="65">C</span>omp_app (func_imm, args_imms) -&gt;
+  <span data-count="90">m</span>atch cexpr with
+  | <span data-count="34">C</span>omp_imm imm -&gt;
+    let* () = gen_im_exp<span data-count="34">r</span> state dst imm in
+    <span data-count="34">o</span>k state
+  | <span data-count="20">C</span>omp_binop (op, v1, v2) -&gt;
+    let* () = gen_im_exp<span data-count="20">r</span> state (T 0) v1 in
+    <span data-count="20">l</span>et* () = gen_im_exp<span data-count="20">r</span> state (T 1) v2 in
+    <span data-count="20">e</span>mit_bin_op op dst (T 0) (T 1);
+    <span data-count="20">o</span>k state
+  | <span data-count="28">C</span>omp_app (func_imm, args_imms) -&gt;
     (* сохранить живые регистры *)
     let live_regs_to_save =
       Env.fold
         (fun _ loc acc -&gt;
-           <span data-count="132">m</span>atch loc with
-           | <span data-count="40">R</span>eg r when not (equal_re<span data-count="40">g</span> r (S 0)) -&gt; <span data-count="40">r</span> :: acc
-           | <span data-count="92">_</span> -&gt; acc)
+           <span data-count="78">m</span>atch loc with
+           | <span data-count="31">R</span>eg r when not (equal_re<span data-count="31">g</span> r (S 0)) -&gt; <span data-count="31">r</span> :: acc
+           | <span data-count="47">_</span> -&gt; acc)
         state.env
         []
     in
-    <span data-count="65">L</span>ist.iter
+    <span data-count="28">L</span>ist.iter
       (fun reg -&gt;
-         <span data-count="40">e</span>mit addi SP SP (<span data-count="40">-</span>Target.word_size);
-         <span data-count="40">e</span>mit sd reg (SP, 0))
+         <span data-count="31">e</span>mit addi SP SP (<span data-count="31">-</span>Target.word_size);
+         <span data-count="31">e</span>mit sd reg (SP, 0))
       live_regs_to_save;
-    <span data-count="65">l</span>et argc = List.length args_imms in
-    <span data-count="65">l</span>et apply_chain () : unit r =
-      <span data-count="7">l</span>et rec loop = function
-        | <span data-count="7">[</span>] -&gt; ok ()
-        | <span data-count="8">a</span>rg_imm :: tl -&gt;
-          let* () = gen_im_exp<span data-count="8">r</span> state (T 1) arg_imm in
-          <span data-count="8">e</span>mit mv (A 0) (T 0);
-          <span data-count="8">e</span>mit mv (A 1) (T 1);
-          <span data-count="8">e</span>mit call "apply1";
-          <span data-count="8">e</span>mit mv (T 0) (A 0);
-          <span data-count="8">l</span>oop tl
+    <span data-count="28">l</span>et argc = List.length args_imms in
+    <span data-count="28">l</span>et apply_chain () : unit r =
+      <span data-count="6">l</span>et rec loop = function
+        | <span data-count="6">[</span>] -&gt; ok ()
+        | <span data-count="7">a</span>rg_imm :: tl -&gt;
+          let* () = gen_im_exp<span data-count="7">r</span> state (T 1) arg_imm in
+          <span data-count="7">e</span>mit mv (A 0) (T 0);
+          <span data-count="7">e</span>mit mv (A 1) (T 1);
+          <span data-count="7">e</span>mit call "apply1";
+          <span data-count="7">e</span>mit mv (T 0) (A 0);
+          <span data-count="7">l</span>oop tl
       in
       loop args_imms
     in
     let* state =
       match func_imm with
-      | <span data-count="65">I</span>mm_ident fname -&gt;
+      | <span data-count="28">I</span>mm_ident fname -&gt;
         (match Env.find state.env fname with
          | <span data-count="5">S</span>ome _ -&gt;
            (* замыкание из окружения *)
            let* () = gen_im_exp<span data-count="5">r</span> state (T 0) func_imm in
            <span data-count="5">l</span>et* () = apply_chai<span data-count="5">n</span> () in
            <span data-count="5">o</span>k state
-         | <span data-count="60">N</span>one -&gt;
+         | <span data-count="23">N</span>one -&gt;
            (match ArityMap.find state.arity fname with
-            | <span data-count="30">S</span>ome n when n = 0 -&gt;
-              <span data-count="2">e</span>mit call fname;
-              <span data-count="2">e</span>mit mv (T 0) (A 0);
-              <span data-count="2">l</span>et* () = apply_chai<span data-count="2">n</span> () in
-              <span data-count="2">o</span>k state
-            | <span data-count="28">S</span>ome n when argc = n -&gt;
+            | <span data-count="15">S</span>ome n when n = 0 -&gt;
+              <span data-count="1">e</span>mit call fname;
+              <span data-count="1">e</span>mit mv (T 0) (A 0);
+              <span data-count="1">l</span>et* () = apply_chai<span data-count="1">n</span> () in
+              <span data-count="1">o</span>k state
+            | <span data-count="14">S</span>ome n when argc = n -&gt;
               (* аргументов хватает - делаем вызов сразу*)
-              <span data-count="23">L</span>ist.iter
+              <span data-count="10">L</span>ist.iter
                 (fun arg_imm -&gt;
-                   <span data-count="35">l</span>et () =
+                   <span data-count="14">l</span>et () =
                      let _ = () in
                      ()
                    in
-                   emit addi SP SP (<span data-count="35">-</span>Target.word_size);
-                   <span data-count="35">l</span>et (_ : unit r) = gen_im_expr state (T 0) arg_imm in
-                   <span data-count="35">e</span>mit sd (T 0) (SP, 0))
-                (List.re<span data-count="23">v</span> args_imms);
-              <span data-count="23">l</span>et rec load_args i = function
-                | <span data-count="23">[</span>] -&gt; ok ()
-                | <span data-count="35">_</span> :: tl when i &lt; Array.lengt<span data-count="35">h</span> Target.arg_regs -&gt;
-                  <span data-count="35">e</span>mit ld (A i) (SP, 0);
-                  <span data-count="35">e</span>mit addi SP SP Target.word_size;
-                  <span data-count="35">l</span>oad_args (i + 1) tl
+                   emit addi SP SP (<span data-count="14">-</span>Target.word_size);
+                   <span data-count="14">l</span>et (_ : unit r) = gen_im_expr state (T 0) arg_imm in
+                   <span data-count="14">e</span>mit sd (T 0) (SP, 0))
+                (List.re<span data-count="10">v</span> args_imms);
+              <span data-count="10">l</span>et rec load_args i = function
+                | <span data-count="10">[</span>] -&gt; ok ()
+                | <span data-count="14">_</span> :: tl when i &lt; Array.lengt<span data-count="14">h</span> Target.arg_regs -&gt;
+                  <span data-count="14">e</span>mit ld (A i) (SP, 0);
+                  <span data-count="14">e</span>mit addi SP SP Target.word_size;
+                  <span data-count="14">l</span>oad_args (i + 1) tl
                 | <span data-count="0">_</span> -&gt; err `Stack_args_not_impl_direct
               in
-              let* () = load_arg<span data-count="23">s</span> 0 args_imms in
-              <span data-count="23">e</span>mit call fname;
-              <span data-count="23">e</span>mit mv (T 0) (A 0);
-              <span data-count="23">o</span>k state
-            | <span data-count="5">S</span>ome n when argc &lt; n -&gt;
+              let* () = load_arg<span data-count="10">s</span> 0 args_imms in
+              <span data-count="10">e</span>mit call fname;
+              <span data-count="10">e</span>mit mv (T 0) (A 0);
+              <span data-count="10">o</span>k state
+            | <span data-count="4">S</span>ome n when argc &lt; n -&gt;
               (* частичное применение если аргументов меньше чем надо, в будущем чуть придется поравить чтобы создавать одно замыканние а не много*)
-              <span data-count="5">l</span>et m = argc in
-              if m &gt; 0 then <span data-count="5">e</span>mi<span data-count="5">t</span> addi SP SP (<span data-count="5">-</span>m * Target.word_size);
-              <span data-count="5">l</span>et rec save_args i = function
-                | <span data-count="5">[</span>] -&gt; ok ()
-                | <span data-count="9">a</span>rg_imm :: tl -&gt;
-                  let* () = gen_im_exp<span data-count="9">r</span> state (T 1) arg_imm in
-                  <span data-count="9">e</span>mit sd (T 1) (SP, i * Target.word_size);
-                  <span data-count="9">s</span>ave_args (i + 1) tl
+              <span data-count="4">l</span>et m = argc in
+              if m &gt; 0 then <span data-count="4">e</span>mi<span data-count="4">t</span> addi SP SP (<span data-count="4">-</span>m * Target.word_size);
+              <span data-count="4">l</span>et rec save_args i = function
+                | <span data-count="4">[</span>] -&gt; ok ()
+                | <span data-count="8">a</span>rg_imm :: tl -&gt;
+                  let* () = gen_im_exp<span data-count="8">r</span> state (T 1) arg_imm in
+                  <span data-count="8">e</span>mit sd (T 1) (SP, i * Target.word_size);
+                  <span data-count="8">s</span>ave_args (i + 1) tl
               in
-              let* () = save_arg<span data-count="5">s</span> 0 args_imms in
-              <span data-count="5">e</span>mit la (A 0) fname;
-              <span data-count="5">e</span>mit li (A 1) n;
-              <span data-count="5">e</span>mit call "alloc_closure";
-              <span data-count="5">e</span>mit mv (T 0) (A 0);
-              <span data-count="5">l</span>et rec apply_saved i = function
-                | <span data-count="5">[</span>] -&gt; ok ()
-                | <span data-count="9">_</span> :: tl -&gt;
+              let* () = save_arg<span data-count="4">s</span> 0 args_imms in
+              <span data-count="4">e</span>mit la (A 0) fname;
+              <span data-count="4">e</span>mit li (A 1) n;
+              <span data-count="4">e</span>mit call "alloc_closure";
+              <span data-count="4">e</span>mit mv (T 0) (A 0);
+              <span data-count="4">l</span>et rec apply_saved i = function
+                | <span data-count="4">[</span>] -&gt; ok ()
+                | <span data-count="8">_</span> :: tl -&gt;
                   emit ld (T 1) (SP, i * Target.word_size);
-                  <span data-count="9">e</span>mit mv (A 0) (T 0);
-                  <span data-count="9">e</span>mit mv (A 1) (T 1);
-                  <span data-count="9">e</span>mit call "apply1";
-                  <span data-count="9">e</span>mit mv (T 0) (A 0);
-                  <span data-count="9">a</span>pply_saved (i + 1) tl
+                  <span data-count="8">e</span>mit mv (A 0) (T 0);
+                  <span data-count="8">e</span>mit mv (A 1) (T 1);
+                  <span data-count="8">e</span>mit call "apply1";
+                  <span data-count="8">e</span>mit mv (T 0) (A 0);
+                  <span data-count="8">a</span>pply_saved (i + 1) tl
               in
-              let* () = apply_save<span data-count="5">d</span> 0 args_imms in
-              <span data-count="5">i</span>f m &gt; 0 then <span data-count="5">e</span>mi<span data-count="5">t</span> addi SP SP (m * Target.word_size);
-              <span data-count="5">o</span>k state
+              let* () = apply_save<span data-count="4">d</span> 0 args_imms in
+              <span data-count="4">i</span>f m &gt; 0 then <span data-count="4">e</span>mi<span data-count="4">t</span> addi SP SP (m * Target.word_size);
+              <span data-count="4">o</span>k state
             | <span data-count="0">S</span>ome n -&gt; er<span data-count="0">r</span> (`Too_many_args (fname, n, argc))
-            | <span data-count="30">N</span>one -&gt;
+            | <span data-count="8">N</span>one -&gt;
               (* внешняя функция для того чтобы не было ошибки с вызовом рантайма *)
               List.iter
                 (fun arg_imm -&gt;
-                   <span data-count="30">l</span>et (_ : unit r) = gen_im_expr state (T 0) arg_imm in
-                   <span data-count="30">e</span>mit addi SP SP (<span data-count="30">-</span>Target.word_size);
-                   <span data-count="30">e</span>mit sd (T 0) (SP, 0))
-                (List.re<span data-count="30">v</span> args_imms);
-              <span data-count="30">l</span>et rec load_args i = function
-                | <span data-count="30">[</span>] -&gt; ok ()
-                | <span data-count="30">_</span> :: tl when i &lt; Array.lengt<span data-count="30">h</span> Target.arg_regs -&gt;
-                  <span data-count="30">e</span>mit ld (A i) (SP, 0);
-                  <span data-count="30">e</span>mit addi SP SP Target.word_size;
-                  <span data-count="30">l</span>oad_args (i + 1) tl
+                   <span data-count="8">l</span>et (_ : unit r) = gen_im_expr state (T 0) arg_imm in
+                   <span data-count="8">e</span>mit addi SP SP (<span data-count="8">-</span>Target.word_size);
+                   <span data-count="8">e</span>mit sd (T 0) (SP, 0))
+                (List.re<span data-count="8">v</span> args_imms);
+              <span data-count="8">l</span>et rec load_args i = function
+                | <span data-count="8">[</span>] -&gt; ok ()
+                | <span data-count="8">_</span> :: tl when i &lt; Array.lengt<span data-count="8">h</span> Target.arg_regs -&gt;
+                  <span data-count="8">e</span>mit ld (A i) (SP, 0);
+                  <span data-count="8">e</span>mit addi SP SP Target.word_size;
+                  <span data-count="8">l</span>oad_args (i + 1) tl
                 | <span data-count="0">_</span> -&gt; err `Stack_args_not_impl_external
               in
-              let* () = load_arg<span data-count="30">s</span> 0 args_imms in
-              <span data-count="30">e</span>mit call fname;
-              <span data-count="30">e</span>mit mv (T 0) (A 0);
-              <span data-count="30">o</span>k state))
+              let* () = load_arg<span data-count="8">s</span> 0 args_imms in
+              <span data-count="8">e</span>mit call fname;
+              <span data-count="8">e</span>mit mv (T 0) (A 0);
+              <span data-count="8">o</span>k state))
       | <span data-count="0">I</span>mm_num _ -&gt; er<span data-count="0">r</span> `Call_non_function
     in
-    <span data-count="65">L</span>ist.iter
+    <span data-count="28">L</span>ist.iter
       (fun reg -&gt;
-         <span data-count="40">e</span>mit ld reg (SP, 0);
-         <span data-count="40">e</span>mit addi SP SP Target.word_size)
-      (List.re<span data-count="65">v</span> live_regs_to_save);
-    <span data-count="65">i</span>f not (equal_re<span data-count="65">g</span> dst (T 0)) then <span data-count="0">e</span>mi<span data-count="0">t</span> mv dst (T 0);
-    <span data-count="65">o</span>k state
-  | <span data-count="26">C</span>omp_branch (cond_imm, then_anf, else_anf) -&gt;
-    let* () = gen_im_exp<span data-count="26">r</span> state (T 0) cond_imm in
-    <span data-count="26">l</span>et lbl_else, state = fresh_label "else" state in
-    <span data-count="26">l</span>et lbl_end, state = fresh_label "endif" state in
-    <span data-count="26">e</span>mit beq (T 0) Zero lbl_else;
-    <span data-count="26">l</span>et* state_then = gen_anf_exp<span data-count="26">r</span> state dst then_anf in
-    <span data-count="26">e</span>mit j lbl_end;
-    <span data-count="26">e</span>mit label lbl_else;
-    <span data-count="26">l</span>et* state_else = gen_anf_exp<span data-count="26">r</span> state_then dst else_anf in
-    <span data-count="26">e</span>mit label lbl_end;
-    <span data-count="26">o</span>k state_else
+         <span data-count="31">e</span>mit ld reg (SP, 0);
+         <span data-count="31">e</span>mit addi SP SP Target.word_size)
+      (List.re<span data-count="28">v</span> live_regs_to_save);
+    <span data-count="28">i</span>f not (equal_re<span data-count="28">g</span> dst (T 0)) then <span data-count="0">e</span>mi<span data-count="0">t</span> mv dst (T 0);
+    <span data-count="28">o</span>k state
+  | <span data-count="8">C</span>omp_branch (cond_imm, then_anf, else_anf) -&gt;
+    let* () = gen_im_exp<span data-count="8">r</span> state (T 0) cond_imm in
+    <span data-count="8">l</span>et lbl_else, state = fresh_label "else" state in
+    <span data-count="8">l</span>et lbl_end, state = fresh_label "endif" state in
+    <span data-count="8">e</span>mit beq (T 0) Zero lbl_else;
+    <span data-count="8">l</span>et* state_then = gen_anf_exp<span data-count="8">r</span> state dst then_anf in
+    <span data-count="8">e</span>mit j lbl_end;
+    <span data-count="8">e</span>mit label lbl_else;
+    <span data-count="8">l</span>et* state_else = gen_anf_exp<span data-count="8">r</span> state_then dst else_anf in
+    <span data-count="8">e</span>mit label lbl_end;
+    <span data-count="8">o</span>k state_else
   | <span data-count="0">C</span>omp_func (params, body) -&gt;
     (* создаём уникальный ярлык функции, добавляем в deferred *)
     let func_label, state = fresh_label "lambda" state in
@@ -1189,20 +1189,20 @@ and gen_comp_expr (state : cg_state) (dst : reg) (cexpr : comp_expr) : cg_state 
 
 (* counts the number of let bindings to allocate space on stack *)
 let rec count_locals_in_anf (aexpr : anf_expr) : int =
-  <span data-count="241">m</span>atch aexpr with
-  | <span data-count="142">A</span>nf_let (_, _, comp_expr, body) -&gt;
+  <span data-count="90">m</span>atch aexpr with
+  | <span data-count="56">A</span>nf_let (_, _, comp_expr, body) -&gt;
     let locals_in_comp = count_locals_in_comp comp_expr in
-    <span data-count="142">l</span>et locals_in_body = count_locals_in_anf body in
-    <span data-count="142">m</span>ax locals_in_comp (1 + locals_in_body)
-  | <span data-count="99">A</span>nf_comp_expr comp_expr -&gt; count_locals_in_comp comp_expr
+    <span data-count="56">l</span>et locals_in_body = count_locals_in_anf body in
+    <span data-count="56">m</span>ax locals_in_comp (1 + locals_in_body)
+  | <span data-count="34">A</span>nf_comp_expr comp_expr -&gt; count_locals_in_comp comp_expr
 
 and count_locals_in_comp (cexpr : comp_expr) : int =
-  <span data-count="241">m</span>atch cexpr with
-  | <span data-count="99">C</span>omp_imm _ | <span data-count="51">C</span>omp_binop _ | <span data-count="65">C</span>omp_app _ | <span data-count="0">C</span>omp_func _ | <span data-count="0">C</span>omp_tuple _ -&gt; 0
-  | <span data-count="26">C</span>omp_branch (_, then_anf, else_anf) -&gt;
+  <span data-count="90">m</span>atch cexpr with
+  | <span data-count="34">C</span>omp_imm _ | <span data-count="20">C</span>omp_binop _ | <span data-count="28">C</span>omp_app _ | <span data-count="0">C</span>omp_func _ | <span data-count="0">C</span>omp_tuple _ -&gt; 0
+  | <span data-count="8">C</span>omp_branch (_, then_anf, else_anf) -&gt;
     let locals_in_then = count_locals_in_anf then_anf in
-    <span data-count="26">l</span>et locals_in_else = count_locals_in_anf else_anf in
-    <span data-count="26">m</span>ax locals_in_then locals_in_else
+    <span data-count="8">l</span>et locals_in_else = count_locals_in_anf else_anf in
+    <span data-count="8">m</span>ax locals_in_then locals_in_else
 ;;
 
 let gen_func
@@ -1214,57 +1214,57 @@ let gen_func
       (st : cg_state)
   : cg_state r
   =
-  <span data-count="47">l</span>et env_params_res =
+  <span data-count="18">l</span>et env_params_res =
     let rec go i env = function
-      | <span data-count="47">[</span>] -&gt; ok env
-      | <span data-count="40">p</span> :: ps when i &lt; Array.lengt<span data-count="40">h</span> Target.arg_regs -&gt;
-        <span data-count="40">g</span>o (i + 1) (Env.bin<span data-count="40">d</span> env p (Reg (A i))) ps
+      | <span data-count="18">[</span>] -&gt; ok env
+      | <span data-count="21">p</span> :: ps when i &lt; Array.lengt<span data-count="21">h</span> Target.arg_regs -&gt;
+        <span data-count="21">g</span>o (i + 1) (Env.bin<span data-count="21">d</span> env p (Reg (A i))) ps
       | <span data-count="0">_</span> -&gt; err `Too_many_reg_params
     in
-    g<span data-count="47">o</span> 0 (Env.empt<span data-count="47">y</span> ()) params
+    g<span data-count="18">o</span> 0 (Env.empt<span data-count="18">y</span> ()) params
   in
   let* env_params = env_params_res in
-  <span data-count="47">l</span>et local_count = count_locals_in_anf body_anf in
-  <span data-count="47">l</span>et stack_size = (2 + local_count) * Target.word_size in
+  <span data-count="18">l</span>et local_count = count_locals_in_anf body_anf in
+  <span data-count="18">l</span>et stack_size = (2 + local_count) * Target.word_size in
   emit_prologue func_name stack_size;
-  <span data-count="47">l</span>et local_state = { st with env = env_params; stack_offset = 0; arity = arity_map } in
-  let* state_after = gen_anf_exp<span data-count="47">r</span> local_state (A 0) body_anf in
-  <span data-count="47">f</span>lush_queue ppf;
-  <span data-count="47">e</span>mit_epilogue stack_size;
-  <span data-count="47">o</span>k { st with next_label = state_after.next_label; deferred = state_after.deferred }
+  <span data-count="18">l</span>et local_state = { st with env = env_params; stack_offset = 0; arity = arity_map } in
+  let* state_after = gen_anf_exp<span data-count="18">r</span> local_state (A 0) body_anf in
+  <span data-count="18">f</span>lush_queue ppf;
+  <span data-count="18">e</span>mit_epilogue stack_size;
+  <span data-count="18">o</span>k { st with next_label = state_after.next_label; deferred = state_after.deferred }
 ;;
 
 let gen_start ppf =
-  <span data-count="24">f</span>printf ppf ".section .text\n";
-  <span data-count="24">f</span>printf ppf ".global main\n";
-  <span data-count="24">f</span>printf ppf ".type main, @function\n"
+  <span data-count="6">f</span>printf ppf ".section .text\n";
+  <span data-count="6">f</span>printf ppf ".global main\n";
+  <span data-count="6">f</span>printf ppf ".type main, @function\n"
 ;;
 
 let prefill_arities (arity_map0 : ArityMap.t) (program : aprogram) : ArityMap.t =
-  <span data-count="25">L</span>ist.fold_left
+  <span data-count="6">L</span>ist.fold_left
     (fun am -&gt; function
-       | <span data-count="47">A</span>nf_str_value (_rf, name, anf_expr) -&gt;
+       | <span data-count="18">A</span>nf_str_value (_rf, name, anf_expr) -&gt;
          (match anf_expr with
-          | <span data-count="21">A</span>nf_let (_, _, Comp_func (ps, _), _) -&gt; ArityMap.bind am name (List.lengt<span data-count="21">h</span> ps)
+          | <span data-count="11">A</span>nf_let (_, _, Comp_func (ps, _), _) -&gt; ArityMap.bind am name (List.lengt<span data-count="11">h</span> ps)
           | <span data-count="0">A</span>nf_comp_expr (Comp_func (ps, _)) -&gt; ArityMap.bind am name (List.lengt<span data-count="0">h</span> ps)
-          | <span data-count="26">_</span> -&gt; ArityMap.bind am name 0)
+          | <span data-count="7">_</span> -&gt; ArityMap.bind am name 0)
        | <span data-count="0">_</span> -&gt; am)
     arity_map0
     program
 ;;
 
 let gen_program_res ppf (program : aprogram) : unit r =
-  <span data-count="25">l</span>et has_main =
+  <span data-count="6">l</span>et has_main =
     List.exists
       (function
-        | <span data-count="24">A</span>nf_str_value (_, "main", _) | <span data-count="0">A</span>nf_str_eval _ -&gt; true
-        | <span data-count="23">_</span> -&gt; false)
+        | <span data-count="6">A</span>nf_str_value (_, "main", _) | <span data-count="0">A</span>nf_str_eval _ -&gt; true
+        | <span data-count="12">_</span> -&gt; false)
       program
   in
-  <span data-count="25">i</span>f has_main then <span data-count="24">g</span>en_star<span data-count="24">t</span> ppf;
-  <span data-count="25">l</span>et arity_map = prefill_arities (ArityMap.empt<span data-count="25">y</span> ()) program in
-  <span data-count="25">l</span>et st0 =
-    { env = Env.empt<span data-count="25">y</span> ()
+  <span data-count="6">i</span>f has_main then <span data-count="6">g</span>en_star<span data-count="6">t</span> ppf;
+  <span data-count="6">l</span>et arity_map = prefill_arities (ArityMap.empt<span data-count="6">y</span> ()) program in
+  <span data-count="6">l</span>et st0 =
+    { env = Env.empt<span data-count="6">y</span> ()
     ; stack_offset = 0
     ; arity = arity_map
     ; next_label = 0
@@ -1272,25 +1272,25 @@ let gen_program_res ppf (program : aprogram) : unit r =
     }
   in
   let* st1 =
-    List.fold_lef<span data-count="25">t</span>
+    List.fold_lef<span data-count="6">t</span>
       (fun acc_res item -&gt;
-         <span data-count="47">l</span>et* st = acc_res in
-         <span data-count="47">m</span>atch item with
+         <span data-count="18">l</span>et* st = acc_res in
+         <span data-count="18">m</span>atch item with
          | <span data-count="0">A</span>nf_str_eval anf_expr -&gt; gen_func ~arity_map "main" [] anf_expr ppf st
-         | <span data-count="47">A</span>nf_str_value (_rec_flag, name, anf_expr) -&gt;
+         | <span data-count="18">A</span>nf_str_value (_rec_flag, name, anf_expr) -&gt;
            let params, body =
              match anf_expr with
-             | <span data-count="21">A</span>nf_let (_, _, Comp_func (ps, b), _) -&gt; ps, b
+             | <span data-count="11">A</span>nf_let (_, _, Comp_func (ps, b), _) -&gt; ps, b
              | <span data-count="0">A</span>nf_comp_expr (Comp_func (ps, b)) -&gt; ps, b
-             | <span data-count="26">_</span> -&gt; [], anf_expr
+             | <span data-count="7">_</span> -&gt; [], anf_expr
            in
            gen_func ~arity_map name params body ppf st)
-      (o<span data-count="25">k</span> st0)
+      (o<span data-count="6">k</span> st0)
       program
   in
-  <span data-count="25">l</span>et rec drain st =
-    <span data-count="25">m</span>atch st.deferred with
-    | <span data-count="25">[</span>] -&gt; ok st
+  <span data-count="6">l</span>et rec drain st =
+    <span data-count="6">m</span>atch st.deferred with
+    | <span data-count="6">[</span>] -&gt; ok st
     | <span data-count="0">d</span>efs -&gt;
       let st' = { st with deferred = [] } in
       let* st'' =
@@ -1303,14 +1303,14 @@ let gen_program_res ppf (program : aprogram) : unit r =
       in
       <span data-count="0">d</span>rain st''
   in
-  let* _st_final = drai<span data-count="25">n</span> st1 in
-  <span data-count="25">f</span>lush_queue ppf;
-  <span data-count="25">o</span>k ()
+  let* _st_final = drai<span data-count="6">n</span> st1 in
+  <span data-count="6">f</span>lush_queue ppf;
+  <span data-count="6">o</span>k ()
 ;;
 
 let gen_program ppf (program : aprogram) =
-  <span data-count="25">m</span>atch gen_program_res ppf program with
-  | <span data-count="25">O</span>k () -&gt; ()
+  <span data-count="6">m</span>atch gen_program_res ppf program with
+  | <span data-count="6">O</span>k () -&gt; ()
   | <span data-count="0">E</span>rror (`Unbound_identifier x) -&gt;
     invalid_arg ("Unbound identifier during codegen: " ^ x)
   | <span data-count="0">E</span>rror `Stack_args_not_impl_direct -&gt;
