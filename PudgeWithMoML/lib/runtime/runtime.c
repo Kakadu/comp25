@@ -20,6 +20,7 @@ typedef struct {
 
 #define ZERO8 0, 0, 0, 0, 0, 0, 0, 0
 #define INT8 int, int, int, int, int, int, int, int
+
 void *alloc_closure(INT8, void *f, uint8_t argc) {
   closure *clos = malloc(sizeof(closure) + sizeof(void *) * argc);
 
@@ -51,8 +52,7 @@ void *apply_closure(INT8, closure *old_clos, uint8_t argc, ...) {
   va_start(list, argc);
 
   if (clos->argc_recived + argc > clos->argc) {
-    fprintf(stderr,
-            "Runtime error: function accept more arguments than expect\n");
+    fprintf(stderr, "Runtime error: function accept more arguments than expect\n");
     exit(122);
   }
 
