@@ -321,19 +321,19 @@ open TypesPp
 open Keywords
 
 let pp_rec_flag fmt = function
-  | <span data-count="4">R</span>ec -&gt; fprintf fmt "rec "
-  | <span data-count="82">N</span>onrec -&gt; ()
+  | <span data-count="6">R</span>ec -&gt; fprintf fmt "rec "
+  | <span data-count="153">N</span>onrec -&gt; ()
 ;;
 
 let pp_varname fmt name =
-  <span data-count="168">i</span>f String.for_all (String.contain<span data-count="168">s</span> op_chars) name
+  <span data-count="315">i</span>f String.for_all (String.contain<span data-count="315">s</span> op_chars) name
   then <span data-count="0">f</span>printf fmt "(%s)" name
-  else <span data-count="168">f</span>printf fmt "%s" name
+  else <span data-count="315">f</span>printf fmt "%s" name
 ;;
 
 let pp_literal fmt = function
-  | <span data-count="69">I</span>nt_lt i -&gt; fprintf fmt "%d" i
-  | <span data-count="1">B</span>ool_lt b -&gt; fprintf fmt "%b" b
+  | <span data-count="109">I</span>nt_lt i -&gt; fprintf fmt "%d" i
+  | <span data-count="2">B</span>ool_lt b -&gt; fprintf fmt "%b" b
   | <span data-count="0">U</span>nit_lt -&gt; fprintf fmt "()"
 ;;
 

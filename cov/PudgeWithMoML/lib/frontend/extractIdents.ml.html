@@ -194,7 +194,7 @@ end = struct
   let rec extract_names_from_pattern =
     let extr = extract_names_from_pattern in
     function
-    | <span data-count="147">P</span>Var name -&gt; return (singleto<span data-count="147">n</span> name)
+    | <span data-count="178">P</span>Var name -&gt; return (singleto<span data-count="178">n</span> name)
     | <span data-count="13">P</span>List l -&gt; union_disjoint_many (List.ma<span data-count="13">p</span> l ~f:extr)
     | <span data-count="19">P</span>Cons (hd, tl) -&gt; union_disjoint (ext<span data-count="19">r</span> hd) (ext<span data-count="19">r</span> tl)
     | <span data-count="4">P</span>Tuple (fst, snd, rest) -&gt;
@@ -202,8 +202,8 @@ end = struct
     | <span data-count="0">P</span>Option (Some p) -&gt; extr p
     | <span data-count="0">P</span>Constraint (p, _) -&gt; extr p
     | <span data-count="0">P</span>Option None -&gt; return empty
-    | <span data-count="2">W</span>ild -&gt; return empty
-    | <span data-count="24">P</span>Const _ -&gt; return empty
+    | <span data-count="5">W</span>ild -&gt; return empty
+    | <span data-count="25">P</span>Const _ -&gt; return empty
   ;;
 end
 
