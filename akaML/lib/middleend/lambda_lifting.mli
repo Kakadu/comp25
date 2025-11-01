@@ -6,4 +6,4 @@
 
 [@@@ocaml.text "/*"]
 
-val gen_a_structure : Format.formatter -> Middleend.Anf_core.a_structure_item list -> unit
+val lambda_lifting : Ast.structure -> Ast.structure_item list

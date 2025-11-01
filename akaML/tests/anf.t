@@ -90,3 +90,79 @@ SPDX-License-Identifier: LGPL-3.0-or-later
   let main = let temp15 = fib 6 id in
              let z = print_int temp15 in
              0;;
+
+  $ ../bin/akaML.exe -anf -fromfile manytests/typed/004manyargs.ml
+  let wrap = fun f -> (let temp0 = 1 = 1 in
+                      if temp0 then f else f);;
+  let test3 =
+    fun a ->
+      (fun b ->
+         (fun c ->
+            (let a = print_int a in
+            let b = print_int b in
+            let c = print_int c in
+            0)));;
+  let test10 =
+    fun a ->
+      (fun b ->
+         (fun c ->
+            (fun d ->
+               (fun e ->
+                  (fun f ->
+                     (fun g ->
+                        (fun h ->
+                           (fun i ->
+                              (fun j ->
+                                 (let temp7 = a + b in
+                                 let temp8 = temp7 + c in
+                                 let temp9 = temp8 + d in
+                                 let temp10 = temp9 + e in
+                                 let temp11 = temp10 + f in
+                                 let temp12 = temp11 + g in
+                                 let temp13 = temp12 + h in
+                                 let temp14 = temp13 + i in
+                                 temp14 + j))))))))));;
+  let main =
+    let rez =
+      wrap test10 1 10 100 1000 10000 100000 1000000 10000000 100000000
+        1000000000 in
+    let temp18 = print_int rez in
+    let temp2 = wrap test3 1 10 100 in
+    0;;
+
+  $ ../bin/akaML.exe -anf -fromfile manytests/typed/012faccps.ml
+  let ll_0 = fun k -> (fun n -> (fun a -> (let temp0 = a * n in
+                                          k temp0)));;
+  let rec fac =
+    fun n ->
+      (fun k ->
+         (let temp3 = n < 2 in
+         if temp3 then k 1
+         else (let temp5 = n - 1 in
+           let temp6 = ll_0 k n in
+           fac temp5 temp6)));;
+  let ll_1 = fun x -> x;;
+  let main = let temp11 = fac 6 ll_1 in
+             print_int temp11;;
+
+  $ ../bin/akaML.exe -anf -fromfile manytests/typed/012fibcps.ml
+  let ll_1 = fun a -> (fun k -> (fun b -> (let temp0 = a + b in
+                                          k temp0)));;
+  let ll_0 =
+    fun k ->
+      (fun n ->
+         (fun a ->
+            (let temp3 = n - 2 in
+            let temp4 = ll_1 a k in
+            fib temp3 temp4)));;
+  let rec fib =
+    fun n ->
+      (fun k ->
+         (let temp7 = n < 2 in
+         if temp7 then k n
+         else (let temp9 = n - 1 in
+           let temp10 = ll_0 k n in
+           fib temp9 temp10)));;
+  let ll_2 = fun x -> x;;
+  let main = let temp15 = fib 6 ll_2 in
+             print_int temp15;;

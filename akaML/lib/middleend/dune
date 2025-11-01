@@ -1,6 +1,6 @@
 (library
- (name Anf)
- (public_name akaML.Anf)
+ (name Middleend)
+ (public_name akaML.Middleend)
  (libraries base Ast Pprinter)
  (preprocess
   (pps ppx_deriving.show))

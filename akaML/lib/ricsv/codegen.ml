@@ -8,7 +8,7 @@
 
 open Ast
 open Machine
-open Anf.Anf_core
+open Middleend.Anf_core
 open Base
 open Stdlib.Format
 
@@ -236,13 +236,14 @@ let rec gen_i_exp env dst = function
 
 and gen_c_exp env dst = function
   | CIExp i_exp -> gen_i_exp env dst i_exp
-  | CExp_apply (IExp_ident op, [ i_exp1; i_exp2 ]) when Ast.is_bin_op op ->
+  | CExp_apply (IExp_ident op, i_exp1, [ i_exp2 ]) when Ast.is_bin_op op ->
     let* env = gen_i_exp env (T 0) i_exp1 in
     let* env = gen_i_exp env (T 1) i_exp2 in
     let* env = ensure_reg_free env dst in
     let* () = emit_bin_op dst op (T 0) (T 1) in
     return env
-  | CExp_apply (IExp_ident fname, args) ->
+  | CExp_apply (IExp_ident fname, i_exp, i_exp_list) ->
+    let args = i_exp :: i_exp_list in
     let* env = emit_save_caller_regs env in
     let* state = get in
     (* Determine which args can overwrite regs *)
@@ -316,7 +317,25 @@ and gen_c_exp env dst = function
     in
     let arity = Map.find state.arity_map fname in
     (match List.length args, arity with
-     (* Branch on whether fname has arity known and matches exact args_received *)
+     (* Branch in which the arity of fname is known and is less than args_received *)
+     | args_received, Some arity when args_received > arity ->
+       let first_args = List.take args arity in
+       let rest_args = List.drop args arity in
+       let* tmp_id = fresh in
+       let tmp_name = Printf.sprintf "%d_partial" tmp_id in
+       let* env =
+         gen_c_exp
+           env
+           dst
+           (CExp_apply (IExp_ident fname, List.hd_exn first_args, List.tl_exn first_args))
+       in
+       let* loc = emit_store dst ~comm:tmp_name in
+       let env = Map.set env ~key:tmp_name ~data:loc in
+       gen_c_exp
+         env
+         dst
+         (CExp_apply (IExp_ident tmp_name, List.hd_exn rest_args, List.tl_exn rest_args))
+     (* Branch in which the arity of fname is known and it exactly matches args_received *)
      | args_received, Some args_count when args_received = args_count ->
        let arg_regs = [ A 0; A 1; A 2; A 3; A 4; A 5; A 6; A 7 ] in
        let env = load_into_regs env arg_regs args in
@@ -380,8 +399,8 @@ and count_loc_vars_c_exp = function
   | CExp_tuple (i_exp1, i_exp2, i_exp_list) ->
     List.fold_left (i_exp1 :: i_exp2 :: i_exp_list) ~init:0 ~f:(fun acc e ->
       acc + count_loc_vars_i_exp e)
-  | CExp_apply (i_exp1, i_exp_list) ->
-    List.fold_left (i_exp1 :: i_exp_list) ~init:0 ~f:(fun acc e ->
+  | CExp_apply (i_exp1, i_exp2, i_exp_list) ->
+    List.fold_left (i_exp1 :: i_exp2 :: i_exp_list) ~init:0 ~f:(fun acc e ->
       acc + count_loc_vars_i_exp e)
   | CExp_ifthenelse (c_exp_if, a_exp_then, None) ->
     count_loc_vars_c_exp c_exp_if + count_loc_vars_a_exp a_exp_then
@@ -454,14 +473,14 @@ let init_arity_map ast =
   env
 ;;
 
-let gen_a_structure ppf ast =
+let gen_a_structure ppf anf_ast =
   fprintf ppf ".section .text";
-  let arity_map = init_arity_map ast in
+  let arity_map = init_arity_map anf_ast in
   let arity_map = Map.set arity_map ~key:"print_int" ~data:1 in
   let init_state = { frame_offset = 0; fresh_id = 0; arity_map } in
   let program =
     let* _ =
-      List.fold ast ~init:(return init_state) ~f:(fun acc -> function
+      List.fold anf_ast ~init:(return init_state) ~f:(fun acc -> function
         | AStruct_value (_, Pat_var f_id, body_exp) ->
           let* state = acc in
           let rec extract_fun_params acc = function

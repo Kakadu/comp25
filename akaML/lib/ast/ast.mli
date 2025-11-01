@@ -15,6 +15,7 @@ val show_list_ : (Format.formatter -> 'a -> unit) -> 'a list_ -> string
 type ident = string
 
 val pp_ident : Format.formatter -> ident -> unit
+val un_op_list : string list
 val bin_op_list : string list
 val is_bin_op : ident -> bool
 val show_ident : ident -> string

@@ -27,7 +27,7 @@ type i_exp =
 and c_exp =
   | CIExp of i_exp
   | CExp_tuple of i_exp * i_exp * i_exp list
-  | CExp_apply of i_exp * i_exp list
+  | CExp_apply of i_exp * i_exp * i_exp list
   | CExp_ifthenelse of c_exp * a_exp * a_exp option
 [@@deriving show { with_path = false }]
 
@@ -139,13 +139,17 @@ let rec anf_exp exp k =
   | Exp_apply (Exp_apply (Exp_ident opr, exp1), exp2) when is_bin_op opr ->
     anf_exp exp1 (fun i_exp1 ->
       anf_exp exp2 (fun i_exp2 ->
-        let c_exp = CExp_apply (IExp_ident opr, [ i_exp1; i_exp2 ]) in
+        let c_exp = CExp_apply (IExp_ident opr, i_exp1, [ i_exp2 ]) in
         a_exp_let_non c_exp k))
   | Exp_apply (Exp_ident opr, exp) when is_unary_minus opr ->
     anf_exp exp (fun i_exp ->
-      let c_exp = CExp_apply (IExp_ident opr, [ i_exp ]) in
+      let c_exp = CExp_apply (IExp_ident opr, i_exp, []) in
       a_exp_let_non c_exp k)
   | Exp_apply (exp1, exp2) ->
+    let safe_tl = function
+      | [] -> []
+      | _ :: tail -> tail
+    in
     let rec anf_list exp_list k =
       match exp_list with
       | hd :: tl ->
@@ -156,7 +160,7 @@ let rec anf_exp exp k =
     let exp1, exp_list = collect_app_args (Exp_apply (exp1, exp2)) in
     anf_exp exp1 (fun i_exp1 ->
       anf_list exp_list (fun i_exp_list ->
-        let c_exp = CExp_apply (i_exp1, i_exp_list) in
+        let c_exp = CExp_apply (i_exp1, List.hd_exn i_exp_list, safe_tl i_exp_list) in
         a_exp_let_non c_exp k))
   | Exp_ifthenelse (cond, then_exp, None) ->
     anf_exp cond (fun i_cond ->
