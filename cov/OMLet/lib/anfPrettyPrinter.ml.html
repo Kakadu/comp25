@@ -244,7 +244,7 @@ and pp_astatement fmt (is_rec, bindings) =
   in
   fprintf
     fmt
-    "@[&lt;v 0&gt;%s %a@]"
+    "@[&lt;v 0&gt;%s %a@]\n"
     keyword
     (pp_print_lis<span data-count="6">t</span> ~pp_sep:(fun fmt () -&gt; <span data-count="0">f</span>printf fmt "@ and ") pp_binding)
     bindings

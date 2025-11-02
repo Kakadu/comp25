@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>ast.ml &mdash; Coverage report</title>
-    <meta name="description" content="45.00% coverage in lib/ast.ml">
+    <meta name="description" content="46.43% coverage in lib/ast.ml">
     <link rel="stylesheet" href="../coverage.css"/>
     <script src="../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,7 +15,7 @@
           <span class="dirname">lib/</span>ast.ml
         </a>
       </h1>
-      <h2>45.00%</h2>
+      <h2>46.43%</h2>
     </div>
     <div id="navbar">
       <span class="unvisited" style="top:13.92%"></span>
@@ -41,7 +41,7 @@
       <span class="unvisited" style="bottom:31.96%"></span>
       <span class="some-visited" style="bottom:31.44%"></span>
       <span class="unvisited" style="bottom:29.90%"></span>
-      <span class="unvisited" style="bottom:29.38%"></span>
+      <span class="some-visited" style="bottom:29.38%"></span>
       <span class="unvisited" style="bottom:28.35%"></span>
       <span class="unvisited" style="bottom:26.80%"></span>
       <span class="unvisited" style="bottom:26.29%"></span>
@@ -194,7 +194,7 @@
 <a id="L134"></a><span > </span>
 <a id="L135"></a><span > </span>
 <a id="L136"></a><span class="unvisited"> </span>
-<a id="L137"></a><span class="unvisited"> </span>
+<a id="L137"></a><span class="some-visited"> </span>
 <a id="L138"></a><span > </span>
 <a id="L139"></a><span class="unvisited"> </span>
 <a id="L140"></a><span > </span>
@@ -459,64 +459,64 @@ open KeywordChecker
 open TypedTree
 open TypesPp
 
-<span data-count="234">t</span>ype ident = Ident of strin<span data-count="117">g</span> (** identifier *) [@@deriving show { with_path = false }]
+<span data-count="306">t</span>ype ident = Ident of strin<span data-count="153">g</span> (** identifier *) [@@deriving show { with_path = false }]
 
 let gen_char_of_range l r =
-  <span data-count="44">Q</span>Check.Gen.(map Char.chr (int_rang<span data-count="44">e</span> (Char.cod<span data-count="44">e</span> l) (Char.cod<span data-count="44">e</span> r)))
+  <span data-count="52">Q</span>Check.Gen.(map Char.chr (int_rang<span data-count="52">e</span> (Char.cod<span data-count="52">e</span> l) (Char.cod<span data-count="52">e</span> r)))
 ;;
 
 let gen_varname ~uppercase =
-  <span data-count="22">l</span>et open QCheck.Gen in
+  <span data-count="26">l</span>et open QCheck.Gen in
   let loop =
     let gen_first_char =
       if uppercase
-      then <span data-count="11">f</span>requenc<span data-count="11">y</span> [ 26, gen_char_of_rang<span data-count="11">e</span> 'A' 'Z'; 1, retur<span data-count="11">n</span> '_' ]
-      else <span data-count="11">f</span>requenc<span data-count="11">y</span> [ 26, gen_char_of_rang<span data-count="11">e</span> 'a' 'z'; 1, retur<span data-count="11">n</span> '_' ]
+      then <span data-count="13">f</span>requenc<span data-count="13">y</span> [ 26, gen_char_of_rang<span data-count="13">e</span> 'A' 'Z'; 1, retur<span data-count="13">n</span> '_' ]
+      else <span data-count="13">f</span>requenc<span data-count="13">y</span> [ 26, gen_char_of_rang<span data-count="13">e</span> 'a' 'z'; 1, retur<span data-count="13">n</span> '_' ]
     in
     let gen_next_char =
-      frequency [ 26 + 26 + 1, gen_first_char; 10, gen_char_of_rang<span data-count="22">e</span> '0' '9' ]
+      frequency [ 26 + 26 + 1, gen_first_char; 10, gen_char_of_rang<span data-count="26">e</span> '0' '9' ]
     in
-    <span data-count="22">m</span>ap<span data-count="22">2</span>
+    <span data-count="26">m</span>ap<span data-count="26">2</span>
       (fun first rest -&gt; <span data-count="0">S</span>tring.mak<span data-count="0">e</span> 1 first ^ Base.String.of_char_lis<span data-count="0">t</span> rest)
       gen_first_char
-      (list_siz<span data-count="22">e</span> (1 -<span data-count="22">-</span> 3) gen_next_char)
+      (list_siz<span data-count="26">e</span> (1 -<span data-count="26">-</span> 3) gen_next_char)
   in
   loop &gt;&gt;= fun name -&gt; <span data-count="0">i</span>f is_keyword name then <span data-count="0">l</span>oop else <span data-count="0">r</span>eturn name
 ;;
 
-let gen_ident = QCheck.Gen.ma<span data-count="11">p</span> (fun s -&gt; <span data-count="0">I</span>dent s) (gen_varname ~uppercase:false)
-let gen_ident_uppercase = QCheck.Gen.ma<span data-count="11">p</span> (fun s -&gt; <span data-count="0">I</span>dent s) (gen_varname ~uppercase:true)
+let gen_ident = QCheck.Gen.ma<span data-count="13">p</span> (fun s -&gt; <span data-count="0">I</span>dent s) (gen_varname ~uppercase:false)
+let gen_ident_uppercase = QCheck.Gen.ma<span data-count="13">p</span> (fun s -&gt; <span data-count="0">I</span>dent s) (gen_varname ~uppercase:true)
 
 let gen_escape_sequence =
   let open QCheck.Gen in
-  oneof<span data-count="11">l</span> [ "\\\""; "\\\\"; "\\n"; "\\t" ]
+  oneof<span data-count="13">l</span> [ "\\\""; "\\\\"; "\\n"; "\\t" ]
 ;;
 
 let gen_string_of_regular_char =
   let open QCheck.Gen in
   let gen_int =
     frequency
-      [ 33 - 32 + 1, int_rang<span data-count="11">e</span> 32 33
-      ; 91 - 35 + 1, int_rang<span data-count="11">e</span> 35 91
-      ; 126 - 93 + 1, int_rang<span data-count="11">e</span> 93 126
+      [ 33 - 32 + 1, int_rang<span data-count="13">e</span> 32 33
+      ; 91 - 35 + 1, int_rang<span data-count="13">e</span> 35 91
+      ; 126 - 93 + 1, int_rang<span data-count="13">e</span> 93 126
       ]
   in
-  <span data-count="11">m</span>a<span data-count="11">p</span> (fun c -&gt; <span data-count="0">S</span>tring.make 1 c) (ma<span data-count="11">p</span> Char.chr gen_int)
+  <span data-count="13">m</span>a<span data-count="13">p</span> (fun c -&gt; <span data-count="0">S</span>tring.make 1 c) (ma<span data-count="13">p</span> Char.chr gen_int)
 ;;
 
 let gen_string =
   let open QCheck.Gen in
   let atom = frequency [ 1, gen_escape_sequence; 30, gen_string_of_regular_char ] in
-  <span data-count="11">l</span>et+ atoms = list_siz<span data-count="11">e</span> (0 -<span data-count="11">-</span> 20) atom in
+  <span data-count="13">l</span>et+ atoms = list_siz<span data-count="13">e</span> (0 -<span data-count="13">-</span> 20) atom in
   <span data-count="0">S</span>tring.concat "" atoms
 ;;
 
-<span data-count="80">t</span>ype literal =
-  | Int_lt of (in<span data-count="40">t</span>[@gen QCheck.Gen.pint]) (** [0], [1], [30] *)
+<span data-count="96">t</span>ype literal =
+  | Int_lt of (in<span data-count="48">t</span>[@gen QCheck.Gen.pint]) (** [0], [1], [30] *)
   | Bool_lt of boo<span data-count="0">l</span> (** [false], [true] *)
   | String_lt of (strin<span data-count="0">g</span>[@gen gen_string]) (** ["Hello world"] *)
   | Unit_lt (** [Unit] *)
-[@@deriving show { with_path = false }, qcheck<span data-count="66">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="78">]</span>
 
 <span data-count="0">t</span>ype binary_operator =
   | Binary_equal (** [=] *)
@@ -535,14 +535,14 @@ let gen_string =
   | Binary_xor_bitwise (** [^^^] *)
   | Binary_and_bitwise (** [&amp;&amp;&amp;] *)
   | Binary_cons (** [::] *)
-[@@deriving show { with_path = false }, qcheck<span data-count="198">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="234">]</span>
 
 <span data-count="0">t</span>ype unary_operator =
   | Unary_minus (** unary [-] *)
   | Unary_not (** unary [not] *)
-[@@deriving show { with_path = false }, qcheck<span data-count="44">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="52">]</span>
 
-<span data-count="94">t</span>ype pattern =
+<span data-count="120">t</span>ype pattern =
   | Wild (** [_] *)
   | PList of
       (<span data-count="0">p</span>attern lis<span data-count="0">t</span>[@gen QCheck.Gen.(list_siz<span data-count="0">e</span> (0 -<span data-count="0">-</span> 3) (gen_pattern_size<span data-count="0">d</span> (n / 20)))])
@@ -558,17 +558,17 @@ let gen_string =
   | POption of <span data-count="0">p</span>attern option
   (*| Variant of (ident list[@gen gen_ident_small_list]) (** | [Blue, Green, Yellow] -&gt; *) *)
   | PConstraint of pattern * (typ[@gen gen_typ_primitive])
-[@@deriving show { with_path = false }, qcheck<span data-count="22">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="26">]</span>
 
 <span data-count="0">t</span>ype is_recursive =
   | Nonrec (** let factorial n = ... *)
   | Rec (** let rec factorial n = ... *)
-[@@deriving show { with_path = false }, qcheck<span data-count="44">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="52">]</span>
 
 <span data-count="0">t</span>ype case = <span data-count="0">(</span>pattern[@gen gen_pattern_size<span data-count="0">d</span> n]) * (expr[@gen gen_expr_size<span data-count="0">d</span> n])
 [@@deriving show { with_path = false }, qcheck]
 
-<span data-count="301">a</span>nd expr =
+<span data-count="393">a</span>nd expr =
   | Const of literal (** [Int], [Bool], [String], [Unit], [Null] *)
   | Tuple of
       (expr[@gen gen_expr_size<span data-count="0">d</span> (n / 4)])
@@ -583,11 +583,11 @@ let gen_string =
   | If_then_else of
       (expr[@gen gen_expr_size<span data-count="0">d</span> (n / 4)])
       * (expr[@gen gen_expr_size<span data-count="0">d</span> (n / 4)])
-      * (<span data-count="40">e</span>xpr optio<span data-count="10">n</span>[@gen QCheck.Gen.optio<span data-count="0">n</span> (gen_expr_size<span data-count="0">d</span> (n / 4))])
+      * (<span data-count="48">e</span>xpr optio<span data-count="12">n</span>[@gen QCheck.Gen.optio<span data-count="0">n</span> (gen_expr_size<span data-count="0">d</span> (n / 4))])
   (** [if n % 2 = 0 then "Even" else "Odd"] *)
   | Lambda of
       (pattern[@gen gen_pattern_size<span data-count="0">d</span> (n / 2)])
-      * (<span data-count="0">p</span>attern lis<span data-count="0">t</span>[@gen QCheck.Gen.(list_siz<span data-count="0">e</span> (0 -<span data-count="0">-</span> 2) (gen_pattern_size<span data-count="0">d</span> (n / 20)))])
+      * (<span data-count="15">p</span>attern lis<span data-count="10">t</span>[@gen QCheck.Gen.(list_siz<span data-count="0">e</span> (0 -<span data-count="0">-</span> 2) (gen_pattern_size<span data-count="0">d</span> (n / 20)))])
       * expr (** fun x y -&gt; x + y *)
   | Apply of (expr[@gen gen_expr_size<span data-count="0">d</span> (n / 4)]) * (expr[@gen gen_expr_size<span data-count="0">d</span> (n / 4)])
   (** [sum 1 ] *)
@@ -610,12 +610,12 @@ let gen_string =
   | EConstraint of expr * (typ[@gen gen_typ_primitive])
 [@@deriving show { with_path = false }, qcheck]
 
-<span data-count="27">a</span>nd let_bind =
+<span data-count="31">a</span>nd let_bind =
   | Let_bind of
       (pattern[@gen gen_pattern_size<span data-count="0">d</span> (n / 2)])
-      * (<span data-count="153">p</span>attern lis<span data-count="63">t</span>[@gen QCheck.Gen.(list_siz<span data-count="0">e</span> (0 -<span data-count="0">-</span> 3) (gen_pattern_size<span data-count="0">d</span> (n / 4)))])
+      * (<span data-count="179">p</span>attern lis<span data-count="73">t</span>[@gen QCheck.Gen.(list_siz<span data-count="0">e</span> (0 -<span data-count="0">-</span> 3) (gen_pattern_size<span data-count="0">d</span> (n / 4)))])
       * expr (** [let sum n m = n + m] *)
-[@@deriving show { with_path = false }, qcheck<span data-count="198">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="234">]</span>
 
 let gen_expr =
   QCheck.Gen.(
@@ -629,22 +629,22 @@ let gen_let_bind =
     <span data-count="0">g</span>en_let_bind_sized n)
 ;;
 
-<span data-count="19">t</span>ype statement =
+<span data-count="23">t</span>ype statement =
   | Let of
       is_recursive
       * let_bind
-      * (<span data-count="57">l</span>et_bind lis<span data-count="38">t</span>[@gen QCheck.Gen.(list_siz<span data-count="11">e</span> (0 -<span data-count="11">-</span> 2) gen_let_bind)])
+      * (<span data-count="69">l</span>et_bind lis<span data-count="46">t</span>[@gen QCheck.Gen.(list_siz<span data-count="13">e</span> (0 -<span data-count="13">-</span> 2) gen_let_bind)])
   (** [let name = expr] *)
-[@@deriving show { with_path = false }, qcheck<span data-count="33">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="39">]</span>
 
-<span data-count="38">t</span>ype construction =
+<span data-count="46">t</span>ype construction =
   | Expr of expr (** expression *)
   | Statement of statement (** statement *)
-[@@deriving show { with_path = false }, qcheck<span data-count="44">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="52">]</span>
 
-<span data-count="7">t</span>ype constructions =
-  (<span data-count="83">c</span>onstruction lis<span data-count="19">t</span>[@gen QCheck.Gen.(list_siz<span data-count="11">e</span> (1 -<span data-count="11">-</span> 2) gen_construction)])
-[@@deriving show { with_path = false }, qcheck<span data-count="11">]</span>
+<span data-count="9">t</span>ype constructions =
+  (<span data-count="101">c</span>onstruction lis<span data-count="23">t</span>[@gen QCheck.Gen.(list_siz<span data-count="13">e</span> (1 -<span data-count="13">-</span> 2) gen_construction)])
+[@@deriving show { with_path = false }, qcheck<span data-count="13">]</span>
 </code></pre>
       </div>
     </div>
