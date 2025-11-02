@@ -105,23 +105,23 @@ open Keywords
 let gen_varname =
   let gen_lowercase_str =
     let gen_char = char_range 'a' 'z' in
-    <span data-count="96">l</span>et len = int_range 1 5 in
-    <span data-count="96">s</span>tring_siz<span data-count="96">e</span> ~gen:gen_char len
+    <span data-count="101">l</span>et len = int_range 1 5 in
+    <span data-count="101">s</span>tring_siz<span data-count="101">e</span> ~gen:gen_char len
   in
   gen_lowercase_str
-  &gt;&gt;<span data-count="96">=</span> fun name -&gt; <span data-count="0">i</span>f is_keyword name then <span data-count="0">g</span>en_lowercase_str else <span data-count="0">r</span>eturn name
+  &gt;&gt;<span data-count="101">=</span> fun name -&gt; <span data-count="0">i</span>f is_keyword name then <span data-count="0">g</span>en_lowercase_str else <span data-count="0">r</span>eturn name
 ;;
 
 let gen_operator =
   let gen_op =
-    let gen_char = oneofl (String.to_seq op_chars |&gt; <span data-count="96">L</span>ist.of_se<span data-count="96">q</span>) in
-    <span data-count="96">l</span>et len = int_range 1 3 in
-    <span data-count="96">s</span>tring_siz<span data-count="96">e</span> ~gen:gen_char len
+    let gen_char = oneofl (String.to_seq op_chars |&gt; <span data-count="101">L</span>ist.of_se<span data-count="101">q</span>) in
+    <span data-count="101">l</span>et len = int_range 1 3 in
+    <span data-count="101">s</span>tring_siz<span data-count="101">e</span> ~gen:gen_char len
   in
-  gen_op &gt;&gt;<span data-count="96">=</span> fun op -&gt; <span data-count="0">i</span>f is_keyword op then <span data-count="0">g</span>en_op else <span data-count="0">r</span>eturn op
+  gen_op &gt;&gt;<span data-count="101">=</span> fun op -&gt; <span data-count="0">i</span>f is_keyword op then <span data-count="0">g</span>en_op else <span data-count="0">r</span>eturn op
 ;;
 
-let gen_ident = oneo<span data-count="96">f</span> [ gen_varname; gen_operator ]
+let gen_ident = oneo<span data-count="101">f</span> [ gen_varname; gen_operator ]
 </code></pre>
       </div>
     </div>

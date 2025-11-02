@@ -116,7 +116,7 @@ open TypedTree
 open Format
 
 let rec pp_typ fmt = function
-  | <span data-count="100">P</span>rimitive s -&gt; fprintf fmt "%s" s
+  | <span data-count="104">P</span>rimitive s -&gt; fprintf fmt "%s" s
   | <span data-count="85">T</span>ype_var var -&gt; fprintf fmt "'%d" var
   | <span data-count="117">A</span>rrow (fst, snd) -&gt;
     (match fst with

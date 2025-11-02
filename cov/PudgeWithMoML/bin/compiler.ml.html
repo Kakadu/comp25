@@ -248,38 +248,38 @@ type opts =
   }
 
 let compiler opts =
-  <span data-count="92">l</span>et input =
+  <span data-count="93">l</span>et input =
     if opts.input_file &lt;&gt; ""
     then <span data-count="54">I</span>n_channel.read_al<span data-count="54">l</span> opts.input_file
-    else <span data-count="38">I</span>n_channel.input_al<span data-count="38">l</span> stdin
+    else <span data-count="39">I</span>n_channel.input_al<span data-count="39">l</span> stdin
   in
   match parse input with
   | <span data-count="4">E</span>rror e -&gt; eprintf "Parsing error: %s\n" e
-  | <span data-count="88">O</span>k program -&gt;
+  | <span data-count="89">O</span>k program -&gt;
     if opts.dump_parsetree
     then <span data-count="44">(</span>
       PudgeWithMoML.Frontend.Ast.pp_program std_formatter program;
       <span data-count="44">p</span>rintf "\n")
-    else <span data-count="44">(</span>
+    else <span data-count="45">(</span>
       match infer program with
       | <span data-count="6">E</span>rror e -&gt; eprintf "Type error: %a\n" pp_error e
-      | <span data-count="38">O</span>k env when opts.dump_types -&gt; <span data-count="17">T</span>ypeEnv.pp std_formatter env
-      | <span data-count="21">O</span>k _ -&gt;
-        (match program |&gt; convert_program |&gt; <span data-count="21">a</span>nf_program with
+      | <span data-count="39">O</span>k env when opts.dump_types -&gt; <span data-count="17">T</span>ypeEnv.pp std_formatter env
+      | <span data-count="22">O</span>k _ -&gt;
+        (match program |&gt; convert_program |&gt; <span data-count="22">a</span>nf_program with
          | <span data-count="0">E</span>rror e -&gt; eprintf "ANF conversion error: %s\n" e
-         | <span data-count="21">O</span>k anf -&gt;
+         | <span data-count="22">O</span>k anf -&gt;
            (match convert_cc_pr anf with
             | <span data-count="0">E</span>rror e -&gt; eprintf "ANF closure conversion error: %s\n" e
-            | <span data-count="21">O</span>k anf -&gt;
+            | <span data-count="22">O</span>k anf -&gt;
               let anf = convert_ll_pr anf in
-              <span data-count="21">i</span>f opts.dump_anf
+              <span data-count="22">i</span>f opts.dump_anf
               then
-                <span data-count="19">O</span>ut_channel.with_fil<span data-count="19">e</span> "main.anf" ~f:(fun oc -&gt;
-                  <span data-count="19">p</span>p_aprogram (Format.formatter_of_out_channe<span data-count="19">l</span> oc) anf);
-              <span data-count="21">O</span>ut_channel.with_file opts.output_file ~f:(fun oc -&gt;
-                <span data-count="21">m</span>atch gen_aprogram (Format.formatter_of_out_channe<span data-count="21">l</span> oc) anf with
+                <span data-count="20">O</span>ut_channel.with_fil<span data-count="20">e</span> "main.anf" ~f:(fun oc -&gt;
+                  <span data-count="20">p</span>p_aprogram (Format.formatter_of_out_channe<span data-count="20">l</span> oc) anf);
+              <span data-count="22">O</span>ut_channel.with_file opts.output_file ~f:(fun oc -&gt;
+                <span data-count="22">m</span>atch gen_aprogram (Format.formatter_of_out_channe<span data-count="22">l</span> oc) anf with
                 | <span data-count="0">E</span>rror e -&gt; eprintf "Codegen error: %s\n" e
-                | <span data-count="21">O</span>k () -&gt; ()))))
+                | <span data-count="22">O</span>k () -&gt; ()))))
 ;;
 
 let () =
@@ -294,7 +294,7 @@ let () =
   let open Stdlib.Arg in
   let speclist =
     [ "-fromfile", String (fun filename -&gt; <span data-count="54">o</span>pts.input_file &lt;- filename), "Input file name"
-    ; "-o", String (fun filename -&gt; <span data-count="21">o</span>pts.output_file &lt;- filename), "Output file name"
+    ; "-o", String (fun filename -&gt; <span data-count="22">o</span>pts.output_file &lt;- filename), "Output file name"
     ; ( "-dparsetree"
       , Unit (fun _ -&gt; <span data-count="48">o</span>pts.dump_parsetree &lt;- true)
       , "Dump parse tree, don't typecheck and codegen anything" )
@@ -302,7 +302,7 @@ let () =
       , Unit (fun _ -&gt; <span data-count="23">o</span>pts.dump_types &lt;- true)
       , "Dump types, don't codegen anything" )
     ; ( "-anf"
-      , Unit (fun _ -&gt; <span data-count="19">o</span>pts.dump_anf &lt;- true)
+      , Unit (fun _ -&gt; <span data-count="20">o</span>pts.dump_anf &lt;- true)
       , "Generate main.anf file with ANF representation" )
     ]
   in
@@ -312,7 +312,7 @@ let () =
   in
   let usage_msg = "Mini-ml to riscv compiler" in
   let () = parse speclist anon_func usage_msg in
-  <span data-count="92">c</span>ompile<span data-count="92">r</span> opts
+  <span data-count="93">c</span>ompile<span data-count="93">r</span> opts
 ;;
 </code></pre>
       </div>

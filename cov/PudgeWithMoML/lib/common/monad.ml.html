@@ -258,25 +258,25 @@ struct
   type state = S.state
   type 'a t = state -&gt; state * 'a
 
-  let return v st = <span data-count="1723">s</span>t, v
+  let return v st = <span data-count="1980">s</span>t, v
 
   let ( &gt;&gt;= ) m f st =
-    <span data-count="1973">l</span>et s1, v = m st in
-    <span data-count="1973">f</span> v s1
+    <span data-count="2259">l</span>et s1, v = m st in
+    <span data-count="2259">f</span> v s1
   ;;
 
-  let ( &gt;&gt;| ) m f = <span data-count="1172">m</span> &gt;&gt;= fun x -&gt; <span data-count="1082">r</span>eturn (<span data-count="1082">f</span> x)
+  let ( &gt;&gt;| ) m f = <span data-count="1335">m</span> &gt;&gt;= fun x -&gt; <span data-count="1240">r</span>eturn (<span data-count="1240">f</span> x)
   let ( let* ) = ( &gt;&gt;= )
   let ( let+ ) = ( &gt;&gt;| )
-  let get s = <span data-count="146">s</span>, s
-  let put s v = <span data-count="146">s</span>, v
+  let get s = <span data-count="174">s</span>, s
+  let put s v = <span data-count="174">s</span>, v
 
   let modify f =
     <span data-count="0">l</span>et* s = get in
     <span data-count="0">p</span>u<span data-count="0">t</span> (<span data-count="0">f</span> s) &gt;&gt;| fun _ -&gt; <span data-count="0">(</span>)
   ;;
 
-  let run m = <span data-count="42">m</span>
+  let run m = <span data-count="69">m</span>
 end
 
 module StateR (S : sig
@@ -288,28 +288,28 @@ struct
   type error = S.error
   type 'a t = state -&gt; state * ('a, error) result
 
-  let return v st = <span data-count="3741">s</span>t, Ok v
+  let return v st = <span data-count="3959">s</span>t, Ok v
 
   let ( &gt;&gt;= ) m f st =
-    <span data-count="5916">l</span>et s1, r = m st in
-    <span data-count="5916">m</span>atch r with
+    <span data-count="6250">l</span>et s1, r = m st in
+    <span data-count="6250">m</span>atch r with
     | <span data-count="0">E</span>rror e -&gt; s1, Error e
-    | <span data-count="5916">O</span>k v -&gt; f v s1
+    | <span data-count="6250">O</span>k v -&gt; f v s1
   ;;
 
-  let ( &gt;&gt;| ) m f = <span data-count="2117">m</span> &gt;&gt;= fun x -&gt; <span data-count="2223">r</span>eturn (<span data-count="2223">f</span> x)
+  let ( &gt;&gt;| ) m f = <span data-count="2236">m</span> &gt;&gt;= fun x -&gt; <span data-count="2349">r</span>eturn (<span data-count="2349">f</span> x)
   let ( let* ) = ( &gt;&gt;= )
   let ( let+ ) = ( &gt;&gt;| )
-  let get s = <span data-count="1380">s</span>, Ok s
-  let put s v = <span data-count="861">s</span>, Ok v
+  let get s = <span data-count="1453">s</span>, Ok s
+  let put s v = <span data-count="907">s</span>, Ok v
 
   let modify f =
-    <span data-count="522">l</span>et* s = get in
-    <span data-count="522">p</span>u<span data-count="522">t</span> (<span data-count="522">f</span> s) &gt;&gt;| fun _ -&gt; <span data-count="522">(</span>)
+    <span data-count="552">l</span>et* s = get in
+    <span data-count="552">p</span>u<span data-count="552">t</span> (<span data-count="552">f</span> s) &gt;&gt;| fun _ -&gt; <span data-count="552">(</span>)
   ;;
 
   let fail e st = <span data-count="0">s</span>t, Error e
-  let run m = <span data-count="66">m</span>
+  let run m = <span data-count="69">m</span>
 end
 
 module Counter = struct
@@ -319,7 +319,7 @@ module Counter = struct
 
   let make_fresh : state t =
     let* st = get in
-    <span data-count="146">p</span>u<span data-count="146">t</span> (st + 1) &gt;&gt;| fun _ -&gt; <span data-count="146">s</span>t
+    <span data-count="174">p</span>u<span data-count="174">t</span> (st + 1) &gt;&gt;| fun _ -&gt; <span data-count="174">s</span>t
   ;;
 end
 
@@ -331,7 +331,7 @@ module CounterR = struct
 
   let make_fresh : state t =
     let* st = get in
-    <span data-count="130">p</span>u<span data-count="130">t</span> (st + 1) &gt;&gt;| fun _ -&gt; <span data-count="130">s</span>t
+    <span data-count="136">p</span>u<span data-count="136">t</span> (st + 1) &gt;&gt;| fun _ -&gt; <span data-count="136">s</span>t
   ;;
 end
 </code></pre>
