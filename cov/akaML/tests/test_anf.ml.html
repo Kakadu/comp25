@@ -443,13 +443,13 @@
 
 [@@@ocaml.text "/*"]
 
-open Anf
+open Middleend
 open Parser
 
 let run str =
   <span data-count="12">m</span>atch parse str with
   | <span data-count="12">O</span>k ast -&gt;
-    (match Anf.Anf_core.anf_structure ast with
+    (match Anf_core.anf_structure ast with
      | <span data-count="0">E</span>rror e_anf -&gt; Format.eprintf "ANF transformation error: %s\n%!" e_anf
      | <span data-count="12">O</span>k anf_ast -&gt; Format.printf "%a" Anf_pprinter.pp_a_structure anf_ast)
   | <span data-count="0">E</span>rror error -&gt; Format.printf "%s" error
@@ -463,7 +463,7 @@ let%expect_test "ANF constant" =
   <span data-count="1">[</span>%expect
     {|
   let a = 1;;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "ANF Pat_any" =
@@ -477,7 +477,7 @@ let%expect_test "ANF Pat_any" =
   <span data-count="1">[</span>%expect
     {|
   let a = 0;;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "ANF binary operation" =
@@ -488,7 +488,7 @@ let%expect_test "ANF binary operation" =
   <span data-count="1">[</span>%expect
     {|
   let a = 1 + 2;;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "ANF several binary operations" =
@@ -500,7 +500,7 @@ let%expect_test "ANF several binary operations" =
     {|
   let a = let temp0 = 1 + 2 in
           temp0 + 3;;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "ANF function with 1 argument" =
@@ -513,7 +513,7 @@ let%expect_test "ANF function with 1 argument" =
     {|
   let f = fun a -&gt; a;;
   let a = f 1;;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "ANF ifthen" =
@@ -528,7 +528,7 @@ let%expect_test "ANF ifthen" =
       (let temp0 = -5 in
       let temp1 = n &lt; temp0 in
       if temp1 then print_int 0);;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "ANF tuple" =
@@ -539,7 +539,7 @@ let%expect_test "ANF tuple" =
   <span data-count="1">[</span>%expect
     {|
   let tup = fun a -&gt; ( 1, a );;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "ANF function with 2 arguments" =
@@ -552,7 +552,7 @@ let%expect_test "ANF function with 2 arguments" =
     {|
   let f = fun a -&gt; (fun b -&gt; a + b);;
   let a = f 1 2;;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "ANF factorial" =
@@ -569,7 +569,7 @@ let%expect_test "ANF factorial" =
       else (let temp1 = n - 1 in
         let temp2 = fac temp1 in
         n * temp2));;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "ANF fibonacci" =
@@ -588,7 +588,7 @@ let%expect_test "ANF fibonacci" =
         let temp3 = n - 2 in
         let temp4 = fib temp3 in
         temp2 + temp4));;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "Check elimination: let name = value in name -&gt; value" =
@@ -605,7 +605,7 @@ let%expect_test "Check elimination: let name = value in name -&gt; value" =
   let foo = let x = 1 in
             let y = 2 in
             x + y;;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test
@@ -636,7 +636,7 @@ let%expect_test
     let f = 11 = 12 in
     let g = 13 &lt;&gt; 14 in
     a;;
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 </code></pre>
       </div>

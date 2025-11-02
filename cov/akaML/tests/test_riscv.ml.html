@@ -1054,7 +1054,7 @@ open Parser
 let run str =
   <span data-count="8">m</span>atch parse str with
   | <span data-count="8">O</span>k ast -&gt;
-    (match Anf.Anf_core.anf_structure ast with
+    (match Middleend.Anf_core.anf_structure ast with
      | <span data-count="0">E</span>rror e_anf -&gt; Format.eprintf "ANF transformation error: %s\n%!" e_anf
      | <span data-count="8">O</span>k anf_ast -&gt; Format.printf "%a\n%!" RiscV.Codegen.gen_a_structure anf_ast)
   | <span data-count="0">E</span>rror _ -&gt; Format.printf "Parsing error\n"
@@ -1121,7 +1121,7 @@ let%expect_test "codegen default bin op" =
       ld ra, 8(s0)
       ld s0, 0(s0)
       ret
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "codegen ANF bin op" =
@@ -1146,7 +1146,7 @@ let%expect_test "codegen ANF bin op" =
       ld ra, 8(s0)
       ld s0, 0(s0)
       ret
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "codegen default main function" =
@@ -1190,7 +1190,7 @@ let%expect_test "codegen default main function" =
     ld s0, 0(s0)
     li a0, 0
     ret
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "codegen default factorial" =
@@ -1256,7 +1256,7 @@ let%expect_test "codegen default factorial" =
     ld ra, 8(s0)
     ld s0, 0(s0)
     ret
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "codegen ANF factorial" =
@@ -1302,7 +1302,7 @@ let%expect_test "codegen ANF factorial" =
     ld ra, 8(s0)
     ld s0, 0(s0)
     ret
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "codegen constant" =
@@ -1344,7 +1344,7 @@ let%expect_test "codegen constant" =
       ld s0, 0(s0)
       li a0, 0
       ret
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "codegen closure fn with 10 arg" =
@@ -1451,7 +1451,7 @@ let%expect_test "codegen closure fn with 10 arg" =
       ld s0, 0(s0)
       li a0, 0
       ret
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 
 let%expect_test "codegen fn with 10 arg" =
@@ -1545,7 +1545,7 @@ let%expect_test "codegen fn with 10 arg" =
       ld s0, 0(s0)
       li a0, 0
       ret
-  |}<span data-count="13">]</span>
+  |}<span data-count="17">]</span>
 ;;
 </code></pre>
       </div>

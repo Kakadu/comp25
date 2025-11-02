@@ -245,7 +245,7 @@
   <span data-count="0">|</span> Zero
   <span data-count="0">|</span> RA
   <span data-count="0">|</span> SP
-  <span data-count="1300">|</span> A of int
+  <span data-count="1688">|</span> A of int
   <span data-count="0">|</span> T of int
   <span data-count="0">|</span> S of int
 [@@deriving eq]
@@ -253,17 +253,17 @@
 type offset = reg * int
 
 let pp_reg ppf =
-  <span data-count="1945">l</span>et open Format in
+  <span data-count="2531">l</span>et open Format in
   function
-  | <span data-count="13">Z</span>ero -&gt; fprintf ppf "zero"
-  | <span data-count="88">R</span>A -&gt; fprintf ppf "ra"
-  | <span data-count="342">S</span>P -&gt; fprintf ppf "sp"
-  | <span data-count="578">A</span> n -&gt; fprintf ppf "a%d" n
-  | <span data-count="358">T</span> n -&gt; fprintf ppf "t%d" n
-  | <span data-count="566">S</span> n -&gt; fprintf ppf "s%d" n
+  | <span data-count="16">Z</span>ero -&gt; fprintf ppf "zero"
+  | <span data-count="114">R</span>A -&gt; fprintf ppf "ra"
+  | <span data-count="456">S</span>P -&gt; fprintf ppf "sp"
+  | <span data-count="761">A</span> n -&gt; fprintf ppf "a%d" n
+  | <span data-count="440">T</span> n -&gt; fprintf ppf "t%d" n
+  | <span data-count="744">S</span> n -&gt; fprintf ppf "s%d" n
 ;;
 
-let pp_offset ppf offset = <span data-count="484">F</span>ormat.fprintf ppf "%d(%a)" (sn<span data-count="484">d</span> offset) pp_reg (fs<span data-count="484">t</span> offset)
+let pp_offset ppf offset = <span data-count="640">F</span>ormat.fprintf ppf "%d(%a)" (sn<span data-count="640">d</span> offset) pp_reg (fs<span data-count="640">t</span> offset)
 
 type instr =
   | Addi of reg * reg * int
@@ -288,49 +288,49 @@ type instr =
   | Ecall
 
 let pp_instr ppf =
-  <span data-count="1227">l</span>et open Format in
+  <span data-count="1605">l</span>et open Format in
   function
-  | <span data-count="168">A</span>ddi (rd, rs, imm) -&gt; fprintf ppf "addi %a, %a, %d" pp_reg rd pp_reg rs imm
-  | <span data-count="42">A</span>dd (rd, rs1, rs2) -&gt; fprintf ppf "add  %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
-  | <span data-count="13">S</span>ub (rd, rs1, rs2) -&gt; fprintf ppf "sub %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
-  | <span data-count="7">M</span>ul (rd, rs1, rs2) -&gt; fprintf ppf "mul %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | <span data-count="223">A</span>ddi (rd, rs, imm) -&gt; fprintf ppf "addi %a, %a, %d" pp_reg rd pp_reg rs imm
+  | <span data-count="52">A</span>dd (rd, rs1, rs2) -&gt; fprintf ppf "add  %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | <span data-count="16">S</span>ub (rd, rs1, rs2) -&gt; fprintf ppf "sub %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | <span data-count="8">M</span>ul (rd, rs1, rs2) -&gt; fprintf ppf "mul %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | <span data-count="4">X</span>ori (rd, rs1, imm) -&gt; fprintf ppf "xori %a, %a, %d" pp_reg rd pp_reg rs1 imm
-  | <span data-count="12">X</span>or (rd, rs1, rs2) -&gt; fprintf ppf "xor %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
-  | <span data-count="6">S</span>lt (rd, rs1, rs2) -&gt; fprintf ppf "slt %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
-  | <span data-count="10">S</span>eqz (rd, rs) -&gt; fprintf ppf "seqz %a, %a" pp_reg rd pp_reg rs
+  | <span data-count="13">X</span>or (rd, rs1, rs2) -&gt; fprintf ppf "xor %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | <span data-count="8">S</span>lt (rd, rs1, rs2) -&gt; fprintf ppf "slt %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | <span data-count="11">S</span>eqz (rd, rs) -&gt; fprintf ppf "seqz %a, %a" pp_reg rd pp_reg rs
   | <span data-count="2">S</span>nez (rd, rs) -&gt; fprintf ppf "snez %a, %a" pp_reg rd pp_reg rs
-  | <span data-count="166">L</span>i (rd, imm) -&gt; fprintf ppf "li %a, %d" pp_reg rd imm
-  | <span data-count="15">L</span>a (rd, s) -&gt; fprintf ppf "la %a, %s" pp_reg rd s
-  | <span data-count="81">M</span>v (rd, rs) -&gt; fprintf ppf "mv %a, %a" pp_reg rd pp_reg rs
-  | <span data-count="227">L</span>d (rd, ofs) -&gt; fprintf ppf "ld %a, %a" pp_reg rd pp_offset ofs
-  | <span data-count="257">S</span>d (rs, ofs) -&gt; fprintf ppf "sd %a, %a" pp_reg rs pp_offset ofs
-  | <span data-count="13">B</span>eq (rs1, rs2, s) -&gt; fprintf ppf "beq %a, %a, %s" pp_reg rs1 pp_reg rs2 s
-  | <span data-count="13">J</span> s -&gt; fprintf ppf "j %s" s
-  | <span data-count="70">L</span>abel s -&gt; fprintf ppf "%s:" s
-  | <span data-count="77">C</span>all s -&gt; fprintf ppf "call %s" s
-  | <span data-count="44">R</span>et -&gt; fprintf ppf "ret"
+  | <span data-count="212">L</span>i (rd, imm) -&gt; fprintf ppf "li %a, %d" pp_reg rd imm
+  | <span data-count="24">L</span>a (rd, s) -&gt; fprintf ppf "la %a, %s" pp_reg rd s
+  | <span data-count="106">M</span>v (rd, rs) -&gt; fprintf ppf "mv %a, %a" pp_reg rd pp_reg rs
+  | <span data-count="297">L</span>d (rd, ofs) -&gt; fprintf ppf "ld %a, %a" pp_reg rd pp_offset ofs
+  | <span data-count="343">S</span>d (rs, ofs) -&gt; fprintf ppf "sd %a, %a" pp_reg rs pp_offset ofs
+  | <span data-count="16">B</span>eq (rs1, rs2, s) -&gt; fprintf ppf "beq %a, %a, %s" pp_reg rs1 pp_reg rs2 s
+  | <span data-count="16">J</span> s -&gt; fprintf ppf "j %s" s
+  | <span data-count="89">L</span>abel s -&gt; fprintf ppf "%s:" s
+  | <span data-count="108">C</span>all s -&gt; fprintf ppf "call %s" s
+  | <span data-count="57">R</span>et -&gt; fprintf ppf "ret"
   | <span data-count="0">E</span>call -&gt; fprintf ppf "ecall"
 ;;
 
-let addi k rd rs imm = <span data-count="168">k</span> @@ Addi (rd, rs, imm)
-let add k rd rs1 rs2 = <span data-count="42">k</span> @@ Add (rd, rs1, rs2)
-let sub k rd rs1 rs2 = <span data-count="13">k</span> @@ Sub (rd, rs1, rs2)
-let mul k rd rs1 rs2 = <span data-count="7">k</span> @@ Mul (rd, rs1, rs2)
+let addi k rd rs imm = <span data-count="223">k</span> @@ Addi (rd, rs, imm)
+let add k rd rs1 rs2 = <span data-count="52">k</span> @@ Add (rd, rs1, rs2)
+let sub k rd rs1 rs2 = <span data-count="16">k</span> @@ Sub (rd, rs1, rs2)
+let mul k rd rs1 rs2 = <span data-count="8">k</span> @@ Mul (rd, rs1, rs2)
 let xori k rd rs1 imm = <span data-count="4">k</span> @@ Xori (rd, rs1, imm)
-let xor k rd rs1 rs2 = <span data-count="12">k</span> @@ Xor (rd, rs1, rs2)
-let slt k rd rs1 rs2 = <span data-count="6">k</span> @@ Slt (rd, rs1, rs2)
-let seqz k rd rs = <span data-count="10">k</span> (Seqz (rd, rs))
+let xor k rd rs1 rs2 = <span data-count="13">k</span> @@ Xor (rd, rs1, rs2)
+let slt k rd rs1 rs2 = <span data-count="8">k</span> @@ Slt (rd, rs1, rs2)
+let seqz k rd rs = <span data-count="11">k</span> (Seqz (rd, rs))
 let snez k rd rs = <span data-count="2">k</span> (Snez (rd, rs))
-let li k rd imm = <span data-count="166">k</span> (Li (rd, imm))
-let la k rd s = <span data-count="15">k</span> (La (rd, s))
-let mv k rd rs = <span data-count="81">k</span> (Mv (rd, rs))
-let ld k rd ofs = <span data-count="227">k</span> (Ld (rd, ofs))
-let sd k rd ofs = <span data-count="257">k</span> (Sd (rd, ofs))
-let beq k rs1 rs2 s = <span data-count="13">k</span> @@ Beq (rs1, rs2, s)
-let j k s = <span data-count="13">k</span> (J s)
-let label k s = <span data-count="70">k</span> (Label s)
-let call k s = <span data-count="77">k</span> (Call s)
-let ret k = <span data-count="44">k</span> Ret
+let li k rd imm = <span data-count="212">k</span> (Li (rd, imm))
+let la k rd s = <span data-count="24">k</span> (La (rd, s))
+let mv k rd rs = <span data-count="106">k</span> (Mv (rd, rs))
+let ld k rd ofs = <span data-count="297">k</span> (Ld (rd, ofs))
+let sd k rd ofs = <span data-count="343">k</span> (Sd (rd, ofs))
+let beq k rs1 rs2 s = <span data-count="16">k</span> @@ Beq (rs1, rs2, s)
+let j k s = <span data-count="16">k</span> (J s)
+let label k s = <span data-count="89">k</span> (Label s)
+let call k s = <span data-count="108">k</span> (Call s)
+let ret k = <span data-count="57">k</span> Ret
 let ecall k = <span data-count="0">k</span> Ecall
 </code></pre>
       </div>
