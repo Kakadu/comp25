@@ -603,25 +603,25 @@ let gen_char =
 let un_op_list = [ "~-" ]
 let bin_op_list = [ "*"; "/"; "+"; "-"; "^"; "&gt;="; "&lt;="; "&lt;&gt;"; "="; "&gt;"; "&lt;"; "&amp;&amp;"; "||" ]
 let is_bin_op op = <span data-count="388">L</span>ist.mem op bin_op_list
-let is_unary_minus op = <span data-count="796">o</span>p = "~-"
+let is_unary_minus op = <span data-count="814">o</span>p = "~-"
 
 let is_keyword = function
-  | <span data-count="1018">"</span>and"
-  | <span data-count="1266">"</span>else"
-  | <span data-count="841">"</span>false"
+  | <span data-count="1032">"</span>and"
+  | <span data-count="1286">"</span>else"
+  | <span data-count="851">"</span>false"
   | <span data-count="0">"</span>fun"
   | <span data-count="0">"</span>if"
-  | <span data-count="5882">"</span>in"
-  | <span data-count="1755">"</span>let"
+  | <span data-count="5901">"</span>in"
+  | <span data-count="1753">"</span>let"
   | <span data-count="0">"</span>function"
   | <span data-count="0">"</span>match"
   | <span data-count="0">"</span>rec"
-  | <span data-count="1280">"</span>then"
-  | <span data-count="533">"</span>true"
+  | <span data-count="1300">"</span>then"
+  | <span data-count="543">"</span>true"
   | <span data-count="626">"</span>with"
   | <span data-count="0">"</span>Some"
   | <span data-count="0">"</span>None" -&gt; true
-  | <span data-count="105257">_</span> -&gt; false
+  | <span data-count="105361">_</span> -&gt; false
 ;;
 
 let gen_ident =
