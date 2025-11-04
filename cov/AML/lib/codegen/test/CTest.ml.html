@@ -18,8 +18,8 @@
       <h2>83.33%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:14.05%"></span>
-      <span class="unvisited" style="top:14.88%"></span>
+      <span class="unvisited" style="top:14.29%"></span>
+      <span class="unvisited" style="top:15.13%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -94,12 +94,12 @@
 <a id="L68"></a><span > </span>
 <a id="L69"></a><span > </span>
 <a id="L70"></a><span > </span>
-<a id="L71"></a><span > </span>
-<a id="L72"></a><span class="visited"> </span>
+<a id="L71"></a><span class="visited"> </span>
+<a id="L72"></a><span > </span>
 <a id="L73"></a><span > </span>
 <a id="L74"></a><span > </span>
-<a id="L75"></a><span > </span>
-<a id="L76"></a><span class="visited"> </span>
+<a id="L75"></a><span class="visited"> </span>
+<a id="L76"></a><span > </span>
 <a id="L77"></a><span > </span>
 <a id="L78"></a><span > </span>
 <a id="L79"></a><span > </span>
@@ -108,8 +108,8 @@
 <a id="L82"></a><span > </span>
 <a id="L83"></a><span > </span>
 <a id="L84"></a><span > </span>
-<a id="L85"></a><span > </span>
-<a id="L86"></a><span class="visited"> </span>
+<a id="L85"></a><span class="visited"> </span>
+<a id="L86"></a><span > </span>
 <a id="L87"></a><span > </span>
 <a id="L88"></a><span > </span>
 <a id="L89"></a><span > </span>
@@ -141,10 +141,8 @@
 <a id="L115"></a><span > </span>
 <a id="L116"></a><span > </span>
 <a id="L117"></a><span > </span>
-<a id="L118"></a><span > </span>
+<a id="L118"></a><span class="visited"> </span>
 <a id="L119"></a><span > </span>
-<a id="L120"></a><span class="visited"> </span>
-<a id="L121"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -268,8 +266,6 @@
 <a href="#L117">117</a>
 <a href="#L118">118</a>
 <a href="#L119">119</a>
-<a href="#L120">120</a>
-<a href="#L121">121</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2025-2026, Rodion Suvorov, Dmitriy Chirkov*)
 
@@ -338,7 +334,6 @@ let%expect_test "binary operations" =
       ld t0, -72(s0)
       sd t0, -80(s0)
       ld a0, -32(s0)
-    f_end:
       ld ra, 72(sp)
       ld s0, 64(sp)
       addi sp, sp, 80
@@ -362,10 +357,10 @@ let%expect_test "some branches" =
       .globl f
       .type f, @function
     f:
-      addi sp, sp, -56
-      sd ra, 48(sp)
-      sd s0, 40(sp)
-      addi s0, sp, 56
+      addi sp, sp, -64
+      sd ra, 56(sp)
+      sd s0, 48(sp)
+      addi s0, sp, 64
       li t0, 5
       sd t0, -24(s0)
       li t0, 2
@@ -386,10 +381,9 @@ let%expect_test "some branches" =
     .Lelse_0:
       ld a0, -48(s0)
     .Lendif_1:
-    f_end:
-      ld ra, 48(sp)
-      ld s0, 40(sp)
-      addi sp, sp, 56
+      ld ra, 56(sp)
+      ld s0, 48(sp)
+      addi sp, sp, 64
       ret |}<span data-count="5">]</span>
 ;;
 </code></pre>
