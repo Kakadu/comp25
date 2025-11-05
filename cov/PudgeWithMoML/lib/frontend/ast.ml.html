@@ -264,7 +264,7 @@ open Generate
   | Int_lt of (in<span data-count="178">t</span>[@gen QCheck.Gen.small_int])
   | Bool_lt of boo<span data-count="22">l</span>
   | Unit_lt
-[@@deriving show { with_path = false }, qcheck<span data-count="505">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="555">]</span>
 
 <span data-count="1351966">t</span>ype pattern =
   | Wild
@@ -279,12 +279,12 @@ open Generate
   | PVar of ident
   | POption of <span data-count="6">p</span>attern option
   | PConstraint of pattern * typ
-[@@deriving show { with_path = false }, qcheck<span data-count="3224743">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="3224763">]</span>
 
 <span data-count="0">t</span>ype is_recursive =
   | Nonrec
   | Rec
-[@@deriving show { with_path = false }, qcheck<span data-count="404">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="444">]</span>
 
 <span data-count="267076">t</span>ype expr =
   | Const of literal
@@ -316,37 +316,37 @@ open Generate
 [@@deriving show { with_path = false }, qcheck]
 
 <span data-count="0">a</span>nd case = <span data-count="50">(</span>pattern[@gen gen_pattern_size<span data-count="24660">d</span> (n / 4)]) * (expr[@gen gen_expr_size<span data-count="24660">d</span> (n / 4)])
-[@@deriving show { with_path = false }, qcheck<span data-count="396384">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="396564">]</span>
 
 <span data-count="1">t</span>ype structure_item =
   <span data-count="166">i</span>s_recursive
   * binding
-  * (<span data-count="252">b</span>inding lis<span data-count="166">t</span>[@gen QCheck.Gen.(list_siz<span data-count="101">e</span> (0 -<span data-count="101">-</span> 1) gen_binding)])
-[@@deriving show { with_path = false }, qcheck<span data-count="303">]</span>
+  * (<span data-count="252">b</span>inding lis<span data-count="166">t</span>[@gen QCheck.Gen.(list_siz<span data-count="111">e</span> (0 -<span data-count="111">-</span> 1) gen_binding)])
+[@@deriving show { with_path = false }, qcheck<span data-count="333">]</span>
 
 <span data-count="0">t</span>ype program =
-  (<span data-count="376">s</span>tructure_item lis<span data-count="83">t</span>[@gen QCheck.Gen.(list_siz<span data-count="101">e</span> (1 -<span data-count="101">-</span> 2) gen_structure_item)])
-[@@deriving show { with_path = false }, qcheck<span data-count="101">]</span>
+  (<span data-count="376">s</span>tructure_item lis<span data-count="83">t</span>[@gen QCheck.Gen.(list_siz<span data-count="111">e</span> (1 -<span data-count="111">-</span> 2) gen_structure_item)])
+[@@deriving show { with_path = false }, qcheck<span data-count="111">]</span>
 
 let eapp func args =
-  <span data-count="3934">B</span>ase.List.fold_left args ~init:func ~f:(fun acc arg -&gt; <span data-count="7863">A</span>pply (acc, arg))
+  <span data-count="4014">B</span>ase.List.fold_left args ~init:func ~f:(fun acc arg -&gt; <span data-count="8023">A</span>pply (acc, arg))
 ;;
 
 let eapp2 func a b = <span data-count="10">e</span>app func [ a; b ]
 
 let elambda func args =
-  <span data-count="2030">B</span>ase.List.fold_right args ~init:func ~f:(fun arg acc -&gt; <span data-count="990">L</span>ambda (arg, acc))
+  <span data-count="2070">B</span>ase.List.fold_right args ~init:func ~f:(fun arg acc -&gt; <span data-count="1009">L</span>ambda (arg, acc))
 ;;
 
-let eeq a b = <span data-count="1624">e</span>app (Variable "=") [ a; b ]
+let eeq a b = <span data-count="1628">e</span>app (Variable "=") [ a; b ]
 let eneq a b = <span data-count="0">e</span>app (Variable "&lt;&gt;") [ a; b ]
 let elt a b = <span data-count="32">e</span>app (Variable "&lt;") [ a; b ]
-let elte a b = <span data-count="40">e</span>app (Variable "&lt;=") [ a; b ]
+let elte a b = <span data-count="44">e</span>app (Variable "&lt;=") [ a; b ]
 let egt a b = <span data-count="36">e</span>app (Variable "&gt;") [ a; b ]
 let egte a b = <span data-count="10">e</span>app (Variable "&gt;=") [ a; b ]
-let eadd a b = <span data-count="827">e</span>app (Variable "+") [ a; b ]
-let esub a b = <span data-count="408">e</span>app (Variable "-") [ a; b ]
-let emul a b = <span data-count="438">e</span>app (Variable "*") [ a; b ]
+let eadd a b = <span data-count="855">e</span>app (Variable "+") [ a; b ]
+let esub a b = <span data-count="436">e</span>app (Variable "-") [ a; b ]
+let emul a b = <span data-count="454">e</span>app (Variable "*") [ a; b ]
 let ediv a b = <span data-count="160">e</span>app (Variable "/") [ a; b ]
 let eland a b = <span data-count="142">e</span>app (Variable "&amp;&amp;") [ a; b ]
 let elor a b = <span data-count="94">e</span>app (Variable "||") [ a; b ]

@@ -454,15 +454,15 @@ type reg =
 let fp = S 0
 
 let pp_reg fmt =
-  <span data-count="3042">l</span>et open Format in
+  <span data-count="3216">l</span>et open Format in
   function
   | <span data-count="16">Z</span>ero -&gt; fprintf fmt "zero"
-  | <span data-count="71">R</span>a -&gt; fprintf fmt "ra"
-  | <span data-count="1011">S</span>p -&gt; fprintf fmt "sp"
-  | <span data-count="245">A</span> n -&gt; fprintf fmt "a%d" n
-  | <span data-count="505">S</span> n when n = 0 -&gt; <span data-count="503">f</span>printf fmt "fp"
+  | <span data-count="75">R</span>a -&gt; fprintf fmt "ra"
+  | <span data-count="1075">S</span>p -&gt; fprintf fmt "sp"
+  | <span data-count="261">A</span> n -&gt; fprintf fmt "a%d" n
+  | <span data-count="529">S</span> n when n = 0 -&gt; <span data-count="527">f</span>printf fmt "fp"
   | <span data-count="2">S</span> n -&gt; fprintf fmt "s%d" n
-  | <span data-count="1194">T</span> n -&gt; fprintf fmt "t%d" n
+  | <span data-count="1260">T</span> n -&gt; fprintf fmt "t%d" n
 ;;
 
 type offset = int
@@ -501,21 +501,21 @@ type instr =
   | DWord of string
 
 let pp_instr fmt =
-  <span data-count="2562">l</span>et open Format in
+  <span data-count="2717">l</span>et open Format in
   function
-  | <span data-count="320">A</span>ddi (rd, rs, n) -&gt; fprintf fmt "addi %a, %a, %d" pp_reg rd pp_reg rs n
-  | <span data-count="19">A</span>dd (rd, rs1, rs2) -&gt; fprintf fmt "add %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | <span data-count="340">A</span>ddi (rd, rs, n) -&gt; fprintf fmt "addi %a, %a, %d" pp_reg rd pp_reg rs n
+  | <span data-count="20">A</span>dd (rd, rs1, rs2) -&gt; fprintf fmt "add %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | <span data-count="20">S</span>ub (rd, rs1, rs2) -&gt; fprintf fmt "sub %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | <span data-count="4">M</span>ul (rd, rs1, rs2) -&gt; fprintf fmt "mul %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | <span data-count="2">D</span>iv (rd, rs1, rs2) -&gt; fprintf fmt "div %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
-  | <span data-count="240">L</span>i (rd, n) -&gt; fprintf fmt "li %a, %d" pp_reg rd n
-  | <span data-count="301">L</span>d (rd, offset, rs) -&gt; fprintf fmt "ld %a, %d(%a)" pp_reg rd offset pp_reg rs
-  | <span data-count="60">L</span>a (rd, label) -&gt; fprintf fmt "la %a, %s" pp_reg rd label
+  | <span data-count="254">L</span>i (rd, n) -&gt; fprintf fmt "li %a, %d" pp_reg rd n
+  | <span data-count="316">L</span>d (rd, offset, rs) -&gt; fprintf fmt "ld %a, %d(%a)" pp_reg rd offset pp_reg rs
+  | <span data-count="67">L</span>a (rd, label) -&gt; fprintf fmt "la %a, %s" pp_reg rd label
   | <span data-count="8">S</span>lt (rd, rs1, rs2) -&gt; fprintf fmt "slt %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | <span data-count="10">S</span>eqz (rd, rs) -&gt; fprintf fmt "seqz %a, %a" pp_reg rd pp_reg rs
   | <span data-count="2">S</span>nez (rd, rs) -&gt; fprintf fmt "snez %a, %a" pp_reg rd pp_reg rs
-  | <span data-count="131">M</span>v (rd, rs) -&gt; fprintf fmt "mv %a, %a" pp_reg rd pp_reg rs
-  | <span data-count="495">S</span>d (rs1, offset, rs2) -&gt; fprintf fmt "sd %a, %d(%a)" pp_reg rs1 offset pp_reg rs2
+  | <span data-count="141">M</span>v (rd, rs) -&gt; fprintf fmt "mv %a, %a" pp_reg rd pp_reg rs
+  | <span data-count="525">S</span>d (rs1, offset, rs2) -&gt; fprintf fmt "sd %a, %d(%a)" pp_reg rs1 offset pp_reg rs2
   | <span data-count="4">X</span>ori (rd, rs, n) -&gt; fprintf fmt "xori %a, %a, %d" pp_reg rd pp_reg rs n
   | <span data-count="1">X</span>or (rd, rs1, rs2) -&gt; fprintf fmt "xor %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | <span data-count="1">A</span>ndi (rd, rs, n) -&gt; fprintf fmt "andi %a, %a, %d" pp_reg rd pp_reg rs n
@@ -526,28 +526,28 @@ let pp_instr fmt =
   | <span data-count="1">B</span>le (rs1, rs2, label) -&gt; fprintf fmt "ble %a, %a, %s" pp_reg rs1 pp_reg rs2 label
   | <span data-count="17">J</span> label -&gt; fprintf fmt "j %s" label
   | <span data-count="1">J</span>alr (rs1, rs2, imm) -&gt; fprintf fmt "jalr %a, %a, %d" pp_reg rs1 pp_reg rs2 imm
-  | <span data-count="23">E</span>call -&gt; fprintf fmt "ecall"
-  | <span data-count="150">C</span>all symbol -&gt; fprintf fmt "call %s" symbol
-  | <span data-count="36">R</span>et -&gt; fprintf fmt "ret"
-  | <span data-count="90">L</span>abel label -&gt; fprintf fmt "%s:" label
-  | <span data-count="101">D</span>irective name -&gt; fprintf fmt "%s" name
-  | <span data-count="471">C</span>omment comment -&gt; fprintf fmt "# %s" comment
-  | <span data-count="32">D</span>Word name -&gt; fprintf fmt "%s: .dword 0" name
+  | <span data-count="25">E</span>call -&gt; fprintf fmt "ecall"
+  | <span data-count="161">C</span>all symbol -&gt; fprintf fmt "call %s" symbol
+  | <span data-count="38">R</span>et -&gt; fprintf fmt "ret"
+  | <span data-count="94">L</span>abel label -&gt; fprintf fmt "%s:" label
+  | <span data-count="109">D</span>irective name -&gt; fprintf fmt "%s" name
+  | <span data-count="499">C</span>omment comment -&gt; fprintf fmt "# %s" comment
+  | <span data-count="35">D</span>Word name -&gt; fprintf fmt "%s: .dword 0" name
 ;;
 
-let addi r1 r2 n = <span data-count="320">A</span>ddi (r1, r2, n)
-let add r1 r2 r3 = <span data-count="19">A</span>dd (r1, r2, r3)
+let addi r1 r2 n = <span data-count="340">A</span>ddi (r1, r2, n)
+let add r1 r2 r3 = <span data-count="20">A</span>dd (r1, r2, r3)
 let sub r1 r2 r3 = <span data-count="20">S</span>ub (r1, r2, r3)
 let mul r1 r2 r3 = <span data-count="4">M</span>ul (r1, r2, r3)
 let div r1 r2 r3 = <span data-count="2">D</span>iv (r1, r2, r3)
-let li r n = <span data-count="240">L</span>i (r, n)
-let ld r off base = <span data-count="301">L</span>d (r, off, base)
-let la r label = <span data-count="60">L</span>a (r, label)
+let li r n = <span data-count="254">L</span>i (r, n)
+let ld r off base = <span data-count="316">L</span>d (r, off, base)
+let la r label = <span data-count="67">L</span>a (r, label)
 let slt r1 r2 r3 = <span data-count="8">S</span>lt (r1, r2, r3)
 let seqz r1 r2 = <span data-count="10">S</span>eqz (r1, r2)
 let snez r1 r2 = <span data-count="2">S</span>nez (r1, r2)
-let mv r1 r2 = <span data-count="131">M</span>v (r1, r2)
-let sd r1 off base = <span data-count="495">S</span>d (r1, off, base)
+let mv r1 r2 = <span data-count="141">M</span>v (r1, r2)
+let sd r1 off base = <span data-count="525">S</span>d (r1, off, base)
 let xori r1 r2 n = <span data-count="4">X</span>ori (r1, r2, n)
 let xor r1 r2 r3 = <span data-count="1">X</span>or (r1, r2, r3)
 let andi r1 r2 n = <span data-count="1">A</span>ndi (r1, r2, n)
@@ -559,11 +559,11 @@ let ble r1 r2 label = <span data-count="1">B</span>le (r1, r2, label)
 let j label = <span data-count="17">J</span> label
 let jalr rd rs1 imm = <span data-count="1">J</span>alr (rd, rs1, imm)
 let ecall = Ecall
-let call symbol = <span data-count="150">C</span>all symbol
+let call symbol = <span data-count="161">C</span>all symbol
 let ret = Ret
-let label l = <span data-count="90">L</span>abel l
-let directive l = <span data-count="80">D</span>irective l
-let comment c = <span data-count="471">C</span>omment c
+let label l = <span data-count="94">L</span>abel l
+let directive l = <span data-count="86">D</span>irective l
+let comment c = <span data-count="499">C</span>omment c
 let dword name = <span data-count="1">D</span>Word name
 
 let%expect_test "Print all regs and instructions" =
@@ -637,7 +637,7 @@ let%expect_test "Print all regs and instructions" =
   .text
   # done
   val: .dword 0
-    |}<span data-count="201">]</span>
+    |}<span data-count="221">]</span>
 ;;
 </code></pre>
       </div>
