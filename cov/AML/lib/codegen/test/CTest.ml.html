@@ -18,8 +18,8 @@
       <h2>83.33%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:14.29%"></span>
-      <span class="unvisited" style="top:15.13%"></span>
+      <span class="unvisited" style="top:13.08%"></span>
+      <span class="unvisited" style="top:13.85%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -94,21 +94,21 @@
 <a id="L68"></a><span > </span>
 <a id="L69"></a><span > </span>
 <a id="L70"></a><span > </span>
-<a id="L71"></a><span class="visited"> </span>
+<a id="L71"></a><span > </span>
 <a id="L72"></a><span > </span>
 <a id="L73"></a><span > </span>
 <a id="L74"></a><span > </span>
-<a id="L75"></a><span class="visited"> </span>
+<a id="L75"></a><span > </span>
 <a id="L76"></a><span > </span>
 <a id="L77"></a><span > </span>
 <a id="L78"></a><span > </span>
-<a id="L79"></a><span > </span>
+<a id="L79"></a><span class="visited"> </span>
 <a id="L80"></a><span > </span>
 <a id="L81"></a><span > </span>
 <a id="L82"></a><span > </span>
-<a id="L83"></a><span > </span>
+<a id="L83"></a><span class="visited"> </span>
 <a id="L84"></a><span > </span>
-<a id="L85"></a><span class="visited"> </span>
+<a id="L85"></a><span > </span>
 <a id="L86"></a><span > </span>
 <a id="L87"></a><span > </span>
 <a id="L88"></a><span > </span>
@@ -116,7 +116,7 @@
 <a id="L90"></a><span > </span>
 <a id="L91"></a><span > </span>
 <a id="L92"></a><span > </span>
-<a id="L93"></a><span > </span>
+<a id="L93"></a><span class="visited"> </span>
 <a id="L94"></a><span > </span>
 <a id="L95"></a><span > </span>
 <a id="L96"></a><span > </span>
@@ -141,8 +141,19 @@
 <a id="L115"></a><span > </span>
 <a id="L116"></a><span > </span>
 <a id="L117"></a><span > </span>
-<a id="L118"></a><span class="visited"> </span>
+<a id="L118"></a><span > </span>
 <a id="L119"></a><span > </span>
+<a id="L120"></a><span > </span>
+<a id="L121"></a><span > </span>
+<a id="L122"></a><span > </span>
+<a id="L123"></a><span > </span>
+<a id="L124"></a><span > </span>
+<a id="L125"></a><span > </span>
+<a id="L126"></a><span > </span>
+<a id="L127"></a><span > </span>
+<a id="L128"></a><span > </span>
+<a id="L129"></a><span class="visited"> </span>
+<a id="L130"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -266,6 +277,17 @@
 <a href="#L117">117</a>
 <a href="#L118">118</a>
 <a href="#L119">119</a>
+<a href="#L120">120</a>
+<a href="#L121">121</a>
+<a href="#L122">122</a>
+<a href="#L123">123</a>
+<a href="#L124">124</a>
+<a href="#L125">125</a>
+<a href="#L126">126</a>
+<a href="#L127">127</a>
+<a href="#L128">128</a>
+<a href="#L129">129</a>
+<a href="#L130">130</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2025-2026, Rodion Suvorov, Dmitriy Chirkov*)
 
@@ -308,28 +330,36 @@ let%expect_test "binary operations" =
       sd ra, 72(sp)
       sd s0, 64(sp)
       addi s0, sp, 80
-      li t0, 52
-      li t1, 52
+      li t0, 105
+      li t1, 105
       add t0, t0, t1
+      addi t0, t0, -1
       sd t0, -24(s0)
       ld t0, -24(s0)
       sd t0, -32(s0)
-      li t0, 52
-      li t1, 52
+      li t0, 105
+      li t1, 105
       sub t0, t0, t1
+      addi t0, t0, 1
       sd t0, -40(s0)
       ld t0, -40(s0)
       sd t0, -48(s0)
-      li t0, 52
-      li t1, 52
-      mul t0, t0, t1
+      li t0, 105
+      li t1, 105
+      srai t2, t0, 1
+      srai t3, t1, 1
+      mul t0, t2, t3
+      slli t0, t0, 1
+      addi t0, t0, 1
       sd t0, -56(s0)
       ld t0, -56(s0)
       sd t0, -64(s0)
-      li t0, 52
-      li t1, 52
+      li t0, 105
+      li t1, 105
       slt t0, t1, t0
       xori t0, t0, 1
+      slli t0, t0, 1
+      addi t0, t0, 1
       sd t0, -72(s0)
       ld t0, -72(s0)
       sd t0, -80(s0)
@@ -361,21 +391,24 @@ let%expect_test "some branches" =
       sd ra, 56(sp)
       sd s0, 48(sp)
       addi s0, sp, 64
-      li t0, 5
+      li t0, 11
       sd t0, -24(s0)
-      li t0, 2
+      li t0, 5
       sd t0, -32(s0)
-      li t0, 3
+      li t0, 7
       sd t0, -40(s0)
-      li t0, 4
+      li t0, 9
       sd t0, -48(s0)
       ld t0, -24(s0)
       ld t1, -32(s0)
       slt t0, t1, t0
       xori t0, t0, 1
+      slli t0, t0, 1
+      addi t0, t0, 1
       sd t0, -56(s0)
       ld t0, -56(s0)
-      beq t0, x0, .Lelse_0
+      li t1, 1
+      beq t0, t1, .Lelse_0
       ld a0, -40(s0)
       j .Lendif_1
     .Lelse_0:

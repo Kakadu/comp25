@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>CC.ml &mdash; Coverage report</title>
-    <meta name="description" content="84.69% coverage in lib/middleend/CC.ml">
+    <meta name="description" content="87.08% coverage in lib/middleend/CC.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,7 +15,7 @@
           <span class="dirname">lib/middleend/</span>CC.ml
         </a>
       </h1>
-      <h2>84.69%</h2>
+      <h2>87.08%</h2>
     </div>
     <div id="navbar">
       <span class="unvisited" style="top:6.27%"></span>
@@ -28,9 +28,6 @@
       <span class="unvisited" style="top:40.42%"></span>
       <span class="unvisited" style="top:44.60%"></span>
       <span class="unvisited" style="top:48.08%"></span>
-      <span class="unvisited" style="bottom:41.46%"></span>
-      <span class="unvisited" style="bottom:40.77%"></span>
-      <span class="unvisited" style="bottom:40.42%"></span>
       <span class="unvisited" style="bottom:29.62%"></span>
       <span class="unvisited" style="bottom:29.27%"></span>
       <span class="unvisited" style="bottom:28.92%"></span>
@@ -212,10 +209,10 @@
 <a id="L165"></a><span class="visited"> </span>
 <a id="L166"></a><span class="visited"> </span>
 <a id="L167"></a><span class="visited"> </span>
-<a id="L168"></a><span class="unvisited"> </span>
+<a id="L168"></a><span class="visited"> </span>
 <a id="L169"></a><span > </span>
-<a id="L170"></a><span class="unvisited"> </span>
-<a id="L171"></a><span class="unvisited"> </span>
+<a id="L170"></a><span class="visited"> </span>
+<a id="L171"></a><span class="visited"> </span>
 <a id="L172"></a><span class="visited"> </span>
 <a id="L173"></a><span > </span>
 <a id="L174"></a><span > </span>
@@ -640,60 +637,60 @@ type cc_state =
 module CCState = struct
   type 'a t = cc_state -&gt; ('a, string) result * cc_state
 
-  let return x st = <span data-count="1353">O</span>k x, st
+  let return x st = <span data-count="1733">O</span>k x, st
   let error msg st = <span data-count="0">E</span>rror msg, st
 
   let bind (m : 'a t) (f : 'a -&gt; 'b t) : 'b t =
-    <span data-count="3699">f</span>un st -&gt;
-    <span data-count="3699">m</span>atch m st with
+    <span data-count="4746">f</span>un st -&gt;
+    <span data-count="4746">m</span>atch m st with
     | <span data-count="0">E</span>rror msg, new_state -&gt; Error msg, new_state
-    | <span data-count="3699">O</span>k a, new_state -&gt; f a new_state
+    | <span data-count="4746">O</span>k a, new_state -&gt; f a new_state
   ;;
 
   let ( let* ) = bind
-  let get st = <span data-count="1386">O</span>k st, st
-  let put st _ = <span data-count="981">O</span>k (), st
+  let get st = <span data-count="1785">O</span>k st, st
+  let put st _ = <span data-count="1254">O</span>k (), st
 
   let rec map_m f = function
-    | <span data-count="21">[</span>] -&gt; return []
-    | <span data-count="63">x</span> :: xs -&gt;
-      let* y = <span data-count="63">f</span> x in
-      <span data-count="63">l</span>et* ys = map_<span data-count="63">m</span> f xs in
-      <span data-count="63">r</span>eturn (y :: ys)
+    | <span data-count="26">[</span>] -&gt; return []
+    | <span data-count="77">x</span> :: xs -&gt;
+      let* y = <span data-count="77">f</span> x in
+      <span data-count="77">l</span>et* ys = map_<span data-count="77">m</span> f xs in
+      <span data-count="77">r</span>eturn (y :: ys)
   ;;
 
-  let run m = <span data-count="21">m</span> { temps = 0; bound = SS.empty }
+  let run m = <span data-count="26">m</span> { temps = 0; bound = SS.empty }
 end
 
 open CCState
 
 let fresh_name (base : string) : string CCState.t =
-  <span data-count="108">l</span>et* st = get in
-  <span data-count="108">l</span>et new_id = st.temps in
-  let* () = pu<span data-count="108">t</span> { st with temps = new_id + 1 } in
-  <span data-count="108">r</span>eturn (Printf.sprint<span data-count="108">f</span> "%s_cc_%d" base new_id)
+  <span data-count="115">l</span>et* st = get in
+  <span data-count="115">l</span>et new_id = st.temps in
+  let* () = pu<span data-count="115">t</span> { st with temps = new_id + 1 } in
+  <span data-count="115">r</span>eturn (Printf.sprint<span data-count="115">f</span> "%s_cc_%d" base new_id)
 ;;
 
 let free_vars_imm = function
-  | <span data-count="114">I</span>mmNum _ -&gt; SS.empty
-  | <span data-count="1752">I</span>mmId id -&gt; SS.singleton id
+  | <span data-count="123">I</span>mmNum _ -&gt; SS.empty
+  | <span data-count="1850">I</span>mmId id -&gt; SS.singleton id
 ;;
 
 let rec free_vars_cexpr = function
-  | <span data-count="84">C</span>Imm imm -&gt; free_vars_imm imm
-  | <span data-count="677">C</span>Binop (_, i1, i2) -&gt; SS.union (free_vars_im<span data-count="677">m</span> i1) (free_vars_im<span data-count="677">m</span> i2)
-  | <span data-count="170">C</span>App (f, args) -&gt;
-    List.fold_left (fun acc a -&gt; <span data-count="225">S</span>S.union acc (free_vars_im<span data-count="225">m</span> a)) (free_vars_im<span data-count="170">m</span> f) args
-  | <span data-count="33">C</span>Ite (i, thn, els) -&gt;
-    SS.union (free_vars_im<span data-count="33">m</span> i) (SS.unio<span data-count="33">n</span> (free_vars_aexp<span data-count="33">r</span> thn) (free_vars_aexp<span data-count="33">r</span> els))
-  | <span data-count="506">C</span>Fun (arg, body) -&gt; SS.remove arg (free_vars_aexp<span data-count="506">r</span> body)
+  | <span data-count="133">C</span>Imm imm -&gt; free_vars_imm imm
+  | <span data-count="691">C</span>Binop (_, i1, i2) -&gt; SS.union (free_vars_im<span data-count="691">m</span> i1) (free_vars_im<span data-count="691">m</span> i2)
+  | <span data-count="179">C</span>App (f, args) -&gt;
+    List.fold_left (fun acc a -&gt; <span data-count="243">S</span>S.union acc (free_vars_im<span data-count="243">m</span> a)) (free_vars_im<span data-count="179">m</span> f) args
+  | <span data-count="36">C</span>Ite (i, thn, els) -&gt;
+    SS.union (free_vars_im<span data-count="36">m</span> i) (SS.unio<span data-count="36">n</span> (free_vars_aexp<span data-count="36">r</span> thn) (free_vars_aexp<span data-count="36">r</span> els))
+  | <span data-count="609">C</span>Fun (arg, body) -&gt; SS.remove arg (free_vars_aexp<span data-count="609">r</span> body)
 
 and free_vars_aexpr = function
-  | <span data-count="614">A</span>CE cexpr -&gt; free_vars_cexpr cexpr
-  | <span data-count="746">A</span>Let (Nonrecursive, name, rhs, body) -&gt;
+  | <span data-count="731">A</span>CE cexpr -&gt; free_vars_cexpr cexpr
+  | <span data-count="782">A</span>Let (Nonrecursive, name, rhs, body) -&gt;
     let rhs_fvs = free_vars_cexpr rhs in
-    <span data-count="746">l</span>et body_fvs = SS.remove name (free_vars_aexp<span data-count="746">r</span> body) in
-    <span data-count="746">S</span>S.union rhs_fvs body_fvs
+    <span data-count="782">l</span>et body_fvs = SS.remove name (free_vars_aexp<span data-count="782">r</span> body) in
+    <span data-count="782">S</span>S.union rhs_fvs body_fvs
   | <span data-count="0">A</span>Let (Recursive, name, rhs, body) -&gt;
     let rhs_fvs = SS.remove name (free_vars_cexp<span data-count="0">r</span> rhs) in
     <span data-count="0">l</span>et body_fvs = SS.remove name (free_vars_aexp<span data-count="0">r</span> body) in
@@ -702,49 +699,49 @@ and free_vars_aexpr = function
 
 (* helper to run a computation `comp` in a new lexical scope *)
 let with_new_scope (new_bound : SS.t) (comp : 'a CCState.t) =
-  <span data-count="405">l</span>et* old_st = get in
-  <span data-count="405">l</span>et* () = pu<span data-count="405">t</span> { old_st with bound = new_bound } in
-  <span data-count="405">l</span>et* result = comp in
+  <span data-count="531">l</span>et* old_st = get in
+  <span data-count="531">l</span>et* () = pu<span data-count="531">t</span> { old_st with bound = new_bound } in
+  <span data-count="531">l</span>et* result = comp in
   (* restore the old bound set, keep updated temps counter *)
-  <span data-count="405">l</span>et* state_after_comp = get in
-  <span data-count="405">l</span>et* () = pu<span data-count="405">t</span> { old_st with temps = state_after_comp.temps } in
-  <span data-count="405">r</span>eturn result
+  <span data-count="531">l</span>et* state_after_comp = get in
+  <span data-count="531">l</span>et* () = pu<span data-count="531">t</span> { old_st with temps = state_after_comp.temps } in
+  <span data-count="531">r</span>eturn result
 ;;
 
 (* helper for `with_new_scope` to add new name to the bound set *)
 let with_binding (name : string) (comp : 'a CCState.t) =
-  <span data-count="232">l</span>et* st = get in
-  <span data-count="232">l</span>et new_bound = SS.add name st.bound in
-  <span data-count="232">w</span>ith_new_scope new_bound comp
+  <span data-count="319">l</span>et* st = get in
+  <span data-count="319">l</span>et new_bound = SS.add name st.bound in
+  <span data-count="319">w</span>ith_new_scope new_bound comp
 ;;
 
 (* build a curried function from a list of parameters. e.g., [p1; p2] body -&gt; CFun(p1, ACE(CFun(p2, body))) *)
 let rec mk_fun_cexpr (params : string list) (body : aexpr) : cexpr =
-  <span data-count="494">m</span>atch params with
-  | <span data-count="108">[</span> p ] -&gt; CFun (p, body)
-  | <span data-count="386">p</span> :: ps -&gt; CFun (p, ACE (mk_fun_cexp<span data-count="386">r</span> ps body))
+  <span data-count="510">m</span>atch params with
+  | <span data-count="115">[</span> p ] -&gt; CFun (p, body)
+  | <span data-count="395">p</span> :: ps -&gt; CFun (p, ACE (mk_fun_cexp<span data-count="395">r</span> ps body))
   | <span data-count="0">_</span> -&gt; raise (Invalid_argument "unreachable: mk_fun_cexpr with empty params")
 ;;
 
 let rec cc_aexpr = function
-  | <span data-count="227">A</span>CE cexpr -&gt; cc_cexpr_to_aexpr cexpr
-  | <span data-count="232">A</span>Let (rec_flag, name, rhs, body) -&gt;
+  | <span data-count="272">A</span>CE cexpr -&gt; cc_cexpr_to_aexpr cexpr
+  | <span data-count="319">A</span>Let (rec_flag, name, rhs, body) -&gt;
     (match rhs with
-     | <span data-count="19">C</span>Fun (arg, f_body) -&gt;
+     | <span data-count="29">C</span>Fun (arg, f_body) -&gt;
        let* st = get in
-       <span data-count="19">l</span>et fvs = free_vars_cexpr (CFun (arg, f_body)) in
-       <span data-count="19">l</span>et captured = SS.elements (SS.inte<span data-count="19">r</span> fvs st.bound) in
-       <span data-count="19">(</span>match captured with
-        | <span data-count="8">[</span>] -&gt;
+       <span data-count="29">l</span>et fvs = free_vars_cexpr (CFun (arg, f_body)) in
+       <span data-count="29">l</span>et captured = SS.elements (SS.inte<span data-count="29">r</span> fvs st.bound) in
+       <span data-count="29">(</span>match captured with
+        | <span data-count="18">[</span>] -&gt;
           (* closed function case *)
           let inner_bound =
             match rec_flag with
             | <span data-count="0">R</span>ecursive -&gt; SS.ad<span data-count="0">d</span> arg (SS.ad<span data-count="0">d</span> name st.bound)
-            | <span data-count="8">N</span>onrecursive -&gt; SS.ad<span data-count="8">d</span> arg st.bound
+            | <span data-count="18">N</span>onrecursive -&gt; SS.ad<span data-count="18">d</span> arg st.bound
           in
-          let* converted_fun_body = with_new_scop<span data-count="8">e</span> inner_bound (cc_aexp<span data-count="8">r</span> f_body) in
-          <span data-count="8">l</span>et* converted_let_body = with_bindin<span data-count="8">g</span> name (cc_aexp<span data-count="8">r</span> body) in
-          <span data-count="8">r</span>eturn
+          let* converted_fun_body = with_new_scop<span data-count="18">e</span> inner_bound (cc_aexp<span data-count="18">r</span> f_body) in
+          <span data-count="18">l</span>et* converted_let_body = with_bindin<span data-count="18">g</span> name (cc_aexp<span data-count="18">r</span> body) in
+          <span data-count="18">r</span>eturn
             (ALet (rec_flag, name, CFun (arg, converted_fun_body), converted_let_body))
         | <span data-count="11">_</span> -&gt;
           (* transform current let into let for the helper function, followed by a let for the closure *)
@@ -777,54 +774,54 @@ let rec cc_aexpr = function
                , helper_name
                , lifted_helper_fun
                , ALet (rec_flag, name, closure, converted_let_body) )))
-     | <span data-count="213">_</span> -&gt;
+     | <span data-count="290">_</span> -&gt;
        (* non-function let. e.g., let x = 5 *)
-       let* converted_rhs = cc_cexp<span data-count="213">r</span> rhs in
-       <span data-count="213">l</span>et* converted_body = with_bindin<span data-count="213">g</span> name (cc_aexp<span data-count="213">r</span> body) in
-       <span data-count="213">r</span>eturn (ALet (rec_flag, name, converted_rhs, converted_body)))
+       let* converted_rhs = cc_cexp<span data-count="290">r</span> rhs in
+       <span data-count="290">l</span>et* converted_body = with_bindin<span data-count="290">g</span> name (cc_aexp<span data-count="290">r</span> body) in
+       <span data-count="290">r</span>eturn (ALet (rec_flag, name, converted_rhs, converted_body)))
 
 (* cc for cexpr in tail position *)
 and cc_cexpr_to_aexpr = function
-  | <span data-count="91">C</span>Fun (arg, body) -&gt;
+  | <span data-count="106">C</span>Fun (arg, body) -&gt;
     (* (fun x -&gt; ...) *)
     let* st = get in
-    <span data-count="91">l</span>et fvs = free_vars_cexpr (CFun (arg, body)) in
-    <span data-count="91">l</span>et captured = SS.elements (SS.inte<span data-count="91">r</span> fvs st.bound) in
-    <span data-count="91">(</span>match captured with
-     | <span data-count="0">[</span>] -&gt;
+    <span data-count="106">l</span>et fvs = free_vars_cexpr (CFun (arg, body)) in
+    <span data-count="106">l</span>et captured = SS.elements (SS.inte<span data-count="106">r</span> fvs st.bound) in
+    <span data-count="106">(</span>match captured with
+     | <span data-count="10">[</span>] -&gt;
        let inner_bound = SS.add arg st.bound in
-       <span data-count="0">l</span>et* converted_body = with_new_scop<span data-count="0">e</span> inner_bound (cc_aexp<span data-count="0">r</span> body) in
-       <span data-count="0">r</span>eturn (ACE (CFun (arg, converted_body)))
-     | <span data-count="91">_</span> -&gt;
+       <span data-count="10">l</span>et* converted_body = with_new_scop<span data-count="10">e</span> inner_bound (cc_aexp<span data-count="10">r</span> body) in
+       <span data-count="10">r</span>eturn (ACE (CFun (arg, converted_body)))
+     | <span data-count="96">_</span> -&gt;
        (* (fun x -&gt; ...)
        * becomes:
        * let helper_f = fun cap1 cap2 ... x -&gt; ... in
        * helper_f (cap1_val, cap2_val, ...)
        *)
-       let* helper_name = fresh_nam<span data-count="91">e</span> "f" in
-       <span data-count="91">l</span>et helper_params = captured @ [ arg ] in
+       let* helper_name = fresh_nam<span data-count="96">e</span> "f" in
+       <span data-count="96">l</span>et helper_params = captured @ [ arg ] in
        let inner_bound =
-         List.fold_left (fun acc p -&gt; <span data-count="441">S</span>S.add p acc) st.bound (captured @ [ arg ])
+         List.fold_left (fun acc p -&gt; <span data-count="451">S</span>S.add p acc) st.bound (captured @ [ arg ])
        in
-       <span data-count="91">l</span>et* converted_helper_body = with_new_scop<span data-count="91">e</span> inner_bound (cc_aexp<span data-count="91">r</span> body) in
-       <span data-count="91">l</span>et lifted_helper_fun = mk_fun_cexpr helper_params converted_helper_body in
-       <span data-count="91">l</span>et closure_creation =
-         CApp (ImmId helper_name, List.ma<span data-count="91">p</span> (fun x -&gt; <span data-count="350">I</span>mmId x) captured)
+       <span data-count="96">l</span>et* converted_helper_body = with_new_scop<span data-count="96">e</span> inner_bound (cc_aexp<span data-count="96">r</span> body) in
+       <span data-count="96">l</span>et lifted_helper_fun = mk_fun_cexpr helper_params converted_helper_body in
+       <span data-count="96">l</span>et closure_creation =
+         CApp (ImmId helper_name, List.ma<span data-count="96">p</span> (fun x -&gt; <span data-count="355">I</span>mmId x) captured)
        in
        return (ALet (Nonrecursive, helper_name, lifted_helper_fun, ACE closure_creation)))
-  | <span data-count="62">C</span>App (f, args) -&gt; return (ACE (CApp (f, args)))
-  | <span data-count="40">C</span>Imm imm -&gt; return (ACE (CImm imm))
-  | <span data-count="7">C</span>Binop (op, i1, i2) -&gt; return (ACE (CBinop (op, i1, i2)))
-  | <span data-count="27">C</span>Ite (i, thn, els) -&gt;
-    let* converted_thn = cc_aexp<span data-count="27">r</span> thn in
-    <span data-count="27">l</span>et* converted_els = cc_aexp<span data-count="27">r</span> els in
-    <span data-count="27">r</span>eturn (ACE (CIte (i, converted_thn, converted_els)))
+  | <span data-count="66">C</span>App (f, args) -&gt; return (ACE (CApp (f, args)))
+  | <span data-count="59">C</span>Imm imm -&gt; return (ACE (CImm imm))
+  | <span data-count="11">C</span>Binop (op, i1, i2) -&gt; return (ACE (CBinop (op, i1, i2)))
+  | <span data-count="30">C</span>Ite (i, thn, els) -&gt;
+    let* converted_thn = cc_aexp<span data-count="30">r</span> thn in
+    <span data-count="30">l</span>et* converted_els = cc_aexp<span data-count="30">r</span> els in
+    <span data-count="30">r</span>eturn (ACE (CIte (i, converted_thn, converted_els)))
 
 (* cc for cexpr in non-tail position *)
 and cc_cexpr = function
-  | <span data-count="60">C</span>App (f, args) -&gt; return (CApp (f, args))
-  | <span data-count="45">C</span>Imm imm -&gt; return (CImm imm)
-  | <span data-count="108">C</span>Binop (op, i1, i2) -&gt; return (CBinop (op, i1, i2))
+  | <span data-count="92">C</span>App (f, args) -&gt; return (CApp (f, args))
+  | <span data-count="84">C</span>Imm imm -&gt; return (CImm imm)
+  | <span data-count="114">C</span>Binop (op, i1, i2) -&gt; return (CBinop (op, i1, i2))
   | <span data-count="0">C</span>Ite (i, thn, els) -&gt;
     let* converted_thn = cc_aexp<span data-count="0">r</span> thn in
     <span data-count="0">l</span>et* converted_els = cc_aexp<span data-count="0">r</span> els in
@@ -836,79 +833,79 @@ let cc_str_item = function
   | <span data-count="0">A</span>Str_eval aexpr -&gt;
     let* converted_aexpr = cc_aexp<span data-count="0">r</span> aexpr in
     <span data-count="0">r</span>eturn [ AStr_eval converted_aexpr ]
-  | <span data-count="42">A</span>Str_value (rec_flag, name, (ACE (CFun (arg, f_body)) as func)) -&gt;
+  | <span data-count="50">A</span>Str_value (rec_flag, name, (ACE (CFun (arg, f_body)) as func)) -&gt;
     let* st = get in
-    <span data-count="42">l</span>et fvs = free_vars_aexpr func in
-    <span data-count="42">l</span>et captured = SS.elements (SS.inte<span data-count="42">r</span> fvs st.bound) in
-    <span data-count="42">(</span>match captured with
-     | <span data-count="36">[</span>] -&gt;
+    <span data-count="50">l</span>et fvs = free_vars_aexpr func in
+    <span data-count="50">l</span>et captured = SS.elements (SS.inte<span data-count="50">r</span> fvs st.bound) in
+    <span data-count="50">(</span>match captured with
+     | <span data-count="42">[</span>] -&gt;
        let inner_bound =
          match rec_flag with
          | <span data-count="9">R</span>ecursive -&gt; SS.ad<span data-count="9">d</span> arg (SS.ad<span data-count="9">d</span> name st.bound)
-         | <span data-count="27">N</span>onrecursive -&gt; SS.ad<span data-count="27">d</span> arg st.bound
+         | <span data-count="33">N</span>onrecursive -&gt; SS.ad<span data-count="33">d</span> arg st.bound
        in
-       let* converted_body = with_new_scop<span data-count="36">e</span> inner_bound (cc_aexp<span data-count="36">r</span> f_body) in
-       <span data-count="36">l</span>et* state_after_body = get in
-       <span data-count="36">l</span>et new_toplevel_bound = SS.add name st.bound in
-       <span data-count="36">l</span>et* () = pu<span data-count="36">t</span> { state_after_body with bound = new_toplevel_bound } in
-       <span data-count="36">r</span>eturn [ AStr_value (rec_flag, name, ACE (CFun (arg, converted_body))) ]
-     | <span data-count="6">_</span> -&gt;
-       let* helper_name = fresh_nam<span data-count="6">e</span> name in
-       <span data-count="6">l</span>et helper_params =
+       let* converted_body = with_new_scop<span data-count="42">e</span> inner_bound (cc_aexp<span data-count="42">r</span> f_body) in
+       <span data-count="42">l</span>et* state_after_body = get in
+       <span data-count="42">l</span>et new_toplevel_bound = SS.add name st.bound in
+       <span data-count="42">l</span>et* () = pu<span data-count="42">t</span> { state_after_body with bound = new_toplevel_bound } in
+       <span data-count="42">r</span>eturn [ AStr_value (rec_flag, name, ACE (CFun (arg, converted_body))) ]
+     | <span data-count="8">_</span> -&gt;
+       let* helper_name = fresh_nam<span data-count="8">e</span> name in
+       <span data-count="8">l</span>et helper_params =
          match rec_flag with
-         | <span data-count="5">R</span>ecursive -&gt; name :: (captured @ [ arg ])
+         | <span data-count="7">R</span>ecursive -&gt; name :: (captured @ [ arg ])
          | <span data-count="1">N</span>onrecursive -&gt; captured @ [ arg ]
        in
        let inner_bound =
-         List.fold_left (fun acc p -&gt; <span data-count="17">S</span>S.add p acc) st.bound helper_params
+         List.fold_left (fun acc p -&gt; <span data-count="23">S</span>S.add p acc) st.bound helper_params
        in
-       <span data-count="6">l</span>et* converted_helper_body = with_new_scop<span data-count="6">e</span> inner_bound (cc_aexp<span data-count="6">r</span> f_body) in
-       <span data-count="6">l</span>et lifted_helper_fun = mk_fun_cexpr helper_params converted_helper_body in
-       <span data-count="6">l</span>et helper_item = AStr_value (Nonrecursive, helper_name, ACE lifted_helper_fun) in
+       <span data-count="8">l</span>et* converted_helper_body = with_new_scop<span data-count="8">e</span> inner_bound (cc_aexp<span data-count="8">r</span> f_body) in
+       <span data-count="8">l</span>et lifted_helper_fun = mk_fun_cexpr helper_params converted_helper_body in
+       <span data-count="8">l</span>et helper_item = AStr_value (Nonrecursive, helper_name, ACE lifted_helper_fun) in
        let closure_item =
          match rec_flag with
          | <span data-count="1">N</span>onrecursive -&gt;
            let clos = CApp (ImmId helper_name, List.ma<span data-count="1">p</span> (fun x -&gt; <span data-count="1">I</span>mmId x) captured) in
            AStr_value (Nonrecursive, name, ACE clos)
-         | <span data-count="5">R</span>ecursive -&gt;
+         | <span data-count="7">R</span>ecursive -&gt;
            (*
               * recursive 'name' is now a wrapper that calls helper with the captured environment and original argument
            *
            * let rec name = fun arg -&gt;
            * helper_name (name, cap1, cap2, ..., arg)
            *)
-           let clos_args = ImmId name :: List.ma<span data-count="5">p</span> (fun x -&gt; <span data-count="5">I</span>mmId x) captured in
+           let clos_args = ImmId name :: List.ma<span data-count="7">p</span> (fun x -&gt; <span data-count="7">I</span>mmId x) captured in
            let wrapper =
              ACE (CFun (arg, ACE (CApp (ImmId helper_name, clos_args @ [ ImmId arg ]))))
            in
            AStr_value (Recursive, name, wrapper)
        in
        let* state_after_body = get in
-       <span data-count="6">l</span>et new_toplevel_bound = SS.add helper_name (SS.ad<span data-count="6">d</span> name st.bound) in
-       <span data-count="6">l</span>et* () = pu<span data-count="6">t</span> { state_after_body with bound = new_toplevel_bound } in
-       <span data-count="6">r</span>eturn [ helper_item; closure_item ])
-  | <span data-count="21">A</span>Str_value (rec_flag, name, aexpr) -&gt;
+       <span data-count="8">l</span>et new_toplevel_bound = SS.add helper_name (SS.ad<span data-count="8">d</span> name st.bound) in
+       <span data-count="8">l</span>et* () = pu<span data-count="8">t</span> { state_after_body with bound = new_toplevel_bound } in
+       <span data-count="8">r</span>eturn [ helper_item; closure_item ])
+  | <span data-count="27">A</span>Str_value (rec_flag, name, aexpr) -&gt;
     let* st = get in
-    <span data-count="21">l</span>et inner_bound =
+    <span data-count="27">l</span>et inner_bound =
       match rec_flag with
       | <span data-count="0">R</span>ecursive -&gt; SS.ad<span data-count="0">d</span> name st.bound
-      | <span data-count="21">N</span>onrecursive -&gt; st.bound
+      | <span data-count="27">N</span>onrecursive -&gt; st.bound
     in
-    let* converted_aexpr = with_new_scop<span data-count="21">e</span> inner_bound (cc_aexp<span data-count="21">r</span> aexpr) in
-    <span data-count="21">l</span>et* state_after_body = get in
-    <span data-count="21">l</span>et new_toplevel_bound = SS.add name st.bound in
-    <span data-count="21">l</span>et* () = pu<span data-count="21">t</span> { state_after_body with bound = new_toplevel_bound } in
-    <span data-count="21">r</span>eturn [ AStr_value (rec_flag, name, converted_aexpr) ]
+    let* converted_aexpr = with_new_scop<span data-count="27">e</span> inner_bound (cc_aexp<span data-count="27">r</span> aexpr) in
+    <span data-count="27">l</span>et* state_after_body = get in
+    <span data-count="27">l</span>et new_toplevel_bound = SS.add name st.bound in
+    <span data-count="27">l</span>et* () = pu<span data-count="27">t</span> { state_after_body with bound = new_toplevel_bound } in
+    <span data-count="27">r</span>eturn [ AStr_value (rec_flag, name, converted_aexpr) ]
 ;;
 
 let cc_program (prog : aprogram) : aprogram CCState.t =
-  <span data-count="21">l</span>et* list_of_converted_items = CCState.map_<span data-count="21">m</span> cc_str_item prog in
-  <span data-count="21">r</span>eturn (List.conca<span data-count="21">t</span> list_of_converted_items)
+  <span data-count="26">l</span>et* list_of_converted_items = CCState.map_<span data-count="26">m</span> cc_str_item prog in
+  <span data-count="26">r</span>eturn (List.conca<span data-count="26">t</span> list_of_converted_items)
 ;;
 
 let cc_transform (prog : aprogram) : (aprogram, string) result =
-  <span data-count="21">m</span>atch CCState.run (cc_progra<span data-count="21">m</span> prog) with
-  | <span data-count="21">O</span>k converted_program, _ -&gt; Ok converted_program
+  <span data-count="26">m</span>atch CCState.run (cc_progra<span data-count="26">m</span> prog) with
+  | <span data-count="26">O</span>k converted_program, _ -&gt; Ok converted_program
   | <span data-count="0">E</span>rror error_message, _ -&gt; Error error_message
 ;;
 </code></pre>

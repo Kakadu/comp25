@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>anf.ml &mdash; Coverage report</title>
-    <meta name="description" content="90.16% coverage in lib/middleend/anf.ml">
+    <meta name="description" content="90.24% coverage in lib/middleend/anf.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,19 +15,19 @@
           <span class="dirname">lib/middleend/</span>anf.ml
         </a>
       </h1>
-      <h2>90.16%</h2>
+      <h2>90.24%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:9.14%"></span>
-      <span class="unvisited" style="top:12.00%"></span>
-      <span class="unvisited" style="top:43.43%"></span>
-      <span class="unvisited" style="top:46.29%"></span>
-      <span class="unvisited" style="bottom:11.43%"></span>
-      <span class="unvisited" style="bottom:10.86%"></span>
-      <span class="unvisited" style="bottom:8.57%"></span>
-      <span class="unvisited" style="bottom:8.00%"></span>
-      <span class="unvisited" style="bottom:7.43%"></span>
-      <span class="unvisited" style="bottom:5.14%"></span>
+      <span class="unvisited" style="top:9.09%"></span>
+      <span class="unvisited" style="top:11.93%"></span>
+      <span class="unvisited" style="top:43.18%"></span>
+      <span class="unvisited" style="top:46.02%"></span>
+      <span class="unvisited" style="bottom:11.93%"></span>
+      <span class="unvisited" style="bottom:10.80%"></span>
+      <span class="unvisited" style="bottom:8.52%"></span>
+      <span class="unvisited" style="bottom:7.95%"></span>
+      <span class="unvisited" style="bottom:7.39%"></span>
+      <span class="unvisited" style="bottom:5.11%"></span>
       <span class="unvisited" style="bottom:0.57%"></span>
     </div>
     <div id="report">
@@ -188,26 +188,27 @@
 <a id="L153"></a><span class="visited"> </span>
 <a id="L154"></a><span class="visited"> </span>
 <a id="L155"></a><span class="unvisited"> </span>
-<a id="L156"></a><span class="unvisited"> </span>
-<a id="L157"></a><span > </span>
+<a id="L156"></a><span class="visited"> </span>
+<a id="L157"></a><span class="unvisited"> </span>
 <a id="L158"></a><span > </span>
 <a id="L159"></a><span > </span>
-<a id="L160"></a><span class="unvisited"> </span>
+<a id="L160"></a><span > </span>
 <a id="L161"></a><span class="unvisited"> </span>
 <a id="L162"></a><span class="unvisited"> </span>
-<a id="L163"></a><span class="visited"> </span>
+<a id="L163"></a><span class="unvisited"> </span>
 <a id="L164"></a><span class="visited"> </span>
 <a id="L165"></a><span class="visited"> </span>
-<a id="L166"></a><span class="unvisited"> </span>
-<a id="L167"></a><span > </span>
+<a id="L166"></a><span class="visited"> </span>
+<a id="L167"></a><span class="unvisited"> </span>
 <a id="L168"></a><span > </span>
-<a id="L169"></a><span class="visited"> </span>
-<a id="L170"></a><span > </span>
+<a id="L169"></a><span > </span>
+<a id="L170"></a><span class="visited"> </span>
 <a id="L171"></a><span > </span>
-<a id="L172"></a><span class="visited"> </span>
+<a id="L172"></a><span > </span>
 <a id="L173"></a><span class="visited"> </span>
-<a id="L174"></a><span class="unvisited"> </span>
-<a id="L175"></a><span > </span>
+<a id="L174"></a><span class="visited"> </span>
+<a id="L175"></a><span class="unvisited"> </span>
+<a id="L176"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -387,6 +388,7 @@
 <a href="#L173">173</a>
 <a href="#L174">174</a>
 <a href="#L175">175</a>
+<a href="#L176">176</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2025-2026, Rodion Suvorov, Dmitriy Chirkov*)
 
@@ -402,72 +404,72 @@ type anf_state = { temps : int }
 module ANFState = struct
   type 'a t = anf_state -&gt; ('a, string) result * anf_state
 
-  let return x st = <span data-count="2108">O</span>k x, st
+  let return x st = <span data-count="2463">O</span>k x, st
   let error msg st = <span data-count="0">E</span>rror msg, st
 
   let bind : 'a t -&gt; ('a -&gt; 'b t) -&gt; 'b t =
     fun t f st -&gt;
-    <span data-count="2952">m</span>atch t st with
+    <span data-count="3476">m</span>atch t st with
     | <span data-count="0">E</span>rror msg, st' -&gt; Error msg, st'
-    | <span data-count="2952">O</span>k a, tran_st -&gt; f a tran_st
+    | <span data-count="3476">O</span>k a, tran_st -&gt; f a tran_st
   ;;
 
   let ( let* ) = bind
-  let get st = <span data-count="439">O</span>k st, st
-  let put st _ = <span data-count="439">O</span>k (), st
+  let get st = <span data-count="526">O</span>k st, st
+  let put st _ = <span data-count="526">O</span>k (), st
 
   let rec map_m f = function
-    | <span data-count="34">[</span>] -&gt; return []
-    | <span data-count="96">x</span> :: xs -&gt;
-      let* y = <span data-count="96">f</span> x in
-      <span data-count="96">l</span>et* ys = map_<span data-count="96">m</span> f xs in
-      <span data-count="96">r</span>eturn (y :: ys)
+    | <span data-count="39">[</span>] -&gt; return []
+    | <span data-count="110">x</span> :: xs -&gt;
+      let* y = <span data-count="110">f</span> x in
+      <span data-count="110">l</span>et* ys = map_<span data-count="110">m</span> f xs in
+      <span data-count="110">r</span>eturn (y :: ys)
   ;;
 
   let rec fold_right_m f xs acc =
-    <span data-count="293">m</span>atch xs with
-    | <span data-count="88">[</span>] -&gt; return acc
-    | <span data-count="205">x</span> :: xs' -&gt;
-      let* acc' = fold_right_<span data-count="205">m</span> f xs' acc in
-      <span data-count="205">f</span> x acc'
+    <span data-count="344">m</span>atch xs with
+    | <span data-count="106">[</span>] -&gt; return acc
+    | <span data-count="238">x</span> :: xs' -&gt;
+      let* acc' = fold_right_<span data-count="238">m</span> f xs' acc in
+      <span data-count="238">f</span> x acc'
   ;;
 
-  let run m = <span data-count="34">m</span> { temps = 0 }
+  let run m = <span data-count="39">m</span> { temps = 0 }
 end
 
 open ANFState
 
 let fresh_temp =
   let* st = get in
-  <span data-count="439">l</span>et name = Printf.sprintf "t_%d" st.temps in
-  <span data-count="439">l</span>et* () = pu<span data-count="439">t</span> { temps = st.temps + 1 } in
-  <span data-count="439">r</span>eturn name
+  <span data-count="526">l</span>et name = Printf.sprintf "t_%d" st.temps in
+  <span data-count="526">l</span>et* () = pu<span data-count="526">t</span> { temps = st.temps + 1 } in
+  <span data-count="526">r</span>eturn name
 ;;
 
 let rec app_args_to_list = function
-  | <span data-count="328">E</span>xp_apply (f, arg) -&gt;
+  | <span data-count="373">E</span>xp_apply (f, arg) -&gt;
     let args, fn = app_args_to_list f in
-    <span data-count="328">a</span>rgs @ [ arg ], fn
-  | <span data-count="184">e</span> -&gt; [], e
+    <span data-count="373">a</span>rgs @ [ arg ], fn
+  | <span data-count="220">e</span> -&gt; [], e
 ;;
 
 let is_binop op =
-  <span data-count="157">L</span>ist.mem op [ "+"; "-"; "*"; "/"; "&lt;"; "&lt;="; "&gt;"; "&gt;="; "="; "&lt;&gt;"; "||"; "&amp;&amp;" ]
+  <span data-count="167">L</span>ist.mem op [ "+"; "-"; "*"; "/"; "&lt;"; "&lt;="; "&gt;"; "&gt;="; "="; "&lt;&gt;"; "||"; "&amp;&amp;" ]
 ;;
 
 let define_binop = function
-  | <span data-count="73">"</span>+" -&gt; return Add
-  | <span data-count="32">"</span>-" -&gt; return Sub
+  | <span data-count="78">"</span>+" -&gt; return Add
+  | <span data-count="34">"</span>-" -&gt; return Sub
   | <span data-count="16">"</span>*" -&gt; return Mul
   | <span data-count="15">"</span>&lt;" -&gt; return Lt
-  | <span data-count="4">"</span>&lt;=" -&gt; return Le
-  | <span data-count="19">"</span>=" -&gt; return Eq
+  | <span data-count="5">"</span>&lt;=" -&gt; return Le
+  | <span data-count="21">"</span>=" -&gt; return Eq
   | <span data-count="2">"</span>&lt;&gt;" -&gt; return Neq
   | <span data-count="0">s</span> -&gt; error ("unsupported binop: " ^ s)
 ;;
 
 let get_pattern_name = function
-  | <span data-count="205">P</span>attern.Pat_var name -&gt; return name
+  | <span data-count="238">P</span>attern.Pat_var name -&gt; return name
   | <span data-count="0">_</span> -&gt; error "unsupported pattern (only variables allowed)"
 ;;
 
@@ -475,74 +477,75 @@ let rec transform_list
   : Expression.t list -&gt; (immexpr list -&gt; aexpr ANFState.t) -&gt; aexpr ANFState.t
   =
   fun l k -&gt;
-  <span data-count="512">m</span>atch l with
-  | <span data-count="328">h</span>d :: tl -&gt;
+  <span data-count="593">m</span>atch l with
+  | <span data-count="373">h</span>d :: tl -&gt;
     transform_expr hd (fun res_hd -&gt;
-      <span data-count="328">t</span>ransform_list tl (fun res_tl -&gt; <span data-count="328">k</span> (res_hd :: res_tl)))
-  | <span data-count="184">[</span>] -&gt; k []
+      <span data-count="373">t</span>ransform_list tl (fun res_tl -&gt; <span data-count="373">k</span> (res_hd :: res_tl)))
+  | <span data-count="220">[</span>] -&gt; k []
 
 and transform_expr expr k =
-  <span data-count="1280">m</span>atch expr with
-  | <span data-count="273">E</span>xp_constant (Constant.Const_integer exp) -&gt; k @@ ImmNum exp
-  | <span data-count="479">E</span>xp_ident exp -&gt; k @@ ImmId exp
-  | <span data-count="157">E</span>xp_apply (Exp_ident op, Exp_tuple (exp1, exp2, [])) when is_bino<span data-count="157">p</span> op -&gt;
-    <span data-count="157">t</span>ransform_expr exp1 (fun exp1_res -&gt;
-      <span data-count="161">t</span>ransform_expr exp2 (fun exp2_res -&gt;
-        <span data-count="161">l</span>et* bop = define_bino<span data-count="161">p</span> op in
-        <span data-count="161">l</span>et* t = fresh_temp in
-        <span data-count="161">l</span>et* rest = <span data-count="161">k</span> @@ ImmId t in
+  <span data-count="1500">m</span>atch expr with
+  | <span data-count="294">E</span>xp_constant (Constant.Const_integer exp) -&gt; k @@ ImmNum exp
+  | <span data-count="555">E</span>xp_ident exp -&gt; k @@ ImmId exp
+  | <span data-count="167">E</span>xp_apply (Exp_ident op, Exp_tuple (exp1, exp2, [])) when is_bino<span data-count="167">p</span> op -&gt;
+    <span data-count="167">t</span>ransform_expr exp1 (fun exp1_res -&gt;
+      <span data-count="171">t</span>ransform_expr exp2 (fun exp2_res -&gt;
+        <span data-count="171">l</span>et* bop = define_bino<span data-count="171">p</span> op in
+        <span data-count="171">l</span>et* t = fresh_temp in
+        <span data-count="171">l</span>et* rest = <span data-count="171">k</span> @@ ImmId t in
         (* avoid `let t = e in t` *)
-        <span data-count="161">m</span>atch rest with
-        | <span data-count="11">A</span>CE (CImm (ImmId id)) when String.equa<span data-count="11">l</span> t id -&gt;
-          <span data-count="11">r</span>eturn @@ ACE (CBinop (bop, exp1_res, exp2_res))
-        | <span data-count="150">_</span> -&gt; return @@ ALet (Nonrecursive, t, CBinop (bop, exp1_res, exp2_res), rest)))
-  | <span data-count="184">E</span>xp_apply (exp1, exp2) -&gt;
+        <span data-count="171">m</span>atch rest with
+        | <span data-count="15">A</span>CE (CImm (ImmId id)) when String.equa<span data-count="15">l</span> t id -&gt;
+          <span data-count="15">r</span>eturn @@ ACE (CBinop (bop, exp1_res, exp2_res))
+        | <span data-count="156">_</span> -&gt; return @@ ALet (Nonrecursive, t, CBinop (bop, exp1_res, exp2_res), rest)))
+  | <span data-count="220">E</span>xp_apply (exp1, exp2) -&gt;
     let args, fn = app_args_to_list @@ Exp_apply (exp1, exp2) in
-    <span data-count="184">t</span>ransform_expr fn (fun fn_res -&gt;
-      <span data-count="184">t</span>ransform_list args (fun args_res -&gt;
-        <span data-count="184">l</span>et* t = fresh_temp in
-        <span data-count="184">l</span>et* rest = <span data-count="184">k</span> (ImmId t) in
-        <span data-count="184">m</span>atch rest with
+    <span data-count="220">t</span>ransform_expr fn (fun fn_res -&gt;
+      <span data-count="220">t</span>ransform_list args (fun args_res -&gt;
+        <span data-count="220">l</span>et* t = fresh_temp in
+        <span data-count="220">l</span>et* rest = <span data-count="220">k</span> (ImmId t) in
+        <span data-count="220">m</span>atch rest with
         (* avoid `let t = e in t` *)
-        | <span data-count="96">A</span>CE (CImm (ImmId id)) when String.equa<span data-count="96">l</span> t id -&gt;
-          <span data-count="96">r</span>eturn @@ ACE (CApp (fn_res, args_res))
-        | <span data-count="88">_</span> -&gt; return @@ ALet (Nonrecursive, t, CApp (fn_res, args_res), rest)))
-  | <span data-count="46">E</span>xp_let (flag, ({ pat = Pattern.Pat_var pat; expr }, _), exp) -&gt;
+        | <span data-count="100">A</span>CE (CImm (ImmId id)) when String.equa<span data-count="100">l</span> t id -&gt;
+          <span data-count="100">r</span>eturn @@ ACE (CApp (fn_res, args_res))
+        | <span data-count="120">_</span> -&gt; return @@ ALet (Nonrecursive, t, CApp (fn_res, args_res), rest)))
+  | <span data-count="62">E</span>xp_let (flag, ({ pat = Pattern.Pat_var pat; expr }, _), exp) -&gt;
     transform_expr expr (fun a -&gt;
-      <span data-count="60">l</span>et* res = transform_exp<span data-count="60">r</span> exp k in
-      <span data-count="60">r</span>eturn (ALet (flag, pat, CImm a, res)))
+      <span data-count="76">l</span>et* res = transform_exp<span data-count="76">r</span> exp k in
+      <span data-count="76">r</span>eturn (ALet (flag, pat, CImm a, res)))
   | <span data-count="9">E</span>xp_let (flag, ({ pat = Pattern.Pat_construct ("()", None); expr }, _), exp) -&gt;
     transform_expr expr (fun a -&gt;
       <span data-count="9">l</span>et* res = transform_exp<span data-count="9">r</span> exp k in
       <span data-count="9">r</span>eturn (ALet (flag, "()", CImm a, res)))
-  | <span data-count="6">E</span>xp_let (flag, ({ pat = Pattern.Pat_any; expr }, _), exp) -&gt;
+  | <span data-count="29">E</span>xp_let (flag, ({ pat = Pattern.Pat_any; expr }, _), exp) -&gt;
     transform_expr expr (fun a -&gt;
-      <span data-count="6">l</span>et* res = transform_exp<span data-count="6">r</span> exp k in
-      <span data-count="6">l</span>et* tmp = fresh_temp in
-      <span data-count="6">r</span>eturn (ALet (flag, tmp, CImm a, res)))
-  | <span data-count="38">E</span>xp_if (cond, then_expr, Some else_expr) -&gt;
+      <span data-count="29">l</span>et* res = transform_exp<span data-count="29">r</span> exp k in
+      <span data-count="29">l</span>et* tmp = fresh_temp in
+      <span data-count="29">r</span>eturn (ALet (flag, tmp, CImm a, res)))
+  | <span data-count="41">E</span>xp_if (cond, then_expr, Some else_expr) -&gt;
     transform_expr cond (fun cond_res -&gt;
-      <span data-count="46">l</span>et* then_res = transform_exp<span data-count="46">r</span> then_expr k in
-      <span data-count="46">l</span>et* else_res = transform_exp<span data-count="46">r</span> else_expr k in
-      <span data-count="46">r</span>eturn (ACE (CIte (cond_res, then_res, else_res))))
-  | <span data-count="88">E</span>xp_fun ((pat_hd, pat_tl), exp) -&gt;
-    let* body_anf = transform_exp<span data-count="88">r</span> exp (fun exp_res -&gt; <span data-count="119">r</span>eturn @@ ACE (CImm exp_res)) in
-    <span data-count="88">l</span>et* func_aexpr =
-      fold_right_<span data-count="88">m</span>
+      <span data-count="49">l</span>et* then_res = transform_exp<span data-count="49">r</span> then_expr k in
+      <span data-count="49">l</span>et* else_res = transform_exp<span data-count="49">r</span> else_expr k in
+      <span data-count="49">r</span>eturn (ACE (CIte (cond_res, then_res, else_res))))
+  | <span data-count="106">E</span>xp_fun ((pat_hd, pat_tl), exp) -&gt;
+    let* body_anf = transform_exp<span data-count="106">r</span> exp (fun exp_res -&gt; <span data-count="140">r</span>eturn @@ ACE (CImm exp_res)) in
+    <span data-count="106">l</span>et* func_aexpr =
+      fold_right_<span data-count="106">m</span>
         (fun pat acc_body -&gt;
-           <span data-count="205">l</span>et* name = get_pattern_nam<span data-count="205">e</span> pat in
-           <span data-count="205">r</span>eturn (ACE (CFun (name, acc_body))))
+           <span data-count="238">l</span>et* name = get_pattern_nam<span data-count="238">e</span> pat in
+           <span data-count="238">r</span>eturn (ACE (CFun (name, acc_body))))
         (pat_hd :: pat_tl)
         body_anf
     in
-    <span data-count="88">l</span>et* t = fresh_temp in
-    <span data-count="88">l</span>et* rest = <span data-count="88">k</span> (ImmId t) in
-    <span data-count="88">(</span>match func_aexpr with
-     | <span data-count="88">A</span>CE cfun -&gt;
+    <span data-count="106">l</span>et* t = fresh_temp in
+    <span data-count="106">l</span>et* rest = <span data-count="106">k</span> (ImmId t) in
+    <span data-count="106">(</span>match func_aexpr with
+     | <span data-count="106">A</span>CE cfun -&gt;
        (match rest with
-        | <span data-count="62">A</span>CE (CImm (ImmId id)) when String.equa<span data-count="62">l</span> t id -&gt; <span data-count="62">r</span>eturn (ACE cfun)
-        | <span data-count="26">_</span> -&gt; return (ALet (Nonrecursive, t, cfun, rest)))
+        | <span data-count="70">A</span>CE (CImm (ImmId id)) when String.equa<span data-count="70">l</span> t id -&gt; <span data-count="70">r</span>eturn (ACE cfun)
+        | <span data-count="36">_</span> -&gt; return (ALet (Nonrecursive, t, cfun, rest)))
      | <span data-count="0">A</span>Let _ -&gt; error "unreachable")
+  | <span data-count="17">E</span>xp_construct ("()", None) -&gt; k (ImmNum 0)
   | <span data-count="0">_</span> -&gt; error "unsupported expression in current ANF transformer"
 ;;
 
@@ -550,17 +553,17 @@ let transform_str_item : structure_item -&gt; astructure_item ANFState.t = funct
   | <span data-count="0">S</span>tr_eval expr -&gt;
     let* e_anf = transform_exp<span data-count="0">r</span> expr (fun v -&gt; <span data-count="0">r</span>eturn @@ ACE (CImm v)) in
     <span data-count="0">r</span>eturn @@ AStr_eval e_anf
-  | <span data-count="96">S</span>tr_value (recflag, ({ pat = Pattern.Pat_var pat; expr }, _)) -&gt;
-    let* e_anf = transform_exp<span data-count="96">r</span> expr (fun v -&gt; <span data-count="111">r</span>eturn @@ ACE (CImm v)) in
-    <span data-count="96">r</span>eturn @@ AStr_value (recflag, pat, e_anf)
+  | <span data-count="110">S</span>tr_value (recflag, ({ pat = Pattern.Pat_var pat; expr }, _)) -&gt;
+    let* e_anf = transform_exp<span data-count="110">r</span> expr (fun v -&gt; <span data-count="125">r</span>eturn @@ ACE (CImm v)) in
+    <span data-count="110">r</span>eturn @@ AStr_value (recflag, pat, e_anf)
   | <span data-count="0">_</span> -&gt; error "ADT are not supported in current ANF transformer"
 ;;
 
-let transform_str_item_list prog = <span data-count="34">m</span>ap_m transform_str_item prog
+let transform_str_item_list prog = <span data-count="39">m</span>ap_m transform_str_item prog
 
 let anf_transform (prog : program) =
-  <span data-count="34">m</span>atch run (transform_str_item_lis<span data-count="34">t</span> prog) with
-  | <span data-count="34">O</span>k res, _ -&gt; Ok res
+  <span data-count="39">m</span>atch run (transform_str_item_lis<span data-count="39">t</span> prog) with
+  | <span data-count="39">O</span>k res, _ -&gt; Ok res
   | <span data-count="0">E</span>rror msg, _ -&gt; Error msg
 ;;
 </code></pre>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>LL.ml &mdash; Coverage report</title>
-    <meta name="description" content="84.29% coverage in lib/middleend/LL.ml">
+    <meta name="description" content="87.14% coverage in lib/middleend/LL.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,11 +15,10 @@
           <span class="dirname">lib/middleend/</span>LL.ml
         </a>
       </h1>
-      <h2>84.29%</h2>
+      <h2>87.14%</h2>
     </div>
     <div id="navbar">
       <span class="unvisited" style="top:17.70%"></span>
-      <span class="unvisited" style="bottom:30.09%"></span>
       <span class="unvisited" style="bottom:29.20%"></span>
       <span class="unvisited" style="bottom:27.43%"></span>
       <span class="unvisited" style="bottom:26.55%"></span>
@@ -109,7 +108,7 @@
 <a id="L76"></a><span > </span>
 <a id="L77"></a><span > </span>
 <a id="L78"></a><span > </span>
-<a id="L79"></a><span class="unvisited"> </span>
+<a id="L79"></a><span class="visited"> </span>
 <a id="L80"></a><span class="unvisited"> </span>
 <a id="L81"></a><span > </span>
 <a id="L82"></a><span class="unvisited"> </span>
@@ -277,102 +276,102 @@ type ll_state =
 module LLState = struct
   type 'a t = ll_state -&gt; ('a, string) Result.t * ll_state
 
-  let return x st = <span data-count="1107">O</span>k x, st
+  let return x st = <span data-count="1452">O</span>k x, st
 
   let bind m f st =
-    <span data-count="1543">m</span>atch m st with
+    <span data-count="1988">m</span>atch m st with
     | <span data-count="0">E</span>rror e, new_state -&gt; Error e, new_state
-    | <span data-count="1543">O</span>k a, new_state -&gt; f a new_state
+    | <span data-count="1988">O</span>k a, new_state -&gt; f a new_state
   ;;
 
   let ( let* ) = bind
-  let get st = <span data-count="233">O</span>k st, st
-  let put st _ = <span data-count="218">O</span>k (), st
+  let get st = <span data-count="288">O</span>k st, st
+  let put st _ = <span data-count="268">O</span>k (), st
 
   let rec map_m f = function
-    | <span data-count="15">[</span>] -&gt; return []
-    | <span data-count="50">x</span> :: xs -&gt;
-      let* y = <span data-count="50">f</span> x in
-      <span data-count="50">l</span>et* ys = map_<span data-count="50">m</span> f xs in
-      <span data-count="50">r</span>eturn (y :: ys)
+    | <span data-count="20">[</span>] -&gt; return []
+    | <span data-count="66">x</span> :: xs -&gt;
+      let* y = <span data-count="66">f</span> x in
+      <span data-count="66">l</span>et* ys = map_<span data-count="66">m</span> f xs in
+      <span data-count="66">r</span>eturn (y :: ys)
   ;;
 
-  let run m = <span data-count="15">m</span> { temps = 0; lifted = [] }
+  let run m = <span data-count="20">m</span> { temps = 0; lifted = [] }
 end
 
 open LLState
 
 let fresh_lam_name =
   let* st = get in
-  <span data-count="109">l</span>et name = Printf.sprintf "llf_%d" st.temps in
-  <span data-count="109">l</span>et* () = pu<span data-count="109">t</span> { st with temps = st.temps + 1 } in
-  <span data-count="109">r</span>eturn name
+  <span data-count="134">l</span>et name = Printf.sprintf "llf_%d" st.temps in
+  <span data-count="134">l</span>et* () = pu<span data-count="134">t</span> { st with temps = st.temps + 1 } in
+  <span data-count="134">r</span>eturn name
 ;;
 
 let rec collect_cfun acc = function
-  | <span data-count="267">A</span>CE (CFun (p, body')) -&gt; collect_cfun (p :: acc) body'
-  | <span data-count="109">b</span>ody -&gt; List.re<span data-count="109">v</span> acc, body
+  | <span data-count="286">A</span>CE (CFun (p, body')) -&gt; collect_cfun (p :: acc) body'
+  | <span data-count="134">b</span>ody -&gt; List.re<span data-count="134">v</span> acc, body
 ;;
 
 let rec build_curried params body =
-  <span data-count="485">m</span>atch params with
-  | <span data-count="109">[</span>] -&gt; body
-  | <span data-count="376">p</span> :: ps -&gt; ACE (CFun (p, build_currie<span data-count="376">d</span> ps body))
+  <span data-count="554">m</span>atch params with
+  | <span data-count="134">[</span>] -&gt; body
+  | <span data-count="420">p</span> :: ps -&gt; ACE (CFun (p, build_currie<span data-count="420">d</span> ps body))
 ;;
 
 let rec ll_cexpr = function
-  | <span data-count="59">C</span>Imm i -&gt; return (CImm i)
-  | <span data-count="82">C</span>Binop (op, a, b) -&gt; return (CBinop (op, a, b))
-  | <span data-count="163">C</span>App (f, args) -&gt; return (CApp (f, args))
-  | <span data-count="21">C</span>Ite (c, th, el) -&gt;
-    let* lifted_then = ll_aexp<span data-count="21">r</span> th in
-    <span data-count="21">l</span>et* lifted_else = ll_aexp<span data-count="21">r</span> el in
-    <span data-count="21">r</span>eturn (CIte (c, lifted_then, lifted_else))
-  | <span data-count="109">C</span>Fun (p, original_body) -&gt;
+  | <span data-count="117">C</span>Imm i -&gt; return (CImm i)
+  | <span data-count="92">C</span>Binop (op, a, b) -&gt; return (CBinop (op, a, b))
+  | <span data-count="206">C</span>App (f, args) -&gt; return (CApp (f, args))
+  | <span data-count="24">C</span>Ite (c, th, el) -&gt;
+    let* lifted_then = ll_aexp<span data-count="24">r</span> th in
+    <span data-count="24">l</span>et* lifted_else = ll_aexp<span data-count="24">r</span> el in
+    <span data-count="24">r</span>eturn (CIte (c, lifted_then, lifted_else))
+  | <span data-count="134">C</span>Fun (p, original_body) -&gt;
     let params, unwrapped_body = collect_cfun [ p ] original_body in
-    <span data-count="109">l</span>et* lifted_body = ll_aexp<span data-count="109">r</span> unwrapped_body in
-    <span data-count="109">l</span>et* lifted_fun_name = fresh_lam_name in
-    <span data-count="109">l</span>et new_top_level_fun = build_curried params lifted_body in
-    <span data-count="109">l</span>et* st = get in
-    <span data-count="109">l</span>et new_lifted_item = AStr_value (Nonrecursive, lifted_fun_name, new_top_level_fun) in
-    let* () = pu<span data-count="109">t</span> { st with lifted = new_lifted_item :: st.lifted } in
-    <span data-count="109">r</span>eturn (CImm (ImmId lifted_fun_name))
+    <span data-count="134">l</span>et* lifted_body = ll_aexp<span data-count="134">r</span> unwrapped_body in
+    <span data-count="134">l</span>et* lifted_fun_name = fresh_lam_name in
+    <span data-count="134">l</span>et new_top_level_fun = build_curried params lifted_body in
+    <span data-count="134">l</span>et* st = get in
+    <span data-count="134">l</span>et new_lifted_item = AStr_value (Nonrecursive, lifted_fun_name, new_top_level_fun) in
+    let* () = pu<span data-count="134">t</span> { st with lifted = new_lifted_item :: st.lifted } in
+    <span data-count="134">r</span>eturn (CImm (ImmId lifted_fun_name))
 
 and ll_aexpr = function
   (* (let x = y in x) ==&gt; y *)
-  | <span data-count="0">A</span>Let (Nonrecursive, x, CImm (ImmId y), ACE (CImm (ImmId x'))) when String.equa<span data-count="0">l</span> x x'
+  | <span data-count="1">A</span>Let (Nonrecursive, x, CImm (ImmId y), ACE (CImm (ImmId x'))) when String.equa<span data-count="1">l</span> x x'
     -&gt; <span data-count="0">r</span>eturn (ACE (CImm (ImmId y)))
   (* (let x = f in x(args)) ==&gt; f(args) *)
   | <span data-count="0">A</span>Let (Nonrecursive, x, CImm (ImmId f), ACE (CApp (ImmId callee, args)))
     when String.equa<span data-count="0">l</span> x callee -&gt; <span data-count="0">r</span>eturn (ACE (CApp (ImmId f, args)))
-  | <span data-count="201">A</span>CE c -&gt;
-    let* lifted_cexpr = ll_cexp<span data-count="201">r</span> c in
-    <span data-count="201">r</span>eturn (ACE lifted_cexpr)
-  | <span data-count="233">A</span>Let (rf, name, rhs, body) -&gt;
-    let* lifted_rhs = ll_cexp<span data-count="233">r</span> rhs in
-    <span data-count="233">l</span>et* lifted_body = ll_aexp<span data-count="233">r</span> body in
-    <span data-count="233">r</span>eturn (ALet (rf, name, lifted_rhs, lifted_body))
+  | <span data-count="248">A</span>CE c -&gt;
+    let* lifted_cexpr = ll_cexp<span data-count="248">r</span> c in
+    <span data-count="248">r</span>eturn (ACE lifted_cexpr)
+  | <span data-count="325">A</span>Let (rf, name, rhs, body) -&gt;
+    let* lifted_rhs = ll_cexp<span data-count="325">r</span> rhs in
+    <span data-count="325">l</span>et* lifted_body = ll_aexp<span data-count="325">r</span> body in
+    <span data-count="325">r</span>eturn (ALet (rf, name, lifted_rhs, lifted_body))
 ;;
 
 let ll_program (prog : aprogram) : aprogram LLState.t =
-  <span data-count="15">l</span>et* processed_items =
-    map_<span data-count="15">m</span>
+  <span data-count="20">l</span>et* processed_items =
+    map_<span data-count="20">m</span>
       (function
-        | <span data-count="50">A</span>Str_value (rf, name, a) -&gt;
-          let* lifted_aexpr = ll_aexp<span data-count="50">r</span> a in
-          <span data-count="50">r</span>eturn (AStr_value (rf, name, lifted_aexpr))
+        | <span data-count="66">A</span>Str_value (rf, name, a) -&gt;
+          let* lifted_aexpr = ll_aexp<span data-count="66">r</span> a in
+          <span data-count="66">r</span>eturn (AStr_value (rf, name, lifted_aexpr))
         | <span data-count="0">A</span>Str_eval a -&gt;
           let* lifted_aexpr = ll_aexp<span data-count="0">r</span> a in
           <span data-count="0">r</span>eturn (AStr_eval lifted_aexpr))
       prog
   in
-  <span data-count="15">l</span>et* st = get in
-  <span data-count="15">r</span>eturn (List.re<span data-count="15">v</span> st.lifted @ processed_items)
+  <span data-count="20">l</span>et* st = get in
+  <span data-count="20">r</span>eturn (List.re<span data-count="20">v</span> st.lifted @ processed_items)
 ;;
 
 let ll_transform (program : aprogram) : (aprogram, string) Result.t =
-  <span data-count="15">m</span>atch LLState.run (ll_progra<span data-count="15">m</span> program) with
-  | <span data-count="15">O</span>k lifted_program, _ -&gt; Ok lifted_program
+  <span data-count="20">m</span>atch LLState.run (ll_progra<span data-count="20">m</span> program) with
+  | <span data-count="20">O</span>k lifted_program, _ -&gt; Ok lifted_program
   | <span data-count="0">E</span>rror error_message, _ -&gt; Error error_message
 ;;
 </code></pre>
