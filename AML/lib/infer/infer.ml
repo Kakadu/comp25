@@ -812,6 +812,22 @@ let env_with_things =
           , Type_arrow
               ( Type_arrow (Type_construct ("bool", []), Type_construct ("bool", []))
               , Type_construct ("bool", []) ) ) )
+    ; ( "collect"
+      , Forall
+          ( VarSet.empty
+          , Type_arrow (Type_construct ("unit", []), Type_construct ("unit", [])) ) )
+    ; ( "get_heap_start"
+      , Forall
+          ( VarSet.empty
+          , Type_arrow (Type_construct ("unit", []), Type_construct ("int", [])) ) )
+    ; ( "get_heap_fin"
+      , Forall
+          ( VarSet.empty
+          , Type_arrow (Type_construct ("unit", []), Type_construct ("int", [])) ) )
+    ; ( "print_gc_status"
+      , Forall
+          ( VarSet.empty
+          , Type_arrow (Type_construct ("unit", []), Type_construct ("unit", [])) ) )
     ; ( "print_int"
       , Forall
           ( VarSet.empty

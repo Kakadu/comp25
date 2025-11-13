@@ -39,28 +39,36 @@ let%expect_test "binary operations" =
       sd ra, 72(sp)
       sd s0, 64(sp)
       addi s0, sp, 80
-      li t0, 52
-      li t1, 52
+      li t0, 105
+      li t1, 105
       add t0, t0, t1
+      addi t0, t0, -1
       sd t0, -24(s0)
       ld t0, -24(s0)
       sd t0, -32(s0)
-      li t0, 52
-      li t1, 52
+      li t0, 105
+      li t1, 105
       sub t0, t0, t1
+      addi t0, t0, 1
       sd t0, -40(s0)
       ld t0, -40(s0)
       sd t0, -48(s0)
-      li t0, 52
-      li t1, 52
-      mul t0, t0, t1
+      li t0, 105
+      li t1, 105
+      srai t2, t0, 1
+      srai t3, t1, 1
+      mul t0, t2, t3
+      slli t0, t0, 1
+      addi t0, t0, 1
       sd t0, -56(s0)
       ld t0, -56(s0)
       sd t0, -64(s0)
-      li t0, 52
-      li t1, 52
+      li t0, 105
+      li t1, 105
       slt t0, t1, t0
       xori t0, t0, 1
+      slli t0, t0, 1
+      addi t0, t0, 1
       sd t0, -72(s0)
       ld t0, -72(s0)
       sd t0, -80(s0)
@@ -92,21 +100,24 @@ let%expect_test "some branches" =
       sd ra, 56(sp)
       sd s0, 48(sp)
       addi s0, sp, 64
-      li t0, 5
+      li t0, 11
       sd t0, -24(s0)
-      li t0, 2
+      li t0, 5
       sd t0, -32(s0)
-      li t0, 3
+      li t0, 7
       sd t0, -40(s0)
-      li t0, 4
+      li t0, 9
       sd t0, -48(s0)
       ld t0, -24(s0)
       ld t1, -32(s0)
       slt t0, t1, t0
       xori t0, t0, 1
+      slli t0, t0, 1
+      addi t0, t0, 1
       sd t0, -56(s0)
       ld t0, -56(s0)
-      beq t0, x0, .Lelse_0
+      li t1, 1
+      beq t0, t1, .Lelse_0
       ld a0, -40(s0)
       j .Lendif_1
     .Lelse_0:

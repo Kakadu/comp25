@@ -153,6 +153,7 @@ and transform_expr expr k =
         | ACE (CImm (ImmId id)) when String.equal t id -> return (ACE cfun)
         | _ -> return (ALet (Nonrecursive, t, cfun, rest)))
      | ALet _ -> error "unreachable")
+  | Exp_construct ("()", None) -> k (ImmNum 0)
   | _ -> error "unsupported expression in current ANF transformer"
 ;;
 

@@ -32,6 +32,8 @@ type instr =
   | Mul of reg * reg * reg
   | Slt of reg * reg * reg
   | Xori of reg * reg * int
+  | Srai of reg * reg * int
+  | Slli of reg * reg * int
   | Beq of reg * reg * string
   | Bne of reg * reg * string
   | Blt of reg * reg * string
@@ -55,6 +57,8 @@ val sub : (instr -> 'a) -> reg -> reg -> reg -> 'a
 val mul : (instr -> 'a) -> reg -> reg -> reg -> 'a
 val slt : (instr -> 'a) -> reg -> reg -> reg -> 'a
 val xori : (instr -> 'a) -> reg -> reg -> int -> 'a
+val srai : (instr -> 'a) -> reg -> reg -> int -> 'a
+val slli : (instr -> 'a) -> reg -> reg -> int -> 'a
 val beq : (instr -> 'a) -> reg -> reg -> string -> 'a
 val bne : (instr -> 'a) -> reg -> reg -> string -> 'a
 val blt : (instr -> 'a) -> reg -> reg -> string -> 'a

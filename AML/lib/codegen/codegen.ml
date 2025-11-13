@@ -140,20 +140,31 @@ module Helpers = struct
   ;;
 
   let gen_bin_op op dst r1 r2 =
+    let tag_bool_result = emit slli dst dst 1 >> emit addi dst dst 1 in
     match op with
-    | Add -> emit add dst r1 r2
-    | Sub -> emit sub dst r1 r2
-    | Mul -> emit mul dst r1 r2
-    | Le -> emit slt dst r2 r1 >> emit xori dst dst 1
-    | Lt -> emit slt dst r1 r2
+    | Add -> emit add dst r1 r2 >> emit addi dst dst (-1)
+    | Sub -> emit sub dst r1 r2 >> emit addi dst dst 1
+    | Mul ->
+      emit srai t2 r1 1
+      >> emit srai t3 r2 1
+      >> emit mul dst t2 t3
+      >> emit slli dst dst 1
+      >> emit addi dst dst 1
+    | Le -> emit slt dst r2 r1 >> emit xori dst dst 1 >> tag_bool_result
+    | Lt -> emit slt dst r1 r2 >> tag_bool_result
     | Eq ->
       emit sub t2 r1 r2
       >> emit slt dst x0 t2
       >> emit slt t3 t2 x0
       >> emit add dst dst t3
       >> emit xori dst dst 1
+      >> tag_bool_result
     | Neq ->
-      emit sub t2 r1 r2 >> emit slt dst x0 t2 >> emit slt t3 t2 x0 >> emit add dst dst t3
+      emit sub t2 r1 r2
+      >> emit slt dst x0 t2
+      >> emit slt t3 t2 x0
+      >> emit add dst dst t3
+      >> tag_bool_result
   ;;
 end
 
@@ -200,7 +211,7 @@ module Gen = struct
   (* generate code to load immexpr into dst reg *)
   and gen_immexpr (dst : reg) (imm : immexpr) : unit Cg.t =
     match imm with
-    | ImmNum i -> emit li dst i
+    | ImmNum i -> emit li dst ((i lsl 1) + 1)
     | ImmId id ->
       let* st = get_state in
       (match Map.find st.env id with
@@ -300,7 +311,8 @@ module Gen = struct
       let* l_else = fresh_label "else" in
       let* l_end = fresh_label "endif" in
       gen_immexpr t0 cond_imm
-      >> emit beq t0 x0 l_else
+      >> emit li t1 1
+      >> emit beq t0 t1 l_else
       >> gen_expr dst then_aexpr
       >> emit j l_end
       >> emit label l_else
@@ -371,6 +383,11 @@ module Gen = struct
     >> emit sd fp (ROff (stack_size - 16, sp))
     >> emit addi fp sp stack_size
     >>
+    (* init runtime stuff if main *)
+    (if String.equal name "main"
+     then emit call "heap_init" >> emit la t0 "ML_STACK_BASE" >> emit sd fp (ROff (0, t0))
+     else return ())
+    >>
     (* create local env for this function *)
     let* global_state = get_state in
     let initial_cg_state =
@@ -426,7 +443,14 @@ let codegen ppf (s : aprogram) =
           Map.set acc ~key:name ~data:(List.length params)
         | _ -> acc)
   in
-  let initial_arity_map = Map.set initial_arity_map ~key:"print_int" ~data:1 in
+  let initial_arity_map =
+    initial_arity_map
+    |> Map.set ~key:"print_int" ~data:1
+    |> Map.set ~key:"collect" ~data:1
+    |> Map.set ~key:"get_heap_start" ~data:1
+    |> Map.set ~key:"get_heap_fin" ~data:1
+    |> Map.set ~key:"print_gc_status" ~data:1
+  in
   let initial_state = State.initial_state initial_arity_map in
   let computation = Gen.gen_program s in
   let result, final_state = Cg.run initial_state computation in

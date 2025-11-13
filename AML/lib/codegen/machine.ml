@@ -51,6 +51,8 @@ type instr =
     (* slt rd,rs1,rs2. place the value 1 in register rd if register rs1 is less than register rs2 when both are treated as signed numbers, else 0 is written to rd *)
   | Xori of reg * reg * int
     (* xori rd,rs1,imm. performs bitwise XOR on register rs1 and the sign-extended 12-bit immediate and place the result in rd *)
+  | Srai of reg * reg * int (* Shift Left Arith Immediate *)
+  | Slli of reg * reg * int (* Shift Left Logical Immediate *)
   | Beq of reg * reg * string
     (* beq rs1,rs2,offset. take the branch if registers rs1 and rs2 are equal *)
   | Bne of reg * reg * string
@@ -83,6 +85,8 @@ let pp_instr ppf =
   | Mul (r1, r2, r3) -> fprintf ppf "mul %a, %a, %a" pp_reg r1 pp_reg r2 pp_reg r3
   | Slt (r1, r2, r3) -> fprintf ppf "slt %a, %a, %a" pp_reg r1 pp_reg r2 pp_reg r3
   | Xori (r1, r2, n) -> fprintf ppf "xori %a, %a, %d" pp_reg r1 pp_reg r2 n
+  | Srai (r1, r2, n) -> fprintf ppf "srai %a, %a, %d" pp_reg r1 pp_reg r2 n
+  | Slli (r1, r2, n) -> fprintf ppf "slli %a, %a, %d" pp_reg r1 pp_reg r2 n
   | Beq (r1, r2, s) -> fprintf ppf "beq %a, %a, %s" pp_reg r1 pp_reg r2 s
   | Bne (r1, r2, s) -> fprintf ppf "bne %a, %a, %s" pp_reg r1 pp_reg r2 s
   | Blt (r1, r2, s) -> fprintf ppf "blt %a, %a, %s" pp_reg r1 pp_reg r2 s
@@ -106,6 +110,8 @@ let sub k r1 r2 r3 = k @@ Sub (r1, r2, r3)
 let mul k r1 r2 r3 = k @@ Mul (r1, r2, r3)
 let slt k r1 r2 r3 = k @@ Slt (r1, r2, r3)
 let xori k r1 r2 n = k @@ Xori (r1, r2, n)
+let srai k r1 r2 n = k @@ Srai (r1, r2, n)
+let slli k r1 r2 n = k @@ Slli (r1, r2, n)
 let beq k r1 r2 s = k @@ Beq (r1, r2, s)
 let bne k r1 r2 s = k @@ Bne (r1, r2, s)
 let blt k r1 r2 s = k @@ Blt (r1, r2, s)
