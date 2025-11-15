@@ -20,6 +20,7 @@ type a_pat =
 type i_exp =
   | IExp_ident of ident
   | IExp_constant of constant
+  | IExp_unit
   | IExp_fun of a_pat * a_exp
 [@@deriving show { with_path = false }]
 
@@ -190,6 +191,7 @@ let rec anf_exp exp k =
         (pat :: pat_list)
     in
     return folded
+  | Exp_construct ("()", None) -> k IExp_unit
   | _ -> fail "Exp: Not implemented"
 ;;
 

@@ -32,6 +32,10 @@ type instr =
   | Mul of reg * reg * reg
   (** [mul rd, rs1, rs2] Multiplies [rs1] by [rs2], result in [rd] *)
   (* === Logical / bitwise instructions === *)
+  | Srli of reg * reg * int
+  (** [slli rd, rs, imm] Logical shift right of [rs] by [imm] bits, result in [rd] *)
+  | Slli of reg * reg * int
+  (** [slli rd, rs, imm] Logical shift left of [rs] by [imm] bits, result in [rd] *)
   | Xori of reg * reg * int
   (** [xori rd, rs, imm] Bitwise exclusive-or of [rs] and immediate [imm], result in [rd] *)
   | Xor of reg * reg * reg
@@ -69,6 +73,8 @@ val addi : (instr -> 'a) -> reg -> reg -> int -> 'a
 val add : (instr -> 'a) -> reg -> reg -> reg -> 'a
 val sub : (instr -> 'a) -> reg -> reg -> reg -> 'a
 val mul : (instr -> 'a) -> reg -> reg -> reg -> 'a
+val srli : (instr -> 'a) -> reg -> reg -> int -> 'a
+val slli : (instr -> 'a) -> reg -> reg -> int -> 'a
 val xori : (instr -> 'a) -> reg -> reg -> int -> 'a
 val xor : (instr -> 'a) -> reg -> reg -> reg -> 'a
 val slt : (instr -> 'a) -> reg -> reg -> reg -> 'a
@@ -85,3 +91,4 @@ val label : (instr -> 'a) -> string -> 'a
 val call : (instr -> 'a) -> string -> 'a
 val ret : (instr -> 'a) -> 'a
 val ecall : (instr -> 'a) -> 'a
+val to_tag_integer : int -> int

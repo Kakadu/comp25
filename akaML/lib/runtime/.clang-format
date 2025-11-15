@@ -1,0 +1,6 @@
+BasedOnStyle: LLVM
+IndentWidth: 2
+ColumnLimit: 85
+IndentCaseLabels: true
+IncludeBlocks: Preserve
+InsertNewlineAtEOF: true

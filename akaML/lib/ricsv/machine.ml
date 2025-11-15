@@ -35,6 +35,8 @@ type instr =
   | Add of reg * reg * reg
   | Sub of reg * reg * reg
   | Mul of reg * reg * reg
+  | Srli of reg * reg * int
+  | Slli of reg * reg * int
   | Xori of reg * reg * int
   | Xor of reg * reg * reg
   | Slt of reg * reg * reg
@@ -56,9 +58,11 @@ let pp_instr ppf =
   let open Format in
   function
   | Addi (rd, rs, imm) -> fprintf ppf "addi %a, %a, %d" pp_reg rd pp_reg rs imm
-  | Add (rd, rs1, rs2) -> fprintf ppf "add  %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | Add (rd, rs1, rs2) -> fprintf ppf "add %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | Sub (rd, rs1, rs2) -> fprintf ppf "sub %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | Mul (rd, rs1, rs2) -> fprintf ppf "mul %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+  | Srli (rd, rs1, imm) -> fprintf ppf "srli %a, %a, %d" pp_reg rd pp_reg rs1 imm
+  | Slli (rd, rs1, imm) -> fprintf ppf "slli %a, %a, %d" pp_reg rd pp_reg rs1 imm
   | Xori (rd, rs1, imm) -> fprintf ppf "xori %a, %a, %d" pp_reg rd pp_reg rs1 imm
   | Xor (rd, rs1, rs2) -> fprintf ppf "xor %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
   | Slt (rd, rs1, rs2) -> fprintf ppf "slt %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
@@ -81,6 +85,8 @@ let addi k rd rs imm = k @@ Addi (rd, rs, imm)
 let add k rd rs1 rs2 = k @@ Add (rd, rs1, rs2)
 let sub k rd rs1 rs2 = k @@ Sub (rd, rs1, rs2)
 let mul k rd rs1 rs2 = k @@ Mul (rd, rs1, rs2)
+let srli k rd rs1 imm = k @@ Srli (rd, rs1, imm)
+let slli k rd rs1 imm = k @@ Slli (rd, rs1, imm)
 let xori k rd rs1 imm = k @@ Xori (rd, rs1, imm)
 let xor k rd rs1 rs2 = k @@ Xor (rd, rs1, rs2)
 let slt k rd rs1 rs2 = k @@ Slt (rd, rs1, rs2)
@@ -97,3 +103,4 @@ let label k s = k (Label s)
 let call k s = k (Call s)
 let ret k = k Ret
 let ecall k = k Ecall
+let to_tag_integer n = 1 + (n lsl 1)

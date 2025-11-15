@@ -9,3 +9,23 @@
  (deps rv64_runtime.o)
  (action
   (run ar rcs %{targets} %{deps})))
+
+(rule
+ (targets rv64_gc_runtime.o)
+ (deps runtime.c)
+ (action
+  (run
+   riscv64-linux-gnu-gcc
+   -DENABLE_GC
+   -DTEST
+   -march=rv64gc
+   -c
+   %{deps}
+   -o
+   %{targets})))
+
+(rule
+ (targets rv64_gc_runtime.a)
+ (deps rv64_gc_runtime.o)
+ (action
+  (run ar rcs %{targets} %{deps})))

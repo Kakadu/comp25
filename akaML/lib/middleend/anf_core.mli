@@ -15,6 +15,7 @@ val show_a_pat : a_pat -> string
 type i_exp =
   | IExp_ident of string
   | IExp_constant of Ast.constant
+  | IExp_unit
   | IExp_fun of a_pat * a_exp
 
 and c_exp =

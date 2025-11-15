@@ -25,6 +25,11 @@
  (applies_to dparsetree inference codegen anf pipeline)
  (deps
   ../bin/akaML.exe
+  fewtests/closure/01faccps.ml
+  fewtests/closure/02fac.ml
+  fewtests/closure/03adder.ml
+  fewtests/closure/04plusss.ml
+  fewtests/closure/05fibcps.ml
   manytests/do_not_type/001.ml
   manytests/do_not_type/002if.ml
   manytests/do_not_type/003occurs.ml
@@ -66,4 +71,4 @@
 
 (cram
  (applies_to codegen pipeline)
- (deps ../lib/runtime/rv64_runtime.a))
+ (deps ../lib/runtime/rv64_runtime.a ../lib/runtime/rv64_gc_runtime.a))

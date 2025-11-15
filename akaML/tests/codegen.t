@@ -17,19 +17,20 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd s0, 24(sp)
     addi s0, sp, 24 # Prologue ends
     mv t0, a0
-    li t1, 0
+    li t1, 1
     mv a1, a0
     xor a0, t0, t1
     seqz a0, a0
     sd a0, -8(s0) # temp0
     ld t0, -8(s0)
     beq t0, zero, else_0
-    li a0, 1
+    li a0, 3
     j end_0
   else_0:
     mv t0, a1
-    li t1, 1
+    li t1, 3
     sub a0, t0, t1
+    addi a0, a0, 1
     sd a0, -16(s0) # temp1
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
@@ -38,7 +39,10 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
     ld t1, -32(s0)
+    srli t0, t0, 1
+    addi t1, t1, -1
     mul a0, t0, t1
+    addi a0, a0, 1
   end_0:
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
@@ -52,7 +56,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd ra, 16(sp)
     sd s0, 8(sp)
     addi s0, sp, 8 # Prologue ends
-    li a0, 4
+    li a0, 9
     call fac
     sd a0, -8(s0) # temp6
     ld a0, -8(s0)
@@ -85,7 +89,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd s0, 40(sp)
     addi s0, sp, 40 # Prologue ends
     mv t0, a0
-    li t1, 1
+    li t1, 3
     mv a1, a0
     slt a0, t1, t0
     xori a0, a0, 1
@@ -96,8 +100,9 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     j end_0
   else_0:
     mv t0, a1
-    li t1, 1
+    li t1, 3
     sub a0, t0, t1
+    addi a0, a0, 1
     sd a0, -16(s0) # temp1
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
@@ -105,15 +110,17 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     call fib
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
-    li t1, 2
+    li t1, 5
     sub a0, t0, t1
+    addi a0, a0, 1
     sd a0, -40(s0) # temp3
     ld a0, -40(s0)
     call fib
     sd a0, -48(s0) # temp4
     ld t0, -32(s0)
     ld t1, -48(s0)
-    add  a0, t0, t1
+    add a0, t0, t1
+    addi a0, a0, -1
   end_0:
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
@@ -127,7 +134,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd ra, 16(sp)
     sd s0, 8(sp)
     addi s0, sp, 8 # Prologue ends
-    li a0, 6
+    li a0, 13
     call fib
     sd a0, -8(s0) # temp8
     ld a0, -8(s0)
@@ -163,7 +170,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd ra, 16(sp)
     sd s0, 8(sp)
     addi s0, sp, 8 # Prologue ends
-    li t0, 0
+    li t0, 1
     mv t1, a0
     mv a1, a0
     xor a0, t0, t1
@@ -173,13 +180,13 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     beq t0, zero, else_0
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -16(s0)
-    li a0, 0
+    li a0, 1
     call print_int
     j end_0
   else_0:
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -16(s0)
-    li a0, 1
+    li a0, 3
     call print_int
   end_0:
     addi sp, s0, 16 # Epilogue starts
@@ -194,47 +201,47 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd ra, 56(sp)
     sd s0, 48(sp)
     addi s0, sp, 48 # Prologue ends
-    li t0, 0
-    li t1, 1
+    li t0, 1
+    li t1, 3
     xor a0, t0, t1
     seqz a0, a0
     sd a0, -8(s0) # temp5
     ld t0, -8(s0)
     beq t0, zero, else_1
-    li t0, 0
-    li t1, 1
+    li t0, 1
+    li t1, 3
     xor a0, t0, t1
     seqz a0, a0
     j end_1
   else_1:
-    li a0, 42
+    li a0, 85
     call print_int
     sd a0, -16(s0) # t42
-    li t0, 1
-    li t1, 1
+    li t0, 3
+    li t1, 3
     xor a0, t0, t1
     seqz a0, a0
   end_1:
     sd a0, -24(s0) # temp9
     ld t0, -24(s0)
     beq t0, zero, else_2
-    li a0, 0
+    li a0, 1
     j end_2
   else_2:
-    li a0, 1
+    li a0, 3
   end_2:
     sd a0, -32(s0) # temp10
     ld t0, -32(s0)
-    li t1, 1
+    li t1, 3
     xor a0, t0, t1
     seqz a0, a0
     sd a0, -40(s0) # temp11
     ld t0, -40(s0)
     beq t0, zero, else_3
-    li a0, 0
+    li a0, 1
     j end_3
   else_3:
-    li a0, 1
+    li a0, 3
   end_3:
     sd a0, -48(s0) # x
     ld a0, -48(s0)
@@ -273,7 +280,8 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     mv t0, a0
     mv t1, a1
     mv a2, a0
-    add  a0, t0, t1
+    add a0, t0, t1
+    addi a0, a0, -1
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -290,12 +298,12 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li a1, 2
     call alloc_closure
     li a1, 1
-    li a2, 1
+    li a2, 3
     call applyN
     sd a0, -8(s0) # temp
     ld a0, -8(s0)
     li a1, 1
-    li a2, 3
+    li a2, 7
     call applyN
     sd a0, -16(s0) # temp2
     ld a0, -16(s0)
@@ -339,7 +347,10 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     mv t0, a2
     mv t1, a0
     mv a3, a0
+    srli t0, t0, 1
+    addi t1, t1, -1
     mul a0, t0, t1
+    addi a0, a0, 1
     sd a0, -8(s0) # temp1
     addi sp, sp, -24 # Saving 'live' regs
     sd a1, -16(s0)
@@ -362,7 +373,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd s0, 24(sp)
     addi s0, sp, 24 # Prologue ends
     mv t0, a0
-    li t1, 1
+    li t1, 3
     mv a2, a0
     xor a0, t0, t1
     seqz a0, a0
@@ -374,13 +385,14 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd a2, -24(s0)
     ld a0, -16(s0)
     li a1, 1
-    li a2, 1
+    li a2, 3
     call applyN
     j end_0
   else_0:
     mv t0, a2
-    li t1, 1
+    li t1, 3
     sub a0, t0, t1
+    addi a0, a0, 1
     sd a0, -16(s0) # temp6
     addi sp, sp, -16 # Saving 'live' regs
     sd a1, -24(s0)
@@ -414,14 +426,14 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li a1, 1
     call alloc_closure
     sd a0, -8(s0)
-    li a0, 4
+    li a0, 9
     ld a1, -8(s0)
     call fac_cps
     sd a0, -16(s0) # temp11
     ld a0, -16(s0)
     call print_int
     sd a0, -24(s0) # temp12
-    li a0, 0
+    li a0, 1
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -456,7 +468,8 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     mv t0, a0
     mv t1, a2
     mv a3, a0
-    add  a0, t0, t1
+    add a0, t0, t1
+    addi a0, a0, -1
     sd a0, -8(s0) # temp1
     addi sp, sp, -24 # Saving 'live' regs
     sd a1, -16(s0)
@@ -479,9 +492,10 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd s0, 16(sp)
     addi s0, sp, 16 # Prologue ends
     mv t0, a0
-    li t1, 2
+    li t1, 5
     mv a4, a0
     sub a0, t0, t1
+    addi a0, a0, 1
     sd a0, -8(s0) # temp4
     addi sp, sp, -32 # Saving 'live' regs
     sd a2, -16(s0)
@@ -512,7 +526,7 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     sd s0, 24(sp)
     addi s0, sp, 24 # Prologue ends
     mv t0, a0
-    li t1, 2
+    li t1, 5
     mv a2, a0
     slt a0, t0, t1
     sd a0, -8(s0) # temp8
@@ -528,8 +542,9 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     j end_0
   else_0:
     mv t0, a2
-    li t1, 1
+    li t1, 3
     sub a0, t0, t1
+    addi a0, a0, 1
     sd a0, -16(s0) # temp10
     addi sp, sp, -16 # Saving 'live' regs
     sd a1, -24(s0)
@@ -569,14 +584,14 @@ SPDX-License-Identifier: LGPL-3.0-or-later
     li a1, 1
     call alloc_closure
     sd a0, -8(s0)
-    li a0, 6
+    li a0, 13
     ld a1, -8(s0)
     call fib
     sd a0, -16(s0) # temp15
     ld a0, -16(s0)
     call print_int
     sd a0, -24(s0) # z
-    li a0, 0
+    li a0, 1
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
     ld s0, 0(s0)

@@ -12,6 +12,7 @@ type opts =
   { mutable dump_parsetree : bool
   ; mutable inference : bool
   ; mutable anf : bool
+  ; mutable gc : bool
   ; mutable input_file : string option
   ; mutable output_file : string option
   }
@@ -70,10 +71,14 @@ let compiler options =
                   (Format.asprintf "%a\n" Middleend.Anf_pprinter.pp_a_structure anf_ast);
                 env_infer)
               else (
-                Format.fprintf ppf "%a\n%!" RiscV.Codegen.gen_a_structure anf_ast;
+                Format.fprintf
+                  ppf
+                  "%a\n%!"
+                  (RiscV.Codegen.gen_a_structure ~enable_gc:options.gc)
+                  anf_ast;
                 env_infer)))
   in
-  let env_infer = Inferencer.env_with_print_funs in
+  let env_infer = Inferencer.env_with_print_funs_and_gc in
   let match_output_file input =
     match options.output_file with
     | Some out_name ->
@@ -98,6 +103,7 @@ let () =
     { dump_parsetree = false
     ; inference = false
     ; anf = false
+    ; gc = false
     ; input_file = None
     ; output_file = None
     }
@@ -114,6 +120,9 @@ let () =
       ; ( "-anf"
         , Unit (fun () -> options.anf <- true)
         , "Show programm after anf, don't evaluate anything" )
+      ; ( "-gc"
+        , Unit (fun () -> options.gc <- true)
+        , "Use garbage collector, don't evaluate anything" )
       ; ( "-fromfile"
         , String (fun filename -> options.input_file <- Some filename)
         , "Read code from the file" )

@@ -13,7 +13,8 @@ let run str =
   | Ok ast ->
     (match Middleend.Anf_core.anf_structure ast with
      | Error e_anf -> Format.eprintf "ANF transformation error: %s\n%!" e_anf
-     | Ok anf_ast -> Format.printf "%a\n%!" RiscV.Codegen.gen_a_structure anf_ast)
+     | Ok anf_ast ->
+       Format.printf "%a\n%!" (RiscV.Codegen.gen_a_structure ~enable_gc:false) anf_ast)
   | Error _ -> Format.printf "Parsing error\n"
 ;;
 
@@ -41,35 +42,40 @@ let%expect_test "codegen default bin op" =
       sd ra, 64(sp)
       sd s0, 56(sp)
       addi s0, sp, 56 # Prologue ends
-      li t0, 1
-      li t1, 2
-      add  a0, t0, t1
-      sd a0, -8(s0) # a
       li t0, 3
-      li t1, 4
-      sub a0, t0, t1
-      sd a0, -16(s0) # b
-      li t0, 5
-      li t1, 6
-      mul a0, t0, t1
-      sd a0, -24(s0) # c
+      li t1, 5
+      add a0, t0, t1
+      addi a0, a0, -1
+      sd a0, -8(s0) # a
       li t0, 7
-      li t1, 8
+      li t1, 9
+      sub a0, t0, t1
+      addi a0, a0, 1
+      sd a0, -16(s0) # b
+      li t0, 11
+      li t1, 13
+      srli t0, t0, 1
+      addi t1, t1, -1
+      mul a0, t0, t1
+      addi a0, a0, 1
+      sd a0, -24(s0) # c
+      li t0, 15
+      li t1, 17
       slt a0, t1, t0
       xori a0, a0, 1
       sd a0, -32(s0) # d
-      li t0, 9
-      li t1, 10
+      li t0, 19
+      li t1, 21
       slt a0, t0, t1
       xori a0, a0, 1
       sd a0, -40(s0) # e
-      li t0, 11
-      li t1, 12
+      li t0, 23
+      li t1, 25
       xor a0, t0, t1
       seqz a0, a0
       sd a0, -48(s0) # f
-      li t0, 13
-      li t1, 14
+      li t0, 27
+      li t1, 29
       xor a0, t0, t1
       snez a0, a0
       sd a0, -56(s0) # g
@@ -96,9 +102,10 @@ let%expect_test "codegen ANF bin op" =
       sd ra, 8(sp)
       sd s0, 0(sp)
       addi s0, sp, 0 # Prologue ends
-      li t0, 1
-      li t1, 2
-      add  a0, t0, t1
+      li t0, 3
+      li t1, 5
+      add a0, t0, t1
+      addi a0, a0, -1
       addi sp, s0, 16 # Epilogue starts
       ld ra, 8(s0)
       ld s0, 0(s0)
@@ -138,7 +145,7 @@ let%expect_test "codegen default main function" =
     sd ra, 16(sp)
     sd s0, 8(sp)
     addi s0, sp, 8 # Prologue ends
-    li a0, 4
+    li a0, 9
     call id
     sd a0, -8(s0) # temp1
     ld a0, -8(s0)
@@ -180,19 +187,20 @@ let%expect_test "codegen default factorial" =
     sd s0, 48(sp)
     addi s0, sp, 48 # Prologue ends
     mv t0, a0
-    li t1, 0
+    li t1, 1
     mv a1, a0
     xor a0, t0, t1
     seqz a0, a0
     sd a0, -8(s0) # temp1
     ld t0, -8(s0)
     beq t0, zero, else_0
-    li a0, 1
+    li a0, 3
     j end_0
   else_0:
     mv t0, a1
-    li t1, 1
+    li t1, 3
     sub a0, t0, t1
+    addi a0, a0, 1
     sd a0, -16(s0) # temp2
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
@@ -201,7 +209,10 @@ let%expect_test "codegen default factorial" =
     sd a0, -32(s0) # temp3
     ld t0, -24(s0)
     ld t1, -32(s0)
+    srli t0, t0, 1
+    addi t1, t1, -1
     mul a0, t0, t1
+    addi a0, a0, 1
     sd a0, -40(s0) # temp4
     ld a0, -40(s0)
   end_0:
@@ -232,19 +243,20 @@ let%expect_test "codegen ANF factorial" =
     sd s0, 24(sp)
     addi s0, sp, 24 # Prologue ends
     mv t0, a0
-    li t1, 0
+    li t1, 1
     mv a1, a0
     xor a0, t0, t1
     seqz a0, a0
     sd a0, -8(s0) # temp0
     ld t0, -8(s0)
     beq t0, zero, else_0
-    li a0, 1
+    li a0, 3
     j end_0
   else_0:
     mv t0, a1
-    li t1, 1
+    li t1, 3
     sub a0, t0, t1
+    addi a0, a0, 1
     sd a0, -16(s0) # temp1
     addi sp, sp, -8 # Saving 'live' regs
     sd a1, -24(s0)
@@ -253,7 +265,10 @@ let%expect_test "codegen ANF factorial" =
     sd a0, -32(s0) # temp2
     ld t0, -24(s0)
     ld t1, -32(s0)
+    srli t0, t0, 1
+    addi t1, t1, -1
     mul a0, t0, t1
+    addi a0, a0, 1
   end_0:
     addi sp, s0, 16 # Epilogue starts
     ld ra, 8(s0)
@@ -278,7 +293,7 @@ let%expect_test "codegen constant" =
       sd ra, 8(sp)
       sd s0, 0(sp)
       addi s0, sp, 0 # Prologue ends
-      li a0, 1
+      li a0, 3
       addi sp, s0, 16 # Epilogue starts
       ld ra, 8(s0)
       ld s0, 0(s0)
@@ -329,39 +344,48 @@ let%expect_test "codegen closure fn with 10 arg" =
       mv t0, a0
       mv t1, a1
       sd a0, -8(s0)
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -16(s0) # temp0
       ld t0, -16(s0)
       mv t1, a2
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -24(s0) # temp1
       ld t0, -24(s0)
       mv t1, a3
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -32(s0) # temp2
       ld t0, -32(s0)
       mv t1, a4
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -40(s0) # temp3
       ld t0, -40(s0)
       mv t1, a5
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -48(s0) # temp4
       ld t0, -48(s0)
       mv t1, a6
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -56(s0) # temp5
       ld t0, -56(s0)
       mv t1, a7
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -64(s0) # temp6
       ld t0, -64(s0)
       ld t1, 16(s0)
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -72(s0) # temp7
       ld t0, -72(s0)
       ld t1, 24(s0)
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       addi sp, s0, 16 # Epilogue starts
       ld ra, 8(s0)
       ld s0, 0(s0)
@@ -378,27 +402,27 @@ let%expect_test "codegen closure fn with 10 arg" =
       li a1, 10
       call alloc_closure
       li a1, 7
-      li a2, 1
-      li a3, 2
-      li a4, 3
-      li a5, 4
-      li a6, 5
-      li a7, 6
+      li a2, 3
+      li a3, 5
+      li a4, 7
+      li a5, 9
+      li a6, 11
+      li a7, 13
       addi sp, sp, -8 # Stack space for variadic args
-      li t0, 7
+      li t0, 15
       sd t0, 0(sp)
       call applyN
       addi sp, sp, 8 # Restore stack after applyN
       sd a0, -8(s0) # clos1
       ld a0, -8(s0)
       li a1, 1
-      li a2, 8
+      li a2, 17
       call applyN
       sd a0, -16(s0) # clos2
       ld a0, -16(s0)
       li a1, 2
-      li a2, 9
-      li a3, 10
+      li a2, 19
+      li a3, 21
       call applyN
       sd a0, -24(s0) # clos3
       ld a0, -24(s0)
@@ -434,39 +458,48 @@ let%expect_test "codegen fn with 10 arg" =
       mv t0, a0
       mv t1, a1
       sd a0, -8(s0)
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -16(s0) # temp0
       ld t0, -16(s0)
       mv t1, a2
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -24(s0) # temp1
       ld t0, -24(s0)
       mv t1, a3
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -32(s0) # temp2
       ld t0, -32(s0)
       mv t1, a4
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -40(s0) # temp3
       ld t0, -40(s0)
       mv t1, a5
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -48(s0) # temp4
       ld t0, -48(s0)
       mv t1, a6
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -56(s0) # temp5
       ld t0, -56(s0)
       mv t1, a7
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -64(s0) # temp6
       ld t0, -64(s0)
       ld t1, 16(s0)
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       sd a0, -72(s0) # temp7
       ld t0, -72(s0)
       ld t1, 24(s0)
-      add  a0, t0, t1
+      add a0, t0, t1
+      addi a0, a0, -1
       addi sp, s0, 16 # Epilogue starts
       ld ra, 8(s0)
       ld s0, 0(s0)
@@ -479,18 +512,18 @@ let%expect_test "codegen fn with 10 arg" =
       sd ra, 16(sp)
       sd s0, 8(sp)
       addi s0, sp, 8 # Prologue ends
-      li a0, 1
-      li a1, 2
-      li a2, 3
-      li a3, 4
-      li a4, 5
-      li a5, 6
-      li a6, 7
-      li a7, 8
+      li a0, 3
+      li a1, 5
+      li a2, 7
+      li a3, 9
+      li a4, 11
+      li a5, 13
+      li a6, 15
+      li a7, 17
       addi sp, sp, -16 # Stack space for variadic args
-      li t0, 9
+      li t0, 19
       sd t0, 0(sp)
-      li t0, 10
+      li t0, 21
       sd t0, 8(sp)
       call plus
       addi sp, sp, 16 # Restore stack after call

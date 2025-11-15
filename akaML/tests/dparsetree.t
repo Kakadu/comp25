@@ -1,3 +1,6 @@
+Copyright 2025-2026, Friend-zva, RodionovMaxim05
+SPDX-License-Identifier: LGPL-3.0-or-later
+
   $ ../bin/akaML.exe -dparsetree <<EOF
   > let rec fac n =
   >   if n <= 1

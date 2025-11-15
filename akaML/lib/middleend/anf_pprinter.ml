@@ -21,6 +21,7 @@ let pp_a_pat ppf = function
 let rec pp_i_exp_deep need_parens ppf = function
   | IExp_ident id -> pp_ident ppf id
   | IExp_constant const -> pp_constant ppf const
+  | IExp_unit -> pp_ident ppf "()"
   | IExp_fun (a_pat, a_exp) ->
     if need_parens then fprintf ppf "(";
     pp_open_box ppf 2;

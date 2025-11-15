@@ -809,6 +809,48 @@ let log_op_scheme =
   Scheme (VarSet.empty, Type_arrow (Type_bool, Type_arrow (Type_bool, Type_bool)))
 ;;
 
+let op_schemes =
+  [ (* Arithmetic *)
+    "+", bin_op_scheme
+  ; "-", bin_op_scheme
+  ; "*", bin_op_scheme
+  ; "/", bin_op_scheme
+  ; (* Comparisons *)
+    "=", comp_op_scheme
+  ; "<>", comp_op_scheme
+  ; "<", comp_op_scheme
+  ; ">", comp_op_scheme
+  ; "<=", comp_op_scheme
+  ; ">=", comp_op_scheme
+  ; (* Logics *)
+    "&&", log_op_scheme
+  ; "||", log_op_scheme
+  ]
+;;
+
+let print_schemes =
+  [ (* Printing *)
+    "print_int", Scheme (VarSet.empty, Type_arrow (Type_int, Type_unit))
+  ; "print_endline", Scheme (VarSet.empty, Type_arrow (Type_string, Type_unit))
+  ]
+;;
+
+let gc_schemes =
+  [ (* Garbage Collector *)
+    "collect", Scheme (VarSet.empty, Type_arrow (Type_unit, Type_unit))
+  ; "get_heap_start", Scheme (VarSet.empty, Type_arrow (Type_unit, Type_int))
+  ; "get_heap_final", Scheme (VarSet.empty, Type_arrow (Type_unit, Type_int))
+  ; "print_gc_status", Scheme (VarSet.empty, Type_arrow (Type_unit, Type_unit))
+  ]
+;;
+
+let build_env schemes =
+  List.fold_left (fun env (id, sch) -> TypeEnv.extend env id sch) TypeEnv.empty schemes
+;;
+
+let env_with_print_funs = build_env (op_schemes @ print_schemes)
+let env_with_print_funs_and_gc = build_env (op_schemes @ print_schemes @ gc_schemes)
+
 let env_with_print_funs =
   let initial_env =
     [ (* Printing *)
