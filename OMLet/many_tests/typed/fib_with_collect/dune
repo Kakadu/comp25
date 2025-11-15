@@ -1,5 +1,5 @@
 (cram
- (applies_to fac_partial_appl_test)
+ (applies_to fib_with_collect)
  (deps
   ../../../bin/omlet.exe
   ../../../lib/runtime.c
@@ -7,4 +7,4 @@
   ../../../lib/gc.h
   ../../../lib/callf.s
   ../build_and_run.sh
-  ../../manytests/typed/010faccps_ll.ml))
+  fib_with_collect.ml))

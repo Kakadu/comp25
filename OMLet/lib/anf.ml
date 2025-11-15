@@ -189,6 +189,10 @@ let rec anf (state : state) e expr_with_hole =
           let* varname = gen_temp "res_of_app" in
           let* e, state1 = expr_with_hole (ImmId varname) in
           return (ALet (varname, CApp (fimm, List.rev acc), e), state1)
+        | [ Const Unit_lt ] ->
+          let* varname = gen_temp "res_of_app" in
+          let* e, state1 = expr_with_hole (ImmId varname) in
+          return (ALet (varname, CApp (fimm, List.rev acc), e), state1)
         | expr :: rest -> anf st expr (fun immval -> anf_args (immval :: acc) st rest)
       in
       anf_args [] state arg_exprs)
