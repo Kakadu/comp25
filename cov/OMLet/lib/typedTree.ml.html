@@ -148,7 +148,7 @@
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
-<span data-count="0">t</span>ype binder = <span data-count="0">i</span>nt [@@deriving show { with_path = false }, qcheck<span data-count="14">]</span>
+<span data-count="0">t</span>ype binder = <span data-count="0">i</span>nt [@@deriving show { with_path = false }, qcheck<span data-count="36">]</span>
 
 type typ =
   | Primitive of (string[@gen gen_primitive])
@@ -172,7 +172,7 @@ let choice_set_many map list =
 ;;
 
 let gen_typ_primitive =
-  QCheck.Gen.(oneof<span data-count="14">l</span> [ "string"; "int"; "unit"; "bool" ] &gt;|<span data-count="14">=</span> fun t -&gt; <span data-count="0">P</span>rimitive t)
+  QCheck.Gen.(oneof<span data-count="36">l</span> [ "string"; "int"; "unit"; "bool" ] &gt;|<span data-count="36">=</span> fun t -&gt; <span data-count="0">P</span>rimitive t)
 ;;
 
 let arrow_of_types first_types last_type =

@@ -159,58 +159,58 @@ open Anf
 open Ast
 
 let rec lambda_arity_of_aexpr ae =
-  <span data-count="73">m</span>atch ae with
-  | <span data-count="51">A</span>CExpr (CLam (_, inner)) -&gt;
+  <span data-count="255">m</span>atch ae with
+  | <span data-count="180">A</span>CExpr (CLam (_, inner)) -&gt;
     let sub_arity, body = lambda_arity_of_aexpr inner in
-    <span data-count="51">1</span> + sub_arity, body
-  | <span data-count="4">A</span>CExpr _ -&gt; 0, ae
-  | <span data-count="18">A</span>Let _ -&gt; 0, ae
+    <span data-count="180">1</span> + sub_arity, body
+  | <span data-count="15">A</span>CExpr _ -&gt; 0, ae
+  | <span data-count="60">A</span>Let _ -&gt; 0, ae
 ;;
 
 let is_function = function
-  | <span data-count="66">A</span>CExpr (CLam (Ident _, _)) -&gt; true
-  | <span data-count="30">_</span> -&gt; false
+  | <span data-count="225">A</span>CExpr (CLam (Ident _, _)) -&gt; true
+  | <span data-count="96">_</span> -&gt; false
 ;;
 
 (* if argument is const, it will be put on stack. else it is already on it *)
 let analyze_arg stack_size = function
-  | <span data-count="52">I</span>mmNum _ -&gt; stack_size + 1
-  | <span data-count="124">_</span> -&gt; stack_size
+  | <span data-count="156">I</span>mmNum _ -&gt; stack_size + 1
+  | <span data-count="448">_</span> -&gt; stack_size
 ;;
 
 let rec analyze_cexpr stack_size = function
-  | <span data-count="90">C</span>Binop (_, _, _) -&gt; stack_size
-  | <span data-count="170">C</span>Immexpr _ -&gt; stack_size
-  | <span data-count="34">C</span>Ite (cond, thn, els) -&gt;
+  | <span data-count="280">C</span>Binop (_, _, _) -&gt; stack_size
+  | <span data-count="528">C</span>Immexpr _ -&gt; stack_size
+  | <span data-count="102">C</span>Ite (cond, thn, els) -&gt;
     let stack_size = analyze_cexpr stack_size cond in
-    <span data-count="34">l</span>et stack_size = analyze_aexpr stack_size thn in
-    <span data-count="34">(</span>match els with
+    <span data-count="102">l</span>et stack_size = analyze_aexpr stack_size thn in
+    <span data-count="102">(</span>match els with
      | <span data-count="0">N</span>one -&gt; stack_size
-     | <span data-count="34">S</span>ome els -&gt; analyze_aexpr stack_size els)
-  | <span data-count="102">C</span>Lam (Ident _, ae) -&gt; analyze_aexpr (stack_size + 1) ae
-  | <span data-count="122">C</span>App (_, args) -&gt;
+     | <span data-count="102">S</span>ome els -&gt; analyze_aexpr stack_size els)
+  | <span data-count="360">C</span>Lam (Ident _, ae) -&gt; analyze_aexpr (stack_size + 1) ae
+  | <span data-count="426">C</span>App (_, args) -&gt;
     (* uncomment that if t-regs will be used again *)
     (* stack_size (*+ 7*) + List.length args *)
     List.fold_left analyze_arg stack_size args
 
 and analyze_aexpr stack_size = function
-  | <span data-count="234">A</span>CExpr ce -&gt; analyze_cexpr stack_size ce
-  | <span data-count="250">A</span>Let (Ident _, cexpr, body) -&gt;
+  | <span data-count="778">A</span>CExpr ce -&gt; analyze_cexpr stack_size ce
+  | <span data-count="816">A</span>Let (Ident _, cexpr, body) -&gt;
     let stack_size = analyze_cexpr stack_size cexpr in
-    <span data-count="250">l</span>et stack_size = analyze_aexpr stack_size body in
-    <span data-count="250">s</span>tack_size + 1
+    <span data-count="816">l</span>et stack_size = analyze_aexpr stack_size body in
+    <span data-count="816">s</span>tack_size + 1
 ;;
 
 let analyze_astatement stack_size = function
-  | <span data-count="64">_</span>, st when is_functio<span data-count="64">n</span> st -&gt;
+  | <span data-count="214">_</span>, st when is_functio<span data-count="214">n</span> st -&gt;
     (* + 1 for RA *)
-    <span data-count="44">a</span>nalyze_aexpr (stack_size + 1) st
-  | <span data-count="20">_</span>, st -&gt; analyze_aexpr stack_size st
+    <span data-count="150">a</span>nalyze_aexpr (stack_size + 1) st
+  | <span data-count="64">_</span>, st -&gt; analyze_aexpr stack_size st
 ;;
 
 let analyze_aconstr stack_size = function
   | <span data-count="0">A</span>Expr ae -&gt; analyze_aexpr stack_size ae
-  | <span data-count="32">A</span>Statement (_, st_list) -&gt; List.fold_left analyze_astatement stack_size st_list
+  | <span data-count="107">A</span>Statement (_, st_list) -&gt; List.fold_left analyze_astatement stack_size st_list
 ;;
 </code></pre>
       </div>
