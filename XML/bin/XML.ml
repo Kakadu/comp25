@@ -1,4 +1,4 @@
-(** Copyright 2024-2025, Rodion Suvorov, Mikhail Gavrilenko *)
+(** Copyright 2024-2025, Mikhail Gavrilenko,Danila Rudnev-Stepanyan, Daniel Vlasenko *)
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
@@ -16,19 +16,20 @@ type options =
   ; mutable show_anf : bool
   ; mutable show_cc : bool
   ; mutable show_ll : bool
+  ; mutable gc_stats : bool
   }
 
 (* ------------------------------- *)
 (*     Compiler Entry Points       *)
 (* ------------------------------- *)
 
-let to_asm ast : string =
+let to_asm ~gc_stats ast : string =
   let cc_program = Middleend.Cc.cc_program ast in
   let anf_ast = Middleend.Anf.anf_program cc_program in
   let ll_anf = Middleend.Ll.lambda_lift_program anf_ast in
   let buf = Buffer.create 1024 in
   let ppf = formatter_of_buffer buf in
-  Backend.Codegen.gen_program ppf ll_anf;
+  Backend.Codegen.gen_program_with_gc_stats ~gc_stats ppf ll_anf;
   pp_print_flush ppf ();
   Buffer.contents buf
 ;;
@@ -54,7 +55,7 @@ let compile_and_write options source_code =
   then (
     Middleend.Pprinter.print_anf_program std_formatter anf_after_ll;
     exit 0);
-  let asm_code = to_asm ast in
+  let asm_code = to_asm ~gc_stats:options.gc_stats ast in
   match options.output_file_name with
   | Some out_file ->
     (try
@@ -104,6 +105,7 @@ let () =
     ; show_anf = false
     ; show_cc = false
     ; show_ll = false
+    ; gc_stats = false
     }
   in
   let usage_msg =
@@ -131,6 +133,9 @@ let () =
     ; ( "--ll"
       , Arg.Unit (fun () -> options.show_ll <- true)
       , "         Show ANF after lambda lifting and exit" )
+    ; ( "--gc-stats"
+      , Arg.Unit (fun () -> options.gc_stats <- true)
+      , "     Enable GC statistics and force a collection at program start/end" )
     ]
   in
   let handle_anon_arg filename =

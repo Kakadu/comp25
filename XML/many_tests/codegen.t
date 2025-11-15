@@ -13,18 +13,19 @@
     sd s0, 72(sp)
     addi s0, sp, 72
     mv t0, a0
-    li t1, 0
-    xor t0, t0, t1
-    seqz t0, t0
+    li t1, 1
+    xor t2, t0, t1
+    seqz t0, t2
     sd t0, -8(s0)
     ld t0, -8(s0)
     beq t0, zero, else_0
-    li t0, 1
+    li t0, 3
     j endif_1
   else_0:
     mv t0, a0
-    li t1, 1
+    li t1, 3
     sub t0, t0, t1
+    addi t0, t0, 1
     sd t0, -16(s0)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -40,7 +41,11 @@
     sd t0, -24(s0)
     mv t0, a0
     ld t1, -24(s0)
-    mul t0, t0, t1
+    srai t2, t0, 1
+    srai t3, t1, 1
+    mul t0, t2, t3
+    add t0, t0, t0
+    addi t0, t0, 1
     sd t0, -32(s0)
     ld t0, -32(s0)
   endif_1:
@@ -55,7 +60,9 @@
     sd ra, 64(sp)
     sd s0, 56(sp)
     addi s0, sp, 56
-    li t0, 4
+    li a0, 5120
+    call rt_init
+    li t0, 9
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
@@ -98,9 +105,9 @@
     sd s0, 88(sp)
     addi s0, sp, 88
     mv t0, a0
-    li t1, 1
-    slt t0, t1, t0
-    xori t0, t0, 1
+    li t1, 3
+    slt t2, t1, t0
+    seqz t0, t2
     sd t0, -8(s0)
     ld t0, -8(s0)
     beq t0, zero, else_0
@@ -108,8 +115,9 @@
     j endif_1
   else_0:
     mv t0, a0
-    li t1, 1
+    li t1, 3
     sub t0, t0, t1
+    addi t0, t0, 1
     sd t0, -16(s0)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -124,8 +132,9 @@
     addi sp, sp, 8
     sd t0, -24(s0)
     mv t0, a0
-    li t1, 2
+    li t1, 5
     sub t0, t0, t1
+    addi t0, t0, 1
     sd t0, -32(s0)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -142,6 +151,7 @@
     ld t0, -24(s0)
     ld t1, -40(s0)
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -48(s0)
     ld t0, -48(s0)
   endif_1:
@@ -156,7 +166,9 @@
     sd ra, 64(sp)
     sd s0, 56(sp)
     addi s0, sp, 56
-    li t0, 6
+    li a0, 5120
+    call rt_init
+    li t0, 13
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
@@ -202,7 +214,7 @@
     sd ra, 64(sp)
     sd s0, 56(sp)
     addi s0, sp, 56
-    li t0, 0
+    li t0, 1
     mv t1, a0
     xor t2, t0, t1
     snez t0, t2
@@ -211,7 +223,7 @@
     beq t0, zero, else_0
     addi sp, sp, -8
     sd a0, 0(sp)
-    li t0, 0
+    li t0, 1
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
@@ -226,7 +238,7 @@
   else_0:
     addi sp, sp, -8
     sd a0, 0(sp)
-    li t0, 1
+    li t0, 3
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
@@ -249,22 +261,24 @@
     sd ra, 96(sp)
     sd s0, 88(sp)
     addi s0, sp, 88
-    li t0, 0
-    li t1, 1
-    xor t0, t0, t1
-    seqz t0, t0
+    li a0, 5120
+    call rt_init
+    li t0, 1
+    li t1, 3
+    xor t2, t0, t1
+    seqz t0, t2
     sd t0, -8(s0)
     ld t0, -8(s0)
     beq t0, zero, else_2
-    li t0, 0
-    li t1, 1
-    xor t0, t0, t1
-    seqz t0, t0
+    li t0, 1
+    li t1, 3
+    xor t2, t0, t1
+    seqz t0, t2
     sd t0, -16(s0)
     ld t0, -16(s0)
     j endif_3
   else_2:
-    li t0, 42
+    li t0, 85
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
@@ -272,33 +286,33 @@
     mv t0, a0
     addi sp, sp, 8
     sd t0, -16(s0)
-    li t0, 1
-    li t1, 1
-    xor t0, t0, t1
-    seqz t0, t0
+    li t0, 3
+    li t1, 3
+    xor t2, t0, t1
+    seqz t0, t2
     sd t0, -24(s0)
     ld t0, -24(s0)
   endif_3:
     sd t0, -32(s0)
     ld t0, -32(s0)
     beq t0, zero, else_4
-    li t0, 0
+    li t0, 1
     j endif_5
   else_4:
-    li t0, 1
+    li t0, 3
   endif_5:
     sd t0, -40(s0)
     ld t0, -40(s0)
-    li t1, 1
-    xor t0, t0, t1
-    seqz t0, t0
+    li t1, 3
+    xor t2, t0, t1
+    seqz t0, t2
     sd t0, -48(s0)
     ld t0, -48(s0)
     beq t0, zero, else_6
-    li t0, 0
+    li t0, 1
     j endif_7
   else_6:
-    li t0, 1
+    li t0, 3
   endif_7:
     sd t0, -56(s0)
     ld t0, -56(s0)
@@ -340,6 +354,7 @@
     mv t0, a0
     mv t1, a1
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -8(s0)
     ld a0, -8(s0)
     addi sp, s0, 16
@@ -352,7 +367,7 @@
     sd s0, 48(sp)
     addi s0, sp, 48
     addi sp, sp, -8
-    li t1, 5
+    li t1, 11
     sd t1, 0(sp)
     la a0, simplesum
     li a1, 2
@@ -375,9 +390,11 @@
     sd ra, 64(sp)
     sd s0, 56(sp)
     addi s0, sp, 56
+    li a0, 5120
+    call rt_init
     call partialapp_sum
     mv t0, a0
-    li t1, 5
+    li t1, 11
     mv a0, t0
     mv a1, t1
     call apply1
@@ -428,7 +445,11 @@
     addi s0, sp, 56
     mv t0, a2
     mv t1, a0
-    mul t0, t0, t1
+    srai t2, t0, 1
+    srai t3, t1, 1
+    mul t0, t2, t3
+    add t0, t0, t0
+    addi t0, t0, 1
     sd t0, -8(s0)
     addi sp, sp, -8
     sd a2, 0(sp)
@@ -460,9 +481,9 @@
     sd s0, 88(sp)
     addi s0, sp, 88
     mv t0, a0
-    li t1, 1
-    xor t0, t0, t1
-    seqz t0, t0
+    li t1, 3
+    xor t2, t0, t1
+    seqz t0, t2
     sd t0, -8(s0)
     ld t0, -8(s0)
     beq t0, zero, else_0
@@ -471,7 +492,7 @@
     addi sp, sp, -8
     sd a1, 0(sp)
     mv t0, a1
-    li t1, 1
+    li t1, 3
     mv a0, t0
     mv a1, t1
     call apply1
@@ -485,8 +506,9 @@
     j endif_1
   else_0:
     mv t0, a0
-    li t1, 1
+    li t1, 3
     sub t0, t0, t1
+    addi t0, t0, 1
     sd t0, -16(s0)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -575,8 +597,10 @@
     sd ra, 72(sp)
     sd s0, 64(sp)
     addi s0, sp, 64
+    li a0, 5120
+    call rt_init
     addi sp, sp, -8
-    li t1, 4
+    li t1, 9
     sd t1, 0(sp)
     la a0, fac_cps
     li a1, 2
@@ -607,7 +631,7 @@
     mv t0, a0
     addi sp, sp, 8
     sd t0, -24(s0)
-    li a0, 0
+    li a0, 1
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -617,6 +641,7 @@
   $ riscv64-linux-gnu-gcc temp.o runtime.o -o prog.exe
   $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ./prog.exe
   24
+  [1]
 
 ====================== CPS Fibbo ======================
   $ ../bin/XML.exe -fromfile manytests/typed/010fibcps_ll.ml -o 010fibcps_ll.s
@@ -642,6 +667,7 @@
     mv t0, a0
     mv t1, a2
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -8(s0)
     addi sp, sp, -8
     sd a2, 0(sp)
@@ -673,8 +699,9 @@
     sd s0, 80(sp)
     addi s0, sp, 80
     mv t0, a0
-    li t1, 2
+    li t1, 5
     sub t0, t0, t1
+    addi t0, t0, 1
     sd t0, -8(s0)
     addi sp, sp, -8
     sd a3, 0(sp)
@@ -786,7 +813,7 @@
     sd s0, 96(sp)
     addi s0, sp, 96
     mv t0, a0
-    li t1, 2
+    li t1, 5
     slt t0, t0, t1
     sd t0, -8(s0)
     ld t0, -8(s0)
@@ -810,8 +837,9 @@
     j endif_1
   else_0:
     mv t0, a0
-    li t1, 1
+    li t1, 3
     sub t0, t0, t1
+    addi t0, t0, 1
     sd t0, -16(s0)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -918,8 +946,10 @@
     sd ra, 72(sp)
     sd s0, 64(sp)
     addi s0, sp, 64
+    li a0, 5120
+    call rt_init
     addi sp, sp, -8
-    li t1, 6
+    li t1, 13
     sd t1, 0(sp)
     la a0, fib
     li a1, 2
@@ -950,7 +980,7 @@
     mv t0, a0
     addi sp, sp, 8
     sd t0, -24(s0)
-    li a0, 0
+    li a0, 1
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -960,6 +990,7 @@
   $ riscv64-linux-gnu-gcc temp.o runtime.o -o prog.exe
   $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ./prog.exe
   8
+  [1]
 
   $ ../bin/XML.exe -fromfile manytests/typed/004manyargs.ml -o 004manyargs.s
 
@@ -972,10 +1003,10 @@
     sd ra, 64(sp)
     sd s0, 56(sp)
     addi s0, sp, 56
-    li t0, 1
-    li t1, 1
-    xor t0, t0, t1
-    seqz t0, t0
+    li t0, 3
+    li t1, 3
+    xor t2, t0, t1
+    seqz t0, t2
     sd t0, -8(s0)
     ld t0, -8(s0)
     beq t0, zero, else_0
@@ -1043,7 +1074,7 @@
     ld a2, 0(sp)
     addi sp, sp, 8
     sd t0, -24(s0)
-    li a0, 0
+    li a0, 1
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1056,38 +1087,47 @@
     mv t0, a0
     mv t1, a1
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -8(s0)
     ld t0, -8(s0)
     mv t1, a2
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -16(s0)
     ld t0, -16(s0)
     mv t1, a3
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -24(s0)
     ld t0, -24(s0)
     mv t1, a4
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -32(s0)
     ld t0, -32(s0)
     mv t1, a5
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -40(s0)
     ld t0, -40(s0)
     mv t1, a6
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -48(s0)
     ld t0, -48(s0)
     mv t1, a7
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -56(s0)
     ld t0, -56(s0)
     ld t1, 16(s0)
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -64(s0)
     ld t0, -64(s0)
     ld t1, 24(s0)
     add t0, t0, t1
+    addi t0, t0, -1
     sd t0, -72(s0)
     ld a0, -72(s0)
     addi sp, s0, 16
@@ -1099,6 +1139,8 @@
     sd ra, 176(sp)
     sd s0, 168(sp)
     addi s0, sp, 168
+    li a0, 5120
+    call rt_init
     la a0, test10
     li a1, 10
     call alloc_closure
@@ -1111,70 +1153,70 @@
     addi sp, sp, 8
     sd t0, -8(s0)
     ld t0, -8(s0)
-    li t1, 1
+    li t1, 3
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -16(s0)
     ld t0, -16(s0)
-    li t1, 10
+    li t1, 21
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -24(s0)
     ld t0, -24(s0)
-    li t1, 100
+    li t1, 201
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -32(s0)
     ld t0, -32(s0)
-    li t1, 1000
+    li t1, 2001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -40(s0)
     ld t0, -40(s0)
-    li t1, 10000
+    li t1, 20001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -48(s0)
     ld t0, -48(s0)
-    li t1, 100000
+    li t1, 200001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -56(s0)
     ld t0, -56(s0)
-    li t1, 1000000
+    li t1, 2000001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -64(s0)
     ld t0, -64(s0)
-    li t1, 10000000
+    li t1, 20000001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -72(s0)
     ld t0, -72(s0)
-    li t1, 100000000
+    li t1, 200000001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -80(s0)
     ld t0, -80(s0)
-    li t1, 1000000000
+    li t1, 2000000001
     mv a0, t0
     mv a1, t1
     call apply1
@@ -1200,27 +1242,27 @@
     addi sp, sp, 8
     sd t0, -104(s0)
     ld t0, -104(s0)
-    li t1, 1
+    li t1, 3
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -112(s0)
     ld t0, -112(s0)
-    li t1, 10
+    li t1, 21
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -120(s0)
     ld t0, -120(s0)
-    li t1, 100
+    li t1, 201
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
     sd t0, -128(s0)
-    li a0, 0
+    li a0, 1
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1234,3 +1276,4 @@
   1
   10
   100
+  [1]

@@ -1,4 +1,4 @@
-(** Copyright 2024, Mikhail Gavrilenko, Danila Rudnev-Stepanyan*)
+(** Copyright 2024,  Mikhail Gavrilenko, Danila Rudnev-Stepanyan, Daniel Vlasenko*)
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
@@ -22,27 +22,39 @@ module Emission = struct
     done
   ;;
 
-  let emit_bin_op op rd r1 r2 =
+  let emit_tagged_binop op dst r1 r2 =
     match op with
-    | "+" -> emit add rd r1 r2
-    | "-" -> emit sub rd r1 r2
-    | "*" -> emit mul rd r1 r2
+    | "+" ->
+      (* (2a+1)+(2b+1)-1 = 2(a+b)+1 *)
+      emit add dst r1 r2;
+      emit addi dst dst (-1)
+    | "-" ->
+      (* (2a+1)-(2b+1)+1 = 2(a-b)+1 *)
+      emit sub dst r1 r2;
+      emit addi dst dst 1
+    | "*" ->
+      (* a = x >> 1, b = y >> 1 *)
+      emit srai (T 2) r1 1;
+      emit srai (T 3) r2 1;
+      emit mul dst (T 2) (T 3);
+      (* a*b *)
+      (* (a*b) << 1 | 1  — тегаем обратно *)
+      emit add dst dst dst;
+      emit addi dst dst 1
     | "=" ->
-      emit xor rd r1 r2;
-      emit seqz rd rd
-    | "<" -> emit slt rd r1 r2
-    | ">" -> emit slt rd r2 r1
-    | "<=" ->
-      emit slt rd r2 r1;
-      emit xori rd rd 1
-    | ">=" ->
-      emit slt rd r1 r2;
-      emit xori rd rd 1
+      emit xor (T 2) r1 r2;
+      emit seqz dst (T 2)
     | "<>" ->
-      let temp = T 2 in
-      emit xor temp r1 r2;
-      (* temp = 0 if r1 == r2, non-zero otherwise *)
-      emit snez rd temp (* dst = 1 if temp != 0, else 0 *)
+      emit xor (T 2) r1 r2;
+      emit snez dst (T 2)
+    | "<" -> emit slt dst r1 r2
+    | ">" -> emit slt dst r2 r1
+    | "<=" ->
+      emit slt (T 2) r2 r1;
+      emit seqz dst (T 2)
+    | ">=" ->
+      emit slt (T 2) r1 r2;
+      emit seqz dst (T 2)
     | _ -> invalid_arg ("Unknown binary operator: " ^ op)
   ;;
 

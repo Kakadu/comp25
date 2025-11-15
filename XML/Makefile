@@ -10,7 +10,7 @@ exec:
 
 fmt:
 	dune build @fmt --auto-promote
-
+	./runtime-ci-script/format.sh
 lint:
 	dune build @lint --force
 

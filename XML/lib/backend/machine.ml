@@ -1,4 +1,4 @@
-(** Copyright 2024, Mikhail Gavrilenko, Danila Rudnev-Stepanyan*)
+(** Copyright 2024,  Mikhail Gavrilenko, Danila Rudnev-Stepanyan, Daniel Vlasenko*)
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
@@ -51,6 +51,8 @@ type instr =
   | Ecall (* ECALL *)
   | Ret (* return *)
   | La of reg * string (* Load Address of labeled function into the reg *)
+  | Slli of reg * reg * int (* << imm *)
+  | Srai of reg * reg * int (* >> imm *)
 [@@deriving eq]
 
 let pp_instr ppf =
@@ -80,6 +82,8 @@ let pp_instr ppf =
   | J s -> fprintf ppf "j %s" s
   | Label s -> fprintf ppf "%s:" s
   | Comment s -> fprintf ppf " # %s" s
+  | Slli (rd, r1, sh) -> fprintf ppf "slli %a, %a, %d" pp_reg rd pp_reg r1 sh
+  | Srai (rd, r1, sh) -> fprintf ppf "srai %a, %a, %d" pp_reg rd pp_reg r1 sh
 ;;
 
 let addi k r1 r2 n = k @@ Addi (r1, r2, n)
@@ -106,3 +110,5 @@ let j k s = k @@ J s
 let la k r label = k (La (r, label))
 let comment k s = k (Comment s)
 let label k s = k (Label s)
+let slli k rd r sh = k @@ Slli (rd, r, sh)
+let srai k rd r sh = k @@ Srai (rd, r, sh)

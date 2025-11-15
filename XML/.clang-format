@@ -1,0 +1,17 @@
+BasedOnStyle: Google
+
+IndentWidth: 4
+MaxEmptyLinesToKeep: 1
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
+AllowShortFunctionsOnASingleLine: Empty
+
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: "<[[:alnum:]._]+>"
+    CaseSensitive: true
+    Priority: 2
+  - Regex: ".*"
+    CaseSensitive: true
+    Priority: 1

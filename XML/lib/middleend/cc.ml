@@ -1,4 +1,4 @@
-(** Copyright 2024, Mikhail Gavrilenko, Danila Rudnev-Stepanyan*)
+(** Copyright 2024,  Mikhail Gavrilenko, Danila Rudnev-Stepanyan, Daniel Vlasenko*)
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
@@ -20,7 +20,7 @@ let ( let* ) = Result.bind
 
 let std_lib_names =
   [ "print_int"
-  ; "malloc"
+  ; "alloc_block"
   ; "alloc_closure"
   ; "apply1"
   ; "+"

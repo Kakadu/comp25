@@ -15,7 +15,7 @@
  (inline_tests))
 
 (cram
- (applies_to codegen anf cc ll)
+ (applies_to codegen anf cc ll gc)
  (deps
   ../bin/XML.exe
   ../bin/runtime.c
