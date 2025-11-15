@@ -654,7 +654,7 @@ let rec pp_core_type_deep n ppf = function
     <span data-count="228">i</span>f n &lt;&gt; 0 then <span data-count="54">f</span>printf ppf ")"
 ;;
 
-let pp_core_type = pp_core_type_dee<span data-count="58">p</span> 0
+let pp_core_type = pp_core_type_dee<span data-count="69">p</span> 0
 
 let rec pp_pattern_deep need_parens ppf = function
   | <span data-count="397">P</span>at_any -&gt; fprintf ppf "_"
@@ -689,7 +689,7 @@ let rec pp_pattern_deep need_parens ppf = function
     <span data-count="222">i</span>f need_parens then <span data-count="92">f</span>printf ppf ")"
 ;;
 
-let pp_pattern = pp_pattern_dee<span data-count="58">p</span> false
+let pp_pattern = pp_pattern_dee<span data-count="69">p</span> false
 
 let rec pp_expression_deep need_cut need_parens ppf = function
   | <span data-count="764">E</span>xp_ident id -&gt; pp_ident ppf id
@@ -852,7 +852,7 @@ and pp_value_binding_list indent ppf = function
       value_binding_list
 ;;
 
-let pp_expression = pp_expression_dee<span data-count="58">p</span> false false
+let pp_expression = pp_expression_dee<span data-count="69">p</span> false false
 
 let pp_structure_item ppf = function
   | <span data-count="49">S</span>truct_eval exp -&gt;
