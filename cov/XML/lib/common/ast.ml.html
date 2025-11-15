@@ -604,7 +604,7 @@
 <a href="#L244">244</a>
 <a href="#L245">245</a>
 </pre>
-<pre><code class="ocaml">(** Copyright 2024, Mikhail Gavrilenko, Danila Rudnev-Stepanyan*)
+<pre><code class="ocaml">(** Copyright 2024,  Mikhail Gavrilenko, Danila Rudnev-Stepanyan, Daniel Vlasenko*)
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
@@ -615,14 +615,14 @@ open Stdlib
 
 <span data-count="0">t</span>ype ident = <span data-count="0">s</span>tring [@@deriving eq, show { with_path = false }]
 
-let gen_charc = ma<span data-count="20">p</span> Char.chr (int_rang<span data-count="20">e</span> (Char.cod<span data-count="20">e</span> 'a') (Char.cod<span data-count="20">e</span> 'z'))
+let gen_charc = ma<span data-count="24">p</span> Char.chr (int_rang<span data-count="24">e</span> (Char.cod<span data-count="24">e</span> 'a') (Char.cod<span data-count="24">e</span> 'z'))
 
 let is_not_keyword = function
-  | <span data-count="3648">"</span>let"
+  | <span data-count="3804">"</span>let"
   | <span data-count="0">"</span>if"
-  | <span data-count="2400">"</span>then"
-  | <span data-count="2400">"</span>else"
-  | <span data-count="7160">"</span>in"
+  | <span data-count="2440">"</span>then"
+  | <span data-count="2440">"</span>else"
+  | <span data-count="8220">"</span>in"
   | <span data-count="0">"</span>fun"
   | <span data-count="0">"</span>true"
   | <span data-count="0">"</span>false"
@@ -633,11 +633,11 @@ let is_not_keyword = function
   | <span data-count="0">"</span>with"
   | <span data-count="0">"</span>type"
   | <span data-count="0">"</span>of" -&gt; false
-  | <span data-count="136930">_</span> -&gt; true
+  | <span data-count="143000">_</span> -&gt; true
 ;;
 
 let rec gen_filtered_ident base_gen =
-  <span data-count="40">l</span>et open QCheck.Gen in
+  <span data-count="48">l</span>et open QCheck.Gen in
   base_gen
   &gt;&gt;= fun ident -&gt;
   <span data-count="0">i</span>f is_not_keyword ident then <span data-count="0">r</span>eturn ident else <span data-count="0">g</span>en_filtered_ident base_gen
@@ -647,26 +647,26 @@ let gen_ident =
   let base_gen =
     map2
       (fun start_sym rest_sym -&gt; <span data-count="0">B</span>ase.Char.to_strin<span data-count="0">g</span> start_sym ^ rest_sym)
-      (oneo<span data-count="20">f</span> [ char_rang<span data-count="20">e</span> 'A' 'Z'; char_rang<span data-count="20">e</span> 'a' 'z'; retur<span data-count="20">n</span> '_' ])
+      (oneo<span data-count="24">f</span> [ char_rang<span data-count="24">e</span> 'A' 'Z'; char_rang<span data-count="24">e</span> 'a' 'z'; retur<span data-count="24">n</span> '_' ])
       (small_string
          ~gen:
-           (oneo<span data-count="20">f</span>
-              [ char_rang<span data-count="20">e</span> 'A' 'Z'; char_rang<span data-count="20">e</span> 'a' 'z'; char_rang<span data-count="20">e</span> '0' '9'; retur<span data-count="20">n</span> '_' ]))
+           (oneo<span data-count="24">f</span>
+              [ char_rang<span data-count="24">e</span> 'A' 'Z'; char_rang<span data-count="24">e</span> 'a' 'z'; char_rang<span data-count="24">e</span> '0' '9'; retur<span data-count="24">n</span> '_' ]))
   in
-  <span data-count="20">g</span>en_filtered_iden<span data-count="20">t</span> base_gen
+  <span data-count="24">g</span>en_filtered_iden<span data-count="24">t</span> base_gen
 ;;
 
 let gen_ident_uc =
   let base_gen =
     map2
       (fun start_sym rest_sym -&gt; <span data-count="0">B</span>ase.Char.to_strin<span data-count="0">g</span> start_sym ^ rest_sym)
-      (char_rang<span data-count="20">e</span> 'A' 'Z')
+      (char_rang<span data-count="24">e</span> 'A' 'Z')
       (small_string
          ~gen:
-           (oneo<span data-count="20">f</span>
-              [ char_rang<span data-count="20">e</span> 'A' 'Z'; char_rang<span data-count="20">e</span> 'a' 'z'; char_rang<span data-count="20">e</span> '0' '9'; retur<span data-count="20">n</span> '_' ]))
+           (oneo<span data-count="24">f</span>
+              [ char_rang<span data-count="24">e</span> 'A' 'Z'; char_rang<span data-count="24">e</span> 'a' 'z'; char_rang<span data-count="24">e</span> '0' '9'; retur<span data-count="24">n</span> '_' ]))
   in
-  <span data-count="20">g</span>en_filtered_iden<span data-count="20">t</span> base_gen
+  <span data-count="24">g</span>en_filtered_iden<span data-count="24">t</span> base_gen
 ;;
 
 let gen_ident_lc include_us =
@@ -701,7 +701,7 @@ module Constant = struct
     <span data-count="0">|</span> Const_char of (cha<span data-count="0">r</span>[@gen gen_charc]) (** char as ['w'] *)
     <span data-count="0">|</span> Const_string of (strin<span data-count="0">g</span>[@gen small_string ~gen:gen_charc])
     (** string as ["Kakadu"] *)
-  [@@deriving eq, show { with_path = false }, qcheck<span data-count="100">]</span>
+  [@@deriving eq, show { with_path = false }, qcheck<span data-count="120">]</span>
 end
 
 module TypeExpr = struct
@@ -716,7 +716,7 @@ module TypeExpr = struct
         - [tconstr]               when [l=[]],
         - [T tconstr]             when [l=[T]],
         - [(T1, ..., Tn) tconstr] when [l=[T1 ; ... ; Tn]]. *)
-  [@@deriving eq, show { with_path = false }, qcheck<span data-count="40">]</span>
+  [@@deriving eq, show { with_path = false }, qcheck<span data-count="48">]</span>
 end
 
 module Pattern = struct
@@ -733,14 +733,14 @@ module Pattern = struct
         - [C P]             when [args] is [Some (P)]
         - [C (P1, ..., Pn)] when [args] is
           [Some (Pat_tuple [P1; ...; Pn])] *)
-  [@@deriving eq, show { with_path = false }, qcheck<span data-count="40">]</span>
+  [@@deriving eq, show { with_path = false }, qcheck<span data-count="48">]</span>
 end
 
 module Expression = struct
   <span data-count="0">t</span>ype rec_flag =
     <span data-count="0">|</span> Nonrecursive
     <span data-count="0">|</span> Recursive
-  [@@deriving eq, show { with_path = false }, qcheck<span data-count="80">]</span>
+  [@@deriving eq, show { with_path = false }, qcheck<span data-count="96">]</span>
 
   <span data-count="0">t</span>ype 'expr value_binding =
     { pat : Pattern.t
@@ -794,7 +794,7 @@ module Expression = struct
         - [C]               when [exp] is [None],
         - [C E]             when [exp] is [Some E],
         - [C (E1, ..., En)] when [exp] is [Some (Exp_tuple[E1;...;En])] *)
-  [@@deriving eq, show { with_path = false }, qcheck<span data-count="40">]</span>
+  [@@deriving eq, show { with_path = false }, qcheck<span data-count="48">]</span>
 end
 
 module Structure = struct
