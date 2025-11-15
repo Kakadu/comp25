@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>CC.ml &mdash; Coverage report</title>
-    <meta name="description" content="96.03% coverage in lib/middle_end/CC.ml">
+    <meta name="description" content="96.12% coverage in lib/middle_end/CC.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,12 +15,12 @@
           <span class="dirname">lib/middle_end/</span>CC.ml
         </a>
       </h1>
-      <h2>96.03%</h2>
+      <h2>96.12%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:24.00%"></span>
-      <span class="unvisited" style="top:37.14%"></span>
-      <span class="unvisited" style="bottom:16.00%"></span>
+      <span class="unvisited" style="top:23.86%"></span>
+      <span class="unvisited" style="top:36.93%"></span>
+      <span class="unvisited" style="bottom:16.48%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -180,8 +180,8 @@
 <a id="L153"></a><span > </span>
 <a id="L154"></a><span > </span>
 <a id="L155"></a><span > </span>
-<a id="L156"></a><span class="visited"> </span>
-<a id="L157"></a><span > </span>
+<a id="L156"></a><span > </span>
+<a id="L157"></a><span class="visited"> </span>
 <a id="L158"></a><span class="visited"> </span>
 <a id="L159"></a><span class="visited"> </span>
 <a id="L160"></a><span class="visited"> </span>
@@ -189,17 +189,18 @@
 <a id="L162"></a><span class="visited"> </span>
 <a id="L163"></a><span class="visited"> </span>
 <a id="L164"></a><span class="visited"> </span>
-<a id="L165"></a><span > </span>
+<a id="L165"></a><span class="visited"> </span>
 <a id="L166"></a><span > </span>
 <a id="L167"></a><span > </span>
-<a id="L168"></a><span class="visited"> </span>
+<a id="L168"></a><span > </span>
 <a id="L169"></a><span class="visited"> </span>
 <a id="L170"></a><span class="visited"> </span>
 <a id="L171"></a><span class="visited"> </span>
 <a id="L172"></a><span class="visited"> </span>
-<a id="L173"></a><span > </span>
-<a id="L174"></a><span class="visited"> </span>
-<a id="L175"></a><span > </span>
+<a id="L173"></a><span class="visited"> </span>
+<a id="L174"></a><span > </span>
+<a id="L175"></a><span class="visited"> </span>
+<a id="L176"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -379,6 +380,7 @@
 <a href="#L173">173</a>
 <a href="#L174">174</a>
 <a href="#L175">175</a>
+<a href="#L176">176</a>
 </pre>
 <pre><code class="ocaml">[@@@ocaml.text "/*"]
 
@@ -395,37 +397,37 @@ open Anf
 module FVSet = Stdlib.Set.Make (String)
 
 let get_fv_imm is_top_level = function
-  | <span data-count="36">I</span>mmConst _ -&gt; FVSet.empty
-  | <span data-count="182">I</span>mmVar v when is_top_leve<span data-count="182">l</span> v -&gt; <span data-count="19">F</span>VSet.empty
-  | <span data-count="163">I</span>mmVar v -&gt; FVSet.singleton v
+  | <span data-count="47">I</span>mmConst _ -&gt; FVSet.empty
+  | <span data-count="228">I</span>mmVar v when is_top_leve<span data-count="228">l</span> v -&gt; <span data-count="22">F</span>VSet.empty
+  | <span data-count="206">I</span>mmVar v -&gt; FVSet.singleton v
 ;;
 
 let rec get_fv_cexpr is_top_level = function
-  | <span data-count="25">C</span>Imm imm -&gt; get_fv_imm is_top_level imm
-  | <span data-count="48">C</span>Binop (_, imm1, imm2) -&gt;
-    FVSet.union (get_fv_im<span data-count="48">m</span> is_top_level imm1) (get_fv_im<span data-count="48">m</span> is_top_level imm2)
+  | <span data-count="33">C</span>Imm imm -&gt; get_fv_imm is_top_level imm
+  | <span data-count="59">C</span>Binop (_, imm1, imm2) -&gt;
+    FVSet.union (get_fv_im<span data-count="59">m</span> is_top_level imm1) (get_fv_im<span data-count="59">m</span> is_top_level imm2)
   | <span data-count="1">C</span>Not imm -&gt; get_fv_imm is_top_level imm
   | <span data-count="12">C</span>Lambda (name, body) -&gt; FVSet.remove name (get_fv_aexp<span data-count="12">r</span> is_top_level body)
-  | <span data-count="36">C</span>App (imm1, imm2, imms) -&gt;
+  | <span data-count="48">C</span>App (imm1, imm2, imms) -&gt;
     List.fold_left
-      (fun set arg -&gt; <span data-count="88">F</span>VSet.union set (get_fv_im<span data-count="88">m</span> is_top_level arg))
+      (fun set arg -&gt; <span data-count="114">F</span>VSet.union set (get_fv_im<span data-count="114">m</span> is_top_level arg))
       FVSet.empty
       (imm1 :: imm2 :: imms)
-  | <span data-count="8">C</span>Ite (imm, th, el) -&gt;
+  | <span data-count="9">C</span>Ite (imm, th, el) -&gt;
     FVSet.union
-      (get_fv_im<span data-count="8">m</span> is_top_level imm)
-      (FVSet.unio<span data-count="8">n</span> (get_fv_aexp<span data-count="8">r</span> is_top_level th) (get_fv_aexp<span data-count="8">r</span> is_top_level el))
+      (get_fv_im<span data-count="9">m</span> is_top_level imm)
+      (FVSet.unio<span data-count="9">n</span> (get_fv_aexp<span data-count="9">r</span> is_top_level th) (get_fv_aexp<span data-count="9">r</span> is_top_level el))
 
 and get_fv_aexpr is_top_level = function
-  | <span data-count="65">A</span>CExpr cexpr -&gt; get_fv_cexpr is_top_level cexpr
-  | <span data-count="65">A</span>Let (is_rec, name, cexpr, aexpr) -&gt;
+  | <span data-count="80">A</span>CExpr cexpr -&gt; get_fv_cexpr is_top_level cexpr
+  | <span data-count="82">A</span>Let (is_rec, name, cexpr, aexpr) -&gt;
     let cexpr_fv =
       match is_rec with
       | <span data-count="0">R</span>ec -&gt; FVSet.remov<span data-count="0">e</span> name (get_fv_cexp<span data-count="0">r</span> is_top_level cexpr)
-      | <span data-count="65">N</span>onrec -&gt; get_fv_cexp<span data-count="65">r</span> is_top_level cexpr
+      | <span data-count="82">N</span>onrec -&gt; get_fv_cexp<span data-count="82">r</span> is_top_level cexpr
     in
-    let aexpr_fv = FVSet.remove name (get_fv_aexp<span data-count="65">r</span> is_top_level aexpr) in
-    <span data-count="65">F</span>VSet.union cexpr_fv aexpr_fv
+    let aexpr_fv = FVSet.remove name (get_fv_aexp<span data-count="82">r</span> is_top_level aexpr) in
+    <span data-count="82">F</span>VSet.union cexpr_fv aexpr_fv
 ;;
 
 open Common.Monad.CounterR
@@ -437,11 +439,11 @@ let make_fresh : string t =
 
 (* Return args of cexpr. Otherwise return empty array *)
 let get_args cexpr =
-  <span data-count="37">m</span>atch cexpr with
-  | <span data-count="37">C</span>Lambda (arg, body) -&gt;
+  <span data-count="50">m</span>atch cexpr with
+  | <span data-count="50">C</span>Lambda (arg, body) -&gt;
     let rec helper acc = function
-      | <span data-count="41">A</span>CExpr (CLambda (arg, body)) -&gt; helper (arg :: acc) body
-      | <span data-count="37">e</span> -&gt; List.re<span data-count="37">v</span> acc, e
+      | <span data-count="58">A</span>CExpr (CLambda (arg, body)) -&gt; helper (arg :: acc) body
+      | <span data-count="50">e</span> -&gt; List.re<span data-count="50">v</span> acc, e
     in
     helper [ arg ] body
   | <span data-count="0">_</span> -&gt; [], ACExpr cexpr
@@ -449,52 +451,52 @@ let get_args cexpr =
 
 (* Take all free variables in aexpr and change it with map *)
 let change_fv (map : (string * string) list) =
-  <span data-count="37">l</span>et contain x = <span data-count="182">L</span>ist.find_opt (fun (fv, _) -&gt; <span data-count="37">f</span>v = x) map in
+  <span data-count="50">l</span>et contain x = <span data-count="228">L</span>ist.find_opt (fun (fv, _) -&gt; <span data-count="37">f</span>v = x) map in
   let change_fv_imm = function
-    | <span data-count="36">I</span>mmConst _ as e -&gt; e
-    | <span data-count="182">I</span>mmVar v -&gt;
+    | <span data-count="47">I</span>mmConst _ as e -&gt; e
+    | <span data-count="228">I</span>mmVar v -&gt;
       (match contain v with
        | <span data-count="7">S</span>ome (_, new_v) -&gt; ImmVar new_v
-       | <span data-count="175">N</span>one -&gt; ImmVar v)
+       | <span data-count="221">N</span>one -&gt; ImmVar v)
   in
   let rec change_fv_cexpr = function
-    | <span data-count="25">C</span>Imm imm -&gt; CImm (change_fv_im<span data-count="25">m</span> imm)
-    | <span data-count="48">C</span>Binop (name, imm1, imm2) -&gt; CBinop (name, change_fv_im<span data-count="48">m</span> imm1, change_fv_im<span data-count="48">m</span> imm2)
+    | <span data-count="33">C</span>Imm imm -&gt; CImm (change_fv_im<span data-count="33">m</span> imm)
+    | <span data-count="59">C</span>Binop (name, imm1, imm2) -&gt; CBinop (name, change_fv_im<span data-count="59">m</span> imm1, change_fv_im<span data-count="59">m</span> imm2)
     | <span data-count="1">C</span>Not imm -&gt; CNot (change_fv_im<span data-count="1">m</span> imm)
-    | <span data-count="36">C</span>App (imm1, imm2, imms) -&gt;
-      CApp (change_fv_im<span data-count="36">m</span> imm1, change_fv_im<span data-count="36">m</span> imm2, Base.List.ma<span data-count="36">p</span> imms ~f:change_fv_imm)
-    | <span data-count="8">C</span>Ite (imm, th, el) -&gt;
-      CIte (change_fv_im<span data-count="8">m</span> imm, change_fv_aexp<span data-count="8">r</span> th, change_fv_aexp<span data-count="8">r</span> el)
+    | <span data-count="48">C</span>App (imm1, imm2, imms) -&gt;
+      CApp (change_fv_im<span data-count="48">m</span> imm1, change_fv_im<span data-count="48">m</span> imm2, Base.List.ma<span data-count="48">p</span> imms ~f:change_fv_imm)
+    | <span data-count="9">C</span>Ite (imm, th, el) -&gt;
+      CIte (change_fv_im<span data-count="9">m</span> imm, change_fv_aexp<span data-count="9">r</span> th, change_fv_aexp<span data-count="9">r</span> el)
     | <span data-count="12">C</span>Lambda (name, aexpr) -&gt; CLambda (name, change_fv_aexp<span data-count="12">r</span> aexpr)
   and change_fv_aexpr = function
-    | <span data-count="65">A</span>CExpr e -&gt; ACExpr (change_fv_cexp<span data-count="65">r</span> e)
-    | <span data-count="65">A</span>Let (is_rec, name, cexpr, aexpr) -&gt;
-      ALet (is_rec, name, change_fv_cexp<span data-count="65">r</span> cexpr, change_fv_aexp<span data-count="65">r</span> aexpr)
+    | <span data-count="80">A</span>CExpr e -&gt; ACExpr (change_fv_cexp<span data-count="80">r</span> e)
+    | <span data-count="82">A</span>Let (is_rec, name, cexpr, aexpr) -&gt;
+      ALet (is_rec, name, change_fv_cexp<span data-count="82">r</span> cexpr, change_fv_aexp<span data-count="82">r</span> aexpr)
   in
   change_fv_aexpr
 ;;
 
 let rec convert_cc_cexpr is_top_level = function
-  | <span data-count="53">C</span>Imm _ as exp -&gt; ACExpr exp |&gt; return
-  | <span data-count="51">C</span>Binop _ as exp -&gt; ACExpr exp |&gt; return
-  | <span data-count="37">C</span>Lambda _ as lam -&gt;
+  | <span data-count="65">C</span>Imm _ as exp -&gt; ACExpr exp |&gt; return
+  | <span data-count="65">C</span>Binop _ as exp -&gt; ACExpr exp |&gt; return
+  | <span data-count="50">C</span>Lambda _ as lam -&gt;
     let args, body = get_args lam in
-    <span data-count="37">l</span>et* body' = convert_cc_aexp<span data-count="37">r</span> is_top_level body in
-    <span data-count="37">l</span>et fvs =
-      FVSet.elements (FVSet.dif<span data-count="37">f</span> (get_fv_aexp<span data-count="37">r</span> is_top_level body') (FVSet.of_lis<span data-count="37">t</span> args))
+    <span data-count="50">l</span>et* body' = convert_cc_aexp<span data-count="50">r</span> is_top_level body in
+    <span data-count="50">l</span>et fvs =
+      FVSet.elements (FVSet.dif<span data-count="50">f</span> (get_fv_aexp<span data-count="50">r</span> is_top_level body') (FVSet.of_lis<span data-count="50">t</span> args))
     in
-    <span data-count="37">l</span>et new_fvs = Base.List.map fvs ~f:(fun fv -&gt; <span data-count="7">f</span>v ^ "__new") in
-    <span data-count="37">l</span>et body' = change_fv (Base.List.zip_ex<span data-count="37">n</span> fvs new_fvs) body' in
-    <span data-count="37">l</span>et lambda =
+    <span data-count="50">l</span>et new_fvs = Base.List.map fvs ~f:(fun fv -&gt; <span data-count="7">f</span>v ^ "__new") in
+    <span data-count="50">l</span>et body' = change_fv (Base.List.zip_ex<span data-count="50">n</span> fvs new_fvs) body' in
+    <span data-count="50">l</span>et lambda =
       let last = Base.List.last_exn args in
-      <span data-count="37">l</span>et args = Base.List.drop_last_exn args in
-      <span data-count="37">B</span>ase.List.fold_righ<span data-count="37">t</span>
-        ~f:(fun arg cexpr -&gt; <span data-count="41">C</span>Lambda (arg, ACExpr cexpr))
+      <span data-count="50">l</span>et args = Base.List.drop_last_exn args in
+      <span data-count="50">B</span>ase.List.fold_righ<span data-count="50">t</span>
+        ~f:(fun arg cexpr -&gt; <span data-count="58">C</span>Lambda (arg, ACExpr cexpr))
         ~init:(CLambda (last, body'))
         args
     in
     (match fvs with
-     | <span data-count="33">[</span>] -&gt; ACExpr lambda |&gt; return
+     | <span data-count="46">[</span>] -&gt; ACExpr lambda |&gt; return
      | <span data-count="4">_</span> -&gt;
        let homka =
          Base.List.fold_right
@@ -507,23 +509,23 @@ let rec convert_cc_cexpr is_top_level = function
        let imms = Base.List.map args ~f:(fun i -&gt; <span data-count="3">I</span>mmVar i) in
        <span data-count="4">A</span>Let (Nonrec, fresh, homka, ACExpr (CApp (ImmVar fresh, ImmVar arg, imms))))
   | <span data-count="1">C</span>Not _ as exp -&gt; ACExpr exp |&gt; return
-  | <span data-count="89">C</span>App _ as exp -&gt; ACExpr exp |&gt; return
-  | <span data-count="16">C</span>Ite (name, th, el) -&gt;
-    let* first = convert_cc_aexp<span data-count="16">r</span> is_top_level th in
-    <span data-count="16">l</span>et* second = convert_cc_aexp<span data-count="16">r</span> is_top_level el in
-    <span data-count="16">A</span>CExpr (CIte (name, first, second)) |&gt; return
+  | <span data-count="157">C</span>App _ as exp -&gt; ACExpr exp |&gt; return
+  | <span data-count="17">C</span>Ite (name, th, el) -&gt;
+    let* first = convert_cc_aexp<span data-count="17">r</span> is_top_level th in
+    <span data-count="17">l</span>et* second = convert_cc_aexp<span data-count="17">r</span> is_top_level el in
+    <span data-count="17">A</span>CExpr (CIte (name, first, second)) |&gt; return
 
 and convert_cc_aexpr is_top_level = function
-  | <span data-count="134">A</span>CExpr cexp -&gt; convert_cc_cexpr is_top_level cexp
-  | <span data-count="113">A</span>Let (is_rec, name, cexpr, aexpr) -&gt;
+  | <span data-count="206">A</span>CExpr cexp -&gt; convert_cc_cexpr is_top_level cexp
+  | <span data-count="149">A</span>Let (is_rec, name, cexpr, aexpr) -&gt;
     (* Initially we have let homka = e1 in e2 *)
     (* e1 is cexpr and it can be lambda or some other expression *)
     (* If e1 is lambda with free variables then after conversion
     it will be aexpr: let temp = new_lambda in new_lambda fv1 fv2 fv3 *)
-    let* first = convert_cc_cexp<span data-count="113">r</span> is_top_level cexpr in
-    <span data-count="113">l</span>et* second = convert_cc_aexp<span data-count="113">r</span> is_top_level aexpr in
-    <span data-count="113">(</span>match first with
-     | <span data-count="110">A</span>CExpr e -&gt; ALet (is_rec, name, e, second) |&gt; return
+    let* first = convert_cc_cexp<span data-count="149">r</span> is_top_level cexpr in
+    <span data-count="149">l</span>et* second = convert_cc_aexp<span data-count="149">r</span> is_top_level aexpr in
+    <span data-count="149">(</span>match first with
+     | <span data-count="146">A</span>CExpr e -&gt; ALet (is_rec, name, e, second) |&gt; return
      | <span data-count="3">A</span>Let (is_rec_outer, name_outer, cexpr_outer, aexpr_outer) -&gt;
        (match aexpr_outer with
         | <span data-count="0">A</span>Let _ -&gt; fail "Wrong work of convert_cc_cexpr"
@@ -535,25 +537,26 @@ and convert_cc_aexpr is_top_level = function
 (* Apply closure conversion to aprogram. *)
 (* After conversion all function are closed (withour free variables). *)
 let convert_cc_pr (pr : aprogram) =
-  <span data-count="24">l</span>et is_top_level name =
-    (* If function top-level or it's just, for example, argument *)
-    <span data-count="182">m</span>atch name with
-    | <span data-count="6">"</span>print_int" -&gt; true
-    | <span data-count="176">_</span> -&gt;
+  (* If function top-level*)
+  <span data-count="31">l</span>et is_top_level name =
+    <span data-count="228">m</span>atch name with
+    | <span data-count="228">n</span> when Base.List.me<span data-count="228">m</span> std_lib n ~equal:String.equal -&gt; <span data-count="6">t</span>rue
+    | <span data-count="222">_</span> -&gt;
       let rec helper (astr : astr_item list) =
-        <span data-count="533">m</span>atch astr with
-        | <span data-count="370">(</span>_, (f, ACExpr (CLambda _)), []) :: tl -&gt; f = nam<span data-count="13">e</span> || helper tl
-        | <span data-count="163">_</span> -&gt; false
+        <span data-count="1137">m</span>atch astr with
+        | <span data-count="466">(</span>_, (f, ACExpr (CLambda _)), []) :: tl -&gt; f = nam<span data-count="16">e</span> || helper tl
+        | <span data-count="465">_</span> :: tl -&gt; helper tl
+        | <span data-count="206">[</span>] -&gt; false
       in
       helper pr
   in
-  let rec helper (acc : aprogram) : aprogram -&gt; aprogram t = <span data-count="89">f</span>unction
-    | <span data-count="65">(</span>is_rec, (name, aexpr), binds) :: tl -&gt;
-      let* aexpr' = convert_cc_aexp<span data-count="65">r</span> is_top_level aexpr in
-      <span data-count="65">h</span>elper ((is_rec, (name, aexpr'), binds) :: acc) tl
-    | <span data-count="24">[</span>] -&gt; return (List.re<span data-count="24">v</span> acc)
+  let rec helper (acc : aprogram) : aprogram -&gt; aprogram t = <span data-count="153">f</span>unction
+    | <span data-count="122">(</span>is_rec, (name, aexpr), binds) :: tl -&gt;
+      let* aexpr' = convert_cc_aexp<span data-count="122">r</span> is_top_level aexpr in
+      <span data-count="122">h</span>elper ((is_rec, (name, aexpr'), binds) :: acc) tl
+    | <span data-count="31">[</span>] -&gt; return (List.re<span data-count="31">v</span> acc)
   in
-  run (helpe<span data-count="24">r</span> [] pr) 0 |&gt; <span data-count="24">s</span>nd
+  run (helpe<span data-count="31">r</span> [] pr) 0 |&gt; <span data-count="31">s</span>nd
 ;;
 </code></pre>
       </div>

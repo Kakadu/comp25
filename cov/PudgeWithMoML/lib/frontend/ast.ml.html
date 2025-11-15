@@ -18,12 +18,12 @@
       <h2>94.06%</h2>
     </div>
     <div id="navbar">
-      <span class="some-visited" style="top:11.21%"></span>
-      <span class="unvisited" style="top:32.71%"></span>
-      <span class="unvisited" style="bottom:39.25%"></span>
-      <span class="some-visited" style="bottom:35.51%"></span>
-      <span class="unvisited" style="bottom:27.10%"></span>
-      <span class="unvisited" style="bottom:13.08%"></span>
+      <span class="some-visited" style="top:10.26%"></span>
+      <span class="unvisited" style="top:29.91%"></span>
+      <span class="unvisited" style="bottom:44.44%"></span>
+      <span class="some-visited" style="bottom:41.03%"></span>
+      <span class="unvisited" style="bottom:33.33%"></span>
+      <span class="unvisited" style="bottom:20.51%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -135,6 +135,16 @@
 <a id="L105"></a><span class="visited"> </span>
 <a id="L106"></a><span > </span>
 <a id="L107"></a><span > </span>
+<a id="L108"></a><span > </span>
+<a id="L109"></a><span > </span>
+<a id="L110"></a><span > </span>
+<a id="L111"></a><span > </span>
+<a id="L112"></a><span > </span>
+<a id="L113"></a><span > </span>
+<a id="L114"></a><span > </span>
+<a id="L115"></a><span > </span>
+<a id="L116"></a><span > </span>
+<a id="L117"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -246,6 +256,16 @@
 <a href="#L105">105</a>
 <a href="#L106">106</a>
 <a href="#L107">107</a>
+<a href="#L108">108</a>
+<a href="#L109">109</a>
+<a href="#L110">110</a>
+<a href="#L111">111</a>
+<a href="#L112">112</a>
+<a href="#L113">113</a>
+<a href="#L114">114</a>
+<a href="#L115">115</a>
+<a href="#L116">116</a>
+<a href="#L117">117</a>
 </pre>
 <pre><code class="ocaml">[@@@ocaml.text "/*"]
 
@@ -264,7 +284,7 @@ open Generate
   | Int_lt of (in<span data-count="178">t</span>[@gen QCheck.Gen.small_int])
   | Bool_lt of boo<span data-count="22">l</span>
   | Unit_lt
-[@@deriving show { with_path = false }, qcheck<span data-count="555">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="590">]</span>
 
 <span data-count="1351966">t</span>ype pattern =
   | Wild
@@ -279,12 +299,12 @@ open Generate
   | PVar of ident
   | POption of <span data-count="6">p</span>attern option
   | PConstraint of pattern * typ
-[@@deriving show { with_path = false }, qcheck<span data-count="3224763">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="3224777">]</span>
 
 <span data-count="0">t</span>ype is_recursive =
   | Nonrec
   | Rec
-[@@deriving show { with_path = false }, qcheck<span data-count="444">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="472">]</span>
 
 <span data-count="267076">t</span>ype expr =
   | Const of literal
@@ -316,44 +336,54 @@ open Generate
 [@@deriving show { with_path = false }, qcheck]
 
 <span data-count="0">a</span>nd case = <span data-count="50">(</span>pattern[@gen gen_pattern_size<span data-count="24660">d</span> (n / 4)]) * (expr[@gen gen_expr_size<span data-count="24660">d</span> (n / 4)])
-[@@deriving show { with_path = false }, qcheck<span data-count="396564">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="396690">]</span>
 
 <span data-count="1">t</span>ype structure_item =
   <span data-count="166">i</span>s_recursive
   * binding
-  * (<span data-count="252">b</span>inding lis<span data-count="166">t</span>[@gen QCheck.Gen.(list_siz<span data-count="111">e</span> (0 -<span data-count="111">-</span> 1) gen_binding)])
-[@@deriving show { with_path = false }, qcheck<span data-count="333">]</span>
+  * (<span data-count="252">b</span>inding lis<span data-count="166">t</span>[@gen QCheck.Gen.(list_siz<span data-count="118">e</span> (0 -<span data-count="118">-</span> 1) gen_binding)])
+[@@deriving show { with_path = false }, qcheck<span data-count="354">]</span>
 
 <span data-count="0">t</span>ype program =
-  (<span data-count="376">s</span>tructure_item lis<span data-count="83">t</span>[@gen QCheck.Gen.(list_siz<span data-count="111">e</span> (1 -<span data-count="111">-</span> 2) gen_structure_item)])
-[@@deriving show { with_path = false }, qcheck<span data-count="111">]</span>
+  (<span data-count="376">s</span>tructure_item lis<span data-count="83">t</span>[@gen QCheck.Gen.(list_siz<span data-count="118">e</span> (1 -<span data-count="118">-</span> 2) gen_structure_item)])
+[@@deriving show { with_path = false }, qcheck<span data-count="118">]</span>
 
 let eapp func args =
-  <span data-count="4014">B</span>ase.List.fold_left args ~init:func ~f:(fun acc arg -&gt; <span data-count="8023">A</span>pply (acc, arg))
+  <span data-count="4152">B</span>ase.List.fold_left args ~init:func ~f:(fun acc arg -&gt; <span data-count="8299">A</span>pply (acc, arg))
 ;;
 
 let eapp2 func a b = <span data-count="10">e</span>app func [ a; b ]
 
 let elambda func args =
-  <span data-count="2070">B</span>ase.List.fold_right args ~init:func ~f:(fun arg acc -&gt; <span data-count="1009">L</span>ambda (arg, acc))
+  <span data-count="2313">B</span>ase.List.fold_right args ~init:func ~f:(fun arg acc -&gt; <span data-count="1078">L</span>ambda (arg, acc))
 ;;
 
-let eeq a b = <span data-count="1628">e</span>app (Variable "=") [ a; b ]
+let eeq a b = <span data-count="1632">e</span>app (Variable "=") [ a; b ]
 let eneq a b = <span data-count="0">e</span>app (Variable "&lt;&gt;") [ a; b ]
 let elt a b = <span data-count="32">e</span>app (Variable "&lt;") [ a; b ]
 let elte a b = <span data-count="44">e</span>app (Variable "&lt;=") [ a; b ]
 let egt a b = <span data-count="36">e</span>app (Variable "&gt;") [ a; b ]
 let egte a b = <span data-count="10">e</span>app (Variable "&gt;=") [ a; b ]
-let eadd a b = <span data-count="855">e</span>app (Variable "+") [ a; b ]
-let esub a b = <span data-count="436">e</span>app (Variable "-") [ a; b ]
-let emul a b = <span data-count="454">e</span>app (Variable "*") [ a; b ]
-let ediv a b = <span data-count="160">e</span>app (Variable "/") [ a; b ]
+let eadd a b = <span data-count="871">e</span>app (Variable "+") [ a; b ]
+let esub a b = <span data-count="470">e</span>app (Variable "-") [ a; b ]
+let emul a b = <span data-count="534">e</span>app (Variable "*") [ a; b ]
+let ediv a b = <span data-count="164">e</span>app (Variable "/") [ a; b ]
 let eland a b = <span data-count="142">e</span>app (Variable "&amp;&amp;") [ a; b ]
 let elor a b = <span data-count="94">e</span>app (Variable "||") [ a; b ]
 let econs a b = <span data-count="108">e</span>app (Variable "::") [ a; b ]
 let euminus a = <span data-count="5">e</span>app (Variable "~-") [ a ]
 let std_binops = [ "="; "&lt;&gt;"; "&lt;"; "&lt;="; "&gt;"; "&gt;="; "+"; "-"; "*"; "/"; "&amp;&amp;"; "||"; "::" ]
 let std_ops = "not" :: "~-" :: std_binops
+
+let std_lib =
+  [ "print_int"
+  ; "print_gc_status"
+  ; "print_gc_stats"
+  ; "gc_collect"
+  ; "get_heap_start"
+  ; "get_heap_finish"
+  ]
+;;
 </code></pre>
       </div>
     </div>

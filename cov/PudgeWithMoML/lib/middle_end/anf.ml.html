@@ -522,119 +522,119 @@ open Base
 <span data-count="0">t</span>ype aprogram = <span data-count="29">a</span>str_item lis<span data-count="7">t</span> [@@deriving show { with_path = false }]
 
 let mk_alet rf name1 v body =
-  <span data-count="199">m</span>atch rf, body with
+  <span data-count="290">m</span>atch rf, body with
   (* let x = v in x*)
-  | <span data-count="68">N</span>onrec, ACExpr (CImm (ImmVar name2)) when String.equa<span data-count="68">l</span> name1 name2 -&gt; <span data-count="68">A</span>CExpr v
-  | <span data-count="131">_</span> -&gt; ALet (rf, name1, v, body)
+  | <span data-count="124">N</span>onrec, ACExpr (CImm (ImmVar name2)) when String.equa<span data-count="124">l</span> name1 name2 -&gt; <span data-count="123">A</span>CExpr v
+  | <span data-count="167">_</span> -&gt; ALet (rf, name1, v, body)
 ;;
 
 open Common.Monad.CounterR
 
 let make_temp =
   let+ fresh = make_fresh in
-  <span data-count="167">"</span>anf_t" ^ Int.to_strin<span data-count="167">g</span> fresh
+  <span data-count="250">"</span>anf_t" ^ Int.to_strin<span data-count="250">g</span> fresh
 ;;
 
-let is_op name = <span data-count="88">L</span>ist.mem (String.to_lis<span data-count="88">t</span> op_chars) name.[0] ~equal:Char.equal
+let is_op name = <span data-count="109">L</span>ist.mem (String.to_lis<span data-count="109">t</span> op_chars) name.[0] ~equal:Char.equal
 
 let rec anf (e : expr) (expr_with_hole : imm -&gt; aexpr t) : aexpr t =
-  <span data-count="647">m</span>atch e with
-  | <span data-count="150">C</span>onst c -&gt; expr_with_hole (ImmConst c)
-  | <span data-count="206">V</span>ariable n -&gt; expr_with_hole (ImmVar n)
-  | <span data-count="25">L</span>etIn (rec_flag, (PVar name, value), body) -&gt;
-    let* body = an<span data-count="25">f</span> body expr_with_hole in
-    <span data-count="25">a</span>nf_as_imm value (fun immv -&gt; <span data-count="32">m</span>k_alet rec_flag name (CImm immv) body |&gt; <span data-count="32">r</span>eturn)
+  <span data-count="933">m</span>atch e with
+  | <span data-count="213">C</span>onst c -&gt; expr_with_hole (ImmConst c)
+  | <span data-count="306">V</span>ariable n -&gt; expr_with_hole (ImmVar n)
+  | <span data-count="33">L</span>etIn (rec_flag, (PVar name, value), body) -&gt;
+    let* body = an<span data-count="33">f</span> body expr_with_hole in
+    <span data-count="33">a</span>nf_as_imm value (fun immv -&gt; <span data-count="40">m</span>k_alet rec_flag name (CImm immv) body |&gt; <span data-count="40">r</span>eturn)
   | <span data-count="1">L</span>etIn (_, (PConst Unit_lt, value), body) -&gt;
     let* body = an<span data-count="1">f</span> body expr_with_hole in
     <span data-count="1">a</span>nf_as_imm value (fun _ -&gt; <span data-count="1">b</span>ody |&gt; return)
-  | <span data-count="7">L</span>etIn (_, (Wild, value), body) -&gt;
-    let* body = an<span data-count="7">f</span> body expr_with_hole in
-    <span data-count="7">a</span>nf_as_imm value (fun _ -&gt; <span data-count="7">b</span>ody |&gt; return)
+  | <span data-count="10">L</span>etIn (_, (Wild, value), body) -&gt;
+    let* body = an<span data-count="10">f</span> body expr_with_hole in
+    <span data-count="10">a</span>nf_as_imm value (fun _ -&gt; <span data-count="10">b</span>ody |&gt; return)
   | <span data-count="1">A</span>pply (Variable "not", arg) -&gt;
     anf_as_imm arg (fun i -&gt;
       <span data-count="1">l</span>et* temp = make_temp in
       <span data-count="1">l</span>et* ehole = expr_with_hol<span data-count="1">e</span> (ImmVar temp) in
       <span data-count="1">m</span>k_alet Nonrec temp (CNot i) ehole |&gt; <span data-count="1">r</span>eturn)
-  | <span data-count="88">A</span>pply (Apply (Variable f, arg1), arg2) when is_o<span data-count="88">p</span> f -&gt;
-    <span data-count="66">a</span>nf_as_imm arg1 (fun i1 -&gt;
-      <span data-count="66">a</span>nf_as_imm arg2 (fun i2 -&gt;
-        <span data-count="66">l</span>et* temp = make_temp in
-        <span data-count="66">l</span>et* ehole = expr_with_hol<span data-count="66">e</span> (ImmVar temp) in
-        <span data-count="66">m</span>k_alet Nonrec temp (CBinop (f, i1, i2)) ehole |&gt; <span data-count="66">r</span>eturn))
-  | <span data-count="83">L</span>ambda (PVar arg, body) -&gt;
-    let+ body' = an<span data-count="83">f</span> body (fun i -&gt; <span data-count="48">A</span>CExpr (CImm i) |&gt; return) in
-    <span data-count="83">A</span>CExpr (CLambda (arg, body'))
-  | <span data-count="26">A</span>pply ((Apply (_, _) as app), arg1) -&gt;
+  | <span data-count="109">A</span>pply (Apply (Variable f, arg1), arg2) when is_o<span data-count="109">p</span> f -&gt;
+    <span data-count="80">a</span>nf_as_imm arg1 (fun i1 -&gt;
+      <span data-count="80">a</span>nf_as_imm arg2 (fun i2 -&gt;
+        <span data-count="80">l</span>et* temp = make_temp in
+        <span data-count="80">l</span>et* ehole = expr_with_hol<span data-count="80">e</span> (ImmVar temp) in
+        <span data-count="80">m</span>k_alet Nonrec temp (CBinop (f, i1, i2)) ehole |&gt; <span data-count="80">r</span>eturn))
+  | <span data-count="112">L</span>ambda (PVar arg, body) -&gt;
+    let+ body' = an<span data-count="112">f</span> body (fun i -&gt; <span data-count="61">A</span>CExpr (CImm i) |&gt; return) in
+    <span data-count="112">A</span>CExpr (CLambda (arg, body'))
+  | <span data-count="35">A</span>pply ((Apply (_, _) as app), arg1) -&gt;
     let f, args =
       let rec helper e =
-        <span data-count="100">m</span>atch e with
-        | <span data-count="74">A</span>pply (f, arg) -&gt;
+        <span data-count="129">m</span>atch e with
+        | <span data-count="94">A</span>pply (f, arg) -&gt;
           let f', args = helper f in
-          <span data-count="74">f</span>', args @ [ arg ]
-        | <span data-count="26">_</span> -&gt; e, []
+          <span data-count="94">f</span>', args @ [ arg ]
+        | <span data-count="35">_</span> -&gt; e, []
       in
-      helpe<span data-count="26">r</span> (Apply (app, arg1))
+      helpe<span data-count="35">r</span> (Apply (app, arg1))
     in
     let rec anf_list (l : expr list) (k : imm list -&gt; aexpr t) =
-      <span data-count="100">m</span>atch l with
-      | <span data-count="74">h</span>d :: tl -&gt; anf_as_imm hd (fun i -&gt; <span data-count="74">a</span>nf_list tl (fun res -&gt; <span data-count="74">k</span> (i :: res)))
-      | <span data-count="26">[</span>] -&gt; k []
+      <span data-count="129">m</span>atch l with
+      | <span data-count="94">h</span>d :: tl -&gt; anf_as_imm hd (fun i -&gt; <span data-count="94">a</span>nf_list tl (fun res -&gt; <span data-count="94">k</span> (i :: res)))
+      | <span data-count="35">[</span>] -&gt; k []
     in
     anf_as_imm f (fun i1 -&gt;
-      <span data-count="26">a</span>nf_list args (fun l -&gt;
-        <span data-count="26">l</span>et* temp = make_temp in
-        <span data-count="26">l</span>et* ehole = expr_with_hol<span data-count="26">e</span> (ImmVar temp) in
-        <span data-count="26">m</span>atch l with
-        | <span data-count="26">a</span>rg :: args -&gt; mk_alet Nonrec temp (CApp (i1, arg, args)) ehole |&gt; <span data-count="26">r</span>eturn
+      <span data-count="35">a</span>nf_list args (fun l -&gt;
+        <span data-count="35">l</span>et* temp = make_temp in
+        <span data-count="35">l</span>et* ehole = expr_with_hol<span data-count="35">e</span> (ImmVar temp) in
+        <span data-count="35">m</span>atch l with
+        | <span data-count="35">a</span>rg :: args -&gt; mk_alet Nonrec temp (CApp (i1, arg, args)) ehole |&gt; <span data-count="35">r</span>eturn
         | <span data-count="0">[</span>] -&gt; fail "Apply must contain at least one argument"))
-  | <span data-count="68">A</span>pply (f, arg) -&gt;
+  | <span data-count="127">A</span>pply (f, arg) -&gt;
     anf_as_imm f (fun i1 -&gt;
-      <span data-count="68">a</span>nf_as_imm arg (fun i2 -&gt;
-        <span data-count="68">l</span>et* temp = make_temp in
-        <span data-count="68">l</span>et* ehole = expr_with_hol<span data-count="68">e</span> (ImmVar temp) in
-        <span data-count="68">m</span>k_alet Nonrec temp (CApp (i1, i2, [])) ehole |&gt; <span data-count="68">r</span>eturn))
-  | <span data-count="14">I</span>f_then_else (i, t, e) -&gt;
+      <span data-count="127">a</span>nf_as_imm arg (fun i2 -&gt;
+        <span data-count="127">l</span>et* temp = make_temp in
+        <span data-count="127">l</span>et* ehole = expr_with_hol<span data-count="127">e</span> (ImmVar temp) in
+        <span data-count="127">m</span>k_alet Nonrec temp (CApp (i1, i2, [])) ehole |&gt; <span data-count="127">r</span>eturn))
+  | <span data-count="15">I</span>f_then_else (i, t, e) -&gt;
     anf_as_imm i (fun i' -&gt;
-      <span data-count="18">l</span>et* t' = an<span data-count="18">f</span> t expr_with_hole in
-      <span data-count="18">l</span>et* e' =
+      <span data-count="19">l</span>et* t' = an<span data-count="19">f</span> t expr_with_hole in
+      <span data-count="19">l</span>et* e' =
         match e with
-        | <span data-count="18">S</span>ome e -&gt; an<span data-count="18">f</span> e expr_with_hole
+        | <span data-count="19">S</span>ome e -&gt; an<span data-count="19">f</span> e expr_with_hole
         | <span data-count="0">N</span>one -&gt; ACExpr (CImm (ImmConst Unit_lt)) |&gt; retur<span data-count="0">n</span>
       in
-      <span data-count="18">A</span>CExpr (CIte (i', t', e')) |&gt; return)
+      <span data-count="19">A</span>CExpr (CIte (i', t', e')) |&gt; return)
   | <span data-count="0">o</span>ther -&gt; fail (Stdlib.Format.asprint<span data-count="0">f</span> "Not implemented %a" pp_expr other)
 
 and anf_as_imm (e : expr) (k : imm -&gt; aexpr t) : aexpr t =
-  <span data-count="416">m</span>atch e with
-  | <span data-count="6">L</span>ambda (PVar arg, body) -&gt;
-    let* body' = an<span data-count="6">f</span> body (fun i -&gt; <span data-count="5">A</span>CExpr (CImm i) |&gt; return) in
-    <span data-count="6">l</span>et* temp = make_temp in
-    <span data-count="6">l</span>et* ehole = <span data-count="6">k</span> (ImmVar temp) in
-    <span data-count="6">m</span>k_alet Nonrec temp (CLambda (arg, body')) ehole |&gt; <span data-count="6">r</span>eturn
-  | <span data-count="410">_</span> -&gt; anf e k
+  <span data-count="603">m</span>atch e with
+  | <span data-count="7">L</span>ambda (PVar arg, body) -&gt;
+    let* body' = an<span data-count="7">f</span> body (fun i -&gt; <span data-count="6">A</span>CExpr (CImm i) |&gt; return) in
+    <span data-count="7">l</span>et* temp = make_temp in
+    <span data-count="7">l</span>et* ehole = <span data-count="7">k</span> (ImmVar temp) in
+    <span data-count="7">m</span>k_alet Nonrec temp (CLambda (arg, body')) ehole |&gt; <span data-count="7">r</span>eturn
+  | <span data-count="596">_</span> -&gt; anf e k
 ;;
 
 let anf_str_item : structure_item -&gt; astr_item t = function
-  | <span data-count="74">r</span>ec_flag, (PVar name, v), [] -&gt;
-    let+ v' = an<span data-count="74">f</span> v (fun i -&gt; <span data-count="38">A</span>CExpr (CImm i) |&gt; return) in
-    <span data-count="74">r</span>ec_flag, (name, v'), []
-  | <span data-count="5">r</span>ec_flag, (Wild, v), [] -&gt;
-    let+ v' = an<span data-count="5">f</span> v (fun i -&gt; <span data-count="5">A</span>CExpr (CImm i) |&gt; return) in
-    <span data-count="5">r</span>ec_flag, ("_", v'), []
+  | <span data-count="99">r</span>ec_flag, (PVar name, v), [] -&gt;
+    let+ v' = an<span data-count="99">f</span> v (fun i -&gt; <span data-count="51">A</span>CExpr (CImm i) |&gt; return) in
+    <span data-count="99">r</span>ec_flag, (name, v'), []
+  | <span data-count="37">r</span>ec_flag, (Wild, v), [] -&gt;
+    let+ v' = an<span data-count="37">f</span> v (fun i -&gt; <span data-count="37">A</span>CExpr (CImm i) |&gt; return) in
+    <span data-count="37">r</span>ec_flag, ("_", v'), []
   | <span data-count="0">o</span>ther -&gt; fail (Stdlib.Format.asprint<span data-count="0">f</span> "Not implemented %a" pp_structure_item other)
 ;;
 
 let anf_program program : (aprogram, error) Base.Result.t =
-  <span data-count="32">l</span>et program' =
+  <span data-count="39">l</span>et program' =
     List.fold_right
       ~f:(fun item acc -&gt;
-        <span data-count="79">l</span>et* acc = acc in
-        <span data-count="79">l</span>et+ item' = anf_str_ite<span data-count="79">m</span> item in
-        <span data-count="79">i</span>tem' :: acc)
-      ~init:(retur<span data-count="32">n</span> [])
+        <span data-count="136">l</span>et* acc = acc in
+        <span data-count="136">l</span>et+ item' = anf_str_ite<span data-count="136">m</span> item in
+        <span data-count="136">i</span>tem' :: acc)
+      ~init:(retur<span data-count="39">n</span> [])
       program
   in
-  <span data-count="32">r</span>un program' 0 |&gt; <span data-count="32">s</span>nd
+  <span data-count="39">r</span>un program' 0 |&gt; <span data-count="39">s</span>nd
 ;;
 
 let%expect_test "pp anf program" =
@@ -704,7 +704,7 @@ let%expect_test "pp anf program" =
                  (ACExpr (CImm (ImmConst (Int_lt 1)))))))
            ))),
        [("homka", (ACExpr (CImm (ImmConst (Int_lt 42)))))])
-      ] |}<span data-count="221">]</span>
+      ] |}<span data-count="235">]</span>
 ;;
 </code></pre>
       </div>

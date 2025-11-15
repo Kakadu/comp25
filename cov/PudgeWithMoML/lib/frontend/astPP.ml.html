@@ -511,20 +511,20 @@ open TypesPp
 open Keywords
 
 let pp_rec_flag fmt = function
-  | <span data-count="9">R</span>ec -&gt; fprintf fmt "rec "
-  | <span data-count="231">N</span>onrec -&gt; ()
+  | <span data-count="10">R</span>ec -&gt; fprintf fmt "rec "
+  | <span data-count="303">N</span>onrec -&gt; ()
 ;;
 
 let pp_varname fmt name =
-  <span data-count="461">i</span>f String.for_all (String.contain<span data-count="461">s</span> op_chars) name
+  <span data-count="600">i</span>f String.for_all (String.contain<span data-count="600">s</span> op_chars) name
   then <span data-count="2">f</span>printf fmt "(%s)" name
-  else <span data-count="459">f</span>printf fmt "%s" name
+  else <span data-count="598">f</span>printf fmt "%s" name
 ;;
 
 let pp_literal fmt = function
-  | <span data-count="198">I</span>nt_lt i -&gt; fprintf fmt "%d" i
+  | <span data-count="222">I</span>nt_lt i -&gt; fprintf fmt "%d" i
   | <span data-count="16">B</span>ool_lt b -&gt; fprintf fmt "%b" b
-  | <span data-count="2">U</span>nit_lt -&gt; fprintf fmt "()"
+  | <span data-count="28">U</span>nit_lt -&gt; fprintf fmt "()"
 ;;
 
 let rec pp_pattern fmt = function
@@ -730,7 +730,7 @@ let%expect_test "pp god ast" =
 
     let constr_pattern  = 0
 
-    let (constr_pattern  : Homka)  = (0 : Homka) |}<span data-count="223">]</span>
+    let (constr_pattern  : Homka)  = (0 : Homka) |}<span data-count="237">]</span>
 ;;
 </code></pre>
       </div>

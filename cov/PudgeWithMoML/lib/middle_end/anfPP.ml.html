@@ -172,26 +172,26 @@ open Frontend.AstPP
 open Anf
 
 let pp_imm fmt = function
-  | <span data-count="147">I</span>mmConst l -&gt; pp_literal fmt l
-  | <span data-count="322">I</span>mmVar v -&gt; pp_varname fmt v
+  | <span data-count="197">I</span>mmConst l -&gt; pp_literal fmt l
+  | <span data-count="419">I</span>mmVar v -&gt; pp_varname fmt v
 ;;
 
 let rec pp_cexpr fmt = function
-  | <span data-count="63">C</span>Imm imm -&gt; pp_imm fmt imm
+  | <span data-count="75">C</span>Imm imm -&gt; pp_imm fmt imm
   (* | CTuple (i1, i2, rest) -&gt;
     fprintf fmt "(";
     pp_print_list ~pp_sep:(fun fmt () -&gt; fprintf fmt ", ") pp_imm fmt (i1 :: i2 :: rest);
     fprintf fmt ")" *)
-  | <span data-count="96">C</span>Lambda (arg, body) -&gt; fprintf fmt "fun %s -&gt;@\n%a" arg pp_aexpr body
-  | <span data-count="66">C</span>Binop (op, left, right) -&gt; fprintf fmt "%a %s %a" pp_imm left op pp_imm right
+  | <span data-count="119">C</span>Lambda (arg, body) -&gt; fprintf fmt "fun %s -&gt;@\n%a" arg pp_aexpr body
+  | <span data-count="76">C</span>Binop (op, left, right) -&gt; fprintf fmt "%a %s %a" pp_imm left op pp_imm right
   | <span data-count="1">C</span>Not i -&gt; fprintf fmt "not %a" pp_imm i
-  | <span data-count="102">C</span>App (f, arg, args) -&gt;
-    pp_print_list ~pp_sep:(fun fmt () -&gt; <span data-count="153">f</span>printf fmt " ") pp_imm fmt (f :: arg :: args)
-  | <span data-count="18">C</span>Ite (i, t, e) -&gt;
+  | <span data-count="154">C</span>App (f, arg, args) -&gt;
+    pp_print_list ~pp_sep:(fun fmt () -&gt; <span data-count="215">f</span>printf fmt " ") pp_imm fmt (f :: arg :: args)
+  | <span data-count="19">C</span>Ite (i, t, e) -&gt;
     fprintf fmt "if %a then (%a)@\nelse %a" pp_imm i pp_aexpr t pp_aexpr e
 
 and pp_aexpr fmt = function
-  | <span data-count="130">A</span>Let (rec_flag, name, cexpr, body) -&gt;
+  | <span data-count="161">A</span>Let (rec_flag, name, cexpr, body) -&gt;
     Format.fprintf
       fmt
       "let %a%s = %a in@\n%a"
@@ -202,28 +202,28 @@ and pp_aexpr fmt = function
       cexpr
       pp_aexpr
       body
-  | <span data-count="216">A</span>CExpr cexpr -&gt; pp_cexpr fmt cexpr
+  | <span data-count="283">A</span>CExpr cexpr -&gt; pp_cexpr fmt cexpr
 ;;
 
-let pp_bind fmt (name, body) = <span data-count="84">f</span>printf fmt "%a = %a " pp_varname name pp_aexpr body
+let pp_bind fmt (name, body) = <span data-count="126">f</span>printf fmt "%a = %a " pp_varname name pp_aexpr body
 
 let pp_astr_item fmt (rec_flag, bind, binds) =
-  <span data-count="84">f</span>printf fmt "@[&lt;v 2&gt;let %a%a@]" pp_rec_flag rec_flag pp_bind bind;
-  <span data-count="84">L</span>ist.iter
+  <span data-count="126">f</span>printf fmt "@[&lt;v 2&gt;let %a%a@]" pp_rec_flag rec_flag pp_bind bind;
+  <span data-count="126">L</span>ist.iter
     (pp_force_newline fmt ();
-     <span data-count="84">f</span>print<span data-count="84">f</span> fmt "@\n[@and %a@]" pp_bind)
+     <span data-count="126">f</span>print<span data-count="126">f</span> fmt "@\n[@and %a@]" pp_bind)
     binds
 ;;
 
 let pp_aprogram fmt (program : aprogram) =
-  <span data-count="30">p</span>p_print_list
+  <span data-count="35">p</span>p_print_list
     ~pp_sep:(fun fmt () -&gt;
-      <span data-count="54">p</span>p_force_newline fmt ();
-      <span data-count="54">f</span>printf fmt "@\n")
+      <span data-count="91">p</span>p_force_newline fmt ();
+      <span data-count="91">f</span>printf fmt "@\n")
     pp_astr_item
     fmt
     program;
-  <span data-count="30">p</span>p_print_flush fmt ()
+  <span data-count="35">p</span>p_print_flush fmt ()
 ;;
 </code></pre>
       </div>

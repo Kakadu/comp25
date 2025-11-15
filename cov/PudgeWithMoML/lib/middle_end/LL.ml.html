@@ -247,95 +247,95 @@ open Common.Monad.Counter
 
 let make_fresh : string t =
   let+ fresh = make_fresh in
-  <span data-count="7">"</span>f_" ^ Int.to_strin<span data-count="7">g</span> fresh
+  <span data-count="8">"</span>f_" ^ Int.to_strin<span data-count="8">g</span> fresh
 ;;
 
 (* Now need only to avoid let [arg__0 = f__0 in arg__0 ...] situation *)
 let rec simplify =
   let simplify_cexpr = function
-    | (<span data-count="56">C</span>Imm _ | <span data-count="47">C</span>Binop _ | <span data-count="1">C</span>Not _ | <span data-count="87">C</span>App _) as e -&gt; e
-    | <span data-count="70">C</span>Lambda (name, e) -&gt; CLambda (name, simplif<span data-count="70">y</span> e)
-    | <span data-count="16">C</span>Ite (imm, th, el) -&gt; CIte (imm, simplif<span data-count="16">y</span> th, simplif<span data-count="16">y</span> el)
+    | (<span data-count="68">C</span>Imm _ | <span data-count="60">C</span>Binop _ | <span data-count="1">C</span>Not _ | <span data-count="154">C</span>App _) as e -&gt; e
+    | <span data-count="99">C</span>Lambda (name, e) -&gt; CLambda (name, simplif<span data-count="99">y</span> e)
+    | <span data-count="17">C</span>Ite (imm, th, el) -&gt; CIte (imm, simplif<span data-count="17">y</span> th, simplif<span data-count="17">y</span> el)
   in
   function
-  | <span data-count="2">A</span>Let (_, name, CImm (ImmVar f), ACExpr (CApp (ImmVar a_name, imm, imms)))
-    when name = a_name -&gt; <span data-count="1">A</span>CExpr (CApp (ImmVar f, imm, imms))
-  | <span data-count="111">A</span>Let (is_rec, name, cexpr, aexpr) -&gt;
-    ALet (is_rec, name, simplify_cexp<span data-count="111">r</span> cexpr, simplif<span data-count="111">y</span> aexpr)
-  | <span data-count="166">A</span>CExpr e -&gt; ACExpr (simplify_cexp<span data-count="166">r</span> e)
+  | <span data-count="3">A</span>Let (_, name, CImm (ImmVar f), ACExpr (CApp (ImmVar a_name, imm, imms)))
+    when name = a_name -&gt; <span data-count="2">A</span>CExpr (CApp (ImmVar f, imm, imms))
+  | <span data-count="146">A</span>Let (is_rec, name, cexpr, aexpr) -&gt;
+    ALet (is_rec, name, simplify_cexp<span data-count="146">r</span> cexpr, simplif<span data-count="146">y</span> aexpr)
+  | <span data-count="253">A</span>CExpr e -&gt; ACExpr (simplify_cexp<span data-count="253">r</span> e)
 ;;
 
 (* Return args of cexpr. Otherwise return empty array *)
 let get_args cexpr =
-  <span data-count="37">m</span>atch cexpr with
-  | <span data-count="37">C</span>Lambda (arg, body) -&gt;
+  <span data-count="50">m</span>atch cexpr with
+  | <span data-count="50">C</span>Lambda (arg, body) -&gt;
     let rec helper acc = function
-      | <span data-count="48">A</span>CExpr (CLambda (arg, body)) -&gt; helper (arg :: acc) body
-      | <span data-count="37">e</span> -&gt; List.re<span data-count="37">v</span> acc, e
+      | <span data-count="65">A</span>CExpr (CLambda (arg, body)) -&gt; helper (arg :: acc) body
+      | <span data-count="50">e</span> -&gt; List.re<span data-count="50">v</span> acc, e
     in
     helper [ arg ] body
   | <span data-count="0">_</span> -&gt; [], ACExpr cexpr
 ;;
 
 let create_lambda args body =
-  <span data-count="37">l</span>et last = Base.List.last_exn args in
-  <span data-count="37">l</span>et args = Base.List.drop_last_exn args in
-  <span data-count="37">B</span>ase.List.fold_right
-    ~f:(fun (arg : string) (cexpr : cexpr) -&gt; <span data-count="48">C</span>Lambda (arg, ACExpr cexpr))
+  <span data-count="50">l</span>et last = Base.List.last_exn args in
+  <span data-count="50">l</span>et args = Base.List.drop_last_exn args in
+  <span data-count="50">B</span>ase.List.fold_right
+    ~f:(fun (arg : string) (cexpr : cexpr) -&gt; <span data-count="65">C</span>Lambda (arg, ACExpr cexpr))
     ~init:(CLambda (last, body))
     args
 ;;
 
 (* Save lambdas that we will up in code *)
 let rec convert_ll_cexpr = function
-  | (<span data-count="53">C</span>Imm _ | <span data-count="51">C</span>Binop _ | <span data-count="93">C</span>App _ | <span data-count="1">C</span>Not _) as e -&gt; (e, []) |&gt; return
-  | <span data-count="7">C</span>Lambda _ as lam -&gt;
+  | (<span data-count="65">C</span>Imm _ | <span data-count="65">C</span>Binop _ | <span data-count="161">C</span>App _ | <span data-count="1">C</span>Not _) as e -&gt; (e, []) |&gt; return
+  | <span data-count="8">C</span>Lambda _ as lam -&gt;
     let args, body = get_args lam in
-    <span data-count="7">l</span>et* body', lams = convert_ll_aexp<span data-count="7">r</span> body in
-    <span data-count="7">l</span>et new_lambda = create_lambda args body' in
-    <span data-count="7">l</span>et+ fresh = make_fresh in
-    <span data-count="7">C</span>Imm (ImmVar fresh), lams @ [ fresh, new_lambda ]
-  | <span data-count="16">C</span>Ite (imm, th, el) -&gt;
-    let* th', lams1 = convert_ll_aexp<span data-count="16">r</span> th in
-    <span data-count="16">l</span>et+ el', lams2 = convert_ll_aexp<span data-count="16">r</span> el in
-    <span data-count="16">C</span>Ite (imm, th', el'), lams1 @ lams2
+    <span data-count="8">l</span>et* body', lams = convert_ll_aexp<span data-count="8">r</span> body in
+    <span data-count="8">l</span>et new_lambda = create_lambda args body' in
+    <span data-count="8">l</span>et+ fresh = make_fresh in
+    <span data-count="8">C</span>Imm (ImmVar fresh), lams @ [ fresh, new_lambda ]
+  | <span data-count="17">C</span>Ite (imm, th, el) -&gt;
+    let* th', lams1 = convert_ll_aexp<span data-count="17">r</span> th in
+    <span data-count="17">l</span>et+ el', lams2 = convert_ll_aexp<span data-count="17">r</span> el in
+    <span data-count="17">C</span>Ite (imm, th', el'), lams1 @ lams2
 
 and convert_ll_aexpr = function
-  | <span data-count="104">A</span>CExpr e -&gt;
-    let+ e', lams = convert_ll_cexp<span data-count="104">r</span> e in
-    <span data-count="104">A</span>CExpr e', lams
-  | <span data-count="117">A</span>Let (is_rec, name, cexpr, aexpr) -&gt;
-    let* cexpr', lams1 = convert_ll_cexp<span data-count="117">r</span> cexpr in
-    <span data-count="117">l</span>et+ aexpr', lams2 = convert_ll_aexp<span data-count="117">r</span> aexpr in
-    <span data-count="117">A</span>Let (is_rec, name, cexpr', aexpr'), lams1 @ lams2
+  | <span data-count="164">A</span>CExpr e -&gt;
+    let+ e', lams = convert_ll_cexp<span data-count="164">r</span> e in
+    <span data-count="164">A</span>CExpr e', lams
+  | <span data-count="153">A</span>Let (is_rec, name, cexpr, aexpr) -&gt;
+    let* cexpr', lams1 = convert_ll_cexp<span data-count="153">r</span> cexpr in
+    <span data-count="153">l</span>et+ aexpr', lams2 = convert_ll_aexp<span data-count="153">r</span> aexpr in
+    <span data-count="153">A</span>Let (is_rec, name, cexpr', aexpr'), lams1 @ lams2
 ;;
 
 (* Apply lambda lifting to aprogram. *)
 (* After lifting all inner function will be top-level (all functions must be closed). *)
 let convert_ll_pr (pr : aprogram) : aprogram =
-  <span data-count="24">l</span>et open Frontend.Ast in
-  let rec helper (acc : aprogram) : aprogram -&gt; aprogram t = <span data-count="89">f</span>unction
-    | <span data-count="30">(</span>is_rec, (name, ACExpr (CLambda _ as lam)), binds) :: tl -&gt;
+  <span data-count="31">l</span>et open Frontend.Ast in
+  let rec helper (acc : aprogram) : aprogram -&gt; aprogram t = <span data-count="153">f</span>unction
+    | <span data-count="42">(</span>is_rec, (name, ACExpr (CLambda _ as lam)), binds) :: tl -&gt;
       let args, body = get_args lam in
-      <span data-count="30">l</span>et* body', lams = convert_ll_aexp<span data-count="30">r</span> body in
-      <span data-count="30">l</span>et lams =
+      <span data-count="42">l</span>et* body', lams = convert_ll_aexp<span data-count="42">r</span> body in
+      <span data-count="42">l</span>et lams =
         Base.List.map lams ~f:(fun (lam_name, lam_cexpr) -&gt;
           <span data-count="3">N</span>onrec, (lam_name, ACExpr lam_cexpr), [])
       in
-      <span data-count="30">l</span>et new_lambda = create_lambda args body' in
-      <span data-count="30">h</span>elper
-        ((is_rec, (name, simplif<span data-count="30">y</span> (ACExpr new_lambda)), binds) :: (List.re<span data-count="30">v</span> lams @ acc))
+      <span data-count="42">l</span>et new_lambda = create_lambda args body' in
+      <span data-count="42">h</span>elper
+        ((is_rec, (name, simplif<span data-count="42">y</span> (ACExpr new_lambda)), binds) :: (List.re<span data-count="42">v</span> lams @ acc))
         tl
-    | <span data-count="35">(</span>is_rec, (name, aexpr), binds) :: tl -&gt;
-      let* aexpr', lams = convert_ll_aexp<span data-count="35">r</span> aexpr in
-      <span data-count="35">l</span>et lams =
+    | <span data-count="80">(</span>is_rec, (name, aexpr), binds) :: tl -&gt;
+      let* aexpr', lams = convert_ll_aexp<span data-count="80">r</span> aexpr in
+      <span data-count="80">l</span>et lams =
         Base.List.map lams ~f:(fun (lam_name, lam_cexpr) -&gt;
-          <span data-count="4">N</span>onrec, (lam_name, ACExpr lam_cexpr), [])
+          <span data-count="5">N</span>onrec, (lam_name, ACExpr lam_cexpr), [])
       in
-      <span data-count="35">h</span>elper ((is_rec, (name, simplif<span data-count="35">y</span> aexpr'), binds) :: (List.re<span data-count="35">v</span> lams @ acc)) tl
-    | <span data-count="24">[</span>] -&gt; return (List.re<span data-count="24">v</span> acc)
+      <span data-count="80">h</span>elper ((is_rec, (name, simplif<span data-count="80">y</span> aexpr'), binds) :: (List.re<span data-count="80">v</span> lams @ acc)) tl
+    | <span data-count="31">[</span>] -&gt; return (List.re<span data-count="31">v</span> acc)
   in
-  run (helpe<span data-count="24">r</span> [] pr) 0 |&gt; <span data-count="24">s</span>nd
+  run (helpe<span data-count="31">r</span> [] pr) 0 |&gt; <span data-count="31">s</span>nd
 ;;
 </code></pre>
       </div>

@@ -570,17 +570,17 @@ open Common.Monad.Counter
 open Base
 
 let make_fresh name =
-  <span data-count="201">l</span>et+ fresh = make_fresh in
-  <span data-count="201">l</span>et new_name = name ^ "__" ^ Int.to_strin<span data-count="201">g</span> fresh in
+  <span data-count="264">l</span>et+ fresh = make_fresh in
+  <span data-count="264">l</span>et new_name = name ^ "__" ^ Int.to_strin<span data-count="264">g</span> fresh in
   new_name
 ;;
 
 type context = (string, string, String.comparator_witness) Map.t
 
-let default = Map.of_alist_ex<span data-count="110">n</span> (module String) (List.ma<span data-count="110">p</span> std_ops ~f:(fun op -&gt; <span data-count="1650">o</span>p, op))
+let default = Map.of_alist_ex<span data-count="117">n</span> (module String) (List.ma<span data-count="117">p</span> std_ops ~f:(fun op -&gt; <span data-count="1755">o</span>p, op))
 
 let rec convert_pat ctx = function
-  | <span data-count="13">W</span>ild -&gt; return (Wild, ctx)
+  | <span data-count="48">W</span>ild -&gt; return (Wild, ctx)
   | <span data-count="1">P</span>List l -&gt;
     let+ l', ctx = convert_list_pa<span data-count="1">t</span> ctx l in
     <span data-count="1">P</span>List l', ctx
@@ -594,10 +594,10 @@ let rec convert_pat ctx = function
     <span data-count="1">l</span>et+ rest', ctx = convert_list_pa<span data-count="1">t</span> ctx rest in
     <span data-count="1">P</span>Tuple (p1', p2', rest'), ctx
   | <span data-count="9">P</span>Const _ as p -&gt; return (p, ctx)
-  | <span data-count="200">P</span>Var name -&gt;
-    let+ new_name = make_fres<span data-count="200">h</span> name in
-    <span data-count="200">l</span>et ctx = Map.set ctx ~key:name ~data:new_name in
-    <span data-count="200">P</span>Var new_name, ctx
+  | <span data-count="263">P</span>Var name -&gt;
+    let+ new_name = make_fres<span data-count="263">h</span> name in
+    <span data-count="263">l</span>et ctx = Map.set ctx ~key:name ~data:new_name in
+    <span data-count="263">P</span>Var new_name, ctx
   | <span data-count="1">P</span>Option None as p -&gt; return (p, ctx)
   | <span data-count="1">P</span>Option (Some p) -&gt;
     let* p', ctx = convert_pa<span data-count="1">t</span> ctx p in
@@ -607,17 +607,17 @@ let rec convert_pat ctx = function
     <span data-count="1">r</span>eturn (PConstraint (p', t), ctx)
 
 and convert_list_pat ctx pats =
-  <span data-count="81">L</span>ist.fold_right
+  <span data-count="138">L</span>ist.fold_right
     ~f:(fun pat acc -&gt;
       <span data-count="3">l</span>et* pats, ctx = acc in
       <span data-count="3">l</span>et+ pat', ctx = convert_pa<span data-count="3">t</span> ctx pat in
       <span data-count="3">p</span>at' :: pats, ctx)
-    ~init:(retur<span data-count="81">n</span> ([], ctx))
+    ~init:(retur<span data-count="138">n</span> ([], ctx))
     pats
 ;;
 
 let rec convert_expr ctx = function
-  | <span data-count="161">C</span>onst _ as e -&gt; return e
+  | <span data-count="224">C</span>onst _ as e -&gt; return e
   | <span data-count="1">T</span>uple (e1, e2, rest) -&gt;
     let* e1' = convert_exp<span data-count="1">r</span> ctx e1 in
     <span data-count="1">l</span>et* e2' = convert_exp<span data-count="1">r</span> ctx e2 in
@@ -634,25 +634,25 @@ let rec convert_expr ctx = function
   | <span data-count="1">L</span>ist l -&gt;
     let+ l' = convert_list_exp<span data-count="1">r</span> ctx l in
     <span data-count="1">L</span>ist l'
-  | <span data-count="281">V</span>ariable name -&gt;
-    Option.value (Map.fin<span data-count="281">d</span> ctx name) ~default:name |&gt; <span data-count="281">f</span>un n -&gt; <span data-count="281">V</span>ariable n |&gt; return
-  | <span data-count="16">I</span>f_then_else (i, t, e) -&gt;
-    let* i' = convert_exp<span data-count="16">r</span> ctx i in
-    <span data-count="16">l</span>et* t' = convert_exp<span data-count="16">r</span> ctx t in
-    <span data-count="16">l</span>et+ e' =
+  | <span data-count="395">V</span>ariable name -&gt;
+    Option.value (Map.fin<span data-count="395">d</span> ctx name) ~default:name |&gt; <span data-count="395">f</span>un n -&gt; <span data-count="395">V</span>ariable n |&gt; return
+  | <span data-count="17">I</span>f_then_else (i, t, e) -&gt;
+    let* i' = convert_exp<span data-count="17">r</span> ctx i in
+    <span data-count="17">l</span>et* t' = convert_exp<span data-count="17">r</span> ctx t in
+    <span data-count="17">l</span>et+ e' =
       match e with
-      | <span data-count="15">S</span>ome e -&gt; convert_exp<span data-count="15">r</span> ctx e &gt;&gt;<span data-count="15">|</span> fun e' -&gt; <span data-count="15">S</span>ome e'
+      | <span data-count="16">S</span>ome e -&gt; convert_exp<span data-count="16">r</span> ctx e &gt;&gt;<span data-count="16">|</span> fun e' -&gt; <span data-count="16">S</span>ome e'
       | <span data-count="1">N</span>one -&gt; retur<span data-count="1">n</span> None
     in
-    <span data-count="16">I</span>f_then_else (i', t', e')
-  | <span data-count="92">L</span>ambda (arg, body) -&gt;
-    let* arg', ctx = convert_pa<span data-count="92">t</span> ctx arg in
-    <span data-count="92">l</span>et+ body' = convert_exp<span data-count="92">r</span> ctx body in
-    <span data-count="92">L</span>ambda (arg', body')
-  | <span data-count="275">A</span>pply (f, arg) -&gt;
-    let* f' = convert_exp<span data-count="275">r</span> ctx f in
-    <span data-count="275">l</span>et+ arg' = convert_exp<span data-count="275">r</span> ctx arg in
-    <span data-count="275">A</span>pply (f', arg')
+    <span data-count="17">I</span>f_then_else (i', t', e')
+  | <span data-count="122">L</span>ambda (arg, body) -&gt;
+    let* arg', ctx = convert_pa<span data-count="122">t</span> ctx arg in
+    <span data-count="122">l</span>et+ body' = convert_exp<span data-count="122">r</span> ctx body in
+    <span data-count="122">L</span>ambda (arg', body')
+  | <span data-count="382">A</span>pply (f, arg) -&gt;
+    let* f' = convert_exp<span data-count="382">r</span> ctx f in
+    <span data-count="382">l</span>et+ arg' = convert_exp<span data-count="382">r</span> ctx arg in
+    <span data-count="382">A</span>pply (f', arg')
   | <span data-count="1">F</span>unction (case, cases) -&gt;
     (* eliminate function to match *)
     let* new_name = make_fres<span data-count="1">h</span> "function_arg" in
@@ -679,11 +679,11 @@ let rec convert_expr ctx = function
   | <span data-count="1">E</span>Constraint (e, t) -&gt;
     let+ e' = convert_exp<span data-count="1">r</span> ctx e in
     <span data-count="1">E</span>Constraint (e', t)
-  | <span data-count="34">L</span>etIn (Nonrec, (name, value), body) -&gt;
-    let* value' = convert_exp<span data-count="34">r</span> ctx value in
-    <span data-count="34">l</span>et* pat', ctx = convert_pa<span data-count="34">t</span> ctx name in
-    <span data-count="34">l</span>et+ body' = convert_exp<span data-count="34">r</span> ctx body in
-    <span data-count="34">L</span>etIn (Nonrec, (pat', value'), body')
+  | <span data-count="45">L</span>etIn (Nonrec, (name, value), body) -&gt;
+    let* value' = convert_exp<span data-count="45">r</span> ctx value in
+    <span data-count="45">l</span>et* pat', ctx = convert_pa<span data-count="45">t</span> ctx name in
+    <span data-count="45">l</span>et+ body' = convert_exp<span data-count="45">r</span> ctx body in
+    <span data-count="45">L</span>etIn (Nonrec, (pat', value'), body')
   | <span data-count="1">L</span>etIn (Rec, (name, value), body) -&gt;
     let* pat', ctx = convert_pa<span data-count="1">t</span> ctx name in
     <span data-count="1">l</span>et* value' = convert_exp<span data-count="1">r</span> ctx value in
@@ -691,7 +691,7 @@ let rec convert_expr ctx = function
     <span data-count="1">L</span>etIn (Rec, (pat', value'), body')
 
 and convert_list_expr ctx = function
-  | <span data-count="80">[</span>] -&gt; return []
+  | <span data-count="137">[</span>] -&gt; return []
   | <span data-count="2">x</span> :: xs -&gt;
     let* x' = convert_exp<span data-count="2">r</span> ctx x in
     <span data-count="2">l</span>et+ xs' = convert_list_exp<span data-count="2">r</span> ctx xs in
@@ -699,31 +699,31 @@ and convert_list_expr ctx = function
 ;;
 
 let convert_str_item ctx (rec_flag, (pat, value), binds) : (structure_item * context) t =
-  <span data-count="79">l</span>et pats = List.map binds ~f:fst in
-  <span data-count="79">l</span>et exprs = List.map binds ~f:snd in
-  <span data-count="79">l</span>et* pat', new_ctx = convert_pa<span data-count="79">t</span> ctx pat in
-  <span data-count="79">l</span>et* pats', new_ctx = convert_list_pa<span data-count="79">t</span> new_ctx pats in
-  <span data-count="79">l</span>et ctx =
+  <span data-count="136">l</span>et pats = List.map binds ~f:fst in
+  <span data-count="136">l</span>et exprs = List.map binds ~f:snd in
+  <span data-count="136">l</span>et* pat', new_ctx = convert_pa<span data-count="136">t</span> ctx pat in
+  <span data-count="136">l</span>et* pats', new_ctx = convert_list_pa<span data-count="136">t</span> new_ctx pats in
+  <span data-count="136">l</span>et ctx =
     match rec_flag with
-    | <span data-count="8">R</span>ec -&gt; new_ctx
-    | <span data-count="71">N</span>onrec -&gt; ctx
+    | <span data-count="9">R</span>ec -&gt; new_ctx
+    | <span data-count="127">N</span>onrec -&gt; ctx
   in
-  let* expr' = convert_exp<span data-count="79">r</span> ctx value in
-  <span data-count="79">l</span>et+ exprs' = convert_list_exp<span data-count="79">r</span> ctx exprs in
-  <span data-count="79">(</span>rec_flag, (pat', expr'), List.zip_ex<span data-count="79">n</span> pats' exprs'), new_ctx
+  let* expr' = convert_exp<span data-count="136">r</span> ctx value in
+  <span data-count="136">l</span>et+ exprs' = convert_list_exp<span data-count="136">r</span> ctx exprs in
+  <span data-count="136">(</span>rec_flag, (pat', expr'), List.zip_ex<span data-count="136">n</span> pats' exprs'), new_ctx
 ;;
 
 let convert_program (program : program) =
-  <span data-count="32">l</span>et prg_w_ctx =
+  <span data-count="39">l</span>et prg_w_ctx =
     List.fold
       ~f:(fun acc str_item -&gt;
-        <span data-count="79">l</span>et* items, ctx = acc in
-        <span data-count="79">l</span>et+ item, ctx = convert_str_ite<span data-count="79">m</span> ctx str_item in
-        <span data-count="79">i</span>tem :: items, ctx)
-      ~init:(retur<span data-count="32">n</span> ([], default))
+        <span data-count="136">l</span>et* items, ctx = acc in
+        <span data-count="136">l</span>et+ item, ctx = convert_str_ite<span data-count="136">m</span> ctx str_item in
+        <span data-count="136">i</span>tem :: items, ctx)
+      ~init:(retur<span data-count="39">n</span> ([], default))
       program
   in
-  <span data-count="32">r</span>un prg_w_ctx 0 |&gt; <span data-count="32">s</span>nd |&gt; <span data-count="32">f</span>st |&gt; <span data-count="32">L</span>ist.rev
+  <span data-count="39">r</span>un prg_w_ctx 0 |&gt; <span data-count="39">s</span>nd |&gt; <span data-count="39">f</span>st |&gt; <span data-count="39">L</span>ist.rev
 ;;
 
 let%expect_test "test_pattern" =
@@ -757,7 +757,7 @@ let%expect_test "test_pattern" =
     x__0
     None
     Some (y__0 )
-    (z__0  : t) |}<span data-count="221">]</span>
+    (z__0  : t) |}<span data-count="235">]</span>
 ;;
 
 let%expect_test "test_expr" =
@@ -820,7 +820,7 @@ let%expect_test "test_expr" =
     let z__0  = 9 in
     z__0
     let rec f__0  = fun (x__1 ) -&gt; x__1  in
-    (f__0 ) (1) |}<span data-count="221">]</span>
+    (f__0 ) (1) |}<span data-count="235">]</span>
 ;;
 </code></pre>
       </div>
