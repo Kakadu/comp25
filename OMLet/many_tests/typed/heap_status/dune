@@ -1,8 +1,10 @@
 (cram
- (applies_to fac_anf_exit_code_test)
+ (applies_to heap_bounds)
  (deps
   ../../../bin/omlet.exe
   ../../../lib/runtime.c
+  ../../../lib/gc.c
+  ../../../lib/gc.h
   ../../../lib/callf.s
   ../build_and_run.sh
-  ../../manytests/typed/010fac_anf.ml))
+  heap_bounds.ml))

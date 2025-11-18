@@ -4,6 +4,10 @@
 
 open Format
 
+type value =
+  | Num of int
+  | Ptr of int
+
 type reg =
   | Zero
   | Ra
@@ -46,6 +50,8 @@ type itype_op =
   | JALR
   | SLTI
   | XORI
+  | SLLI (* for converting ints into tagged ints *)
+  | SRLI (* and back *)
 
 type stack_op =
   | LW
@@ -67,7 +73,7 @@ type utype_op =
 type jtype_op = JAL
 
 type pseudo_instr =
-  | LI of reg * int
+  | LI of reg * value
   | LA of reg * string
   | MV of reg * reg
   | J of string
@@ -78,18 +84,23 @@ type pseudo_instr =
 
 type true_instr =
   | RType of rtype_op * reg * reg * reg (* op rd rs1 rs2 *)
-  | IType of itype_op * reg * reg * int (* op rd rs1 imm *)
+  | IType of itype_op * reg * reg * value (* op rd rs1 imm *)
   | StackType of stack_op * reg * reg (* op rd offset(rs) *)
   (*| SType of stype_op * reg * reg * int (* op rs2 rs1 imm *) *)
   | BType of btype_op * reg * reg * string (* op rs1 rs2 imm/label offset *)
-  | UType of utype_op * reg * int (* op rd imm *)
-  | JType of jtype_op * reg * int (* op rd imm/label offset *)
+  | UType of utype_op * reg * value (* op rd imm *)
+  | JType of jtype_op * reg * value (* op rd imm/label offset *)
   | Label of string
   | Ecall
 
 type instr =
   | True of true_instr
   | Pseudo of pseudo_instr
+
+let pp_value fmt = function
+  | Num imm -> fprintf fmt "%d" imm
+  | Ptr imm -> fprintf fmt "%d" imm
+;;
 
 let rec pp_reg fmt = function
   | Zero -> fprintf fmt "x0"
@@ -122,6 +133,8 @@ let pp_itype_op fmt = function
   | JALR -> fprintf fmt "jalr"
   | SLTI -> fprintf fmt "slti"
   | XORI -> fprintf fmt "xori"
+  | SLLI -> fprintf fmt "slli"
+  | SRLI -> fprintf fmt "srli"
 ;;
 
 let pp_stack_op fmt = function
@@ -151,7 +164,7 @@ let pp_jtype_op fmt = function
 ;;
 
 let pp_pseudo_instr fmt = function
-  | LI (r, imm) -> fprintf fmt "@[\tli %a, %d@]@." pp_reg r imm
+  | LI (r, imm) -> fprintf fmt "@[\tli %a, %a@]@." pp_reg r pp_value imm
   | LA (r, l) -> fprintf fmt "@[\tla %a, %s@]@." pp_reg r l
   | MV (r1, r2) -> fprintf fmt "@[\tmv %a, %a@]@." pp_reg r1 pp_reg r2
   | J l -> fprintf fmt "@[\tj %s@]@." l
@@ -165,15 +178,17 @@ let pp_true_instr fmt = function
   | RType (op, rd, rs1, rs2) ->
     fprintf fmt "@[\t%a %a, %a, %a@]@." pp_rtype_op op pp_reg rd pp_reg rs1 pp_reg rs2
   | IType (op, rd, rs1, imm) ->
-    fprintf fmt "@[\t%a %a, %a, %d@]@." pp_itype_op op pp_reg rd pp_reg rs1 imm
+    fprintf fmt "@[\t%a %a, %a, %a@]@." pp_itype_op op pp_reg rd pp_reg rs1 pp_value imm
   | StackType (op, rd, rs) ->
     fprintf fmt "@[\t%a %a, %a@]@." pp_stack_op op pp_reg rd pp_reg rs
   (* | SType (op, rs2, rs1, imm) ->
     fprintf fmt "@[\t%a %a, %d(%a)@]@." pp_stype_op op pp_reg rs2 imm pp_reg rs1 *)
   | BType (op, rs1, rs2, l) ->
     fprintf fmt "@[\t%a %a, %a, %s@]@." pp_btype_op op pp_reg rs1 pp_reg rs2 l
-  | UType (op, rd, imm) -> fprintf fmt "@[\t%a %a, %d@]@." pp_utype_op op pp_reg rd imm
-  | JType (op, rd, imm) -> fprintf fmt "@[\t%a %a, %d@]@." pp_jtype_op op pp_reg rd imm
+  | UType (op, rd, imm) ->
+    fprintf fmt "@[\t%a %a, %a@]@." pp_utype_op op pp_reg rd pp_value imm
+  | JType (op, rd, imm) ->
+    fprintf fmt "@[\t%a %a, %a@]@." pp_jtype_op op pp_reg rd pp_value imm
   | Label l -> fprintf fmt "%s:@." l
   | Ecall -> fprintf fmt "ecall@."
 ;;

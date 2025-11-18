@@ -4,6 +4,10 @@
 
 open Format
 
+type value =
+  | Num of int
+  | Ptr of int
+
 type reg =
   | Zero
   | Ra
@@ -42,6 +46,8 @@ type itype_op =
   | JALR
   | SLTI
   | XORI
+  | SLLI
+  | SRLI
 
 type stack_op =
   | LW
@@ -61,7 +67,7 @@ type utype_op =
 type jtype_op = JAL
 
 type pseudo_instr =
-  | LI of reg * int
+  | LI of reg * value
   | LA of reg * string
   | MV of reg * reg
   | J of string
@@ -72,11 +78,11 @@ type pseudo_instr =
 
 type true_instr =
   | RType of rtype_op * reg * reg * reg
-  | IType of itype_op * reg * reg * int
+  | IType of itype_op * reg * reg * value
   | StackType of stack_op * reg * reg
   | BType of btype_op * reg * reg * string
-  | UType of utype_op * reg * int
-  | JType of jtype_op * reg * int
+  | UType of utype_op * reg * value
+  | JType of jtype_op * reg * value
   | Label of string
   | Ecall
 
