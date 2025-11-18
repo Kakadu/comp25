@@ -13,19 +13,22 @@
   .globl _start
   _start:
     mv fp, sp
+    mv a0, sp
+    call init_GC
     addi sp, sp, 0
   # Apply print_int
-    li a0, 5
+    li a0, 11
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, main__0
-    sd t0, 0(t1)
+    la a1, main__0
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl main__0
   main__0: .dword 0
 
 ( just add )
@@ -54,7 +57,11 @@
     addi fp, sp, 16
     ld t0, 0(fp)
     ld t1, 8(fp)
+    srai t0, t0, 1
+    srai t1, t1, 1
     add a0, t0, t1
+    slli a0, a0, 1
+    ori a0, a0, 1
     ld ra, 8(sp)
     ld fp, 0(sp)
     addi sp, sp, 16
@@ -62,34 +69,48 @@
   .globl _start
   _start:
     mv fp, sp
+    mv a0, sp
+    call init_GC
     addi sp, sp, -8
-  # Apply add__0 with 2 args
+  # Application to add__0 with 2 args
   # Load args on stack
+    addi sp, sp, -32
     addi sp, sp, -16
-    li t0, 5
-    sd t0, 0(sp)
-    li t0, 2
-    sd t0, 8(sp)
-  # End loading args on stack
-    call add__0
-  # Free args on stack
-    addi sp, sp, 16
-  # End free args on stack
+    la t5, add__0
+    li t6, 5
+    sd t5, 0(sp)
+    sd t6, 8(sp)
+    call alloc_closure
     mv t0, a0
-  # End Apply add__0 with 2 args
+    addi sp, sp, 16
+    sd t0, 0(sp)
+    li t0, 5
+    sd t0, 8(sp)
+    li t0, 11
+    sd t0, 16(sp)
+    li t0, 5
+    sd t0, 24(sp)
+  # End loading args on stack
+    call apply_closure_chain
+    mv t0, a0
+  # Free args on stack
+    addi sp, sp, 32
+  # End free args on stack
+  # End Application to add__0 with 2 args
     sd t0, -8(fp)
   # Apply print_int
     ld a0, -8(fp)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, main__3
-    sd t0, 0(t1)
+    la a1, main__3
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl main__3
   main__3: .dword 0
 
 ( a lot of variables )
@@ -135,54 +156,68 @@
   .globl _start
   _start:
     mv fp, sp
+    mv a0, sp
+    call init_GC
     addi sp, sp, -8
-  # Apply homka__0 with 12 args
+  # Application to homka__0 with 12 args
   # Load args on stack
-    addi sp, sp, -96
-    li t0, 122
+    addi sp, sp, -112
+    addi sp, sp, -16
+    la t5, homka__0
+    li t6, 25
+    sd t5, 0(sp)
+    sd t6, 8(sp)
+    call alloc_closure
+    mv t0, a0
+    addi sp, sp, 16
     sd t0, 0(sp)
-    li t0, 1
+    li t0, 25
     sd t0, 8(sp)
-    li t0, 2
+    li t0, 245
     sd t0, 16(sp)
     li t0, 3
     sd t0, 24(sp)
-    li t0, 4
-    sd t0, 32(sp)
     li t0, 5
-    sd t0, 40(sp)
-    li t0, 6
-    sd t0, 48(sp)
+    sd t0, 32(sp)
     li t0, 7
-    sd t0, 56(sp)
-    li t0, 8
-    sd t0, 64(sp)
+    sd t0, 40(sp)
     li t0, 9
-    sd t0, 72(sp)
-    li t0, 10
-    sd t0, 80(sp)
+    sd t0, 48(sp)
     li t0, 11
+    sd t0, 56(sp)
+    li t0, 13
+    sd t0, 64(sp)
+    li t0, 15
+    sd t0, 72(sp)
+    li t0, 17
+    sd t0, 80(sp)
+    li t0, 19
     sd t0, 88(sp)
+    li t0, 21
+    sd t0, 96(sp)
+    li t0, 23
+    sd t0, 104(sp)
   # End loading args on stack
-    call homka__0
-  # Free args on stack
-    addi sp, sp, 96
-  # End free args on stack
+    call apply_closure_chain
     mv t0, a0
-  # End Apply homka__0 with 12 args
+  # Free args on stack
+    addi sp, sp, 112
+  # End free args on stack
+  # End Application to homka__0 with 12 args
     sd t0, -8(fp)
   # Apply print_int
     ld a0, -8(fp)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, main__13
-    sd t0, 0(t1)
+    la a1, main__13
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl main__13
   main__13: .dword 0
 
 (just id)
@@ -217,34 +252,48 @@
   .globl _start
   _start:
     mv fp, sp
+    mv a0, sp
+    call init_GC
     addi sp, sp, -8
-  # Apply id__0 with 2 args
+  # Application to id__0 with 2 args
   # Load args on stack
+    addi sp, sp, -32
     addi sp, sp, -16
-    li t0, 5
+    la t5, id__0
+    li t6, 5
+    sd t5, 0(sp)
+    sd t6, 8(sp)
+    call alloc_closure
+    mv t0, a0
+    addi sp, sp, 16
     sd t0, 0(sp)
     li t0, 5
     sd t0, 8(sp)
+    li t0, 11
+    sd t0, 16(sp)
+    li t0, 11
+    sd t0, 24(sp)
   # End loading args on stack
-    call id__0
-  # Free args on stack
-    addi sp, sp, 16
-  # End free args on stack
+    call apply_closure_chain
     mv t0, a0
-  # End Apply id__0 with 2 args
+  # Free args on stack
+    addi sp, sp, 32
+  # End free args on stack
+  # End Application to id__0 with 2 args
     sd t0, -8(fp)
   # Apply print_int
     ld a0, -8(fp)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, main__3
-    sd t0, 0(t1)
+    la a1, main__3
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl main__3
   main__3: .dword 0
 
 (function as argument)
@@ -273,30 +322,28 @@
   .text
   .globl app__0
   app__0:
-    addi sp, sp, -24
-    sd ra, 16(sp)
-    sd fp, 8(sp)
-    addi fp, sp, 24
-  # Apply f__1 with 1 args
-    ld t0, 0(fp)
-    sd t0, -24(fp)
+    addi sp, sp, -16
+    sd ra, 8(sp)
+    sd fp, 0(sp)
+    addi fp, sp, 16
+  # Application to f__1 with 1 args
   # Load args on stack
     addi sp, sp, -32
-    ld t0, -24(fp)
+    ld t0, 0(fp)
     sd t0, 0(sp)
-    li t0, 1
+    li t0, 3
     sd t0, 8(sp)
     ld t0, 8(fp)
     sd t0, 16(sp)
   # End loading args on stack
-    call apply_closure
+    call apply_closure_chain
   # Free args on stack
     addi sp, sp, 32
   # End free args on stack
-  # End Apply f__1 with 1 args
-    ld ra, 16(sp)
-    ld fp, 8(sp)
-    addi sp, sp, 24
+  # End Application to f__1 with 1 args
+    ld ra, 8(sp)
+    ld fp, 0(sp)
+    addi sp, sp, 16
     ret
   .globl inc__3
   inc__3:
@@ -305,8 +352,12 @@
     sd fp, 0(sp)
     addi fp, sp, 16
     ld t0, 0(fp)
-    li t1, 1
+    li t1, 3
+    srai t0, t0, 1
+    srai t1, t1, 1
     add a0, t0, t1
+    slli a0, a0, 1
+    ori a0, a0, 1
     ld ra, 8(sp)
     ld fp, 0(sp)
     addi sp, sp, 16
@@ -314,13 +365,15 @@
   .globl _start
   _start:
     mv fp, sp
+    mv a0, sp
+    call init_GC
     addi sp, sp, -8
-  # Apply app__0 with 2 args
+  # Application to app__0 with 2 args
   # Load args on stack
+    addi sp, sp, -32
     addi sp, sp, -16
-    addi sp, sp, -16
-    la t5, inc__3
-    li t6, 1
+    la t5, app__0
+    li t6, 5
     sd t5, 0(sp)
     sd t6, 8(sp)
     call alloc_closure
@@ -329,26 +382,38 @@
     sd t0, 0(sp)
     li t0, 5
     sd t0, 8(sp)
-  # End loading args on stack
-    call app__0
-  # Free args on stack
-    addi sp, sp, 16
-  # End free args on stack
+    addi sp, sp, -16
+    la t5, inc__3
+    li t6, 3
+    sd t5, 0(sp)
+    sd t6, 8(sp)
+    call alloc_closure
     mv t0, a0
-  # End Apply app__0 with 2 args
+    addi sp, sp, 16
+    sd t0, 16(sp)
+    li t0, 11
+    sd t0, 24(sp)
+  # End loading args on stack
+    call apply_closure_chain
+    mv t0, a0
+  # Free args on stack
+    addi sp, sp, 32
+  # End free args on stack
+  # End Application to app__0 with 2 args
     sd t0, -8(fp)
   # Apply print_int
     ld a0, -8(fp)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, main__5
-    sd t0, 0(t1)
+    la a1, main__5
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl main__5
   main__5: .dword 0
 
 (shadowing is correct)
@@ -363,10 +428,12 @@
   .globl _start
   _start:
     mv fp, sp
+    mv a0, sp
+    call init_GC
     addi sp, sp, -32
-    li t0, 10
+    li t0, 21
     sd t0, -8(fp)
-    li t0, 20
+    li t0, 41
     sd t0, -16(fp)
   # Apply print_int
     ld a0, -16(fp)
@@ -379,15 +446,16 @@
   # Apply print_int
     ld a0, -8(fp)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, res__0
-    sd t0, 0(t1)
+    la a1, res__0
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl res__0
   res__0: .dword 0
 
 (simple partial application)
@@ -418,7 +486,11 @@
     addi fp, sp, 16
     ld t0, 0(fp)
     ld t1, 8(fp)
+    srai t0, t0, 1
+    srai t1, t1, 1
     add a0, t0, t1
+    slli a0, a0, 1
+    ori a0, a0, 1
     ld ra, 8(sp)
     ld fp, 0(sp)
     addi sp, sp, 16
@@ -426,64 +498,65 @@
   .globl _start
   _start:
     mv fp, sp
-    addi sp, sp, -32
-  # Partial application add__0 with 1 args
+    mv a0, sp
+    call init_GC
+    addi sp, sp, -24
+  # Application to add__0 with 1 args
   # Load args on stack
     addi sp, sp, -32
     addi sp, sp, -16
     la t5, add__0
-    li t6, 2
+    li t6, 5
     sd t5, 0(sp)
     sd t6, 8(sp)
     call alloc_closure
     mv t0, a0
     addi sp, sp, 16
     sd t0, 0(sp)
-    li t0, 1
+    li t0, 3
     sd t0, 8(sp)
-    li t0, 1
+    li t0, 3
     sd t0, 16(sp)
   # End loading args on stack
-    call apply_closure
+    call apply_closure_chain
     mv t0, a0
   # Free args on stack
     addi sp, sp, 32
   # End free args on stack
-  # End Partial application add__0 with 1 args
+  # End Application to add__0 with 1 args
     sd t0, -8(fp)
     ld t0, -8(fp)
     sd t0, -16(fp)
-  # Apply inc__4 with 1 args
-    ld t0, -16(fp)
-    sd t0, -24(fp)
+  # Application to inc__4 with 1 args
   # Load args on stack
     addi sp, sp, -32
-    ld t0, -24(fp)
+    ld t0, -16(fp)
     sd t0, 0(sp)
-    li t0, 1
+    li t0, 3
     sd t0, 8(sp)
-    li t0, 121
+    li t0, 243
     sd t0, 16(sp)
   # End loading args on stack
-    call apply_closure
+    call apply_closure_chain
+    mv t0, a0
   # Free args on stack
     addi sp, sp, 32
   # End free args on stack
-    mv t0, a0
-  # End Apply inc__4 with 1 args
-    sd t0, -32(fp)
+  # End Application to inc__4 with 1 args
+    sd t0, -24(fp)
   # Apply print_int
-    ld a0, -32(fp)
+    ld a0, -24(fp)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, main__3
-    sd t0, 0(t1)
+    la a1, main__3
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl main__3
   main__3: .dword 0
 
 (double partial application)
@@ -518,7 +591,11 @@
     addi fp, sp, 16
     ld t0, 0(fp)
     ld t1, 8(fp)
+    srai t0, t0, 1
+    srai t1, t1, 1
     add a0, t0, t1
+    slli a0, a0, 1
+    ori a0, a0, 1
     ld ra, 8(sp)
     ld fp, 0(sp)
     addi sp, sp, 16
@@ -526,89 +603,88 @@
   .globl _start
   _start:
     mv fp, sp
-    addi sp, sp, -56
-  # Partial application add__0 with 1 args
+    mv a0, sp
+    call init_GC
+    addi sp, sp, -40
+  # Application to add__0 with 1 args
   # Load args on stack
     addi sp, sp, -32
     addi sp, sp, -16
     la t5, add__0
-    li t6, 2
+    li t6, 5
     sd t5, 0(sp)
     sd t6, 8(sp)
     call alloc_closure
     mv t0, a0
     addi sp, sp, 16
     sd t0, 0(sp)
-    li t0, 1
+    li t0, 3
     sd t0, 8(sp)
-    li t0, 1
+    li t0, 3
     sd t0, 16(sp)
   # End loading args on stack
-    call apply_closure
+    call apply_closure_chain
     mv t0, a0
   # Free args on stack
     addi sp, sp, 32
   # End free args on stack
-  # End Partial application add__0 with 1 args
+  # End Application to add__0 with 1 args
     sd t0, -8(fp)
     ld t0, -8(fp)
     sd t0, -16(fp)
-  # Apply inc__4 with 1 args
+  # Application to inc__4 with 1 args
+  # Load args on stack
+    addi sp, sp, -32
     ld t0, -16(fp)
+    sd t0, 0(sp)
+    li t0, 3
+    sd t0, 8(sp)
+    li t0, 243
+    sd t0, 16(sp)
+  # End loading args on stack
+    call apply_closure_chain
+    mv t0, a0
+  # Free args on stack
+    addi sp, sp, 32
+  # End free args on stack
+  # End Application to inc__4 with 1 args
     sd t0, -24(fp)
-  # Load args on stack
-    addi sp, sp, -32
-    ld t0, -24(fp)
-    sd t0, 0(sp)
-    li t0, 1
-    sd t0, 8(sp)
-    li t0, 121
-    sd t0, 16(sp)
-  # End loading args on stack
-    call apply_closure
-  # Free args on stack
-    addi sp, sp, 32
-  # End free args on stack
+  # Apply print_int
+    ld a0, -24(fp)
+    call print_int
     mv t0, a0
-  # End Apply inc__4 with 1 args
+  # End Apply print_int
     sd t0, -32(fp)
-  # Apply print_int
-    ld a0, -32(fp)
-    call print_int
-    mv t0, a0
-  # End Apply print_int
-    sd t0, -40(fp)
-  # Apply inc__4 with 1 args
-    ld t0, -16(fp)
-    sd t0, -48(fp)
+  # Application to inc__4 with 1 args
   # Load args on stack
     addi sp, sp, -32
-    ld t0, -48(fp)
+    ld t0, -16(fp)
     sd t0, 0(sp)
-    li t0, 1
+    li t0, 3
     sd t0, 8(sp)
-    li t0, 122
+    li t0, 245
     sd t0, 16(sp)
   # End loading args on stack
-    call apply_closure
+    call apply_closure_chain
+    mv t0, a0
   # Free args on stack
     addi sp, sp, 32
   # End free args on stack
-    mv t0, a0
-  # End Apply inc__4 with 1 args
-    sd t0, -56(fp)
+  # End Application to inc__4 with 1 args
+    sd t0, -40(fp)
   # Apply print_int
-    ld a0, -56(fp)
+    ld a0, -40(fp)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, main__3
-    sd t0, 0(t1)
+    la a1, main__3
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl main__3
   main__3: .dword 0
 
 (Global variables and .data section)
@@ -634,28 +710,33 @@
   .globl _start
   _start:
     mv fp, sp
+    mv a0, sp
+    call init_GC
     addi sp, sp, 0
-    li t0, 4
-    la t1, x__0
-    sd t0, 0(t1)
-    li t0, 5
-    la t1, x__1
-    sd t0, 0(t1)
+    li a0, 9
+    la a1, x__0
+    sd a0, 0(a1)
+    li a0, 11
+    la a1, x__1
+    sd a0, 0(a1)
   # Apply print_int
-    li a0, 5
+    li a0, 11
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, main__2
-    sd t0, 0(t1)
+    la a1, main__2
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
-  x__1: .dword 0
-  x__0: .dword 0
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl main__2
   main__2: .dword 0
+  .globl x__0
+  x__0: .dword 0
+  .globl x__1
+  x__1: .dword 0
 
 (Global variables with partial application)
   $ make compile opts=-gen_mid --no-print-directory -C .. << 'EOF'
@@ -688,7 +769,11 @@
     addi fp, sp, 16
     ld t0, 0(fp)
     ld t1, 8(fp)
+    srai t0, t0, 1
+    srai t1, t1, 1
     add a0, t0, t1
+    slli a0, a0, 1
+    ori a0, a0, 1
     ld ra, 8(sp)
     ld fp, 0(sp)
     addi sp, sp, 16
@@ -696,66 +781,67 @@
   .globl _start
   _start:
     mv fp, sp
-    addi sp, sp, -16
-  # Partial application add__0 with 1 args
+    mv a0, sp
+    call init_GC
+    addi sp, sp, -8
+  # Application to add__0 with 1 args
   # Load args on stack
     addi sp, sp, -32
     addi sp, sp, -16
     la t5, add__0
-    li t6, 2
+    li t6, 5
     sd t5, 0(sp)
     sd t6, 8(sp)
     call alloc_closure
     mv t0, a0
     addi sp, sp, 16
     sd t0, 0(sp)
-    li t0, 1
+    li t0, 3
     sd t0, 8(sp)
-    li t0, 5
+    li t0, 11
     sd t0, 16(sp)
   # End loading args on stack
-    call apply_closure
-    mv t0, a0
+    call apply_closure_chain
   # Free args on stack
     addi sp, sp, 32
   # End free args on stack
-  # End Partial application add__0 with 1 args
-    la t1, add5__3
-    sd t0, 0(t1)
-  # Apply add5__3 with 1 args
-    la t5, add5__3
-    ld t0, 0(t5)
-    sd t0, -8(fp)
+  # End Application to add__0 with 1 args
+    la a1, add5__3
+    sd a0, 0(a1)
+  # Application to add5__3 with 1 args
   # Load args on stack
     addi sp, sp, -32
-    ld t0, -8(fp)
+    la t5, add5__3
+    ld t0, 0(t5)
     sd t0, 0(sp)
-    li t0, 1
+    li t0, 3
     sd t0, 8(sp)
-    li t0, 117
+    li t0, 235
     sd t0, 16(sp)
   # End loading args on stack
-    call apply_closure
+    call apply_closure_chain
+    mv t0, a0
   # Free args on stack
     addi sp, sp, 32
   # End free args on stack
-    mv t0, a0
-  # End Apply add5__3 with 1 args
-    sd t0, -16(fp)
+  # End Application to add5__3 with 1 args
+    sd t0, -8(fp)
   # Apply print_int
-    ld a0, -16(fp)
+    ld a0, -8(fp)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, main__4
-    sd t0, 0(t1)
+    la a1, main__4
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
-  main__4: .dword 0
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl add5__3
   add5__3: .dword 0
+  .globl main__4
+  main__4: .dword 0
 
 (A lot of global variables with partial application)
   $ make compile opts=-gen_mid --no-print-directory -C .. << 'EOF'
@@ -804,7 +890,11 @@
     addi fp, sp, 16
     ld t0, 0(fp)
     ld t1, 8(fp)
+    srai t0, t0, 1
+    srai t1, t1, 1
     add a0, t0, t1
+    slli a0, a0, 1
+    ori a0, a0, 1
     ld ra, 8(sp)
     ld fp, 0(sp)
     addi sp, sp, 16
@@ -812,127 +902,140 @@
   .globl _start
   _start:
     mv fp, sp
-    addi sp, sp, -32
-  # Partial application add__0 with 1 args
+    mv a0, sp
+    call init_GC
+    addi sp, sp, -24
+  # Application to add__0 with 1 args
   # Load args on stack
     addi sp, sp, -32
     addi sp, sp, -16
     la t5, add__0
-    li t6, 2
+    li t6, 5
     sd t5, 0(sp)
     sd t6, 8(sp)
     call alloc_closure
     mv t0, a0
     addi sp, sp, 16
     sd t0, 0(sp)
-    li t0, 1
+    li t0, 3
     sd t0, 8(sp)
+    li t0, 11
+    sd t0, 16(sp)
+  # End loading args on stack
+    call apply_closure_chain
+  # Free args on stack
+    addi sp, sp, 32
+  # End free args on stack
+  # End Application to add__0 with 1 args
+    la a1, add5__3
+    sd a0, 0(a1)
+  # Application to add__0 with 1 args
+  # Load args on stack
+    addi sp, sp, -32
+    addi sp, sp, -16
+    la t5, add__0
+    li t6, 5
+    sd t5, 0(sp)
+    sd t6, 8(sp)
+    call alloc_closure
+    mv t0, a0
+    addi sp, sp, 16
+    sd t0, 0(sp)
+    li t0, 3
+    sd t0, 8(sp)
+    li t0, 3
+    sd t0, 16(sp)
+  # End loading args on stack
+    call apply_closure_chain
+  # Free args on stack
+    addi sp, sp, 32
+  # End free args on stack
+  # End Application to add__0 with 1 args
+    la a1, inc__4
+    sd a0, 0(a1)
+    li a0, 35
+    la a1, homka__5
+    sd a0, 0(a1)
+  # Application to add__0 with 2 args
+  # Load args on stack
+    addi sp, sp, -32
+    addi sp, sp, -16
+    la t5, add__0
+    li t6, 5
+    sd t5, 0(sp)
+    sd t6, 8(sp)
+    call alloc_closure
+    mv t0, a0
+    addi sp, sp, 16
+    sd t0, 0(sp)
     li t0, 5
+    sd t0, 8(sp)
+    li t0, 241
     sd t0, 16(sp)
+    li t0, 5
+    sd t0, 24(sp)
   # End loading args on stack
-    call apply_closure
-    mv t0, a0
+    call apply_closure_chain
   # Free args on stack
     addi sp, sp, 32
   # End free args on stack
-  # End Partial application add__0 with 1 args
-    la t1, add5__3
-    sd t0, 0(t1)
-  # Partial application add__0 with 1 args
+  # End Application to add__0 with 2 args
+    la a1, homka122__6
+    sd a0, 0(a1)
+  # Application to add5__3 with 1 args
   # Load args on stack
     addi sp, sp, -32
-    addi sp, sp, -16
-    la t5, add__0
-    li t6, 2
-    sd t5, 0(sp)
-    sd t6, 8(sp)
-    call alloc_closure
-    mv t0, a0
-    addi sp, sp, 16
-    sd t0, 0(sp)
-    li t0, 1
-    sd t0, 8(sp)
-    li t0, 1
-    sd t0, 16(sp)
-  # End loading args on stack
-    call apply_closure
-    mv t0, a0
-  # Free args on stack
-    addi sp, sp, 32
-  # End free args on stack
-  # End Partial application add__0 with 1 args
-    la t1, inc__4
-    sd t0, 0(t1)
-    li t0, 17
-    la t1, homka__5
-    sd t0, 0(t1)
-  # Apply add__0 with 2 args
-  # Load args on stack
-    addi sp, sp, -16
-    li t0, 120
-    sd t0, 0(sp)
-    li t0, 2
-    sd t0, 8(sp)
-  # End loading args on stack
-    call add__0
-  # Free args on stack
-    addi sp, sp, 16
-  # End free args on stack
-    mv t0, a0
-  # End Apply add__0 with 2 args
-    la t1, homka122__6
-    sd t0, 0(t1)
-  # Apply add5__3 with 1 args
     la t5, add5__3
     ld t0, 0(t5)
-    sd t0, -8(fp)
-  # Load args on stack
-    addi sp, sp, -32
-    ld t0, -8(fp)
     sd t0, 0(sp)
-    li t0, 1
+    li t0, 3
     sd t0, 8(sp)
-    li t0, 110
+    li t0, 221
     sd t0, 16(sp)
   # End loading args on stack
-    call apply_closure
+    call apply_closure_chain
+    mv t0, a0
   # Free args on stack
     addi sp, sp, 32
   # End free args on stack
-    mv t0, a0
-  # End Apply add5__3 with 1 args
-    sd t0, -16(fp)
+  # End Application to add5__3 with 1 args
+    sd t0, -8(fp)
   # Apply print_int
-    ld a0, -16(fp)
+    ld a0, -8(fp)
     call print_int
     mv t0, a0
   # End Apply print_int
-    sd t0, -24(fp)
+    sd t0, -16(fp)
   # Apply print_int
     la t5, homka122__6
     ld a0, 0(t5)
     call print_int
     mv t0, a0
   # End Apply print_int
-    sd t0, -32(fp)
+    sd t0, -24(fp)
   # Apply print_int
     la t5, homka__5
     ld a0, 0(t5)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, main__7
-    sd t0, 0(t1)
+    la a1, main__7
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
-  main__7: .dword 0
-  inc__4: .dword 0
-  homka__5: .dword 0
-  homka122__6: .dword 0
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl add5__3
   add5__3: .dword 0
+  .globl homka122__6
+  homka122__6: .dword 0
+  .globl homka__5
+  homka__5: .dword 0
+  .globl inc__4
+  inc__4: .dword 0
+  .globl main__7
+  main__7: .dword 0
 
 ( global and local x )
   $ make compile opts=-gen_mid --no-print-directory -C .. << 'EOF'
@@ -958,35 +1061,39 @@
   .globl _start
   _start:
     mv fp, sp
+    mv a0, sp
+    call init_GC
     addi sp, sp, -8
+    li a0, 11
+    la a1, x__0
+    sd a0, 0(a1)
     li t0, 5
-    la t1, x__0
-    sd t0, 0(t1)
-    li t0, 2
     sd t0, -8(fp)
   # Apply print_int
     ld a0, -8(fp)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, f__1
-    sd t0, 0(t1)
+    la a1, f__1
+    sd a0, 0(a1)
   # Apply print_int
     la t5, x__0
     ld a0, 0(t5)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, g__3
-    sd t0, 0(t1)
+    la a1, g__3
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
-  x__0: .dword 0
-  g__3: .dword 0
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl f__1
   f__1: .dword 0
+  .globl g__3
+  g__3: .dword 0
+  .globl x__0
+  x__0: .dword 0
 
   $ make compile opts=-gen_mid --no-print-directory -C .. << 'EOF'
   > let t = if true then 1 else 2         
@@ -1024,31 +1131,35 @@
   .globl _start
   _start:
     mv fp, sp
+    mv a0, sp
+    call init_GC
     addi sp, sp, 0
     li t0, 1
     beq t0, zero, L0
-    li t0, 1
+    li a0, 3
     j L1
   L0:
-    li t0, 2
+    li a0, 5
   L1:
-    la t1, t__0
-    sd t0, 0(t1)
+    la a1, t__0
+    sd a0, 0(a1)
   # Apply print_int
     la t5, t__0
     ld a0, 0(t5)
     call print_int
-    mv t0, a0
   # End Apply print_int
-    la t1, _
-    sd t0, 0(t1)
+    la a1, _
+    sd a0, 0(a1)
     call flush
     li a0, 0
     li a7, 94
     ecall
-  .data
-  t__0: .dword 0
+  .section global_vars, "aw", @progbits
+  .balign 8
+  .globl _
   _: .dword 0
+  .globl t__0
+  t__0: .dword 0
 
 (literals and bin operators)
   $ make compile opts=-gen_mid --no-print-directory -C .. << 'EOF'
@@ -1134,7 +1245,7 @@
     sd ra, 8(sp)
     sd fp, 0(sp)
     addi fp, sp, 16
-    li a0, 5
+    li a0, 11
     ld ra, 8(sp)
     ld fp, 0(sp)
     addi sp, sp, 16
@@ -1160,7 +1271,11 @@
     sd t0, -48(fp)
     ld t0, 0(fp)
     ld t1, 0(fp)
+    srai t0, t0, 1
+    srai t1, t1, 1
     div t0, t0, t1
+    slli t0, t0, 1
+    ori t0, t0, 1
     sd t0, -56(fp)
     ld t0, -56(fp)
     sd t0, -64(fp)
@@ -1185,11 +1300,15 @@
   .globl _start
   _start:
     mv fp, sp
+    mv a0, sp
+    call init_GC
     addi sp, sp, 0
     call flush
     li a0, 0
     li a7, 94
     ecall
+  .section global_vars, "aw", @progbits
+  .balign 8
 
   $ make compile opts=-gen_mid --no-print-directory -C .. << 'EOF'
   > let f = let g x y = x + y in fun t -> g t 3
@@ -1224,6 +1343,7 @@
   $ qemu-riscv64 -L /usr/riscv64-linux-gnu -cpu rv64 ../main.exe  | tee -a results.txt && echo "-----" >> results.txt
   3
   5
+
 
 ( IT MUST BE AT THE END OF THE CRAM TEST )
   $ cat results.txt
