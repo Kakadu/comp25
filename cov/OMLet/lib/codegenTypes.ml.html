@@ -543,28 +543,28 @@ type instr =
   | Pseudo of pseudo_instr
 
 let pp_value fmt = function
-  | <span data-count="1780">N</span>um imm -&gt; fprintf fmt "%d" imm
+  | <span data-count="2317">N</span>um imm -&gt; fprintf fmt "%d" imm
   | <span data-count="0">P</span>tr imm -&gt; fprintf fmt "%d" imm
 ;;
 
 let rec pp_reg fmt = function
   | <span data-count="51">Z</span>ero -&gt; fprintf fmt "x0"
-  | <span data-count="150">R</span>a -&gt; fprintf fmt "ra"
-  | <span data-count="1304">F</span>p -&gt; fprintf fmt "fp"
-  | <span data-count="1350">S</span>p -&gt; fprintf fmt "sp"
-  | <span data-count="1649">S</span>tack (o, reg) -&gt;
+  | <span data-count="162">R</span>a -&gt; fprintf fmt "ra"
+  | <span data-count="1826">F</span>p -&gt; fprintf fmt "fp"
+  | <span data-count="1611">S</span>p -&gt; fprintf fmt "sp"
+  | <span data-count="2276">S</span>tack (o, reg) -&gt;
     let () = fprintf fmt "%d(" o in
-    <span data-count="1649">l</span>et () = pp_reg fmt reg in
-    <span data-count="1649">f</span>printf fmt ")"
-  | <span data-count="710">T</span>emp i -&gt; fprintf fmt "t%d" i
-  | <span data-count="509">S</span>aved i -&gt; fprintf fmt "s%d" i
-  | <span data-count="4538">A</span>rg i -&gt; fprintf fmt "a%d" i
+    <span data-count="2276">l</span>et () = pp_reg fmt reg in
+    <span data-count="2276">f</span>printf fmt ")"
+  | <span data-count="950">T</span>emp i -&gt; fprintf fmt "t%d" i
+  | <span data-count="560">S</span>aved i -&gt; fprintf fmt "s%d" i
+  | <span data-count="6050">A</span>rg i -&gt; fprintf fmt "a%d" i
 ;;
 
 let pp_rtype_op fmt = function
-  | <span data-count="39">A</span>DD -&gt; fprintf fmt "add"
+  | <span data-count="93">A</span>DD -&gt; fprintf fmt "add"
   | <span data-count="41">S</span>UB -&gt; fprintf fmt "sub"
-  | <span data-count="12">M</span>UL -&gt; fprintf fmt "mul"
+  | <span data-count="15">M</span>UL -&gt; fprintf fmt "mul"
   | <span data-count="0">D</span>IV -&gt; fprintf fmt "div"
   | <span data-count="0">A</span>ND -&gt; fprintf fmt "and"
   | <span data-count="0">O</span>R -&gt; fprintf fmt "or"
@@ -573,20 +573,20 @@ let pp_rtype_op fmt = function
 ;;
 
 let pp_itype_op fmt = function
-  | <span data-count="834">A</span>DDI -&gt; fprintf fmt "addi"
+  | <span data-count="1053">A</span>DDI -&gt; fprintf fmt "addi"
   (* | LI -&gt; fprintf fmt "li" *)
   | <span data-count="0">J</span>ALR -&gt; fprintf fmt "jalr"
   | <span data-count="0">S</span>LTI -&gt; fprintf fmt "slti"
   | <span data-count="6">X</span>ORI -&gt; fprintf fmt "xori"
-  | <span data-count="231">S</span>LLI -&gt; fprintf fmt "slli"
-  | <span data-count="12">S</span>RLI -&gt; fprintf fmt "srli"
+  | <span data-count="300">S</span>LLI -&gt; fprintf fmt "slli"
+  | <span data-count="15">S</span>RLI -&gt; fprintf fmt "srli"
 ;;
 
 let pp_stack_op fmt = function
   | <span data-count="0">L</span>W -&gt; fprintf fmt "lw"
   | <span data-count="0">S</span>W -&gt; fprintf fmt "sw"
-  | <span data-count="789">L</span>D -&gt; fprintf fmt "ld"
-  | <span data-count="860">S</span>D -&gt; fprintf fmt "sd"
+  | <span data-count="1080">L</span>D -&gt; fprintf fmt "ld"
+  | <span data-count="1196">S</span>D -&gt; fprintf fmt "sd"
 ;;
 
 (* let pp_stype_op fmt = function
@@ -609,22 +609,22 @@ let pp_jtype_op fmt = function
 ;;
 
 let pp_pseudo_instr fmt = function
-  | <span data-count="697">L</span>I (r, imm) -&gt; fprintf fmt "@[\tli %a, %a@]@." pp_reg r pp_value imm
-  | <span data-count="189">L</span>A (r, l) -&gt; fprintf fmt "@[\tla %a, %s@]@." pp_reg r l
-  | <span data-count="840">M</span>V (r1, r2) -&gt; fprintf fmt "@[\tmv %a, %a@]@." pp_reg r1 pp_reg r2
+  | <span data-count="943">L</span>I (r, imm) -&gt; fprintf fmt "@[\tli %a, %a@]@." pp_reg r pp_value imm
+  | <span data-count="204">L</span>A (r, l) -&gt; fprintf fmt "@[\tla %a, %s@]@." pp_reg r l
+  | <span data-count="1005">M</span>V (r1, r2) -&gt; fprintf fmt "@[\tmv %a, %a@]@." pp_reg r1 pp_reg r2
   | <span data-count="51">J</span> l -&gt; fprintf fmt "@[\tj %s@]@." l
-  | <span data-count="75">R</span>ET -&gt; fprintf fmt "@[\tret @]@."
-  | <span data-count="466">C</span>ALL l -&gt; fprintf fmt "@[\tcall %s@]@." l
+  | <span data-count="81">R</span>ET -&gt; fprintf fmt "@[\tret @]@."
+  | <span data-count="643">C</span>ALL l -&gt; fprintf fmt "@[\tcall %s@]@." l
   | <span data-count="3">S</span>NEZ (r1, r2) -&gt; fprintf fmt "@[\tsnez %a, %a@]@." pp_reg r1 pp_reg r2
   | <span data-count="27">S</span>EQZ (r1, r2) -&gt; fprintf fmt "@[\tseqz %a, %a@]@." pp_reg r1 pp_reg r2
 ;;
 
 let pp_true_instr fmt = function
-  | <span data-count="140">R</span>Type (op, rd, rs1, rs2) -&gt;
+  | <span data-count="197">R</span>Type (op, rd, rs1, rs2) -&gt;
     fprintf fmt "@[\t%a %a, %a, %a@]@." pp_rtype_op op pp_reg rd pp_reg rs1 pp_reg rs2
-  | <span data-count="1083">I</span>Type (op, rd, rs1, imm) -&gt;
+  | <span data-count="1374">I</span>Type (op, rd, rs1, imm) -&gt;
     fprintf fmt "@[\t%a %a, %a, %a@]@." pp_itype_op op pp_reg rd pp_reg rs1 pp_value imm
-  | <span data-count="1649">S</span>tackType (op, rd, rs) -&gt;
+  | <span data-count="2276">S</span>tackType (op, rd, rs) -&gt;
     fprintf fmt "@[\t%a %a, %a@]@." pp_stack_op op pp_reg rd pp_reg rs
   (* | SType (op, rs2, rs1, imm) -&gt;
     fprintf fmt "@[\t%a %a, %d(%a)@]@." pp_stype_op op pp_reg rs2 imm pp_reg rs1 *)
@@ -634,13 +634,13 @@ let pp_true_instr fmt = function
     fprintf fmt "@[\t%a %a, %a@]@." pp_utype_op op pp_reg rd pp_value imm
   | <span data-count="0">J</span>Type (op, rd, imm) -&gt;
     fprintf fmt "@[\t%a %a, %a@]@." pp_jtype_op op pp_reg rd pp_value imm
-  | <span data-count="209">L</span>abel l -&gt; fprintf fmt "%s:@." l
-  | <span data-count="32">E</span>call -&gt; fprintf fmt "ecall@."
+  | <span data-count="224">L</span>abel l -&gt; fprintf fmt "%s:@." l
+  | <span data-count="41">E</span>call -&gt; fprintf fmt "ecall@."
 ;;
 
 let pp_instr = function
-  | <span data-count="3164">T</span>rue i -&gt; pp_true_instr std_formatter i
-  | <span data-count="2348">P</span>seudo i -&gt; pp_pseudo_instr std_formatter i
+  | <span data-count="4163">T</span>rue i -&gt; pp_true_instr std_formatter i
+  | <span data-count="2957">P</span>seudo i -&gt; pp_pseudo_instr std_formatter i
 ;;
 </code></pre>
       </div>

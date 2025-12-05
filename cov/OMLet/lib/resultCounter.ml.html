@@ -129,18 +129,18 @@ end
 module ResultCounterMonad : ResultCounterMonadType = struct
   type ('a, 'e) t = int -&gt; ('a * int, 'e) result
 
-  let return x c = <span data-count="2183">R</span>esult.Ok (x, c)
+  let return x c = <span data-count="3053">R</span>esult.Ok (x, c)
 
   let ( &gt;&gt;= ) x f c =
-    <span data-count="2880">m</span>atch x c with
-    | <span data-count="2880">O</span>k (x, c') -&gt; f x c'
+    <span data-count="4041">m</span>atch x c with
+    | <span data-count="4041">O</span>k (x, c') -&gt; f x c'
     | <span data-count="0">R</span>esult.Error e -&gt; Result.Error e
   ;;
 
   let fail e _ = <span data-count="0">R</span>esult.Error e
-  let read c = <span data-count="366">R</span>esult.Ok (c, c)
-  let write c _ = <span data-count="366">R</span>esult.Ok ((), c)
-  let run m = <span data-count="35">m</span>
+  let read c = <span data-count="516">R</span>esult.Ok (c, c)
+  let write c _ = <span data-count="516">R</span>esult.Ok ((), c)
+  let run m = <span data-count="44">m</span>
 
   module Syntax = struct
     let ( let* ) = ( &gt;&gt;= )

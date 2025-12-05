@@ -417,7 +417,7 @@
 <a href="#L151">151</a>
 <a href="#L152">152</a>
 </pre>
-<pre><code class="ocaml">(** Copyright 2024-2025, Ksenia Kotelnikova &lt;xeniia.ka@gmail.com&gt;, Gleb Nasretdinov &lt;gleb.nasretdinov@proton.me&gt; *)
+<pre><code class="ocaml">(** Copyright 2025, Ksenia Kotelnikova &lt;xeniia.ka@gmail.com&gt;, Sofya Kozyreva &lt;k81sofia@gmail.com&gt;, Vyacheslav Kochergin &lt;vyacheslav.kochergin1@gmail.com&gt; *)
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
@@ -469,8 +469,8 @@ let rec pp_pattern fmt = function
       fmt
       (p1 :: p2 :: rest);
     <span data-count="0">f</span>printf fmt ")"
-  | <span data-count="0">P</span>Const literal -&gt; fprintf fmt "%a " pp_expr (Const literal)
-  | <span data-count="0">P</span>Var (Ident name) -&gt; fprintf fmt "%s " name
+  | <span data-count="0">P</span>Const literal -&gt; fprintf fmt "%a" pp_expr (Const literal)
+  | <span data-count="0">P</span>Var (Ident name) -&gt; fprintf fmt "%s" name
   | <span data-count="0">P</span>Option p -&gt;
     (match p with
      | <span data-count="0">N</span>one -&gt; fprintf fmt "None "

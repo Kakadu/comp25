@@ -266,44 +266,44 @@ type opts =
   }
 
 let eval ast =
-  <span data-count="32">l</span>et _ = show_constructions ast in
-  <span data-count="32">(</span>)
+  <span data-count="41">l</span>et _ = show_constructions ast in
+  <span data-count="41">(</span>)
 ;;
 
 let run_single dump_parsetree dump_anf stop_after eval input_source =
-  <span data-count="35">l</span>et text =
+  <span data-count="44">l</span>et text =
     match input_source with
-    | <span data-count="35">S</span>ome file_name -&gt; In_channel.read_all file_name |&gt; <span data-count="35">S</span>tdlib.String.tri<span data-count="35">m</span>
+    | <span data-count="44">S</span>ome file_name -&gt; In_channel.read_all file_name |&gt; <span data-count="44">S</span>tdlib.String.tri<span data-count="44">m</span>
     | <span data-count="0">N</span>one -&gt; In_channel.input_all stdin |&gt; <span data-count="0">S</span>tdlib.String.tri<span data-count="0">m</span>
   in
   match parse text with
   | <span data-count="0">E</span>rror e -&gt; Stdlib.Format.printf "Parsing error: %s\n%!" e
-  | <span data-count="35">O</span>k ast -&gt;
+  | <span data-count="44">O</span>k ast -&gt;
     if dump_parsetree
     then <span data-count="0">(</span>
       print_endline (show_construction<span data-count="0">s</span> ast);
       <span data-count="0">(</span>))
-    else <span data-count="35">(</span>
-      match run (anf_and_lift_progra<span data-count="35">m</span> ast) 0 with
+    else <span data-count="44">(</span>
+      match run (anf_and_lift_progra<span data-count="44">m</span> ast) 0 with
       | <span data-count="0">R</span>esult.Error e -&gt; Stdlib.Format.printf "%a@." pp_anf_error e
-      | <span data-count="35">R</span>esult.Ok (anf, _) -&gt;
+      | <span data-count="44">R</span>esult.Ok (anf, _) -&gt;
         if dump_anf
         then <span data-count="3">(</span>
           Stdlib.Format.printf "%a@." pp_aconstructions anf;
           <span data-count="3">(</span>))
-        else <span data-count="32">(</span>
+        else <span data-count="41">(</span>
           let () =
             match codegen_program anf with
             | <span data-count="0">E</span>rror e -&gt; Stdlib.Format.print<span data-count="0">f</span> "Codegen error: %s\n%!" e
-            | <span data-count="32">O</span>k (_, instructions) -&gt;
+            | <span data-count="41">O</span>k (_, instructions) -&gt;
               let () =
                 Stdlib.Format.fprintf Stdlib.Format.std_formatter ".global _start\n"
               in
-              <span data-count="32">S</span>tdlib.List.ite<span data-count="32">r</span> pp_instr instructions
+              <span data-count="41">S</span>tdlib.List.ite<span data-count="41">r</span> pp_instr instructions
           in
           match stop_after with
           | <span data-count="0">S</span>A_parsing -&gt; ()
-          | <span data-count="32">S</span>A_never -&gt; eval ast))
+          | <span data-count="41">S</span>A_never -&gt; eval ast))
 ;;
 
 let () =
@@ -325,7 +325,7 @@ let () =
               | <span data-count="0">_</span> -&gt; failwith "Bad argument for -stop-after")
         , "Stop after parsing" )
       ; ( "-fromfile"
-        , Stdlib.Arg.String (fun filename -&gt; <span data-count="35">o</span>pts.input_file &lt;- Some filename)
+        , Stdlib.Arg.String (fun filename -&gt; <span data-count="44">o</span>pts.input_file &lt;- Some filename)
         , "Read code from the specified file" )
       ]
       (fun _ -&gt;
@@ -333,11 +333,11 @@ let () =
          <span data-count="0">S</span>tdlib.exit 1)
       "Compiler driver for custom language"
   in
-  <span data-count="35">r</span>un_singl<span data-count="35">e</span>
+  <span data-count="44">r</span>un_singl<span data-count="44">e</span>
     opts.dump_parsetree
     opts.dump_anf
     opts.stop_after
-    (fun ast -&gt; <span data-count="32">e</span>val ast)
+    (fun ast -&gt; <span data-count="41">e</span>val ast)
     opts.input_file
 ;;
 </code></pre>

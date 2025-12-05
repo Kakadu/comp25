@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>treeAnalysis.ml &mdash; Coverage report</title>
-    <meta name="description" content="92.86% coverage in lib/treeAnalysis.ml">
+    <meta name="description" content="96.55% coverage in lib/treeAnalysis.ml">
     <link rel="stylesheet" href="../coverage.css"/>
     <script src="../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,11 +15,10 @@
           <span class="dirname">lib/</span>treeAnalysis.ml
         </a>
       </h1>
-      <h2>92.86%</h2>
+      <h2>96.55%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="bottom:42.62%"></span>
-      <span class="unvisited" style="bottom:3.28%"></span>
+      <span class="unvisited" style="bottom:43.55%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -65,26 +64,27 @@
 <a id="L39"></a><span > </span>
 <a id="L40"></a><span > </span>
 <a id="L41"></a><span > </span>
-<a id="L42"></a><span > </span>
+<a id="L42"></a><span class="visited"> </span>
 <a id="L43"></a><span > </span>
-<a id="L44"></a><span class="visited"> </span>
+<a id="L44"></a><span > </span>
 <a id="L45"></a><span class="visited"> </span>
-<a id="L46"></a><span > </span>
-<a id="L47"></a><span class="visited"> </span>
+<a id="L46"></a><span class="visited"> </span>
+<a id="L47"></a><span > </span>
 <a id="L48"></a><span class="visited"> </span>
-<a id="L49"></a><span > </span>
+<a id="L49"></a><span class="visited"> </span>
 <a id="L50"></a><span > </span>
 <a id="L51"></a><span > </span>
-<a id="L52"></a><span class="visited"> </span>
-<a id="L53"></a><span > </span>
-<a id="L54"></a><span class="visited"> </span>
+<a id="L52"></a><span > </span>
+<a id="L53"></a><span class="visited"> </span>
+<a id="L54"></a><span > </span>
 <a id="L55"></a><span class="visited"> </span>
-<a id="L56"></a><span > </span>
+<a id="L56"></a><span class="visited"> </span>
 <a id="L57"></a><span > </span>
 <a id="L58"></a><span > </span>
-<a id="L59"></a><span class="unvisited"> </span>
+<a id="L59"></a><span > </span>
 <a id="L60"></a><span class="visited"> </span>
-<a id="L61"></a><span > </span>
+<a id="L61"></a><span class="visited"> </span>
+<a id="L62"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -150,6 +150,7 @@
 <a href="#L59">59</a>
 <a href="#L60">60</a>
 <a href="#L61">61</a>
+<a href="#L62">62</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2025, Ksenia Kotelnikova &lt;xeniia.ka@gmail.com&gt;, Sofya Kozyreva &lt;k81sofia@gmail.com&gt;, Vyacheslav Kochergin &lt;vyacheslav.kochergin1@gmail.com&gt; *)
 
@@ -159,58 +160,59 @@ open Anf
 open Ast
 
 let rec lambda_arity_of_aexpr ae =
-  <span data-count="255">m</span>atch ae with
-  | <span data-count="180">A</span>CExpr (CLam (_, inner)) -&gt;
+  <span data-count="267">m</span>atch ae with
+  | <span data-count="186">A</span>CExpr (CLam (_, inner)) -&gt;
     let sub_arity, body = lambda_arity_of_aexpr inner in
-    <span data-count="180">1</span> + sub_arity, body
+    <span data-count="186">1</span> + sub_arity, body
   | <span data-count="15">A</span>CExpr _ -&gt; 0, ae
-  | <span data-count="60">A</span>Let _ -&gt; 0, ae
+  | <span data-count="66">A</span>Let _ -&gt; 0, ae
 ;;
 
 let is_function = function
-  | <span data-count="225">A</span>CExpr (CLam (Ident _, _)) -&gt; true
+  | <span data-count="243">A</span>CExpr (CLam (Ident _, _)) -&gt; true
   | <span data-count="96">_</span> -&gt; false
 ;;
 
 (* if argument is const, it will be put on stack. else it is already on it *)
 let analyze_arg stack_size = function
   | <span data-count="156">I</span>mmNum _ -&gt; stack_size + 1
-  | <span data-count="448">_</span> -&gt; stack_size
+  | <span data-count="463">_</span> -&gt; stack_size
 ;;
 
 let rec analyze_cexpr stack_size = function
-  | <span data-count="280">C</span>Binop (_, _, _) -&gt; stack_size
-  | <span data-count="528">C</span>Immexpr _ -&gt; stack_size
+  | <span data-count="343">C</span>Binop (_, _, _) -&gt; stack_size
+  | <span data-count="597">C</span>Immexpr _ -&gt; stack_size
   | <span data-count="102">C</span>Ite (cond, thn, els) -&gt;
     let stack_size = analyze_cexpr stack_size cond in
     <span data-count="102">l</span>et stack_size = analyze_aexpr stack_size thn in
     <span data-count="102">(</span>match els with
      | <span data-count="0">N</span>one -&gt; stack_size
      | <span data-count="102">S</span>ome els -&gt; analyze_aexpr stack_size els)
-  | <span data-count="360">C</span>Lam (Ident _, ae) -&gt; analyze_aexpr (stack_size + 1) ae
-  | <span data-count="426">C</span>App (_, args) -&gt;
+  | <span data-count="372">C</span>Lam (Ident _, ae) -&gt; analyze_aexpr (stack_size + 1) ae
+  | <span data-count="447">C</span>App (_, args) -&gt;
     (* uncomment that if t-regs will be used again *)
     (* stack_size (*+ 7*) + List.length args *)
     List.fold_left analyze_arg stack_size args
+  | <span data-count="90">C</span>Field (_, _) -&gt; stack_size
 
 and analyze_aexpr stack_size = function
-  | <span data-count="778">A</span>CExpr ce -&gt; analyze_cexpr stack_size ce
-  | <span data-count="816">A</span>Let (Ident _, cexpr, body) -&gt;
+  | <span data-count="811">A</span>CExpr ce -&gt; analyze_cexpr stack_size ce
+  | <span data-count="1038">A</span>Let (_, cexpr, body) -&gt;
     let stack_size = analyze_cexpr stack_size cexpr in
-    <span data-count="816">l</span>et stack_size = analyze_aexpr stack_size body in
-    <span data-count="816">s</span>tack_size + 1
+    <span data-count="1038">l</span>et stack_size = analyze_aexpr stack_size body in
+    <span data-count="1038">s</span>tack_size + 1
 ;;
 
 let analyze_astatement stack_size = function
-  | <span data-count="214">_</span>, st when is_functio<span data-count="214">n</span> st -&gt;
+  | <span data-count="226">_</span>, st when is_functio<span data-count="226">n</span> st -&gt;
     (* + 1 for RA *)
-    <span data-count="150">a</span>nalyze_aexpr (stack_size + 1) st
+    <span data-count="162">a</span>nalyze_aexpr (stack_size + 1) st
   | <span data-count="64">_</span>, st -&gt; analyze_aexpr stack_size st
 ;;
 
 let analyze_aconstr stack_size = function
-  | <span data-count="0">A</span>Expr ae -&gt; analyze_aexpr stack_size ae
-  | <span data-count="107">A</span>Statement (_, st_list) -&gt; List.fold_left analyze_astatement stack_size st_list
+  | <span data-count="9">A</span>Expr ae -&gt; analyze_aexpr stack_size ae
+  | <span data-count="113">A</span>Statement (_, st_list) -&gt; List.fold_left analyze_astatement stack_size st_list
 ;;
 </code></pre>
       </div>
