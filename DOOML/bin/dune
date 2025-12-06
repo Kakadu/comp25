@@ -1,20 +1,8 @@
-(library
- (name LL)
- (public_name DOOML.LL)
- (modules LL)
- (wrapped false)
- (libraries
-  llvm
-  llvm.analysis
-  llvm.executionengine
-  ;
-  ))
-
 (executable
  (public_name DOOML)
  (name main)
  (modules main)
- (libraries LL)
+ (libraries DOOML)
  (instrumentation
   (backend bisect_ppx)))
 
