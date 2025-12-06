@@ -216,30 +216,30 @@ open Machine
 open Target
 
 module Emission = struct
-  let code : (instr * string) Queue.t = Queue.creat<span data-count="24">e</span> ()
-  let emit ?(comm = <span data-count="1465">"</span>") push_instr = <span data-count="1465">p</span>ush_instr (fun i -&gt; <span data-count="1465">Q</span>ueue.enqueue code (i, comm))
+  let code : (instr * string) Queue.t = Queue.creat<span data-count="37">e</span> ()
+  let emit ?(comm = <span data-count="2669">"</span>") push_instr = <span data-count="2669">p</span>ush_instr (fun i -&gt; <span data-count="2669">Q</span>ueue.enqueue code (i, comm))
 
   let flush_queue ppf =
-    <span data-count="43">w</span>hile not (Queue.is_empt<span data-count="1508">y</span> code) do
-      <span data-count="1465">l</span>et i, comm = Queue.dequeue_exn code in
-      <span data-count="1465">(</span>match i with
-       | <span data-count="54">L</span>abel _ -&gt; fprint<span data-count="54">f</span> ppf "%a" pp_instr i
-       | <span data-count="1411">_</span> -&gt; fprint<span data-count="1411">f</span> ppf "  %a" pp_instr i);
+    <span data-count="70">w</span>hile not (Queue.is_empt<span data-count="2739">y</span> code) do
+      <span data-count="2669">l</span>et i, comm = Queue.dequeue_exn code in
+      <span data-count="2669">(</span>match i with
+       | <span data-count="77">L</span>abel _ -&gt; fprint<span data-count="77">f</span> ppf "%a" pp_instr i
+       | <span data-count="2592">_</span> -&gt; fprint<span data-count="2592">f</span> ppf "  %a" pp_instr i);
       if String.(comm &lt;&gt; "") then <span data-count="0">f</span>print<span data-count="0">f</span> ppf " # %s" comm;
-      <span data-count="1465">f</span>print<span data-count="1465">f</span> ppf "\n"
+      <span data-count="2669">f</span>print<span data-count="2669">f</span> ppf "\n"
     done
   ;;
 
   let emit_tagged_binop op dst r1 r2 =
-    <span data-count="34">m</span>atch op with
-    | <span data-count="12">"</span>+" -&gt;
+    <span data-count="46">m</span>atch op with
+    | <span data-count="19">"</span>+" -&gt;
       (* (2a+1)+(2b+1)-1 = 2(a+b)+1 *)
       emit add dst r1 r2;
-      <span data-count="12">e</span>mit addi dst dst (-1)
-    | <span data-count="8">"</span>-" -&gt;
+      <span data-count="19">e</span>mit addi dst dst (-1)
+    | <span data-count="10">"</span>-" -&gt;
       (* (2a+1)-(2b+1)+1 = 2(a-b)+1 *)
       emit sub dst r1 r2;
-      <span data-count="8">e</span>mit addi dst dst 1
+      <span data-count="10">e</span>mit addi dst dst 1
     | <span data-count="2">"</span>*" -&gt;
       (* a = x &gt;&gt; 1, b = y &gt;&gt; 1 *)
       emit srai (T 2) r1 1;
@@ -249,9 +249,9 @@ module Emission = struct
       (* (a*b) &lt;&lt; 1 | 1  — тегаем обратно *)
       <span data-count="2">e</span>mit add dst dst dst;
       <span data-count="2">e</span>mit addi dst dst 1
-    | <span data-count="9">"</span>=" -&gt;
+    | <span data-count="12">"</span>=" -&gt;
       emit xor (T 2) r1 r2;
-      <span data-count="9">e</span>mit seqz dst (T 2)
+      <span data-count="12">e</span>mit seqz dst (T 2)
     | <span data-count="1">"</span>&lt;&gt;" -&gt;
       emit xor (T 2) r1 r2;
       <span data-count="1">e</span>mit snez dst (T 2)
@@ -270,27 +270,27 @@ module Emission = struct
   (*re: horosho ;)*)
   let emit_prologue name stack_size =
     (* name: *)
-    <span data-count="32">e</span>mit label name;
+    <span data-count="49">e</span>mit label name;
     (* addi sp, sp, -stack_size *)
-    <span data-count="32">e</span>mit addi SP SP (<span data-count="32">-</span>stack_size);
+    <span data-count="49">e</span>mit addi SP SP (<span data-count="49">-</span>stack_size);
     (* sd ra, (sp + stack_size - word) *)
-    <span data-count="32">e</span>mit sd RA (SP, stack_size - Target.word_size);
+    <span data-count="49">e</span>mit sd RA (SP, stack_size - Target.word_size);
     (* sd fp(S0), (sp + stack_size - 2*word) *)
-    <span data-count="32">e</span>mit sd (S 0) (SP, stack_size - (2 * Target.word_size));
+    <span data-count="49">e</span>mit sd (S 0) (SP, stack_size - (2 * Target.word_size));
     (* fp := sp + stack_size - 2*word *)
-    <span data-count="32">e</span>mit addi (S 0) SP (stack_size - (2 * Target.word_size))
+    <span data-count="49">e</span>mit addi (S 0) SP (stack_size - (2 * Target.word_size))
   ;;
 
   let emit_epilogue stack_size =
-    <span data-count="32">l</span>et (_ : 'a) = stack_size in
+    <span data-count="49">l</span>et (_ : 'a) = stack_size in
     (* should be used in future *)
     emit addi SP (S 0) (2 * Target.word_size);
     (* sp = fp + 2*word *)
-    <span data-count="32">e</span>mit ld RA (S 0, Target.word_size);
+    <span data-count="49">e</span>mit ld RA (S 0, Target.word_size);
     (* ra = [fp+word] *)
-    <span data-count="32">e</span>mit ld (S 0) (S 0, 0);
+    <span data-count="49">e</span>mit ld (S 0) (S 0, 0);
     (* fp = [fp+0] *)
-    <span data-count="32">e</span>mit ret
+    <span data-count="49">e</span>mit ret
   ;;
 end
 </code></pre>

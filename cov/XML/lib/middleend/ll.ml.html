@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>ll.ml &mdash; Coverage report</title>
-    <meta name="description" content="57.78% coverage in lib/middleend/ll.ml">
+    <meta name="description" content="58.89% coverage in lib/middleend/ll.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,7 +15,7 @@
           <span class="dirname">lib/middleend/</span>ll.ml
         </a>
       </h1>
-      <h2>57.78%</h2>
+      <h2>58.89%</h2>
     </div>
     <div id="navbar">
       <span class="unvisited" style="top:7.32%"></span>
@@ -583,11 +583,11 @@ let fresh_name (base : ident) (n : supply) : ident * supply =
 
 let fv_im = function
   | <span data-count="0">I</span>mm_num _ -&gt; SSet.empty
-  | <span data-count="8">I</span>mm_ident x -&gt; SSet.singleton x
+  | <span data-count="10">I</span>mm_ident x -&gt; SSet.singleton x
 ;;
 
 let rec fv_comp = function
-  | <span data-count="8">C</span>omp_imm i -&gt; fv_im i
+  | <span data-count="10">C</span>omp_imm i -&gt; fv_im i
   | <span data-count="0">C</span>omp_binop (_op, a, b) -&gt; SSet.union (fv_i<span data-count="0">m</span> a) (fv_i<span data-count="0">m</span> b)
   | <span data-count="0">C</span>omp_app (f, args) -&gt;
     List.fold_left (fun s a -&gt; <span data-count="0">S</span>Set.union s (fv_i<span data-count="0">m</span> a)) (fv_i<span data-count="0">m</span> f) args
@@ -601,16 +601,16 @@ let rec fv_comp = function
 
 and fv_anf = function
   | <span data-count="6">A</span>nf_comp_expr ce -&gt; fv_comp ce
-  | <span data-count="2">A</span>nf_let (_rf, x, ce, body) -&gt; SSet.union (fv_com<span data-count="2">p</span> ce) (SSet.remov<span data-count="2">e</span> x (fv_an<span data-count="2">f</span> body))
+  | <span data-count="4">A</span>nf_let (_rf, x, ce, body) -&gt; SSet.union (fv_com<span data-count="4">p</span> ce) (SSet.remov<span data-count="4">e</span> x (fv_an<span data-count="4">f</span> body))
 ;;
 
 let occurs_im x = function
-  | <span data-count="34">I</span>mm_ident y -&gt; String.equal x y
+  | <span data-count="36">I</span>mm_ident y -&gt; String.equal x y
   | <span data-count="6">_</span> -&gt; false
 ;;
 
 let rec escapes_comp x = function
-  | <span data-count="20">C</span>omp_imm i -&gt; occurs_im x i
+  | <span data-count="22">C</span>omp_imm i -&gt; occurs_im x i
   | <span data-count="2">C</span>omp_binop (_op, a, b) -&gt; occurs_i<span data-count="2">m</span> x <span data-count="0">a</span> || occurs_im x b
   | <span data-count="10">C</span>omp_app (f, args) -&gt;
     List.exist<span data-count="10">s</span> (occurs_i<span data-count="10">m</span> x) arg<span data-count="0">s</span>
@@ -625,16 +625,16 @@ let rec escapes_comp x = function
 
 and escapes_anf x = function
   | <span data-count="12">A</span>nf_comp_expr ce -&gt; escapes_comp x ce
-  | <span data-count="20">A</span>nf_let (_rf, _y, ce, body) -&gt; escapes_com<span data-count="20">p</span> x c<span data-count="0">e</span> || escapes_anf x body
+  | <span data-count="22">A</span>nf_let (_rf, _y, ce, body) -&gt; escapes_com<span data-count="22">p</span> x c<span data-count="0">e</span> || escapes_anf x body
 ;;
 
 type ctx = (ident * ident list) SMap.t
 
 let rewrite_app (env : ctx) (f : im_expr) (args : im_expr list) : im_expr * im_expr list =
-  <span data-count="352">m</span>atch f with
-  | <span data-count="352">I</span>mm_ident x -&gt;
+  <span data-count="456">m</span>atch f with
+  | <span data-count="456">I</span>mm_ident x -&gt;
     (match SMap.find_opt x env with
-     | <span data-count="348">N</span>one -&gt; f, args
+     | <span data-count="452">N</span>one -&gt; f, args
      | <span data-count="4">S</span>ome (lf, fvs) -&gt;
        let fv_atoms = List.map (fun v -&gt; <span data-count="0">I</span>mm_ident v) fvs in
        <span data-count="4">I</span>mm_ident lf, fv_atoms @ args)
@@ -644,11 +644,11 @@ let rewrite_app (env : ctx) (f : im_expr) (args : im_expr list) : im_expr * im_e
 let rec lift_anf (env : ctx) (n : supply) (e : anf_expr)
   : (anf_expr * astructure_item list) * supply
   =
-  <span data-count="756">m</span>atch e with
-  | <span data-count="261">A</span>nf_comp_expr ce -&gt;
+  <span data-count="1239">m</span>atch e with
+  | <span data-count="347">A</span>nf_comp_expr ce -&gt;
     let (ce', defs), n' = lift_comp env n ce in
-    <span data-count="261">(</span>Anf_comp_expr ce', defs), n'
-  | <span data-count="495">A</span>nf_let (rf, x, ce, body) -&gt;
+    <span data-count="347">(</span>Anf_comp_expr ce', defs), n'
+  | <span data-count="892">A</span>nf_let (rf, x, ce, body) -&gt;
     (match ce with
      | <span data-count="4">C</span>omp_func (ps, fbody) -&gt;
        if escapes_an<span data-count="4">f</span> x bod<span data-count="0">y</span> || escapes_an<span data-count="4">f</span> x fbod<span data-count="0">y</span>
@@ -672,15 +672,15 @@ let rec lift_anf (env : ctx) (n : supply) (e : anf_expr)
          in
          let (body', defs_e2), n3 = lift_anf env_body n2 body in
          <span data-count="4">(</span>body', defs_body @ (def_item :: defs_e2)), n3)
-     | <span data-count="22">C</span>omp_imm (Imm_ident y) -&gt;
+     | <span data-count="195">C</span>omp_imm (Imm_ident y) -&gt;
        (match SMap.find_opt y env with
         | <span data-count="0">S</span>ome (lf, fvs) -&gt;
           let env' = SMap.add x (lf, fvs) env in
           <span data-count="0">l</span>ift_anf env' n body
-        | <span data-count="22">N</span>one -&gt;
+        | <span data-count="195">N</span>one -&gt;
           let (body', d2), n' = lift_anf env n body in
-          <span data-count="22">(</span>Anf_let (rf, x, ce, body'), d2), n')
-     | <span data-count="259">C</span>omp_app (Imm_ident lf_id, args) -&gt;
+          <span data-count="195">(</span>Anf_let (rf, x, ce, body'), d2), n')
+     | <span data-count="321">C</span>omp_app (Imm_ident lf_id, args) -&gt;
        let args_are vs =
          <span data-count="0">t</span>ry
            List.for_all<span data-count="0">2</span>
@@ -698,7 +698,7 @@ let rec lift_anf (env : ctx) (n : supply) (e : anf_expr)
            env
            false
        in
-       <span data-count="259">i</span>f hit
+       <span data-count="321">i</span>f hit
        then <span data-count="0">(</span>
          let lf_opt =
            SMap.fold
@@ -715,41 +715,41 @@ let rec lift_anf (env : ctx) (n : supply) (e : anf_expr)
            | <span data-count="0">N</span>one -&gt; env
          in
          lift_anf env' n body)
-       else <span data-count="259">(</span>
+       else <span data-count="321">(</span>
          let (ce', d1), n1 = lift_comp env n ce in
-         <span data-count="259">l</span>et (body', d2), n2 = lift_anf env n1 body in
-         <span data-count="259">(</span>Anf_let (rf, x, ce', body'), d1 @ d2), n2)
-     | <span data-count="210">_</span> -&gt;
+         <span data-count="321">l</span>et (body', d2), n2 = lift_anf env n1 body in
+         <span data-count="321">(</span>Anf_let (rf, x, ce', body'), d1 @ d2), n2)
+     | <span data-count="372">_</span> -&gt;
        let (ce', d1), n1 = lift_comp env n ce in
-       <span data-count="210">l</span>et (body', d2), n2 = lift_anf env n1 body in
-       <span data-count="210">(</span>Anf_let (rf, x, ce', body'), d1 @ d2), n2)
+       <span data-count="372">l</span>et (body', d2), n2 = lift_anf env n1 body in
+       <span data-count="372">(</span>Anf_let (rf, x, ce', body'), d1 @ d2), n2)
 
 and lift_comp (env : ctx) (n : supply) (ce : comp_expr)
   : (comp_expr * astructure_item list) * supply
   =
-  <span data-count="866">m</span>atch ce with
-  | <span data-count="252">C</span>omp_imm _ | <span data-count="170">C</span>omp_binop _ | <span data-count="0">C</span>omp_tuple _ | <span data-count="0">C</span>omp_alloc _ | <span data-count="0">C</span>omp_load _ -&gt; (ce, []), n
-  | <span data-count="352">C</span>omp_app (f, args) -&gt;
+  <span data-count="1429">m</span>atch ce with
+  | <span data-count="453">C</span>omp_imm _ | <span data-count="218">C</span>omp_binop _ | <span data-count="0">C</span>omp_tuple _ | <span data-count="56">C</span>omp_alloc _ | <span data-count="128">C</span>omp_load _ -&gt; (ce, []), n
+  | <span data-count="456">C</span>omp_app (f, args) -&gt;
     let f', args' = rewrite_app env f args in
-    <span data-count="352">(</span>Comp_app (f', args'), []), n
-  | <span data-count="50">C</span>omp_branch (c, t, e) -&gt;
+    <span data-count="456">(</span>Comp_app (f', args'), []), n
+  | <span data-count="62">C</span>omp_branch (c, t, e) -&gt;
     let (t', dt), n1 = lift_anf env n t in
-    <span data-count="50">l</span>et (e', de), n2 = lift_anf env n1 e in
-    <span data-count="50">(</span>Comp_branch (c, t', e'), dt @ de), n2
-  | <span data-count="42">C</span>omp_func (ps, body) -&gt;
+    <span data-count="62">l</span>et (e', de), n2 = lift_anf env n1 e in
+    <span data-count="62">(</span>Comp_branch (c, t', e'), dt @ de), n2
+  | <span data-count="56">C</span>omp_func (ps, body) -&gt;
     let (body', defs), n' = lift_anf env n body in
-    <span data-count="42">(</span>Comp_func (ps, body'), defs), n'
+    <span data-count="56">(</span>Comp_func (ps, body'), defs), n'
 ;;
 
 let rec desugar_then_lift (env : ctx) (n : supply) (e : anf_expr)
   : (anf_expr * astructure_item list) * supply
   =
-  <span data-count="180">m</span>atch e with
-  | <span data-count="42">A</span>nf_let
+  <span data-count="447">m</span>atch e with
+  | <span data-count="56">A</span>nf_let
       (Nonrecursive, tmp, Comp_func (ps, fbody), Anf_comp_expr (Comp_imm (Imm_ident tmp')))
-    when String.equa<span data-count="42">l</span> tmp tmp' -&gt;
-    <span data-count="42">l</span>et (fbody', d), n' = lift_anf env n fbody in
-    <span data-count="42">(</span>Anf_comp_expr (Comp_func (ps, fbody')), d), n'
+    when String.equa<span data-count="56">l</span> tmp tmp' -&gt;
+    <span data-count="56">l</span>et (fbody', d), n' = lift_anf env n fbody in
+    <span data-count="56">(</span>Anf_comp_expr (Comp_func (ps, fbody')), d), n'
   | <span data-count="2">A</span>nf_let
       ( Nonrecursive
       , tmp
@@ -777,39 +777,39 @@ let rec desugar_then_lift (env : ctx) (n : supply) (e : anf_expr)
       in
       let (body', d2), n3 = lift_anf env' n2 body in
       <span data-count="2">(</span>body', d1 @ (def_item :: d2)), n3)
-  | <span data-count="111">A</span>nf_let (rf, x, ce, body) -&gt;
+  | <span data-count="344">A</span>nf_let (rf, x, ce, body) -&gt;
     let (ce', d1), n1 = lift_comp env n ce in
-    <span data-count="111">l</span>et (body', d2), n2 = desugar_then_lift env n1 body in
-    <span data-count="111">(</span>Anf_let (rf, x, ce', body'), d1 @ d2), n2
-  | <span data-count="25">A</span>nf_comp_expr ce -&gt;
+    <span data-count="344">l</span>et (body', d2), n2 = desugar_then_lift env n1 body in
+    <span data-count="344">(</span>Anf_let (rf, x, ce', body'), d1 @ d2), n2
+  | <span data-count="45">A</span>nf_comp_expr ce -&gt;
     let (ce', d), n' = lift_comp env n ce in
-    <span data-count="25">(</span>Anf_comp_expr ce', d), n'
+    <span data-count="45">(</span>Anf_comp_expr ce', d), n'
 ;;
 
 let lift_item (it : astructure_item) (n : supply)
   : (astructure_item * astructure_item list) * supply
   =
-  <span data-count="69">m</span>atch it with
+  <span data-count="103">m</span>atch it with
   | <span data-count="0">A</span>nf_str_eval e -&gt;
     let (e1, d1), n1 = desugar_then_lift SMap.empty n e in
     <span data-count="0">l</span>et (e2, d2), n2 = lift_anf SMap.empty n1 e1 in
     <span data-count="0">(</span>Anf_str_eval e2, d1 @ d2), n2
-  | <span data-count="69">A</span>nf_str_value (rf, name, e) -&gt;
+  | <span data-count="103">A</span>nf_str_value (rf, name, e) -&gt;
     let (e1, d1), n1 = desugar_then_lift SMap.empty n e in
-    <span data-count="69">l</span>et (e2, d2), n2 = lift_anf SMap.empty n1 e1 in
-    <span data-count="69">(</span>Anf_str_value (rf, name, e2), d1 @ d2), n2
+    <span data-count="103">l</span>et (e2, d2), n2 = lift_anf SMap.empty n1 e1 in
+    <span data-count="103">(</span>Anf_str_value (rf, name, e2), d1 @ d2), n2
 ;;
 
 let lambda_lift_program (p : aprogram) : aprogram =
-  <span data-count="25">l</span>et (items_rev, defs), _ =
+  <span data-count="45">l</span>et (items_rev, defs), _ =
     List.fold_left
       (fun ((acc, dacc), n) it -&gt;
-         <span data-count="69">l</span>et (it', d), n' = lift_item it n in
-         <span data-count="69">(</span>it' :: acc, dacc @ d), n')
+         <span data-count="103">l</span>et (it', d), n' = lift_item it n in
+         <span data-count="103">(</span>it' :: acc, dacc @ d), n')
       (([], []), 1)
       p
   in
-  <span data-count="25">L</span>ist.re<span data-count="25">v</span> items_rev @ defs
+  <span data-count="45">L</span>ist.re<span data-count="45">v</span> items_rev @ defs
 ;;
 </code></pre>
       </div>
