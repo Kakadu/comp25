@@ -297,37 +297,37 @@ open Pprinter
 let pp_sep ppf () = <span data-count="0">f</span>printf ppf " "
 
 let pp_a_pat ppf = function
-  | <span data-count="55">A</span>Pat_var var -&gt; pp_ident ppf var
+  | <span data-count="61">A</span>Pat_var var -&gt; pp_ident ppf var
   | <span data-count="0">A</span>Pat_constant const -&gt; pp_constant ppf const
 ;;
 
 let rec pp_i_exp_deep need_parens ppf = function
-  | <span data-count="141">I</span>Exp_ident id -&gt; pp_ident ppf id
-  | <span data-count="94">I</span>Exp_constant const -&gt; pp_constant ppf const
+  | <span data-count="178">I</span>Exp_ident id -&gt; pp_ident ppf id
+  | <span data-count="136">I</span>Exp_constant const -&gt; pp_constant ppf const
   | <span data-count="0">I</span>Exp_unit -&gt; pp_ident ppf "()"
-  | <span data-count="55">I</span>Exp_fun (a_pat, a_exp) -&gt;
-    if need_parens then <span data-count="29">f</span>print<span data-count="29">f</span> ppf "(";
-    <span data-count="55">p</span>p_open_box ppf 2;
-    <span data-count="55">f</span>printf ppf "@[fun@ %a@ -&gt;@]@ " pp_a_pat a_pat;
-    <span data-count="55">f</span>printf ppf "@[&lt;hv&gt;%a@]" (pp_a_exp_dee<span data-count="55">p</span> true) a_exp;
-    <span data-count="55">i</span>f need_parens then <span data-count="29">f</span>print<span data-count="29">f</span> ppf ")";
-    <span data-count="55">p</span>p_close_box ppf ()
+  | <span data-count="61">I</span>Exp_fun (a_pat, a_exp) -&gt;
+    if need_parens then <span data-count="32">f</span>print<span data-count="32">f</span> ppf "(";
+    <span data-count="61">p</span>p_open_box ppf 2;
+    <span data-count="61">f</span>printf ppf "@[fun@ %a@ -&gt;@]@ " pp_a_pat a_pat;
+    <span data-count="61">f</span>printf ppf "@[&lt;hv&gt;%a@]" (pp_a_exp_dee<span data-count="61">p</span> true) a_exp;
+    <span data-count="61">i</span>f need_parens then <span data-count="32">f</span>print<span data-count="32">f</span> ppf ")";
+    <span data-count="61">p</span>p_close_box ppf ()
 
 and pp_c_exp_deep need_parens ppf = function
-  | <span data-count="91">C</span>IExp i_exp -&gt; pp_i_exp_deep need_parens ppf i_exp
-  | <span data-count="1">C</span>Exp_tuple (i_exp1, i_exp2, i_exp_list) -&gt;
+  | <span data-count="97">C</span>IExp i_exp -&gt; pp_i_exp_deep need_parens ppf i_exp
+  | <span data-count="14">C</span>Exp_tuple (i_exp1, i_exp2, i_exp_list) -&gt;
     pp_open_hvbox ppf 0;
-    <span data-count="1">i</span>f need_parens then <span data-count="1">f</span>print<span data-count="1">f</span> ppf "( ";
-    <span data-count="1">f</span>printf
+    <span data-count="14">i</span>f need_parens then <span data-count="1">f</span>print<span data-count="1">f</span> ppf "( ";
+    <span data-count="14">f</span>printf
       ppf
       "%a@]"
-      (pp_print_lis<span data-count="1">t</span> ~pp_sep:pp_comma (pp_i_exp_dee<span data-count="1">p</span> true))
+      (pp_print_lis<span data-count="14">t</span> ~pp_sep:pp_comma (pp_i_exp_dee<span data-count="14">p</span> true))
       (i_exp1 :: i_exp2 :: i_exp_list);
-    <span data-count="1">i</span>f need_parens then <span data-count="1">f</span>printf ppf " )"
-  | <span data-count="109">C</span>Exp_apply (i_exp1, i_exp2, i_exp_list) -&gt;
+    <span data-count="14">i</span>f need_parens then <span data-count="1">f</span>printf ppf " )"
+  | <span data-count="136">C</span>Exp_apply (i_exp1, i_exp2, i_exp_list) -&gt;
     pp_open_box ppf 2;
-    <span data-count="109">(</span>pp_c_exp_apply ~need_parens) ppf (i_exp1, i_exp2, i_exp_list);
-    <span data-count="109">p</span>p_close_box ppf ()
+    <span data-count="136">(</span>pp_c_exp_apply ~need_parens) ppf (i_exp1, i_exp2, i_exp_list);
+    <span data-count="136">p</span>p_close_box ppf ()
   | <span data-count="1">C</span>Exp_ifthenelse (c_exp, a_exp, None) -&gt;
     if need_parens then <span data-count="0">f</span>print<span data-count="0">f</span> ppf "(";
     <span data-count="1">p</span>p_open_hvbox ppf 0;
@@ -345,60 +345,60 @@ and pp_c_exp_deep need_parens ppf = function
     <span data-count="13">p</span>p_close_box ppf ()
 
 and pp_c_exp_apply ?(need_parens = <span data-count="0">f</span>alse) ppf = function
-  | <span data-count="33">I</span>Exp_ident opr, i_exp, [] when is_unary_minu<span data-count="33">s</span> opr -&gt;
+  | <span data-count="37">I</span>Exp_ident opr, i_exp, [] when is_unary_minu<span data-count="37">s</span> opr -&gt;
     <span data-count="1">f</span>printf ppf "-%a" (pp_i_exp_dee<span data-count="1">p</span> need_parens) i_exp
-  | <span data-count="73">I</span>Exp_ident opr, i_exp1, [ i_exp2 ] when is_bin_o<span data-count="73">p</span> opr -&gt;
-    <span data-count="57">f</span>printf ppf "%a" (pp_i_exp_dee<span data-count="57">p</span> need_parens) i_exp1;
-    <span data-count="57">f</span>printf ppf " %s " opr;
-    <span data-count="57">f</span>printf ppf "%a" (pp_i_exp_dee<span data-count="57">p</span> need_parens) i_exp2
-  | <span data-count="51">I</span>Exp_ident f_exp, arg_exp, arg_exp_list -&gt;
+  | <span data-count="96">I</span>Exp_ident opr, i_exp1, [ i_exp2 ] when is_bin_o<span data-count="96">p</span> opr -&gt;
+    <span data-count="58">f</span>printf ppf "%a" (pp_i_exp_dee<span data-count="58">p</span> need_parens) i_exp1;
+    <span data-count="58">f</span>printf ppf " %s " opr;
+    <span data-count="58">f</span>printf ppf "%a" (pp_i_exp_dee<span data-count="58">p</span> need_parens) i_exp2
+  | <span data-count="77">I</span>Exp_ident f_exp, arg_exp, arg_exp_list -&gt;
     fprintf ppf "%s" f_exp;
-    <span data-count="51">f</span>printf
+    <span data-count="77">f</span>printf
       ppf
       " %a"
-      (pp_print_lis<span data-count="51">t</span> ~pp_sep:pp_print_space (pp_i_exp_dee<span data-count="51">p</span> need_parens))
+      (pp_print_lis<span data-count="77">t</span> ~pp_sep:pp_print_space (pp_i_exp_dee<span data-count="77">p</span> need_parens))
       (arg_exp :: arg_exp_list)
   | <span data-count="0">_</span> -&gt; fprintf ppf "In progress"
 
 and pp_a_exp_deep need_parens ppf = function
-  | <span data-count="124">A</span>CExp c_exp -&gt; pp_c_exp_deep need_parens ppf c_exp
-  | <span data-count="77">A</span>Exp_let (rec_flag, pat, c_exp, a_exp) -&gt;
-    if need_parens then <span data-count="28">f</span>print<span data-count="28">f</span> ppf "(";
-    <span data-count="77">f</span>printf ppf "@[&lt;hv 2&gt;";
-    <span data-count="77">p</span>p_rec_flag ppf rec_flag;
-    <span data-count="77">f</span>printf ppf "@[%a =@]@ " pp_pattern pat;
-    <span data-count="77">f</span>printf ppf "@[%a@] in@]@\n" (pp_c_exp_dee<span data-count="77">p</span> false) c_exp;
-    <span data-count="77">f</span>printf ppf "@[%a@]" (pp_a_exp_dee<span data-count="77">p</span> false) a_exp;
-    <span data-count="77">i</span>f need_parens then <span data-count="28">f</span>printf ppf ")"
+  | <span data-count="149">A</span>CExp c_exp -&gt; pp_c_exp_deep need_parens ppf c_exp
+  | <span data-count="98">A</span>Exp_let (rec_flag, pat, c_exp, a_exp) -&gt;
+    if need_parens then <span data-count="31">f</span>print<span data-count="31">f</span> ppf "(";
+    <span data-count="98">f</span>printf ppf "@[&lt;hv 2&gt;";
+    <span data-count="98">p</span>p_rec_flag ppf rec_flag;
+    <span data-count="98">f</span>printf ppf "@[%a =@]@ " pp_pattern pat;
+    <span data-count="98">f</span>printf ppf "@[%a@] in@]@\n" (pp_c_exp_dee<span data-count="98">p</span> false) c_exp;
+    <span data-count="98">f</span>printf ppf "@[%a@]" (pp_a_exp_dee<span data-count="98">p</span> false) a_exp;
+    <span data-count="98">i</span>f need_parens then <span data-count="31">f</span>printf ppf ")"
 ;;
 
-let pp_i_exp = pp_i_exp_dee<span data-count="68">p</span> false
-let pp_c_exp = pp_c_exp_dee<span data-count="68">p</span> false
-let pp_a_exp = pp_a_exp_dee<span data-count="68">p</span> false
+let pp_i_exp = pp_i_exp_dee<span data-count="74">p</span> false
+let pp_c_exp = pp_c_exp_dee<span data-count="74">p</span> false
+let pp_a_exp = pp_a_exp_dee<span data-count="74">p</span> false
 
 let pp_a_structure_item ppf = function
   | <span data-count="0">A</span>Struct_eval a_exp -&gt;
     fprintf ppf "@[&lt;hv&gt;%a@];;" pp_a_exp a_exp;
     <span data-count="0">p</span>p_print_flush ppf ()
-  | <span data-count="42">A</span>Struct_value (rec_flag, pat, a_exp) -&gt;
+  | <span data-count="61">A</span>Struct_value (rec_flag, pat, a_exp) -&gt;
     pp_open_hovbox ppf 2;
-    <span data-count="42">p</span>p_rec_flag ppf rec_flag;
-    <span data-count="42">f</span>printf ppf "@[%a =@]@ " pp_pattern pat;
-    <span data-count="42">f</span>printf ppf "@[%a@]" pp_a_exp a_exp;
-    <span data-count="42">p</span>p_print_if_newline ppf ();
-    <span data-count="42">p</span>p_print_cut ppf ();
-    <span data-count="42">f</span>printf ppf ";;";
-    <span data-count="42">p</span>p_print_flush ppf ()
+    <span data-count="61">p</span>p_rec_flag ppf rec_flag;
+    <span data-count="61">f</span>printf ppf "@[%a =@]@ " pp_pattern pat;
+    <span data-count="61">f</span>printf ppf "@[%a@]" pp_a_exp a_exp;
+    <span data-count="61">p</span>p_print_if_newline ppf ();
+    <span data-count="61">p</span>p_print_cut ppf ();
+    <span data-count="61">f</span>printf ppf ";;";
+    <span data-count="61">p</span>p_print_flush ppf ()
 ;;
 
 let pp_a_structure ppf ast =
-  <span data-count="20">i</span>f Base.List.is_empty ast
+  <span data-count="25">i</span>f Base.List.is_empty ast
   then <span data-count="0">f</span>print<span data-count="0">f</span> ppf ";;"
   else
-    <span data-count="20">f</span>print<span data-count="20">f</span>
+    <span data-count="25">f</span>print<span data-count="25">f</span>
       ppf
       "@[&lt;v&gt;%a@]"
-      (pp_print_lis<span data-count="20">t</span> ~pp_sep:pp_force_newline pp_a_structure_item)
+      (pp_print_lis<span data-count="25">t</span> ~pp_sep:pp_force_newline pp_a_structure_item)
       ast;
   pp_print_flush ppf ()
 ;;

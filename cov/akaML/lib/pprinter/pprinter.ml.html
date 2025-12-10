@@ -608,10 +608,10 @@ open Format
 
 let pp_rec_flag ppf = function
   | <span data-count="42">R</span>ecursive -&gt; fprintf ppf "let rec "
-  | <span data-count="226">N</span>onrecursive -&gt; fprintf ppf "let "
+  | <span data-count="266">N</span>onrecursive -&gt; fprintf ppf "let "
 ;;
 
-let pp_comma ppf () = <span data-count="947">f</span>printf ppf "@,, "
+let pp_comma ppf () = <span data-count="963">f</span>printf ppf "@,, "
 
 let pp_and indent ppf () =
   <span data-count="301">p</span>p_force_newline ppf ();
@@ -620,12 +620,12 @@ let pp_and indent ppf () =
 ;;
 
 let pp_ident ppf = function
-  | <span data-count="2288">o</span>p when is_operato<span data-count="2288">r</span> op -&gt; <span data-count="113">f</span>printf ppf "( %s )" op
-  | <span data-count="2175">o</span>p -&gt; fprintf ppf "%s" op
+  | <span data-count="2369">o</span>p when is_operato<span data-count="2369">r</span> op -&gt; <span data-count="113">f</span>printf ppf "( %s )" op
+  | <span data-count="2256">o</span>p -&gt; fprintf ppf "%s" op
 ;;
 
 let pp_constant ppf = function
-  | <span data-count="463">C</span>onst_integer n -&gt; fprintf ppf "%d" n
+  | <span data-count="507">C</span>onst_integer n -&gt; fprintf ppf "%d" n
   | <span data-count="215">C</span>onst_char c -&gt; fprintf ppf "'%c'" c
   | <span data-count="214">C</span>onst_string s -&gt; fprintf ppf "%S" s
 ;;
@@ -654,12 +654,12 @@ let rec pp_core_type_deep n ppf = function
     <span data-count="228">i</span>f n &lt;&gt; 0 then <span data-count="54">f</span>printf ppf ")"
 ;;
 
-let pp_core_type = pp_core_type_dee<span data-count="69">p</span> 0
+let pp_core_type = pp_core_type_dee<span data-count="75">p</span> 0
 
 let rec pp_pattern_deep need_parens ppf = function
   | <span data-count="397">P</span>at_any -&gt; fprintf ppf "_"
-  | <span data-count="1122">P</span>at_var var -&gt; pp_ident ppf var
-  | <span data-count="340">P</span>at_constant const -&gt; pp_constant ppf const
+  | <span data-count="1160">P</span>at_var var -&gt; pp_ident ppf var
+  | <span data-count="342">P</span>at_constant const -&gt; pp_constant ppf const
   | <span data-count="135">P</span>at_tuple (fst_pat, snd_pat, pat_list) -&gt;
     pp_open_hvbox ppf 0;
     <span data-count="135">i</span>f need_parens then <span data-count="115">f</span>print<span data-count="115">f</span> ppf "( ";
@@ -689,7 +689,7 @@ let rec pp_pattern_deep need_parens ppf = function
     <span data-count="222">i</span>f need_parens then <span data-count="92">f</span>printf ppf ")"
 ;;
 
-let pp_pattern = pp_pattern_dee<span data-count="69">p</span> false
+let pp_pattern = pp_pattern_dee<span data-count="75">p</span> false
 
 let rec pp_expression_deep need_cut need_parens ppf = function
   | <span data-count="764">E</span>xp_ident id -&gt; pp_ident ppf id
@@ -852,7 +852,7 @@ and pp_value_binding_list indent ppf = function
       value_binding_list
 ;;
 
-let pp_expression = pp_expression_dee<span data-count="69">p</span> false false
+let pp_expression = pp_expression_dee<span data-count="75">p</span> false false
 
 let pp_structure_item ppf = function
   | <span data-count="49">S</span>truct_eval exp -&gt;

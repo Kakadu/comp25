@@ -597,30 +597,30 @@ open Base
 module State = struct
   type 'a t = int -&gt; 'a * int
 
-  let return x st = <span data-count="2624">x</span>, st
+  let return x st = <span data-count="2901">x</span>, st
 
   let bind m f st =
-    <span data-count="2623">l</span>et x, st' = m st in
-    <span data-count="2623">f</span> x st'
+    <span data-count="2894">l</span>et x, st' = m st in
+    <span data-count="2894">f</span> x st'
   ;;
 
   let ( let* ) = bind
   let fresh st = <span data-count="45">s</span>t, st + 1
 
   let rec state_map f = function
-    | <span data-count="92">[</span>] -&gt; return []
-    | <span data-count="12">x</span> :: xs -&gt;
-      let* y = <span data-count="12">f</span> x in
-      <span data-count="12">l</span>et* ys = state_ma<span data-count="12">p</span> f xs in
-      <span data-count="12">r</span>eturn (y :: ys)
+    | <span data-count="117">[</span>] -&gt; return []
+    | <span data-count="59">x</span> :: xs -&gt;
+      let* y = <span data-count="59">f</span> x in
+      <span data-count="59">l</span>et* ys = state_ma<span data-count="59">p</span> f xs in
+      <span data-count="59">r</span>eturn (y :: ys)
   ;;
 
-  let run m = <span data-count="46">f</span>st (<span data-count="46">m</span> 0)
+  let run m = <span data-count="52">f</span>st (<span data-count="52">m</span> 0)
 end
 
 open State
 
-let empty_bindings = Map.empt<span data-count="68">y</span> (module String)
+let empty_bindings = Map.empt<span data-count="74">y</span> (module String)
 
 let gen_name =
   let* n = fresh in
@@ -640,31 +640,31 @@ let rec pat_bound_names = function
 
 let safe_tl = function
   | <span data-count="0">[</span>] -&gt; []
-  | <span data-count="108">_</span> :: tl -&gt; tl
+  | <span data-count="120">_</span> :: tl -&gt; tl
 ;;
 
 let remove_names bindings names = <span data-count="39">L</span>ist.fold names ~init:bindings ~f:Map.remove
 
-let rec ll_exp ?(top_level = <span data-count="1845">f</span>alse) bindings = function
-  | <span data-count="730">E</span>xp_ident name as id -&gt;
+let rec ll_exp ?(top_level = <span data-count="1984">f</span>alse) bindings = function
+  | <span data-count="761">E</span>xp_ident name as id -&gt;
     let id =
       match Map.find bindings name with
       | <span data-count="10">S</span>ome new_name -&gt; Exp_ident new_name
-      | <span data-count="720">N</span>one -&gt; id
+      | <span data-count="751">N</span>one -&gt; id
     in
     return ([], id)
-  | (<span data-count="240">E</span>xp_constant _ | <span data-count="25">E</span>xp_construct (_, None)) as e -&gt; return ([], e)
-  | <span data-count="81">E</span>xp_let (Nonrecursive, vb, vb_list, body) -&gt;
-    let* defs_vb, vb_exp = ll_ex<span data-count="81">p</span> bindings vb.exp in
-    <span data-count="81">l</span>et* vb_list_res = state_ma<span data-count="81">p</span> (fun b -&gt; <span data-count="2">l</span>l_exp bindings b.exp) vb_list in
-    <span data-count="81">l</span>et vb_list_exps, vb_list_defs_list = List.unzip vb_list_res in
-    <span data-count="81">l</span>et vb_list_defs = List.concat vb_list_exps in
-    <span data-count="81">l</span>et vb' = { vb with exp = vb_exp } in
+  | (<span data-count="306">E</span>xp_constant _ | <span data-count="31">E</span>xp_construct (_, None)) as e -&gt; return ([], e)
+  | <span data-count="95">E</span>xp_let (Nonrecursive, vb, vb_list, body) -&gt;
+    let* defs_vb, vb_exp = ll_ex<span data-count="95">p</span> bindings vb.exp in
+    <span data-count="95">l</span>et* vb_list_res = state_ma<span data-count="95">p</span> (fun b -&gt; <span data-count="2">l</span>l_exp bindings b.exp) vb_list in
+    <span data-count="95">l</span>et vb_list_exps, vb_list_defs_list = List.unzip vb_list_res in
+    <span data-count="95">l</span>et vb_list_defs = List.concat vb_list_exps in
+    <span data-count="95">l</span>et vb' = { vb with exp = vb_exp } in
     let vb_list' =
       List.map2_exn vb_list vb_list_defs_list ~f:(fun b e -&gt; <span data-count="2">{</span> b with exp = e })
     in
-    <span data-count="81">l</span>et* body_defs, body_exp = ll_ex<span data-count="81">p</span> bindings body in
-    <span data-count="81">r</span>eturn
+    <span data-count="95">l</span>et* body_defs, body_exp = ll_ex<span data-count="95">p</span> bindings body in
+    <span data-count="95">r</span>eturn
       (defs_vb @ vb_list_defs @ body_defs, Exp_let (Nonrecursive, vb', vb_list', body_exp))
   | <span data-count="4">E</span>xp_let (Recursive, vb, vb_list, body) -&gt;
     let defs = vb :: vb_list in
@@ -711,9 +711,9 @@ let rec ll_exp ?(top_level = <span data-count="1845">f</span>alse) bindings = fu
         @ [ Struct_value (Recursive, List.hd_ex<span data-count="4">n</span> bodies, safe_t<span data-count="4">l</span> bodies) ]
         @ body_defs
       , body_exp )
-  | <span data-count="113">E</span>xp_fun (pat, pat_list, body) when top_level -&gt;
-    <span data-count="74">l</span>et* defs, body' = ll_ex<span data-count="74">p</span> bindings body in
-    <span data-count="74">r</span>eturn (defs, Exp_fun (pat, pat_list, body'))
+  | <span data-count="117">E</span>xp_fun (pat, pat_list, body) when top_level -&gt;
+    <span data-count="78">l</span>et* defs, body' = ll_ex<span data-count="78">p</span> bindings body in
+    <span data-count="78">r</span>eturn (defs, Exp_fun (pat, pat_list, body'))
   | <span data-count="39">E</span>xp_fun (pat, pat_list, body) -&gt;
     let* fresh_name = gen_name in
     <span data-count="39">l</span>et args = pat :: pat_list in
@@ -727,10 +727,10 @@ let rec ll_exp ?(top_level = <span data-count="1845">f</span>alse) bindings = fu
         , [] )
     in
     return (defs @ [ def ], Exp_ident fresh_name)
-  | <span data-count="718">E</span>xp_apply (exp1, exp2) -&gt;
-    let* defs1, exp1' = ll_ex<span data-count="718">p</span> bindings exp1 in
-    <span data-count="718">l</span>et* defs2, exp2' = ll_ex<span data-count="718">p</span> bindings exp2 in
-    <span data-count="718">r</span>eturn (defs1 @ defs2, Exp_apply (exp1', exp2'))
+  | <span data-count="737">E</span>xp_apply (exp1, exp2) -&gt;
+    let* defs1, exp1' = ll_ex<span data-count="737">p</span> bindings exp1 in
+    <span data-count="737">l</span>et* defs2, exp2' = ll_ex<span data-count="737">p</span> bindings exp2 in
+    <span data-count="737">r</span>eturn (defs1 @ defs2, Exp_apply (exp1', exp2'))
   | <span data-count="2">E</span>xp_function (case, case_list) when top_level -&gt;
     <span data-count="2">l</span>et* c_defs, c_exp = ll_ex<span data-count="2">p</span> bindings case.right in
     <span data-count="2">l</span>et* cs_res = state_ma<span data-count="2">p</span> (fun c -&gt; <span data-count="2">l</span>l_exp bindings c.right) case_list in
@@ -789,13 +789,13 @@ let rec ll_exp ?(top_level = <span data-count="1845">f</span>alse) bindings = fu
         <span data-count="38">r</span>eturn (d3, Some e3)
     in
     <span data-count="38">r</span>eturn (defs1 @ defs2 @ defs3, Exp_ifthenelse (exp1, exp2, exp3_opt))
-  | <span data-count="2">E</span>xp_tuple (exp1, exp2, exp_list) -&gt;
-    let* defs1, exp1' = ll_ex<span data-count="2">p</span> bindings exp1 in
-    <span data-count="2">l</span>et* defs2, exp2' = ll_ex<span data-count="2">p</span> bindings exp2 in
-    <span data-count="2">l</span>et* res = state_ma<span data-count="2">p</span> (ll_ex<span data-count="2">p</span> bindings) exp_list in
-    <span data-count="2">l</span>et es_defs, es_exprs = List.unzip res in
-    <span data-count="2">l</span>et es_defs = List.concat es_defs in
-    <span data-count="2">r</span>eturn (defs1 @ defs2 @ es_defs, Exp_tuple (exp1', exp2', es_exprs))
+  | <span data-count="13">E</span>xp_tuple (exp1, exp2, exp_list) -&gt;
+    let* defs1, exp1' = ll_ex<span data-count="13">p</span> bindings exp1 in
+    <span data-count="13">l</span>et* defs2, exp2' = ll_ex<span data-count="13">p</span> bindings exp2 in
+    <span data-count="13">l</span>et* res = state_ma<span data-count="13">p</span> (ll_ex<span data-count="13">p</span> bindings) exp_list in
+    <span data-count="13">l</span>et es_defs, es_exprs = List.unzip res in
+    <span data-count="13">l</span>et es_defs = List.concat es_defs in
+    <span data-count="13">r</span>eturn (defs1 @ defs2 @ es_defs, Exp_tuple (exp1', exp2', es_exprs))
   | <span data-count="0">E</span>xp_construct (id, Some exp) -&gt;
     let* defs, exp' = ll_ex<span data-count="0">p</span> bindings exp in
     <span data-count="0">r</span>eturn (defs, Exp_construct (id, Some exp'))
@@ -812,35 +812,35 @@ let ll_toplevel = function
   | <span data-count="0">S</span>truct_eval exp -&gt;
     let* defs, exp' = ll_ex<span data-count="0">p</span> ~top_level:true empty_bindings exp in
     <span data-count="0">r</span>eturn (defs @ [ Struct_eval exp' ])
-  | <span data-count="104">S</span>truct_value (flag, vb, vb_list) -&gt;
+  | <span data-count="116">S</span>truct_value (flag, vb, vb_list) -&gt;
     let defs = vb :: vb_list in
     let* defs_res =
-      List.fol<span data-count="104">d</span>
+      List.fol<span data-count="116">d</span>
         defs
-        ~init:(retur<span data-count="104">n</span> ([], []))
+        ~init:(retur<span data-count="116">n</span> ([], []))
         ~f:(fun acc vb -&gt;
-          <span data-count="104">l</span>et* acc_defs, acc_bodies = acc in
-          <span data-count="104">l</span>et* defs_body, body' = ll_ex<span data-count="104">p</span> ~top_level:true empty_bindings vb.exp in
-          <span data-count="104">l</span>et vb_rec = { vb with exp = body' } in
+          <span data-count="116">l</span>et* acc_defs, acc_bodies = acc in
+          <span data-count="116">l</span>et* defs_body, body' = ll_ex<span data-count="116">p</span> ~top_level:true empty_bindings vb.exp in
+          <span data-count="116">l</span>et vb_rec = { vb with exp = body' } in
           return (acc_defs @ defs_body, vb_rec :: acc_bodies))
     in
-    <span data-count="104">l</span>et defs_list, bodies = defs_res in
+    <span data-count="116">l</span>et defs_list, bodies = defs_res in
     let bodies = List.rev bodies in
-    <span data-count="104">r</span>eturn (defs_list @ [ Struct_value (flag, List.hd_ex<span data-count="104">n</span> bodies, safe_t<span data-count="104">l</span> bodies) ])
+    <span data-count="116">r</span>eturn (defs_list @ [ Struct_value (flag, List.hd_ex<span data-count="116">n</span> bodies, safe_t<span data-count="116">l</span> bodies) ])
 ;;
 
 let ll_program program =
-  <span data-count="46">l</span>et rec helper = function
-    | <span data-count="46">[</span>] -&gt; return []
-    | <span data-count="104">h</span>d :: tl -&gt;
-      let* defs1 = ll_topleve<span data-count="104">l</span> hd in
-      <span data-count="104">l</span>et* defs2 = helpe<span data-count="104">r</span> tl in
-      <span data-count="104">r</span>eturn (defs1 @ defs2)
+  <span data-count="52">l</span>et rec helper = function
+    | <span data-count="52">[</span>] -&gt; return []
+    | <span data-count="116">h</span>d :: tl -&gt;
+      let* defs1 = ll_topleve<span data-count="116">l</span> hd in
+      <span data-count="116">l</span>et* defs2 = helpe<span data-count="116">r</span> tl in
+      <span data-count="116">r</span>eturn (defs1 @ defs2)
   in
   helper program
 ;;
 
-let lambda_lifting program = <span data-count="46">r</span>un (ll_progra<span data-count="46">m</span> program)
+let lambda_lifting program = <span data-count="52">r</span>un (ll_progra<span data-count="52">m</span> program)
 </code></pre>
       </div>
     </div>

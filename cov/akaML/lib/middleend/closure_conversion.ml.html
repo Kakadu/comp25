@@ -18,30 +18,30 @@
       <h2>81.08%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:7.86%"></span>
-      <span class="unvisited" style="top:10.04%"></span>
-      <span class="unvisited" style="top:21.40%"></span>
-      <span class="unvisited" style="top:21.83%"></span>
-      <span class="unvisited" style="top:22.71%"></span>
-      <span class="unvisited" style="top:23.58%"></span>
-      <span class="unvisited" style="top:29.69%"></span>
-      <span class="unvisited" style="top:30.57%"></span>
-      <span class="unvisited" style="top:32.31%"></span>
-      <span class="unvisited" style="top:47.60%"></span>
-      <span class="unvisited" style="top:48.03%"></span>
-      <span class="unvisited" style="top:48.91%"></span>
-      <span class="unvisited" style="top:49.78%"></span>
-      <span class="unvisited" style="bottom:42.79%"></span>
-      <span class="unvisited" style="bottom:41.48%"></span>
-      <span class="unvisited" style="bottom:39.30%"></span>
-      <span class="unvisited" style="bottom:38.43%"></span>
-      <span class="unvisited" style="bottom:37.55%"></span>
-      <span class="unvisited" style="bottom:37.12%"></span>
-      <span class="unvisited" style="bottom:36.68%"></span>
-      <span class="unvisited" style="bottom:24.45%"></span>
-      <span class="unvisited" style="bottom:13.97%"></span>
-      <span class="unvisited" style="bottom:13.10%"></span>
-      <span class="some-visited" style="bottom:10.04%"></span>
+      <span class="unvisited" style="top:7.66%"></span>
+      <span class="unvisited" style="top:9.79%"></span>
+      <span class="unvisited" style="top:20.85%"></span>
+      <span class="unvisited" style="top:21.28%"></span>
+      <span class="unvisited" style="top:22.13%"></span>
+      <span class="unvisited" style="top:22.98%"></span>
+      <span class="unvisited" style="top:28.94%"></span>
+      <span class="unvisited" style="top:29.79%"></span>
+      <span class="unvisited" style="top:31.49%"></span>
+      <span class="unvisited" style="top:46.38%"></span>
+      <span class="unvisited" style="top:46.81%"></span>
+      <span class="unvisited" style="top:47.66%"></span>
+      <span class="unvisited" style="top:48.51%"></span>
+      <span class="unvisited" style="bottom:44.26%"></span>
+      <span class="unvisited" style="bottom:42.98%"></span>
+      <span class="unvisited" style="bottom:40.85%"></span>
+      <span class="unvisited" style="bottom:40.00%"></span>
+      <span class="unvisited" style="bottom:39.15%"></span>
+      <span class="unvisited" style="bottom:38.72%"></span>
+      <span class="unvisited" style="bottom:38.30%"></span>
+      <span class="unvisited" style="bottom:26.38%"></span>
+      <span class="unvisited" style="bottom:16.17%"></span>
+      <span class="unvisited" style="bottom:15.32%"></span>
+      <span class="some-visited" style="bottom:12.34%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -265,16 +265,22 @@
 <a id="L217"></a><span > </span>
 <a id="L218"></a><span > </span>
 <a id="L219"></a><span > </span>
-<a id="L220"></a><span class="visited"> </span>
+<a id="L220"></a><span > </span>
 <a id="L221"></a><span > </span>
 <a id="L222"></a><span > </span>
-<a id="L223"></a><span class="visited"> </span>
-<a id="L224"></a><span class="visited"> </span>
+<a id="L223"></a><span > </span>
+<a id="L224"></a><span > </span>
 <a id="L225"></a><span > </span>
 <a id="L226"></a><span class="visited"> </span>
 <a id="L227"></a><span > </span>
 <a id="L228"></a><span > </span>
-<a id="L229"></a><span > </span>
+<a id="L229"></a><span class="visited"> </span>
+<a id="L230"></a><span class="visited"> </span>
+<a id="L231"></a><span > </span>
+<a id="L232"></a><span class="visited"> </span>
+<a id="L233"></a><span > </span>
+<a id="L234"></a><span > </span>
+<a id="L235"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -508,6 +514,12 @@
 <a href="#L227">227</a>
 <a href="#L228">228</a>
 <a href="#L229">229</a>
+<a href="#L230">230</a>
+<a href="#L231">231</a>
+<a href="#L232">232</a>
+<a href="#L233">233</a>
+<a href="#L234">234</a>
+<a href="#L235">235</a>
 </pre>
 <pre><code class="ocaml">[@@@ocaml.text "/*"]
 
@@ -524,39 +536,39 @@ open Set.Poly
 module M = Map.Poly
 
 let rec get_vars_pat = function
-  | <span data-count="56">P</span>at_any -&gt; empty
-  | <span data-count="624">P</span>at_var x -&gt; singleton x
+  | <span data-count="68">P</span>at_any -&gt; empty
+  | <span data-count="697">P</span>at_var x -&gt; singleton x
   | <span data-count="0">P</span>at_constant _ -&gt; empty
-  | <span data-count="2">P</span>at_tuple (pat1, pat2, pat_list) -&gt;
-    union_list (List.ma<span data-count="2">p</span> (pat1 :: pat2 :: pat_list) ~f:get_vars_pat)
+  | <span data-count="14">P</span>at_tuple (pat1, pat2, pat_list) -&gt;
+    union_list (List.ma<span data-count="14">p</span> (pat1 :: pat2 :: pat_list) ~f:get_vars_pat)
   | <span data-count="11">P</span>at_construct (_, None) -&gt; empty
   | <span data-count="1">P</span>at_construct (_, Some pat) -&gt; get_vars_pat pat
   | <span data-count="0">P</span>at_constraint (pat, _) -&gt; get_vars_pat pat
 ;;
 
 let rec free_vars_exp = function
-  | <span data-count="953">E</span>xp_ident id -&gt; singleton id
-  | <span data-count="361">E</span>xp_constant _ -&gt; empty
-  | <span data-count="88">E</span>xp_let (flag, vb, vb_list, body) -&gt;
+  | <span data-count="997">E</span>xp_ident id -&gt; singleton id
+  | <span data-count="486">E</span>xp_constant _ -&gt; empty
+  | <span data-count="102">E</span>xp_let (flag, vb, vb_list, body) -&gt;
     let bound =
       List.fold_left
         ~f:union
-        ~init:(get_vars_pa<span data-count="88">t</span> vb.pat)
-        (List.ma<span data-count="88">p</span> vb_list ~f:(fun vb -&gt; <span data-count="4">g</span>et_vars_pat vb.pat))
+        ~init:(get_vars_pa<span data-count="102">t</span> vb.pat)
+        (List.ma<span data-count="102">p</span> vb_list ~f:(fun vb -&gt; <span data-count="4">g</span>et_vars_pat vb.pat))
     in
-    <span data-count="88">l</span>et free_defs =
-      let defs = (vb.pat, vb.exp) :: List.ma<span data-count="88">p</span> vb_list ~f:(fun vb -&gt; <span data-count="4">v</span>b.pat, vb.exp) in
+    <span data-count="102">l</span>et free_defs =
+      let defs = (vb.pat, vb.exp) :: List.ma<span data-count="102">p</span> vb_list ~f:(fun vb -&gt; <span data-count="4">v</span>b.pat, vb.exp) in
       match flag with
       | <span data-count="3">R</span>ecursive -&gt;
         union_lis<span data-count="3">t</span> (List.ma<span data-count="3">p</span> defs ~f:(fun (_, exp) -&gt; <span data-count="5">d</span>iff (free_vars_ex<span data-count="5">p</span> exp) bound))
-      | <span data-count="85">N</span>onrecursive -&gt; union_lis<span data-count="85">t</span> (List.ma<span data-count="85">p</span> defs ~f:(fun (_, exp) -&gt; <span data-count="87">f</span>ree_vars_exp exp))
+      | <span data-count="99">N</span>onrecursive -&gt; union_lis<span data-count="99">t</span> (List.ma<span data-count="99">p</span> defs ~f:(fun (_, exp) -&gt; <span data-count="101">f</span>ree_vars_exp exp))
     in
-    let free_body = diff (free_vars_ex<span data-count="88">p</span> body) bound in
-    <span data-count="88">u</span>nion free_defs free_body
-  | <span data-count="167">E</span>xp_fun (pat, pat_list, exp) -&gt;
-    let bound_vars = union_list (List.ma<span data-count="167">p</span> (pat :: pat_list) ~f:get_vars_pat) in
-    <span data-count="167">d</span>iff (free_vars_ex<span data-count="167">p</span> exp) bound_vars
-  | <span data-count="948">E</span>xp_apply (exp1, exp2) -&gt; union (free_vars_ex<span data-count="948">p</span> exp1) (free_vars_ex<span data-count="948">p</span> exp2)
+    let free_body = diff (free_vars_ex<span data-count="102">p</span> body) bound in
+    <span data-count="102">u</span>nion free_defs free_body
+  | <span data-count="171">E</span>xp_fun (pat, pat_list, exp) -&gt;
+    let bound_vars = union_list (List.ma<span data-count="171">p</span> (pat :: pat_list) ~f:get_vars_pat) in
+    <span data-count="171">d</span>iff (free_vars_ex<span data-count="171">p</span> exp) bound_vars
+  | <span data-count="976">E</span>xp_apply (exp1, exp2) -&gt; union (free_vars_ex<span data-count="976">p</span> exp1) (free_vars_ex<span data-count="976">p</span> exp2)
   | <span data-count="0">E</span>xp_function (case, case_list) -&gt;
     let fvs_case { left; right } = <span data-count="0">d</span>iff (free_vars_ex<span data-count="0">p</span> right) (get_vars_pa<span data-count="0">t</span> left) in
     let all_free =
@@ -573,9 +585,9 @@ let rec free_vars_exp = function
   | <span data-count="47">E</span>xp_ifthenelse (cond, then_exp, else_exp) -&gt;
     let else_exp = Option.value_map else_exp ~f:free_vars_exp ~default:empty in
     <span data-count="47">u</span>nion (free_vars_ex<span data-count="47">p</span> cond) (unio<span data-count="47">n</span> (free_vars_ex<span data-count="47">p</span> then_exp) else_exp)
-  | <span data-count="3">E</span>xp_tuple (exp1, exp2, exp_list) -&gt;
-    union_list (List.ma<span data-count="3">p</span> (exp1 :: exp2 :: exp_list) ~f:free_vars_exp)
-  | <span data-count="47">E</span>xp_construct (_, None) -&gt; empty
+  | <span data-count="22">E</span>xp_tuple (exp1, exp2, exp_list) -&gt;
+    union_list (List.ma<span data-count="22">p</span> (exp1 :: exp2 :: exp_list) ~f:free_vars_exp)
+  | <span data-count="57">E</span>xp_construct (_, None) -&gt; empty
   | <span data-count="0">E</span>xp_construct (_, Some exp) -&gt; free_vars_exp exp
   | <span data-count="1">E</span>xp_sequence (exp1, exp2) -&gt; union (free_vars_ex<span data-count="1">p</span> exp1) (free_vars_ex<span data-count="1">p</span> exp2)
   | <span data-count="0">E</span>xp_constraint (exp, _) -&gt; free_vars_exp exp
@@ -583,13 +595,13 @@ let rec free_vars_exp = function
 
 let safe_tl = function
   | <span data-count="0">[</span>] -&gt; []
-  | <span data-count="300">_</span> :: tail -&gt; tail
+  | <span data-count="330">_</span> :: tail -&gt; tail
 ;;
 
-let rec close_lambda ?(apply = <span data-count="85">f</span>alse) globals env params body fvs =
-  <span data-count="113">l</span>et body' = cc_exp globals env body in
-  <span data-count="113">i</span>f Set.is_empty fvs
-  then <span data-count="83">E</span>xp_fun (List.hd_ex<span data-count="83">n</span> params, safe_t<span data-count="83">l</span> params, body')
+let rec close_lambda ?(apply = <span data-count="89">f</span>alse) globals env params body fvs =
+  <span data-count="117">l</span>et body' = cc_exp globals env body in
+  <span data-count="117">i</span>f Set.is_empty fvs
+  then <span data-count="87">E</span>xp_fun (List.hd_ex<span data-count="87">n</span> params, safe_t<span data-count="87">l</span> params, body')
   else <span data-count="30">(</span>
     let env_vars = Set.to_list fvs in
     <span data-count="30">l</span>et env_pats = List.map env_vars ~f:(fun x -&gt; <span data-count="47">P</span>at_var x) in
@@ -602,21 +614,21 @@ let rec close_lambda ?(apply = <span data-count="85">f</span>alse) globals env p
     else <span data-count="14">b</span>ase_fun)
 
 and cc_exp globals env = function
-  | <span data-count="677">E</span>xp_ident id -&gt;
+  | <span data-count="708">E</span>xp_ident id -&gt;
     (match Map.find env id with
-     | <span data-count="625">N</span>one -&gt; Exp_ident id
+     | <span data-count="656">N</span>one -&gt; Exp_ident id
      | <span data-count="52">S</span>ome fvs -&gt;
        List.fold_left (Set.to_lis<span data-count="52">t</span> fvs) ~init:(Exp_ident id) ~f:(fun acc fv -&gt;
          <span data-count="20">E</span>xp_apply (acc, Exp_ident fv)))
-  | <span data-count="236">E</span>xp_constant c -&gt; Exp_constant c
-  | <span data-count="84">E</span>xp_let (flag, vb, vb_list, body) -&gt;
+  | <span data-count="302">E</span>xp_constant c -&gt; Exp_constant c
+  | <span data-count="98">E</span>xp_let (flag, vb, vb_list, body) -&gt;
     let vb', vb_list', globals, env = process_bindings globals env flag vb vb_list in
-    <span data-count="84">E</span>xp_let (flag, vb', vb_list', cc_ex<span data-count="84">p</span> globals env body)
+    <span data-count="98">E</span>xp_let (flag, vb', vb_list', cc_ex<span data-count="98">p</span> globals env body)
   | <span data-count="28">E</span>xp_fun (pat, pat_list, body) as lam -&gt;
     let all_params = pat :: pat_list in
     let fvs = diff (free_vars_ex<span data-count="28">p</span> lam) globals in
     <span data-count="28">c</span>lose_lambda globals env all_params body fvs ~apply:true
-  | <span data-count="665">E</span>xp_apply (f, arg) -&gt; Exp_apply (cc_ex<span data-count="665">p</span> globals env f, cc_ex<span data-count="665">p</span> globals env arg)
+  | <span data-count="684">E</span>xp_apply (f, arg) -&gt; Exp_apply (cc_ex<span data-count="684">p</span> globals env f, cc_ex<span data-count="684">p</span> globals env arg)
   | <span data-count="0">E</span>xp_function (case, case_list) -&gt;
     let case' = { case with right = cc_ex<span data-count="0">p</span> globals env case.right } in
     let case_list' =
@@ -633,22 +645,22 @@ and cc_exp globals env = function
   | <span data-count="38">E</span>xp_ifthenelse (cond, then_exp, else_exp) -&gt;
     let else_exp' = Option.map else_exp ~f:(cc_ex<span data-count="38">p</span> globals env) in
     <span data-count="38">E</span>xp_ifthenelse (cc_ex<span data-count="38">p</span> globals env cond, cc_ex<span data-count="38">p</span> globals env then_exp, else_exp')
-  | <span data-count="2">E</span>xp_tuple (exp1, exp2, exp_list) -&gt;
+  | <span data-count="13">E</span>xp_tuple (exp1, exp2, exp_list) -&gt;
     Exp_tuple
-      ( cc_ex<span data-count="2">p</span> globals env exp1
-      , cc_ex<span data-count="2">p</span> globals env exp2
-      , List.ma<span data-count="2">p</span> exp_list ~f:(cc_ex<span data-count="2">p</span> globals env) )
-  | <span data-count="25">E</span>xp_construct (_, None) as exp -&gt; exp
+      ( cc_ex<span data-count="13">p</span> globals env exp1
+      , cc_ex<span data-count="13">p</span> globals env exp2
+      , List.ma<span data-count="13">p</span> exp_list ~f:(cc_ex<span data-count="13">p</span> globals env) )
+  | <span data-count="31">E</span>xp_construct (_, None) as exp -&gt; exp
   | <span data-count="0">E</span>xp_construct (tag, Some exp) -&gt; Exp_construct (tag, Some (cc_ex<span data-count="0">p</span> globals env exp))
   | <span data-count="1">E</span>xp_sequence (exp1, exp2) -&gt;
     Exp_sequence (cc_ex<span data-count="1">p</span> globals env exp1, cc_ex<span data-count="1">p</span> globals env exp2)
   | <span data-count="0">E</span>xp_constraint (exp, typ) -&gt; Exp_constraint (cc_ex<span data-count="0">p</span> globals env exp, typ)
 
 and process_bindings globals env flag vb vb_list =
-  <span data-count="187">l</span>et rec add_pat_to_env env pat fvs =
-    <span data-count="85">m</span>atch pat with
+  <span data-count="213">l</span>et rec add_pat_to_env env pat fvs =
+    <span data-count="89">m</span>atch pat with
     | <span data-count="0">P</span>at_any | <span data-count="0">P</span>at_constant _ | <span data-count="0">P</span>at_construct (_, None) -&gt; env
-    | <span data-count="85">P</span>at_var name -&gt; Map.set env ~key:name ~data:fvs
+    | <span data-count="89">P</span>at_var name -&gt; Map.set env ~key:name ~data:fvs
     | <span data-count="0">P</span>at_tuple (pat1, pat2, pat_list) -&gt;
       let env = add_pat_to_env env pat1 fvs in
       <span data-count="0">l</span>et env = add_pat_to_env env pat2 fvs in
@@ -658,10 +670,10 @@ and process_bindings globals env flag vb vb_list =
   let bound =
     List.fold_left
       ~f:union
-      ~init:(get_vars_pa<span data-count="187">t</span> vb.pat)
-      (List.ma<span data-count="187">p</span> vb_list ~f:(fun vb -&gt; <span data-count="4">g</span>et_vars_pat vb.pat))
+      ~init:(get_vars_pa<span data-count="213">t</span> vb.pat)
+      (List.ma<span data-count="213">p</span> vb_list ~f:(fun vb -&gt; <span data-count="4">g</span>et_vars_pat vb.pat))
   in
-  <span data-count="187">m</span>atch flag with
+  <span data-count="213">m</span>atch flag with
   | <span data-count="26">R</span>ecursive -&gt;
     let globals = union globals bound in
     <span data-count="26">l</span>et all_fvs =
@@ -686,55 +698,61 @@ and process_bindings globals env flag vb vb_list =
         { vb with exp = new_fun' })
     in
     <span data-count="26">L</span>ist.hd_ex<span data-count="26">n</span> vb_list', safe_t<span data-count="26">l</span> vb_list', globals, env
-  | <span data-count="161">N</span>onrecursive -&gt;
+  | <span data-count="187">N</span>onrecursive -&gt;
     let env, vb_list_rev =
       List.fold_left (vb :: vb_list) ~init:(env, []) ~f:(fun acc vb -&gt;
-        <span data-count="163">l</span>et env, funs = acc in
-        let fvs = diff (free_vars_ex<span data-count="163">p</span> vb.exp) globals in
-        <span data-count="163">l</span>et env, new_fun' =
+        <span data-count="189">l</span>et env, funs = acc in
+        let fvs = diff (free_vars_ex<span data-count="189">p</span> vb.exp) globals in
+        <span data-count="189">l</span>et env, new_fun' =
           match vb.exp with
-          | <span data-count="57">E</span>xp_fun (pat, pat_list, body) -&gt;
+          | <span data-count="61">E</span>xp_fun (pat, pat_list, body) -&gt;
             let new_fun = close_lambda globals env (pat :: pat_list) body fvs in
-            <span data-count="57">a</span>dd_pat_to_en<span data-count="57">v</span> env vb.pat fvs, new_fun
-          | <span data-count="106">_</span> -&gt; env, cc_ex<span data-count="106">p</span> globals env vb.exp
+            <span data-count="61">a</span>dd_pat_to_en<span data-count="61">v</span> env vb.pat fvs, new_fun
+          | <span data-count="128">_</span> -&gt; env, cc_ex<span data-count="128">p</span> globals env vb.exp
         in
         env, { vb with exp = new_fun' } :: funs)
     in
-    <span data-count="161">l</span>et vb_list' = List.rev vb_list_rev in
-    <span data-count="161">L</span>ist.hd_ex<span data-count="161">n</span> vb_list', safe_t<span data-count="161">l</span> vb_list', globals, env
+    <span data-count="187">l</span>et vb_list' = List.rev vb_list_rev in
+    <span data-count="187">L</span>ist.hd_ex<span data-count="187">n</span> vb_list', safe_t<span data-count="187">l</span> vb_list', globals, env
 ;;
 
 let cc_structure_item globals env = function
   | <span data-count="0">S</span>truct_eval exp -&gt;
     let exp' = cc_exp globals env exp in
     <span data-count="0">g</span>lobals, Struct_eval exp'
-  | <span data-count="103">S</span>truct_value (flag, vb, vb_list) -&gt;
+  | <span data-count="115">S</span>truct_value (flag, vb, vb_list) -&gt;
     let vb', vb_list', _, _ = process_bindings globals env flag vb vb_list in
-    <span data-count="103">l</span>et bound =
+    <span data-count="115">l</span>et bound =
       List.fold_left
         ~f:union
-        ~init:(get_vars_pa<span data-count="103">t</span> vb.pat)
-        (List.ma<span data-count="103">p</span> vb_list ~f:(fun vb -&gt; <span data-count="0">g</span>et_vars_pat vb.pat))
+        ~init:(get_vars_pa<span data-count="115">t</span> vb.pat)
+        (List.ma<span data-count="115">p</span> vb_list ~f:(fun vb -&gt; <span data-count="0">g</span>et_vars_pat vb.pat))
     in
-    <span data-count="103">l</span>et new_globals = union globals bound in
-    <span data-count="103">n</span>ew_globals, Struct_value (flag, vb', vb_list')
+    <span data-count="115">l</span>et new_globals = union globals bound in
+    <span data-count="115">n</span>ew_globals, Struct_value (flag, vb', vb_list')
 ;;
 
 let stdlib_globals =
-  of_lis<span data-count="68">t</span>
-    ([ "print_int"; "collect"; "get_heap_start"; "get_heap_final"; "print_gc_status" ]
+  of_lis<span data-count="74">t</span>
+    ([ "print_int"
+     ; "collect"
+     ; "get_heap_start"
+     ; "get_heap_final"
+     ; "print_gc_status"
+     ; "field"
+     ]
      @ un_op_list
      @ bin_op_list)
 ;;
 
 let closure_conversion (ast : structure) =
-  <span data-count="45">l</span>et initial_globals = stdlib_globals in
+  <span data-count="51">l</span>et initial_globals = stdlib_globals in
   let env = M.empty in
   let rec helper globals acc = function
-    | <span data-count="45">[</span>] -&gt; List.rev acc
-    | <span data-count="103">i</span>tem :: rest -&gt;
+    | <span data-count="51">[</span>] -&gt; List.rev acc
+    | <span data-count="115">i</span>tem :: rest -&gt;
       let globals, item' = cc_structure_item globals env item in
-      <span data-count="103">h</span>elper globals (item' :: acc) rest
+      <span data-count="115">h</span>elper globals (item' :: acc) rest
   in
   helper initial_globals [] ast
 ;;

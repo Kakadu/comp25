@@ -1292,17 +1292,17 @@ open Angstrom
 
 (* ==================== Utils ==================== *)
 
-let skip_whitespaces = skip_whil<span data-count="69">e</span> Char.is_whitespace
+let skip_whitespaces = skip_whil<span data-count="75">e</span> Char.is_whitespace
 
 let parse_comments =
-  skip_whitespaces *<span data-count="69">&gt;</span> strin<span data-count="69">g</span> "(*" *<span data-count="69">&gt;</span> many_til<span data-count="69">l</span> any_char (strin<span data-count="69">g</span> "*)") *<span data-count="69">&gt;</span> retur<span data-count="69">n</span> ()
+  skip_whitespaces *<span data-count="75">&gt;</span> strin<span data-count="75">g</span> "(*" *<span data-count="75">&gt;</span> many_til<span data-count="75">l</span> any_char (strin<span data-count="75">g</span> "*)") *<span data-count="75">&gt;</span> retur<span data-count="75">n</span> ()
 ;;
 
-let ws = man<span data-count="69">y</span> parse_comments *<span data-count="69">&gt;</span> skip_whitespaces
-let token str = <span data-count="200660">w</span>s *&gt; strin<span data-count="200660">g</span> str
+let ws = man<span data-count="75">y</span> parse_comments *<span data-count="75">&gt;</span> skip_whitespaces
+let token str = <span data-count="202097">w</span>s *&gt; strin<span data-count="202097">g</span> str
 
 let skip_parens parse =
-  <span data-count="344">t</span>oke<span data-count="344">n</span> "(" *<span data-count="344">&gt;</span> parse &lt;* (toke<span data-count="344">n</span> ")" &lt;|<span data-count="344">&gt;</span> fai<span data-count="344">l</span> "There is no closing bracket.")
+  <span data-count="374">t</span>oke<span data-count="374">n</span> "(" *<span data-count="374">&gt;</span> parse &lt;* (toke<span data-count="374">n</span> ")" &lt;|<span data-count="374">&gt;</span> fai<span data-count="374">l</span> "There is no closing bracket.")
 ;;
 
 let is_separator = function
@@ -1323,120 +1323,120 @@ let is_separator = function
   | <span data-count="0">'</span>='
   | <span data-count="0">'</span>{'
   | <span data-count="0">'</span>}'
-  | <span data-count="21758">'</span> '
+  | <span data-count="21857">'</span> '
   | <span data-count="0">'</span>\r'
   | <span data-count="0">'</span>\t'
-  | <span data-count="3623">'</span>\n'
+  | <span data-count="3661">'</span>\n'
   | <span data-count="0">'</span>*'
   | <span data-count="0">'</span>-' -&gt; true
-  | <span data-count="2547">_</span> -&gt; false
+  | <span data-count="2559">_</span> -&gt; false
 ;;
 
-let is_operator opr = <span data-count="2288">L</span>ist.exists bin_op_list ~f:(fun str -&gt; <span data-count="28712">S</span>tring.equal str opr)
+let is_operator opr = <span data-count="2369">L</span>ist.exists bin_op_list ~f:(fun str -&gt; <span data-count="29765">S</span>tring.equal str opr)
 
 let keyword str =
-  <span data-count="23692">t</span>oke<span data-count="23692">n</span> str
+  <span data-count="23966">t</span>oke<span data-count="23966">n</span> str
   *&gt;
   let* is_space =
     peek_char
-    &gt;&gt;<span data-count="23692">|</span> function
-    | <span data-count="32450">S</span>ome c -&gt; is_separator c
+    &gt;&gt;<span data-count="23966">|</span> function
+    | <span data-count="32599">S</span>ome c -&gt; is_separator c
     | <span data-count="256">N</span>one -&gt; true
   in
-  <span data-count="32706">i</span>f is_space
-  then <span data-count="30159">r</span>etur<span data-count="30159">n</span> str &lt;* ws
-  else <span data-count="2547">f</span>ail (Printf.sprint<span data-count="2547">f</span> "There is no separator after %S." str)
+  <span data-count="32855">i</span>f is_space
+  then <span data-count="30296">r</span>etur<span data-count="30296">n</span> str &lt;* ws
+  else <span data-count="2559">f</span>ail (Printf.sprint<span data-count="2559">f</span> "There is no separator after %S." str)
 ;;
 
 let safe_tl = function
   | <span data-count="0">[</span>] -&gt; []
-  | <span data-count="5012">_</span> :: tail -&gt; tail
+  | <span data-count="5069">_</span> :: tail -&gt; tail
 ;;
 
 let parse_chain_left_associative parse parse_fun =
-  <span data-count="408">l</span>et rec go acc =
-    <span data-count="892160">(</span>let* f = parse_fun in
-     <span data-count="291387">l</span>et* elem = parse in
-     <span data-count="103189">g</span>o (<span data-count="103189">f</span> acc elem))
-    &lt;|&gt; retur<span data-count="892160">n</span> acc
+  <span data-count="444">l</span>et rec go acc =
+    <span data-count="894573">(</span>let* f = parse_fun in
+     <span data-count="292046">l</span>et* elem = parse in
+     <span data-count="103281">g</span>o (<span data-count="103281">f</span> acc elem))
+    &lt;|&gt; retur<span data-count="894573">n</span> acc
   in
   let* elem = parse in
-  <span data-count="788971">g</span>o elem
+  <span data-count="791292">g</span>o elem
 ;;
 
 let parse_chain_right_associative parse parse_fun =
-  <span data-count="272">l</span>et rec go acc =
-    <span data-count="574827">(</span>let* f = parse_fun in
+  <span data-count="296">l</span>et rec go acc =
+    <span data-count="576767">(</span>let* f = parse_fun in
      <span data-count="880">l</span>et* elem = parse in
      <span data-count="880">l</span>et* next_elem = g<span data-count="880">o</span> elem in
      <span data-count="880">r</span>eturn (<span data-count="880">f</span> acc next_elem))
-    &lt;|&gt; retur<span data-count="574827">n</span> acc
+    &lt;|&gt; retur<span data-count="576767">n</span> acc
   in
   let* elem = parse in
-  <span data-count="573947">g</span>o elem
+  <span data-count="575887">g</span>o elem
 ;;
 
 (* ==================== Ident ==================== *)
 
 let parse_val_ident =
   ws
-  *<span data-count="69">&gt;</span>
+  *<span data-count="75">&gt;</span>
   let* fst_char =
-    satisf<span data-count="69">y</span> (function
-      | <span data-count="119734">'</span>a' .. 'z' | <span data-count="3496">'</span>_' -&gt; true
-      | <span data-count="388883">_</span> -&gt; false)
-    &gt;&gt;<span data-count="69">|</span> String.of_char
+    satisf<span data-count="75">y</span> (function
+      | <span data-count="120245">'</span>a' .. 'z' | <span data-count="3532">'</span>_' -&gt; true
+      | <span data-count="390304">_</span> -&gt; false)
+    &gt;&gt;<span data-count="75">|</span> String.of_char
   in
-  <span data-count="123230">l</span>et* rest_str =
-    take_whil<span data-count="123230">e</span> (function
-      | <span data-count="5862">'</span>A' .. 'Z' | <span data-count="247981">'</span>a' .. 'z' | <span data-count="12706">'</span>0' .. '9' | <span data-count="14060">'</span>_' | <span data-count="5554">'</span>\'' -&gt; true
-      | <span data-count="122962">_</span> -&gt; false)
+  <span data-count="123777">l</span>et* rest_str =
+    take_whil<span data-count="123777">e</span> (function
+      | <span data-count="5862">'</span>A' .. 'Z' | <span data-count="248686">'</span>a' .. 'z' | <span data-count="12745">'</span>0' .. '9' | <span data-count="14122">'</span>_' | <span data-count="5554">'</span>\'' -&gt; true
+      | <span data-count="123509">_</span> -&gt; false)
   in
-  <span data-count="123230">l</span>et id = fst_char ^ rest_str in
-  if is_keyword id then <span data-count="13874">f</span>ail (Printf.sprint<span data-count="13874">f</span> "Impossible name: %S." id) else <span data-count="109356">r</span>eturn id
+  <span data-count="123777">l</span>et id = fst_char ^ rest_str in
+  if is_keyword id then <span data-count="13937">f</span>ail (Printf.sprint<span data-count="13937">f</span> "Impossible name: %S." id) else <span data-count="109840">r</span>eturn id
 ;;
 
 let parse_operator op_list =
-  <span data-count="414">c</span>hoice (List.ma<span data-count="414">p</span> ~f:(fun opr -&gt; <span data-count="1725">t</span>oke<span data-count="1725">n</span> opr *&gt; retur<span data-count="1725">n</span> opr) op_list)
+  <span data-count="450">c</span>hoice (List.ma<span data-count="450">p</span> ~f:(fun opr -&gt; <span data-count="1875">t</span>oke<span data-count="1875">n</span> opr *&gt; retur<span data-count="1875">n</span> opr) op_list)
 ;;
 
-let parse_op_ident = ws *<span data-count="69">&gt;</span> cha<span data-count="69">r</span> '(' *<span data-count="69">&gt;</span> ws *<span data-count="69">&gt;</span> parse_operato<span data-count="69">r</span> bin_op_list &lt;<span data-count="69">*</span> ws &lt;<span data-count="69">*</span> cha<span data-count="69">r</span> ')'
-let parse_ident = parse_val_ident &lt;|<span data-count="69">&gt;</span> parse_op_ident
+let parse_op_ident = ws *<span data-count="75">&gt;</span> cha<span data-count="75">r</span> '(' *<span data-count="75">&gt;</span> ws *<span data-count="75">&gt;</span> parse_operato<span data-count="75">r</span> bin_op_list &lt;<span data-count="75">*</span> ws &lt;<span data-count="75">*</span> cha<span data-count="75">r</span> ')'
+let parse_ident = parse_val_ident &lt;|<span data-count="75">&gt;</span> parse_op_ident
 
 (* ==================== Rec_flag ==================== *)
 
-let parse_rec_flag = ws *<span data-count="69">&gt;</span> optio<span data-count="69">n</span> Nonrecursive (keywor<span data-count="69">d</span> "rec" *<span data-count="69">&gt;</span> retur<span data-count="69">n</span> Recursive)
+let parse_rec_flag = ws *<span data-count="75">&gt;</span> optio<span data-count="75">n</span> Nonrecursive (keywor<span data-count="75">d</span> "rec" *<span data-count="75">&gt;</span> retur<span data-count="75">n</span> Recursive)
 
 (* ==================== Constant ==================== *)
 
 let parse_const_int =
-  take_while<span data-count="69">1</span> Char.is_digit &gt;&gt;<span data-count="69">|</span> fun int_value -&gt; <span data-count="133540">C</span>onst_integer (Int.of_strin<span data-count="133540">g</span> int_value)
+  take_while<span data-count="75">1</span> Char.is_digit &gt;&gt;<span data-count="75">|</span> fun int_value -&gt; <span data-count="133937">C</span>onst_integer (Int.of_strin<span data-count="133937">g</span> int_value)
 ;;
 
 let parse_const_char =
-  strin<span data-count="69">g</span> "\'" *<span data-count="69">&gt;</span> any_char &lt;<span data-count="69">*</span> strin<span data-count="69">g</span> "\'" &gt;&gt;<span data-count="69">|</span> fun char_value -&gt; <span data-count="1664">C</span>onst_char char_value
+  strin<span data-count="75">g</span> "\'" *<span data-count="75">&gt;</span> any_char &lt;<span data-count="75">*</span> strin<span data-count="75">g</span> "\'" &gt;&gt;<span data-count="75">|</span> fun char_value -&gt; <span data-count="1664">C</span>onst_char char_value
 ;;
 
 let parse_const_string =
-  strin<span data-count="69">g</span> "\"" *<span data-count="69">&gt;</span> take_til<span data-count="69">l</span> (Char.equa<span data-count="69">l</span> '\"')
-  &lt;<span data-count="69">*</span> strin<span data-count="69">g</span> "\""
-  &gt;&gt;<span data-count="69">|</span> fun str_value -&gt; <span data-count="1333">C</span>onst_string str_value
+  strin<span data-count="75">g</span> "\"" *<span data-count="75">&gt;</span> take_til<span data-count="75">l</span> (Char.equa<span data-count="75">l</span> '\"')
+  &lt;<span data-count="75">*</span> strin<span data-count="75">g</span> "\""
+  &gt;&gt;<span data-count="75">|</span> fun str_value -&gt; <span data-count="1333">C</span>onst_string str_value
 ;;
 
 let parse_constant =
-  ws *<span data-count="69">&gt;</span> choic<span data-count="69">e</span> [ parse_const_int; parse_const_char; parse_const_string ]
+  ws *<span data-count="75">&gt;</span> choic<span data-count="75">e</span> [ parse_const_int; parse_const_char; parse_const_string ]
 ;;
 
 (* =================== Core_type =================== *)
 
 let parse_type_var =
-  toke<span data-count="69">n</span> "'"
-  *<span data-count="69">&gt;</span>
+  toke<span data-count="75">n</span> "'"
+  *<span data-count="75">&gt;</span>
   let* fst_char =
-    satisf<span data-count="69">y</span> (function
+    satisf<span data-count="75">y</span> (function
       | <span data-count="722">'</span>a' .. 'z' -&gt; true
       | <span data-count="0">_</span> -&gt; false)
-    &gt;&gt;<span data-count="69">|</span> String.of_char
+    &gt;&gt;<span data-count="75">|</span> String.of_char
   in
   <span data-count="722">l</span>et* is_valid_snd_char =
     peek_char
@@ -1460,12 +1460,12 @@ let parse_type_var =
 ;;
 
 let parse_base_type =
-  choic<span data-count="69">e</span>
-    [ keywor<span data-count="69">d</span> "unit" *<span data-count="69">&gt;</span> retur<span data-count="69">n</span> Type_unit
-    ; keywor<span data-count="69">d</span> "int" *<span data-count="69">&gt;</span> retur<span data-count="69">n</span> Type_int
-    ; keywor<span data-count="69">d</span> "char" *<span data-count="69">&gt;</span> retur<span data-count="69">n</span> Type_char
-    ; keywor<span data-count="69">d</span> "string" *<span data-count="69">&gt;</span> retur<span data-count="69">n</span> Type_string
-    ; keywor<span data-count="69">d</span> "bool" *<span data-count="69">&gt;</span> retur<span data-count="69">n</span> Type_bool
+  choic<span data-count="75">e</span>
+    [ keywor<span data-count="75">d</span> "unit" *<span data-count="75">&gt;</span> retur<span data-count="75">n</span> Type_unit
+    ; keywor<span data-count="75">d</span> "int" *<span data-count="75">&gt;</span> retur<span data-count="75">n</span> Type_int
+    ; keywor<span data-count="75">d</span> "char" *<span data-count="75">&gt;</span> retur<span data-count="75">n</span> Type_char
+    ; keywor<span data-count="75">d</span> "string" *<span data-count="75">&gt;</span> retur<span data-count="75">n</span> Type_string
+    ; keywor<span data-count="75">d</span> "bool" *<span data-count="75">&gt;</span> retur<span data-count="75">n</span> Type_bool
     ; parse_type_var
     ]
 ;;
@@ -1502,7 +1502,7 @@ let rec parse_arrow_type parse_type =
 
 let parse_core_type =
   ws
-  *<span data-count="69">&gt;</span> fi<span data-count="69">x</span> (fun parse_full_type -&gt;
+  *<span data-count="75">&gt;</span> fi<span data-count="75">x</span> (fun parse_full_type -&gt;
     <span data-count="4">l</span>et parse_type = parse_base_type &lt;|&gt; skip_paren<span data-count="4">s</span> parse_full_type in
     <span data-count="4">l</span>et parse_type = parse_list_or_option_typ<span data-count="4">e</span> parse_type &lt;|&gt; parse_type in
     <span data-count="4">l</span>et parse_type = parse_tuple_typ<span data-count="4">e</span> parse_type &lt;|&gt; parse_type in
@@ -1512,78 +1512,78 @@ let parse_core_type =
 (* ==================== Pattern &amp; Expression ==================== *)
 
 let parse_construct_base_keyword =
-  choic<span data-count="69">e</span> [ keywor<span data-count="69">d</span> "true"; keywor<span data-count="69">d</span> "false"; keywor<span data-count="69">d</span> "None"; keywor<span data-count="69">d</span> "()" ]
+  choic<span data-count="75">e</span> [ keywor<span data-count="75">d</span> "true"; keywor<span data-count="75">d</span> "false"; keywor<span data-count="75">d</span> "None"; keywor<span data-count="75">d</span> "()" ]
 ;;
 
 let parse_construct_keyword_some parse =
-  <span data-count="136">l</span>et* tag = keywor<span data-count="136">d</span> "Some" in
+  <span data-count="148">l</span>et* tag = keywor<span data-count="148">d</span> "Some" in
   <span data-count="229">l</span>et* opt = parse &gt;&gt;<span data-count="229">|</span> Option.some in
   <span data-count="229">r</span>eturn (tag, opt)
 ;;
 
 let parse_constraint parse =
-  <span data-count="136">l</span>et* elem = toke<span data-count="136">n</span> "(" *<span data-count="136">&gt;</span> parse in
-  <span data-count="16647">l</span>et* type' = toke<span data-count="16647">n</span> ":" *<span data-count="16647">&gt;</span> parse_core_type &lt;<span data-count="16647">*</span> toke<span data-count="16647">n</span> ")" in
+  <span data-count="148">l</span>et* elem = toke<span data-count="148">n</span> "(" *<span data-count="148">&gt;</span> parse in
+  <span data-count="16745">l</span>et* type' = toke<span data-count="16745">n</span> ":" *<span data-count="16745">&gt;</span> parse_core_type &lt;<span data-count="16745">*</span> toke<span data-count="16745">n</span> ")" in
   <span data-count="595">r</span>eturn (elem, type')
 ;;
 
 let parse_tuple parse tuple =
-  <span data-count="136">l</span>et* fst = parse in
-  <span data-count="104883">l</span>et* snd = toke<span data-count="104883">n</span> "," *<span data-count="104883">&gt;</span> parse in
-  <span data-count="11298">l</span>et* tail = man<span data-count="11298">y</span> (toke<span data-count="11298">n</span> "," *<span data-count="11298">&gt;</span> parse) in
-  <span data-count="11298">r</span>eturn (tupl<span data-count="11298">e</span> (fst, snd, tail))
+  <span data-count="148">l</span>et* fst = parse in
+  <span data-count="105201">l</span>et* snd = toke<span data-count="105201">n</span> "," *<span data-count="105201">&gt;</span> parse in
+  <span data-count="11505">l</span>et* tail = man<span data-count="11505">y</span> (toke<span data-count="11505">n</span> "," *<span data-count="11505">&gt;</span> parse) in
+  <span data-count="11505">r</span>eturn (tupl<span data-count="11505">e</span> (fst, snd, tail))
 ;;
 
 let parse_construct_list_1 parse construct func =
-  <span data-count="136">t</span>oke<span data-count="136">n</span> "[" *<span data-count="136">&gt;</span> sep_b<span data-count="136">y</span> (toke<span data-count="136">n</span> ";") parse
-  &lt;<span data-count="136">*</span> toke<span data-count="136">n</span> "]"
-  &gt;&gt;| List.fold_right ~init:(construc<span data-count="136">t</span> ("[]", None)) ~f:func
+  <span data-count="148">t</span>oke<span data-count="148">n</span> "[" *<span data-count="148">&gt;</span> sep_b<span data-count="148">y</span> (toke<span data-count="148">n</span> ";") parse
+  &lt;<span data-count="148">*</span> toke<span data-count="148">n</span> "]"
+  &gt;&gt;| List.fold_right ~init:(construc<span data-count="148">t</span> ("[]", None)) ~f:func
 ;;
 
 let parse_construct_list_2 parse construct tuple =
-  <span data-count="136">p</span>arse_chain_right_associative
+  <span data-count="148">p</span>arse_chain_right_associative
     parse
-    (toke<span data-count="136">n</span> "::" *<span data-count="136">&gt;</span> retur<span data-count="136">n</span> (fun acc elem -&gt; <span data-count="808">c</span>onstruct ("::", Some (tupl<span data-count="808">e</span> (acc, elem, [])))))
+    (toke<span data-count="148">n</span> "::" *<span data-count="148">&gt;</span> retur<span data-count="148">n</span> (fun acc elem -&gt; <span data-count="808">c</span>onstruct ("::", Some (tupl<span data-count="808">e</span> (acc, elem, [])))))
 ;;
 
 (* -------------------- Pattern -------------------- *)
 
-let parse_pat_any = keywor<span data-count="69">d</span> "_" *<span data-count="69">&gt;</span> retur<span data-count="69">n</span> Pat_any
-let parse_pat_var = parse_ident &gt;&gt;<span data-count="69">|</span> fun var -&gt; <span data-count="28685">P</span>at_var var
-let parse_pat_constant = parse_constant &gt;&gt;<span data-count="69">|</span> fun const -&gt; <span data-count="3886">P</span>at_constant const
+let parse_pat_any = keywor<span data-count="75">d</span> "_" *<span data-count="75">&gt;</span> retur<span data-count="75">n</span> Pat_any
+let parse_pat_var = parse_ident &gt;&gt;<span data-count="75">|</span> fun var -&gt; <span data-count="29016">P</span>at_var var
+let parse_pat_constant = parse_constant &gt;&gt;<span data-count="75">|</span> fun const -&gt; <span data-count="3894">P</span>at_constant const
 
 let parse_pat_construct_base_keyword =
-  parse_construct_base_keyword &gt;&gt;<span data-count="69">|</span> fun tag -&gt; <span data-count="3942">P</span>at_construct (tag, None)
+  parse_construct_base_keyword &gt;&gt;<span data-count="75">|</span> fun tag -&gt; <span data-count="3942">P</span>at_construct (tag, None)
 ;;
 
 let parse_base_pat =
-  choic<span data-count="69">e</span>
+  choic<span data-count="75">e</span>
     [ parse_pat_any; parse_pat_var; parse_pat_constant; parse_pat_construct_base_keyword ]
 ;;
 
 let parse_pat_construct_keyword_some parse_pat =
-  <span data-count="68">p</span>arse_construct_keyword_som<span data-count="68">e</span> (parse_base_pat &lt;|<span data-count="68">&gt;</span> skip_paren<span data-count="68">s</span> parse_pat)
+  <span data-count="74">p</span>arse_construct_keyword_som<span data-count="74">e</span> (parse_base_pat &lt;|<span data-count="74">&gt;</span> skip_paren<span data-count="74">s</span> parse_pat)
   &gt;&gt;| fun (tag, pat_opt) -&gt; <span data-count="194">P</span>at_construct (tag, pat_opt)
 ;;
 
 let parse_pat_constraint parse_pat =
-  <span data-count="68">p</span>arse_constrain<span data-count="68">t</span> parse_pat &gt;&gt;| fun (pat, type') -&gt; <span data-count="546">P</span>at_constraint (pat, type')
+  <span data-count="74">p</span>arse_constrain<span data-count="74">t</span> parse_pat &gt;&gt;| fun (pat, type') -&gt; <span data-count="546">P</span>at_constraint (pat, type')
 ;;
 
 let parse_pat_tuple parse_pat =
-  <span data-count="68">p</span>arse_tuple parse_pat (fun (fst_pat, snd_pat, pat_list) -&gt;
-    <span data-count="2801">P</span>at_tuple (fst_pat, snd_pat, pat_list))
+  <span data-count="74">p</span>arse_tuple parse_pat (fun (fst_pat, snd_pat, pat_list) -&gt;
+    <span data-count="2889">P</span>at_tuple (fst_pat, snd_pat, pat_list))
 ;;
 
 let parse_pat_construct_list_1 parse_pat =
-  <span data-count="68">p</span>arse_construct_list_1
+  <span data-count="74">p</span>arse_construct_list_1
     parse_pat
-    (fun (tag, pat_opt) -&gt; <span data-count="68">P</span>at_construct (tag, pat_opt))
+    (fun (tag, pat_opt) -&gt; <span data-count="74">P</span>at_construct (tag, pat_opt))
     (fun pat acc_pat -&gt; <span data-count="265">P</span>at_construct ("::", Some (Pat_tuple (pat, acc_pat, []))))
 ;;
 
 let parse_pat_construct_list_2 parse_pat =
-  <span data-count="68">p</span>arse_construct_list_2
+  <span data-count="74">p</span>arse_construct_list_2
     parse_pat
     (fun (tag, pat_opt) -&gt; <span data-count="682">P</span>at_construct (tag, pat_opt))
     (fun (fst_pat, snd_pat, pat_list) -&gt; <span data-count="682">P</span>at_tuple (fst_pat, snd_pat, pat_list))
@@ -1591,50 +1591,50 @@ let parse_pat_construct_list_2 parse_pat =
 
 let parse_pattern =
   ws
-  *<span data-count="69">&gt;</span> fi<span data-count="69">x</span> (fun parse_full_pat -&gt;
-    <span data-count="68">l</span>et parse_pat =
+  *<span data-count="75">&gt;</span> fi<span data-count="75">x</span> (fun parse_full_pat -&gt;
+    <span data-count="74">l</span>et parse_pat =
       choice
         [ parse_base_pat
-        ; parse_pat_construct_keyword_som<span data-count="68">e</span> parse_full_pat
-        ; parse_pat_constrain<span data-count="68">t</span> parse_full_pat
-        ; skip_paren<span data-count="68">s</span> parse_full_pat
+        ; parse_pat_construct_keyword_som<span data-count="74">e</span> parse_full_pat
+        ; parse_pat_constrain<span data-count="74">t</span> parse_full_pat
+        ; skip_paren<span data-count="74">s</span> parse_full_pat
         ]
     in
-    <span data-count="68">l</span>et parse_pat = parse_pat_construct_list_<span data-count="68">1</span> parse_pat &lt;|&gt; parse_pat in
-    <span data-count="68">l</span>et parse_pat = parse_pat_construct_list_<span data-count="68">2</span> parse_pat &lt;|&gt; parse_pat in
-    <span data-count="68">p</span>arse_pat_tupl<span data-count="68">e</span> parse_pat &lt;|&gt; parse_pat)
+    <span data-count="74">l</span>et parse_pat = parse_pat_construct_list_<span data-count="74">1</span> parse_pat &lt;|&gt; parse_pat in
+    <span data-count="74">l</span>et parse_pat = parse_pat_construct_list_<span data-count="74">2</span> parse_pat &lt;|&gt; parse_pat in
+    <span data-count="74">p</span>arse_pat_tupl<span data-count="74">e</span> parse_pat &lt;|&gt; parse_pat)
 ;;
 
 (* -------------------- Operator -------------------- *)
 
 let bin_op chain1 parse_exp parse_fun_op =
-  <span data-count="340">c</span>hain1
+  <span data-count="370">c</span>hain1
     parse_exp
     (parse_fun_op
-     &gt;&gt;<span data-count="340">|</span> fun opr exp1 exp2 -&gt; <span data-count="9594">E</span>xp_apply (Exp_apply (Exp_ident opr, exp1), exp2))
+     &gt;&gt;<span data-count="370">|</span> fun opr exp1 exp2 -&gt; <span data-count="9606">E</span>xp_apply (Exp_apply (Exp_ident opr, exp1), exp2))
 ;;
 
-let parse_left_bin_op = bin_o<span data-count="69">p</span> parse_chain_left_associative
-let parse_right_bin_op = bin_o<span data-count="69">p</span> parse_chain_right_associative
-let mul_div = parse_operato<span data-count="69">r</span> [ "*"; "/" ]
-let add_sub = parse_operato<span data-count="69">r</span> [ "+"; "-" ]
-let cmp = parse_operato<span data-count="69">r</span> [ "&gt;="; "&lt;="; "&lt;&gt;"; "="; "&gt;"; "&lt;" ]
-let and_ = parse_operato<span data-count="69">r</span> [ "&amp;&amp;" ]
-let or_ = parse_operato<span data-count="69">r</span> [ "||" ]
+let parse_left_bin_op = bin_o<span data-count="75">p</span> parse_chain_left_associative
+let parse_right_bin_op = bin_o<span data-count="75">p</span> parse_chain_right_associative
+let mul_div = parse_operato<span data-count="75">r</span> [ "*"; "/" ]
+let add_sub = parse_operato<span data-count="75">r</span> [ "+"; "-" ]
+let cmp = parse_operato<span data-count="75">r</span> [ "&gt;="; "&lt;="; "&lt;&gt;"; "="; "&gt;"; "&lt;" ]
+let and_ = parse_operato<span data-count="75">r</span> [ "&amp;&amp;" ]
+let or_ = parse_operato<span data-count="75">r</span> [ "||" ]
 
 (* -------------------- Value_binding -------------------- *)
 
 let parse_constraint_vb parse_exp opr =
-  <span data-count="9392">l</span>et* type' = toke<span data-count="9392">n</span> ":" *<span data-count="9392">&gt;</span> parse_core_type in
+  <span data-count="9451">l</span>et* type' = toke<span data-count="9451">n</span> ":" *<span data-count="9451">&gt;</span> parse_core_type in
   <span data-count="181">l</span>et* exp = toke<span data-count="181">n</span> opr *<span data-count="181">&gt;</span> parse_exp in
   <span data-count="181">r</span>eturn (Exp_constraint (exp, type'))
 ;;
 
 let parse_fun_binding parse_exp =
-  <span data-count="5330">l</span>et* pat_var = parse_pat_var in
-  <span data-count="3763">l</span>et* pat_list = many<span data-count="3763">1</span> parse_pattern in
-  <span data-count="1035">c</span>hoice
-    [ (let* exp = parse_constraint_v<span data-count="1035">b</span> parse_exp "=" in
+  <span data-count="5389">l</span>et* pat_var = parse_pat_var in
+  <span data-count="3820">l</span>et* pat_list = many<span data-count="3820">1</span> parse_pattern in
+  <span data-count="1042">c</span>hoice
+    [ (let* exp = parse_constraint_v<span data-count="1042">b</span> parse_exp "=" in
        <span data-count="4">m</span>atch exp with
        | <span data-count="4">E</span>xp_constraint (exp, type') -&gt;
          return
@@ -1644,35 +1644,35 @@ let parse_fun_binding parse_exp =
        | <span data-count="0">_</span> -&gt;
          return
            { pat = pat_var; exp = Exp_fun (List.hd_ex<span data-count="0">n</span> pat_list, safe_t<span data-count="0">l</span> pat_list, exp) })
-    ; (let* exp = toke<span data-count="1035">n</span> "=" *<span data-count="1035">&gt;</span> parse_exp in
-       <span data-count="1031">r</span>eturn
-         { pat = pat_var; exp = Exp_fun (List.hd_ex<span data-count="1031">n</span> pat_list, safe_t<span data-count="1031">l</span> pat_list, exp) })
+    ; (let* exp = toke<span data-count="1042">n</span> "=" *<span data-count="1042">&gt;</span> parse_exp in
+       <span data-count="1038">r</span>eturn
+         { pat = pat_var; exp = Exp_fun (List.hd_ex<span data-count="1038">n</span> pat_list, safe_t<span data-count="1038">l</span> pat_list, exp) })
     ]
 ;;
 
 let parse_simple_binding parse_exp =
-  <span data-count="5330">l</span>et* pat = parse_pattern in
-  <span data-count="4818">c</span>hoice
-    [ (let* exp = parse_constraint_v<span data-count="4818">b</span> parse_exp "=" in
+  <span data-count="5389">l</span>et* pat = parse_pattern in
+  <span data-count="4870">c</span>hoice
+    [ (let* exp = parse_constraint_v<span data-count="4870">b</span> parse_exp "=" in
        <span data-count="177">m</span>atch exp with
        | <span data-count="177">E</span>xp_constraint (exp, type') -&gt; return { pat = Pat_constraint (pat, type'); exp }
        | <span data-count="0">_</span> -&gt; return { pat; exp })
-    ; (let* exp = toke<span data-count="4818">n</span> "=" *<span data-count="4818">&gt;</span> parse_exp in
-       <span data-count="4605">r</span>eturn { pat; exp })
+    ; (let* exp = toke<span data-count="4870">n</span> "=" *<span data-count="4870">&gt;</span> parse_exp in
+       <span data-count="4657">r</span>eturn { pat; exp })
     ]
 ;;
 
 let parse_value_binding_list parse_exp =
-  <span data-count="5330">s</span>ep_by1
-    (keywor<span data-count="5330">d</span> "and")
-    (ws *<span data-count="5330">&gt;</span> (parse_fun_bindin<span data-count="5330">g</span> parse_exp &lt;|<span data-count="5330">&gt;</span> parse_simple_bindin<span data-count="5330">g</span> parse_exp))
+  <span data-count="5389">s</span>ep_by1
+    (keywor<span data-count="5389">d</span> "and")
+    (ws *<span data-count="5389">&gt;</span> (parse_fun_bindin<span data-count="5389">g</span> parse_exp &lt;|<span data-count="5389">&gt;</span> parse_simple_bindin<span data-count="5389">g</span> parse_exp))
 ;;
 
 (* -------------------- Case -------------------- *)
 
 let parse_case parse_exp =
-  <span data-count="449">w</span>s
-  *<span data-count="449">&gt;</span> optio<span data-count="449">n</span> () (toke<span data-count="449">n</span> "|" *<span data-count="449">&gt;</span> retur<span data-count="449">n</span> ())
+  <span data-count="461">w</span>s
+  *<span data-count="461">&gt;</span> optio<span data-count="461">n</span> () (toke<span data-count="461">n</span> "|" *<span data-count="461">&gt;</span> retur<span data-count="461">n</span> ())
   *&gt;
   let* pat = parse_pattern in
   <span data-count="1266">l</span>et* exp = toke<span data-count="1266">n</span> "-&gt;" *<span data-count="1266">&gt;</span> parse_exp in
@@ -1681,45 +1681,45 @@ let parse_case parse_exp =
 
 (* -------------------- Expression -------------------- *)
 
-let parse_exp_ident = parse_ident &gt;&gt;<span data-count="69">|</span> fun id -&gt; <span data-count="80999">E</span>xp_ident id
-let parse_exp_constant = parse_constant &gt;&gt;<span data-count="69">|</span> fun const -&gt; <span data-count="132651">E</span>xp_constant const
+let parse_exp_ident = parse_ident &gt;&gt;<span data-count="75">|</span> fun id -&gt; <span data-count="81152">E</span>xp_ident id
+let parse_exp_constant = parse_constant &gt;&gt;<span data-count="75">|</span> fun const -&gt; <span data-count="133040">E</span>xp_constant const
 
 let parse_exp_construct_base_keyword =
-  parse_construct_base_keyword &gt;&gt;<span data-count="69">|</span> fun tag -&gt; <span data-count="1540">E</span>xp_construct (tag, None)
+  parse_construct_base_keyword &gt;&gt;<span data-count="75">|</span> fun tag -&gt; <span data-count="1564">E</span>xp_construct (tag, None)
 ;;
 
 let parse_base_exp =
-  choic<span data-count="69">e</span> [ parse_exp_ident; parse_exp_constant; parse_exp_construct_base_keyword ]
+  choic<span data-count="75">e</span> [ parse_exp_ident; parse_exp_constant; parse_exp_construct_base_keyword ]
 ;;
 
 let parse_exp_sequence parse_exp =
-  <span data-count="136">p</span>arse_chain_left_associative
+  <span data-count="148">p</span>arse_chain_left_associative
     parse_exp
-    (toke<span data-count="136">n</span> ";" *<span data-count="136">&gt;</span> retur<span data-count="136">n</span> (fun exp1 exp2 -&gt; <span data-count="34221">E</span>xp_sequence (exp1, exp2)))
+    (toke<span data-count="148">n</span> ";" *<span data-count="148">&gt;</span> retur<span data-count="148">n</span> (fun exp1 exp2 -&gt; <span data-count="34221">E</span>xp_sequence (exp1, exp2)))
 ;;
 
 let parse_exp_construct_keyword_some parse_exp =
-  <span data-count="68">p</span>arse_construct_keyword_som<span data-count="68">e</span> (parse_base_exp &lt;|<span data-count="68">&gt;</span> skip_paren<span data-count="68">s</span> parse_exp)
+  <span data-count="74">p</span>arse_construct_keyword_som<span data-count="74">e</span> (parse_base_exp &lt;|<span data-count="74">&gt;</span> skip_paren<span data-count="74">s</span> parse_exp)
   &gt;&gt;| fun (tag, exp_opt) -&gt; <span data-count="35">E</span>xp_construct (tag, exp_opt)
 ;;
 
 let parse_exp_constraint parse_exp =
-  <span data-count="68">p</span>arse_constrain<span data-count="68">t</span> parse_exp &gt;&gt;| fun (exp, type') -&gt; <span data-count="49">E</span>xp_constraint (exp, type')
+  <span data-count="74">p</span>arse_constrain<span data-count="74">t</span> parse_exp &gt;&gt;| fun (exp, type') -&gt; <span data-count="49">E</span>xp_constraint (exp, type')
 ;;
 
 let parse_exp_tuple parse_exp =
-  <span data-count="68">p</span>arse_tuple parse_exp (fun (fst_exp, snd_exp, exp_list) -&gt;
-    <span data-count="8497">E</span>xp_tuple (fst_exp, snd_exp, exp_list))
+  <span data-count="74">p</span>arse_tuple parse_exp (fun (fst_exp, snd_exp, exp_list) -&gt;
+    <span data-count="8616">E</span>xp_tuple (fst_exp, snd_exp, exp_list))
 ;;
 
 let parse_exp_construct_list_1 parse_exp =
-  <span data-count="68">l</span>et parse_exp_sequence =
-    skip_paren<span data-count="68">s</span> (parse_exp_sequenc<span data-count="68">e</span> parse_exp) &gt;&gt;| fun exp -&gt; <span data-count="10">t</span>rue, exp
+  <span data-count="74">l</span>et parse_exp_sequence =
+    skip_paren<span data-count="74">s</span> (parse_exp_sequenc<span data-count="74">e</span> parse_exp) &gt;&gt;| fun exp -&gt; <span data-count="10">t</span>rue, exp
   in
-  <span data-count="68">l</span>et parse_exp_list = parse_exp &gt;&gt;| fun exp -&gt; <span data-count="17124">f</span>alse, exp in
-  <span data-count="68">p</span>arse_construct_list_1
-    (parse_exp_sequence &lt;|<span data-count="68">&gt;</span> parse_exp_list)
-    (fun (tag, exp_opt) -&gt; <span data-count="68">E</span>xp_construct (tag, exp_opt))
+  <span data-count="74">l</span>et parse_exp_list = parse_exp &gt;&gt;| fun exp -&gt; <span data-count="17124">f</span>alse, exp in
+  <span data-count="74">p</span>arse_construct_list_1
+    (parse_exp_sequence &lt;|<span data-count="74">&gt;</span> parse_exp_list)
+    (fun (tag, exp_opt) -&gt; <span data-count="74">E</span>xp_construct (tag, exp_opt))
     (fun opt_exp acc_exp -&gt;
        <span data-count="17134">l</span>et rec fix_exp_sequence opt_exp acc_exp =
          <span data-count="85398">m</span>atch opt_exp with
@@ -1733,24 +1733,24 @@ let parse_exp_construct_list_1 parse_exp =
 ;;
 
 let parse_exp_construct_list_2 parse_exp =
-  <span data-count="68">p</span>arse_construct_list_2
+  <span data-count="74">p</span>arse_construct_list_2
     parse_exp
     (fun (tag, exp_opt) -&gt; <span data-count="126">E</span>xp_construct (tag, exp_opt))
     (fun (fst_exp, snd_exp, exp_list) -&gt; <span data-count="126">E</span>xp_tuple (fst_exp, snd_exp, exp_list))
 ;;
 
 let parse_exp_let parse_exp =
-  <span data-count="136">k</span>eywor<span data-count="136">d</span> "let"
+  <span data-count="148">k</span>eywor<span data-count="148">d</span> "let"
   *&gt;
   let* rec_flag = parse_rec_flag in
-  <span data-count="4997">l</span>et* value_binding_list = parse_value_binding_lis<span data-count="4997">t</span> parse_exp &lt;<span data-count="4997">*</span> keywor<span data-count="4997">d</span> "in" in
-  <span data-count="3138">l</span>et* exp = parse_exp in
-  <span data-count="3138">r</span>eturn
-    (Exp_let (rec_flag, List.hd_ex<span data-count="3138">n</span> value_binding_list, safe_t<span data-count="3138">l</span> value_binding_list, exp))
+  <span data-count="5036">l</span>et* value_binding_list = parse_value_binding_lis<span data-count="5036">t</span> parse_exp &lt;<span data-count="5036">*</span> keywor<span data-count="5036">d</span> "in" in
+  <span data-count="3168">l</span>et* exp = parse_exp in
+  <span data-count="3168">r</span>eturn
+    (Exp_let (rec_flag, List.hd_ex<span data-count="3168">n</span> value_binding_list, safe_t<span data-count="3168">l</span> value_binding_list, exp))
 ;;
 
 let parse_exp_fun parse_exp =
-  <span data-count="136">k</span>eywor<span data-count="136">d</span> "fun"
+  <span data-count="148">k</span>eywor<span data-count="148">d</span> "fun"
   *&gt;
   let* pat = parse_pattern in
   <span data-count="3539">l</span>et* pat_list = man<span data-count="3539">y</span> parse_pattern in
@@ -1766,20 +1766,20 @@ let parse_exp_fun parse_exp =
 ;;
 
 let parse_exp_function parse_exp =
-  <span data-count="136">k</span>eywor<span data-count="136">d</span> "function"
+  <span data-count="148">k</span>eywor<span data-count="148">d</span> "function"
   *&gt;
-  let* case_list = sep_by<span data-count="136">1</span> (toke<span data-count="136">n</span> "|") (parse_cas<span data-count="136">e</span> parse_exp) in
+  let* case_list = sep_by<span data-count="148">1</span> (toke<span data-count="148">n</span> "|") (parse_cas<span data-count="148">e</span> parse_exp) in
   <span data-count="194">r</span>eturn (Exp_function (List.hd_ex<span data-count="194">n</span> case_list, safe_t<span data-count="194">l</span> case_list))
 ;;
 
 let parse_exp_match parse_exp =
-  <span data-count="136">l</span>et* exp = keywor<span data-count="136">d</span> "match" *<span data-count="136">&gt;</span> parse_exp &lt;<span data-count="136">*</span> keywor<span data-count="136">d</span> "with" in
+  <span data-count="148">l</span>et* exp = keywor<span data-count="148">d</span> "match" *<span data-count="148">&gt;</span> parse_exp &lt;<span data-count="148">*</span> keywor<span data-count="148">d</span> "with" in
   <span data-count="313">l</span>et* case_list = sep_by<span data-count="313">1</span> (toke<span data-count="313">n</span> "|") (parse_cas<span data-count="313">e</span> parse_exp) in
   <span data-count="313">r</span>eturn (Exp_match (exp, List.hd_ex<span data-count="313">n</span> case_list, safe_t<span data-count="313">l</span> case_list))
 ;;
 
 let parse_exp_ifthenelse parse_exp =
-  <span data-count="136">l</span>et* if_exp = keywor<span data-count="136">d</span> "if" *<span data-count="136">&gt;</span> parse_exp in
+  <span data-count="148">l</span>et* if_exp = keywor<span data-count="148">d</span> "if" *<span data-count="148">&gt;</span> parse_exp in
   <span data-count="679">l</span>et* then_exp = keywor<span data-count="679">d</span> "then" *<span data-count="679">&gt;</span> parse_exp in
   <span data-count="679">l</span>et* else_exp =
     optio<span data-count="679">n</span> None (keywor<span data-count="679">d</span> "else" &gt;&gt;<span data-count="679">|</span> Option.some)
@@ -1791,84 +1791,84 @@ let parse_exp_ifthenelse parse_exp =
 ;;
 
 let parse_top_exp parse_exp =
-  <span data-count="136">c</span>hoice
-    [ parse_exp_le<span data-count="136">t</span> parse_exp
-    ; parse_exp_fu<span data-count="136">n</span> parse_exp
-    ; parse_exp_functio<span data-count="136">n</span> parse_exp
-    ; parse_exp_matc<span data-count="136">h</span> parse_exp
-    ; parse_exp_ifthenels<span data-count="136">e</span> parse_exp
+  <span data-count="148">c</span>hoice
+    [ parse_exp_le<span data-count="148">t</span> parse_exp
+    ; parse_exp_fu<span data-count="148">n</span> parse_exp
+    ; parse_exp_functio<span data-count="148">n</span> parse_exp
+    ; parse_exp_matc<span data-count="148">h</span> parse_exp
+    ; parse_exp_ifthenels<span data-count="148">e</span> parse_exp
     ]
 ;;
 
 let parse_exp_apply_fun parse_exp =
-  <span data-count="68">p</span>arse_chain_left_associative
+  <span data-count="74">p</span>arse_chain_left_associative
     parse_exp
-    (retur<span data-count="68">n</span> (fun exp1 exp2 -&gt; <span data-count="59446">E</span>xp_apply (exp1, exp2)))
+    (retur<span data-count="74">n</span> (fun exp1 exp2 -&gt; <span data-count="59526">E</span>xp_apply (exp1, exp2)))
 ;;
 
 let parse_exp_apply_un_op parse_exp =
-  <span data-count="68">l</span>et is_not_space = function
+  <span data-count="74">l</span>et is_not_space = function
     | <span data-count="14">'</span>(' | <span data-count="0">'</span>[' | <span data-count="1">'</span>_' | <span data-count="0">'</span>\'' | <span data-count="2">'</span>\"' -&gt; true
     | <span data-count="582">c</span> -&gt; Char.is_alphanum c
   in
   let string_un_op str =
-    <span data-count="68">t</span>oke<span data-count="68">n</span> str
+    <span data-count="74">t</span>oke<span data-count="74">n</span> str
     *&gt;
     let* char_value = peek_char_fail in
     <span data-count="599">i</span>f is_not_space char_value
     then <span data-count="599">r</span>eturn str
     else <span data-count="0">f</span>ail (Printf.sprint<span data-count="0">f</span> "There is no space after unary minus.")
   in
-  string_un_o<span data-count="68">p</span> "-" *<span data-count="68">&gt;</span> parse_exp
-  &gt;&gt;<span data-count="68">|</span> (fun exp -&gt; <span data-count="599">E</span>xp_apply (Exp_ident "~-", exp))
+  string_un_o<span data-count="74">p</span> "-" *<span data-count="74">&gt;</span> parse_exp
+  &gt;&gt;<span data-count="74">|</span> (fun exp -&gt; <span data-count="599">E</span>xp_apply (Exp_ident "~-", exp))
   &lt;|&gt; parse_exp
 ;;
 
 let parse_exp_apply_bin_op parse_exp =
-  <span data-count="68">l</span>et parse_exp = parse_left_bin_op parse_exp mul_div in
-  <span data-count="68">l</span>et parse_exp = parse_left_bin_op parse_exp add_sub in
-  <span data-count="68">l</span>et parse_exp = parse_left_bin_op parse_exp cmp in
-  <span data-count="68">l</span>et parse_exp = parse_right_bin_op parse_exp and_ in
-  <span data-count="68">p</span>arse_right_bin_op parse_exp or_
+  <span data-count="74">l</span>et parse_exp = parse_left_bin_op parse_exp mul_div in
+  <span data-count="74">l</span>et parse_exp = parse_left_bin_op parse_exp add_sub in
+  <span data-count="74">l</span>et parse_exp = parse_left_bin_op parse_exp cmp in
+  <span data-count="74">l</span>et parse_exp = parse_right_bin_op parse_exp and_ in
+  <span data-count="74">p</span>arse_right_bin_op parse_exp or_
 ;;
 
 let parse_exp_apply parse_exp =
-  <span data-count="68">l</span>et parse_exp = parse_exp_apply_fun parse_exp in
-  <span data-count="68">l</span>et parse_exp = parse_exp_apply_un_op parse_exp in
-  <span data-count="68">p</span>arse_exp_apply_bin_op parse_exp
+  <span data-count="74">l</span>et parse_exp = parse_exp_apply_fun parse_exp in
+  <span data-count="74">l</span>et parse_exp = parse_exp_apply_un_op parse_exp in
+  <span data-count="74">p</span>arse_exp_apply_bin_op parse_exp
 ;;
 
 let parse_expression =
   ws
-  *<span data-count="69">&gt;</span> fi<span data-count="69">x</span> (fun parse_full_exp -&gt;
-    <span data-count="68">l</span>et parse_exp =
+  *<span data-count="75">&gt;</span> fi<span data-count="75">x</span> (fun parse_full_exp -&gt;
+    <span data-count="74">l</span>et parse_exp =
       choice
         [ parse_base_exp
-        ; parse_exp_construct_keyword_som<span data-count="68">e</span> parse_full_exp
-        ; parse_exp_constrain<span data-count="68">t</span> parse_full_exp
-        ; parse_exp_construct_list_<span data-count="68">1</span> parse_full_exp
-        ; parse_top_ex<span data-count="68">p</span> parse_full_exp
-        ; skip_paren<span data-count="68">s</span> parse_full_exp
+        ; parse_exp_construct_keyword_som<span data-count="74">e</span> parse_full_exp
+        ; parse_exp_constrain<span data-count="74">t</span> parse_full_exp
+        ; parse_exp_construct_list_<span data-count="74">1</span> parse_full_exp
+        ; parse_top_ex<span data-count="74">p</span> parse_full_exp
+        ; skip_paren<span data-count="74">s</span> parse_full_exp
         ]
     in
-    <span data-count="68">l</span>et parse_exp = parse_exp_appl<span data-count="68">y</span> parse_exp &lt;|&gt; parse_exp in
-    <span data-count="68">l</span>et parse_exp = parse_exp_construct_list_<span data-count="68">2</span> parse_exp &lt;|&gt; parse_exp in
-    <span data-count="68">l</span>et parse_exp = parse_exp_tupl<span data-count="68">e</span> parse_exp &lt;|&gt; parse_exp in
-    <span data-count="68">l</span>et parse_exp = parse_exp_sequenc<span data-count="68">e</span> parse_exp &lt;|&gt; parse_exp in
-    <span data-count="68">p</span>arse_top_ex<span data-count="68">p</span> parse_full_exp &lt;|&gt; parse_exp)
+    <span data-count="74">l</span>et parse_exp = parse_exp_appl<span data-count="74">y</span> parse_exp &lt;|&gt; parse_exp in
+    <span data-count="74">l</span>et parse_exp = parse_exp_construct_list_<span data-count="74">2</span> parse_exp &lt;|&gt; parse_exp in
+    <span data-count="74">l</span>et parse_exp = parse_exp_tupl<span data-count="74">e</span> parse_exp &lt;|&gt; parse_exp in
+    <span data-count="74">l</span>et parse_exp = parse_exp_sequenc<span data-count="74">e</span> parse_exp &lt;|&gt; parse_exp in
+    <span data-count="74">p</span>arse_top_ex<span data-count="74">p</span> parse_full_exp &lt;|&gt; parse_exp)
 ;;
 
 (* ==================== Structure ==================== *)
 
 let parse_struct_value =
-  keywor<span data-count="69">d</span> "let"
-  *<span data-count="69">&gt;</span>
+  keywor<span data-count="75">d</span> "let"
+  *<span data-count="75">&gt;</span>
   let* rec_flag = parse_rec_flag in
-  <span data-count="333">l</span>et* value_binding_list = parse_value_binding_lis<span data-count="333">t</span> parse_expression in
-  <span data-count="331">o</span>ption
-    (Struct_value (rec_flag, List.hd_ex<span data-count="331">n</span> value_binding_list, safe_t<span data-count="331">l</span> value_binding_list))
-    (keywor<span data-count="331">d</span> "in" *<span data-count="331">&gt;</span> parse_expression
-     &gt;&gt;<span data-count="331">|</span> fun exp -&gt;
+  <span data-count="353">l</span>et* value_binding_list = parse_value_binding_lis<span data-count="353">t</span> parse_expression in
+  <span data-count="351">o</span>ption
+    (Struct_value (rec_flag, List.hd_ex<span data-count="351">n</span> value_binding_list, safe_t<span data-count="351">l</span> value_binding_list))
+    (keywor<span data-count="351">d</span> "in" *<span data-count="351">&gt;</span> parse_expression
+     &gt;&gt;<span data-count="351">|</span> fun exp -&gt;
      <span data-count="1">S</span>truct_eval
        (Exp_let (rec_flag, List.hd_ex<span data-count="1">n</span> value_binding_list, safe_t<span data-count="1">l</span> value_binding_list, exp))
     )
@@ -1876,17 +1876,17 @@ let parse_struct_value =
 
 let parse_structure =
   ws
-  *<span data-count="69">&gt;</span>
+  *<span data-count="75">&gt;</span>
   let parse_structure_item =
-    parse_struct_value &lt;|&gt; (parse_expression &gt;&gt;<span data-count="69">|</span> fun exp -&gt; <span data-count="50">S</span>truct_eval exp)
+    parse_struct_value &lt;|&gt; (parse_expression &gt;&gt;<span data-count="75">|</span> fun exp -&gt; <span data-count="50">S</span>truct_eval exp)
   in
-  <span data-count="69">l</span>et semicolons = many (toke<span data-count="69">n</span> ";;") in
-  <span data-count="69">s</span>ep_b<span data-count="69">y</span> semicolons parse_structure_item &lt;<span data-count="69">*</span> semicolons &lt;<span data-count="69">*</span> ws
+  <span data-count="75">l</span>et semicolons = many (toke<span data-count="75">n</span> ";;") in
+  <span data-count="75">s</span>ep_b<span data-count="75">y</span> semicolons parse_structure_item &lt;<span data-count="75">*</span> semicolons &lt;<span data-count="75">*</span> ws
 ;;
 
 (* ==================== Execute ==================== *)
 
-let parse = parse_strin<span data-count="69">g</span> ~consume:All parse_structure
+let parse = parse_strin<span data-count="75">g</span> ~consume:All parse_structure
 </code></pre>
       </div>
     </div>

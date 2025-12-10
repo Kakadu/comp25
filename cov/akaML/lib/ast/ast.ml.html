@@ -588,22 +588,22 @@
 open QCheck.Gen
 
 let coef = 20 (* For the generator's speed. *)
-let min_range = int_rang<span data-count="69">e</span> 0 10 (* For the generator's speed. *)
-let gen_string gen = <span data-count="207">s</span>tring_size min_range ~gen
-let gen_list gen = <span data-count="58399">l</span>ist_size min_range gen
+let min_range = int_rang<span data-count="75">e</span> 0 10 (* For the generator's speed. *)
+let gen_string gen = <span data-count="225">s</span>tring_size min_range ~gen
+let gen_list gen = <span data-count="58411">l</span>ist_size min_range gen
 
-<span data-count="0">t</span>ype 'a list_ = (<span data-count="19">'</span>a lis<span data-count="7">t</span>[@gen <span data-count="58399">g</span>en_list gen_a])
+<span data-count="0">t</span>ype 'a list_ = (<span data-count="19">'</span>a lis<span data-count="7">t</span>[@gen <span data-count="58411">g</span>en_list gen_a])
 [@@deriving show { with_path = false }, qcheck<span data-count="0">]</span>
 
 let gen_char =
   (* Exception quotation marks and backslash. *)
-  oneo<span data-count="69">f</span> [ retur<span data-count="69">n</span> '!'; char_rang<span data-count="69">e</span> '#' '&amp;'; char_rang<span data-count="69">e</span> '(' '['; char_rang<span data-count="69">e</span> ']' '~' ]
+  oneo<span data-count="75">f</span> [ retur<span data-count="75">n</span> '!'; char_rang<span data-count="75">e</span> '#' '&amp;'; char_rang<span data-count="75">e</span> '(' '['; char_rang<span data-count="75">e</span> ']' '~' ]
 ;;
 
 let un_op_list = [ "~-" ]
 let bin_op_list = [ "*"; "/"; "+"; "-"; "^"; "&gt;="; "&lt;="; "&lt;&gt;"; "="; "&gt;"; "&lt;"; "&amp;&amp;"; "||" ]
-let is_bin_op op = <span data-count="530">L</span>ist.mem op bin_op_list
-let is_unary_minus op = <span data-count="993">o</span>p = "~-"
+let is_bin_op op = <span data-count="588">L</span>ist.mem op bin_op_list
+let is_unary_minus op = <span data-count="1033">o</span>p = "~-"
 
 let is_keyword = function
   | <span data-count="1032">"</span>and"
@@ -611,8 +611,8 @@ let is_keyword = function
   | <span data-count="851">"</span>false"
   | <span data-count="0">"</span>fun"
   | <span data-count="0">"</span>if"
-  | <span data-count="6259">"</span>in"
-  | <span data-count="1861">"</span>let"
+  | <span data-count="6313">"</span>in"
+  | <span data-count="1870">"</span>let"
   | <span data-count="0">"</span>function"
   | <span data-count="0">"</span>match"
   | <span data-count="0">"</span>rec"
@@ -621,7 +621,7 @@ let is_keyword = function
   | <span data-count="626">"</span>with"
   | <span data-count="0">"</span>Some"
   | <span data-count="0">"</span>None" -&gt; true
-  | <span data-count="111192">_</span> -&gt; false
+  | <span data-count="111676">_</span> -&gt; false
 ;;
 
 let gen_ident =
@@ -631,50 +631,50 @@ let gen_ident =
          <span data-count="1040">m</span>atch Base.Char.to_strin<span data-count="1040">g</span> fst_char ^ rest_str with
          | <span data-count="42">"</span>_" -&gt; "id"
          | <span data-count="998">i</span>d -&gt; id)
-      (oneo<span data-count="69">f</span> [ char_rang<span data-count="69">e</span> 'a' 'z'; retur<span data-count="69">n</span> '_' ])
-      (gen_strin<span data-count="69">g</span>
-         (oneo<span data-count="69">f</span>
-            [ char_rang<span data-count="69">e</span> '0' '9'
-            ; char_rang<span data-count="69">e</span> 'A' 'Z'
-            ; char_rang<span data-count="69">e</span> 'a' 'z'
-            ; retur<span data-count="69">n</span> '_'
-            ; retur<span data-count="69">n</span> '\''
+      (oneo<span data-count="75">f</span> [ char_rang<span data-count="75">e</span> 'a' 'z'; retur<span data-count="75">n</span> '_' ])
+      (gen_strin<span data-count="75">g</span>
+         (oneo<span data-count="75">f</span>
+            [ char_rang<span data-count="75">e</span> '0' '9'
+            ; char_rang<span data-count="75">e</span> 'A' 'Z'
+            ; char_rang<span data-count="75">e</span> 'a' 'z'
+            ; retur<span data-count="75">n</span> '_'
+            ; retur<span data-count="75">n</span> '\''
             ]))
   in
-  <span data-count="69">g</span>en_id &gt;&gt;<span data-count="69">=</span> fun id -&gt; <span data-count="1040">i</span>f is_keyword id then <span data-count="0">g</span>en_id else <span data-count="1040">r</span>eturn id
+  <span data-count="75">g</span>en_id &gt;&gt;<span data-count="75">=</span> fun id -&gt; <span data-count="1040">i</span>f is_keyword id then <span data-count="0">g</span>en_id else <span data-count="1040">r</span>eturn id
 ;;
 
-<span data-count="0">t</span>ype ident = (<span data-count="15">s</span>tring[@gen gen_ident]) [@@deriving show { with_path = false }, qcheck<span data-count="69">]</span>
+<span data-count="0">t</span>ype ident = (<span data-count="15">s</span>tring[@gen gen_ident]) [@@deriving show { with_path = false }, qcheck<span data-count="75">]</span>
 
 <span data-count="0">t</span>ype rec_flag =
   | Recursive
   | Nonrecursive
-[@@deriving show { with_path = false }, qcheck<span data-count="276">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="300">]</span>
 
 <span data-count="804">t</span>ype constant =
   | Const_integer of (in<span data-count="4">t</span>[@gen nat])
   | Const_char of (cha<span data-count="0">r</span>[@gen gen_char])
-  | Const_string of (strin<span data-count="0">g</span>[@gen gen_strin<span data-count="69">g</span> gen_char])
-[@@deriving show { with_path = false }, qcheck<span data-count="345">]</span>
+  | Const_string of (strin<span data-count="0">g</span>[@gen gen_strin<span data-count="75">g</span> gen_char])
+[@@deriving show { with_path = false }, qcheck<span data-count="375">]</span>
 
 let gen_type_var =
   let gen_type_var =
     map3
       (fun fst_char snd_char rest_str -&gt;
          <span data-count="74">P</span>rintf.sprintf "%c%c%s" fst_char snd_char rest_str)
-      (oneo<span data-count="69">f</span> [ char_rang<span data-count="69">e</span> 'a' 'z' ])
-      (oneo<span data-count="69">f</span> [ char_rang<span data-count="69">e</span> '0' '9'; char_rang<span data-count="69">e</span> 'A' 'Z'; char_rang<span data-count="69">e</span> 'a' 'z'; retur<span data-count="69">n</span> '_' ])
-      (gen_strin<span data-count="69">g</span>
-         (oneo<span data-count="69">f</span>
-            [ char_rang<span data-count="69">e</span> '0' '9'
-            ; char_rang<span data-count="69">e</span> 'A' 'Z'
-            ; char_rang<span data-count="69">e</span> 'a' 'z'
-            ; retur<span data-count="69">n</span> '_'
-            ; retur<span data-count="69">n</span> '\''
+      (oneo<span data-count="75">f</span> [ char_rang<span data-count="75">e</span> 'a' 'z' ])
+      (oneo<span data-count="75">f</span> [ char_rang<span data-count="75">e</span> '0' '9'; char_rang<span data-count="75">e</span> 'A' 'Z'; char_rang<span data-count="75">e</span> 'a' 'z'; retur<span data-count="75">n</span> '_' ])
+      (gen_strin<span data-count="75">g</span>
+         (oneo<span data-count="75">f</span>
+            [ char_rang<span data-count="75">e</span> '0' '9'
+            ; char_rang<span data-count="75">e</span> 'A' 'Z'
+            ; char_rang<span data-count="75">e</span> 'a' 'z'
+            ; retur<span data-count="75">n</span> '_'
+            ; retur<span data-count="75">n</span> '\''
             ]))
   in
-  <span data-count="69">g</span>en_type_var
-  &gt;&gt;<span data-count="69">=</span> fun type_var -&gt; <span data-count="74">i</span>f is_keyword type_var then <span data-count="0">g</span>en_type_var else <span data-count="74">r</span>eturn ("'" ^ type_var)
+  <span data-count="75">g</span>en_type_var
+  &gt;&gt;<span data-count="75">=</span> fun type_var -&gt; <span data-count="74">i</span>f is_keyword type_var then <span data-count="0">g</span>en_type_var else <span data-count="74">r</span>eturn ("'" ^ type_var)
 ;;
 
 <span data-count="68231">t</span>ype core_type =
@@ -693,7 +693,7 @@ let gen_type_var =
   | Type_arrow of
       (core_type[@gen gen_core_type_size<span data-count="4819">d</span> (n / coef)])
       * (core_type[@gen gen_core_type_size<span data-count="4819">d</span> (n / coef)])
-[@@deriving show { with_path = false }, qcheck<span data-count="237895">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="237907">]</span>
 
 let gen_construct gen n tuple construct =
   <span data-count="13846">o</span>neof
@@ -731,7 +731,7 @@ let gen_construct gen n tuple construct =
           (fun (fst_pat, snd_pat, pat_list) -&gt; <span data-count="26">P</span>at_tuple (fst_pat, snd_pat, pat_list))
           (fun (id, pat_opt) -&gt; <span data-count="26">P</span>at_construct (id, pat_opt))])
   | Pat_constraint of (pattern[@gen gen_pattern_size<span data-count="3947">d</span> (n / coef)]) * core_type
-[@@deriving show { with_path = false }, qcheck<span data-count="98721">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="98733">]</span>
 
 <span data-count="28">t</span>ype 'exp value_binding =
   { pat : pattern
@@ -828,7 +828,7 @@ module Expression = struct
             (fun (id, exp_opt) -&gt; <span data-count="3">E</span>xp_construct (id, exp_opt))])
     | Exp_sequence of (t[@gen gen_size<span data-count="9899">d</span> (n / coef)]) * (t[@gen gen_size<span data-count="9899">d</span> (n / coef)])
     | Exp_constraint of (t[@gen gen_size<span data-count="9899">d</span> (n / coef)]) * core_type
-  [@@deriving show { with_path = false }, qcheck<span data-count="854214">]</span>
+  [@@deriving show { with_path = false }, qcheck<span data-count="854250">]</span>
 end
 
 let show_value_binding = Expression.show_value_binding_exp
@@ -839,9 +839,9 @@ let show_expression = Expression.show
   | Struct_eval of Expression.t
   | Struct_value of
       rec_flag * Expression.value_binding_exp * Expression.value_binding_exp list_
-[@@deriving show { with_path = false }, qcheck<span data-count="414">]</span>
+[@@deriving show { with_path = false }, qcheck<span data-count="450">]</span>
 
-<span data-count="1">t</span>ype structure = structure_item list_ [@@deriving show { with_path = false }, qcheck<span data-count="138">]</span>
+<span data-count="1">t</span>ype structure = structure_item list_ [@@deriving show { with_path = false }, qcheck<span data-count="150">]</span>
 </code></pre>
       </div>
     </div>
