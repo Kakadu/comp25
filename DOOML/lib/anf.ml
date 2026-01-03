@@ -10,21 +10,30 @@ let pp_immexpr ppf = function
 
 type cexpr =
   | CImm of immexpr
-  | CIte of immexpr * immexpr * immexpr
+  | CIte of immexpr * aexpr * aexpr
   | CApp of string * immexpr list
-[@@deriving variants, show]
 
-let pp_cexpr ppf = function
+and aexpr =
+  | ALet of string * cexpr * aexpr
+  | AExpr of cexpr
+
+let cimm imm = CImm imm
+let cite cond_ then_ else_ = CIte (cond_, then_, else_)
+let capp f args = CApp (f, args)
+let alet bind v body = ALet (bind, v, body)
+let aexpr cexpr = AExpr cexpr
+
+let rec pp_cexpr ppf = function
   | CImm imm -> Format.fprintf ppf "%a" pp_immexpr imm
   | CIte (cond_, then_, else_) ->
     Format.fprintf
       ppf
-      "if %a then %a else %a"
+      "if %a then@;<1 2>@[<hv>%a@]@;<1 0>else@;<1 2>@[<hv>%a@]"
       pp_immexpr
       cond_
-      pp_immexpr
+      pp_aexpr
       then_
-      pp_immexpr
+      pp_aexpr
       else_
   | CApp (s, immexprs) ->
     Format.fprintf
@@ -33,16 +42,17 @@ let pp_cexpr ppf = function
       s
       (Format.pp_print_list ~pp_sep:(fun ppf () -> Format.fprintf ppf " ") pp_immexpr)
       immexprs
-;;
 
-type aexpr =
-  | ALet of string * cexpr * aexpr
-  | AExpr of cexpr
-[@@deriving variants, show]
-
-let rec pp_aexpr ppf = function
+and pp_aexpr ppf = function
   | ALet (name, cexpr, aexpr) ->
-    Format.fprintf ppf "let %s = %a in @ %a" name pp_cexpr cexpr pp_aexpr aexpr
+    Format.fprintf
+      ppf
+      "@[<hv>let %s =@;<1 2>@[<hv>%a@]@;<1 0>in@]@;<0 0>%a"
+      name
+      pp_cexpr
+      cexpr
+      pp_aexpr
+      aexpr
   | AExpr cexpr -> Format.fprintf ppf "%a" pp_cexpr cexpr
 ;;
 
@@ -96,15 +106,10 @@ let rec anf ctx (k : ctx -> immexpr -> aexpr) = function
     anf
       ctx
       (fun ctx immcond ->
-         anf
-           ctx
-           (fun ctx immthen ->
-              anf
-                ctx
-                (fun ctx immelse ->
-                   alet "ite" (cite immcond immthen immelse) (k ctx (immid "ite")))
-                else_)
-           then_)
+         let then_ = anf ctx k then_ in
+         let else_ = anf ctx k else_ in
+         let sym, ctx = gensym ~prefix:"ite" ctx in
+         alet sym (cite immcond then_ else_) (k ctx (immid sym)))
       cond_
   | Fun _ -> failwith "should be CC/LL first"
 ;;
@@ -125,12 +130,44 @@ let%expect_test "basic" =
   match ast with
   | LetDecl (_, _name, body) ->
     Format.printf "@[<v 2>@ %a@]@." pp_aexpr (anf body);
-    [%expect {|
+    [%expect
+      {|
       let sup2 = (*) 2 i in
       let sup5 = (+) g sup0 in
       let sup6 = (*) sup5 sup2 in
       let sup7 = (f) sup6 in
       let q = sup7 in
       q
+      |}]
+;;
+
+let%expect_test "ite" =
+  let ast =
+    Fe.parse
+      {|
+    let rec fac =
+      if (k = 1) then (1) else (fac (k - 1) * k)
+    ;;
+  |}
+    |> Result.map_error (fun err -> Format.printf "Error %s" err)
+    |> Result.get_ok
+    |> List.hd
+  in
+  match ast with
+  | LetDecl (_, _name, body) ->
+    Format.printf "@[<v 2>@ %a@]@." pp_aexpr (anf body);
+    [%expect
+      {|
+      let sup1 = (=) k 1 in
+      let ite2 =
+        if sup1 then
+          1
+        else
+          let sup4 = (-) k 1 in
+          let sup5 = (fac) sup4 in
+          let sup6 = (*) sup5 k in
+          sup6
+      in
+      ite2
       |}]
 ;;
