@@ -61,7 +61,7 @@ let rec pp_expr ppf = function
     in
     Format.fprintf
       ppf
-      "let %s%a = %a in@ %a"
+      "@[<hv>let %s%a =@;<1 2>@[<hv>%a@]@;<1 0>in@]@;<0 0>%a"
       rec_flag
       pp_pattern
       pattern
@@ -72,7 +72,7 @@ let rec pp_expr ppf = function
   | Fun (patterns, body) ->
     Format.fprintf
       ppf
-      "@[<v 2>fun %a ->@ @[%a@]@]"
+      "fun %a ->@;<1 2>@[<hv>%a@]"
       (Format.pp_print_list ~pp_sep:pp_sep_space pp_pattern)
       patterns
       pp_expr
@@ -80,7 +80,7 @@ let rec pp_expr ppf = function
   | Ite (cond, then_, else_) ->
     Format.fprintf
       ppf
-      "if @[%a@] then@ @[%a@]@ else@ @[%a@]"
+      "if %a then@;<1 2>@[<hv>%a@]@;<1 0>else@;<1 2>@[<hv>%a@]"
       pp_expr
       cond
       pp_expr
@@ -100,7 +100,7 @@ let pp_top_level ppf = function
     in
     Format.fprintf
       ppf
-      "@[<v 2>let %s%a =@ @[%a@]@]@.;;@."
+      "@[<hv>let %s%a =@;<1 2>@[<hv>%a@]@;<0 0>;;@]@."
       rec_flag
       pp_pattern
       pattern

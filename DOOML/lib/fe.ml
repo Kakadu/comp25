@@ -256,35 +256,17 @@ let parse_and_print code =
 
 let%expect_test "const definition to 15" =
   parse_and_print "let const_15 = fun () -> 15;;";
-  [%expect
-    {|
-    let const_15 =
-      fun () ->
-        15
-    ;;
-    |}]
+  [%expect {| let const_15 = fun () -> 15;; |}]
 ;;
 
 let%expect_test "simple algebraic expression" =
   parse_and_print "let sub = fun a b c -> a + b + c;;";
-  [%expect
-    {|
-    let sub =
-      fun a b c ->
-        (+) ((+) a b) c
-    ;;
-    |}]
+  [%expect {| let sub = fun a b c -> (+) ((+) a b) c;; |}]
 ;;
 
 let%expect_test "find stddev" =
   parse_and_print "let stddev = fun a b c -> a * a + ((b * b) + (c * c));;";
-  [%expect
-    {|
-    let stddev =
-      fun a b c ->
-        (+) ((*) a a) ((+) ((*) b b) ((*) c c))
-    ;;
-    |}]
+  [%expect {| let stddev = fun a b c -> (+) ((*) a a) ((+) ((*) b b) ((*) c c));; |}]
 ;;
 
 let%expect_test "use let ins for test" =
@@ -301,8 +283,10 @@ let%expect_test "use let ins for test" =
     {|
     let some_test =
       fun a b c ->
-        let a_plus_b = (+) a b in let b_plus_c = (+) b c in
-        let c_plus_a = (+) c a in 5
+        let a_plus_b = (+) a b in
+        let b_plus_c = (+) b c in
+        let c_plus_a = (+) c a in
+        5
     ;;
     |}]
 ;;
@@ -324,24 +308,12 @@ let%expect_test "wrong let ins" =
 
 let%expect_test "simple call" =
   parse_and_print "let swap = fun a b k -> k b a;;";
-  [%expect
-    {|
-    let swap =
-      fun a b k ->
-        k b a
-    ;;
-    |}]
+  [%expect {| let swap = fun a b k -> k b a;; |}]
 ;;
 
 let%expect_test "simple call with parens" =
   parse_and_print "let wrong_swap = fun a b k -> k (b a);;";
-  [%expect
-    {|
-    let wrong_swap =
-      fun a b k ->
-        k (b a)
-    ;;
-    |}]
+  [%expect {| let wrong_swap = fun a b k -> k (b a);; |}]
 ;;
 
 let%expect_test "factorial" =
@@ -354,13 +326,7 @@ let%expect_test "factorial" =
         n * (fac (n - 1))
     ;;
   |};
-  [%expect
-    {|
-    let rec fac =
-      fun n ->
-        if (=) n 0 then 1 else (*) n (fac ((-) n 1))
-    ;;
-    |}]
+  [%expect {| let rec fac = fun n -> if (=) n 0 then 1 else (*) n (fac ((-) n 1));; |}]
 ;;
 
 let%expect_test "factorial" =
@@ -370,18 +336,13 @@ let%expect_test "factorial" =
     let g = f + 3;;
     let h = g * 15;;
   |};
-  [%expect {|
-    let f =
-      15
-    ;;
+  [%expect
+    {|
+    let f = 15;;
 
-    let g =
-       (+) f 3
-    ;;
+    let g = (+) f 3;;
 
-    let h =
-       (*) g 15
-    ;;
+    let h = (*) g 15;;
     |}]
 ;;
 
