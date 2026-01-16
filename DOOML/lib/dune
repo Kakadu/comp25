@@ -1,10 +1,28 @@
 (library
  (name DOOML)
  (public_name DOOML.Lib)
- (modules Anf Ast Builtin Cc Fe Ll State)
+ (modules Anf Ast Builtin Cc Fe Ll Riscv State)
  (libraries base stdlib angstrom)
  (inline_tests)
  (preprocess
   (pps ppx_expect ppx_deriving.show ppx_variants_conv ppx_inline_test))
  (instrumentation
   (backend bisect_ppx)))
+
+(rule
+ (targets runtime.so)
+ (deps runtime.c)
+ (action
+  (run gcc -fPIC -shared %{deps} -o %{targets})))
+
+(rule
+ (targets riscv64-runtime.o)
+ (deps runtime.c)
+ (action
+  (run riscv64-linux-gnu-gcc -o %{targets} -c %{deps})))
+
+(rule
+ (targets riscv64-runtime.a)
+ (deps riscv64-runtime.o)
+ (action
+  (run riscv64-linux-gnu-ar rcs %{targets} %{deps})))
