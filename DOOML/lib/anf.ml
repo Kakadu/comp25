@@ -47,7 +47,7 @@ and pp_aexpr ppf = function
   | ALet (name, cexpr, aexpr) ->
     Format.fprintf
       ppf
-      "@[<hv>let %s =@;<1 2>@[<hv>%a@]@;<1 0>in@]@;<0 0>%a"
+      "let %s =@;<1 2>@[<hv>%a@]@;<1 0>in@;<1 0>%a"
       name
       pp_cexpr
       cexpr
@@ -56,65 +56,175 @@ and pp_aexpr ppf = function
   | AExpr cexpr -> Format.fprintf ppf "%a" pp_cexpr cexpr
 ;;
 
-type ctx = { syms : string list }
+type decl = Decl of Ast.rec_flag * string * string list * aexpr [@@deriving variants]
 
-let addsym (ctx : ctx) v = { syms = v :: ctx.syms }
-
-let gensym ?prefix (ctx : ctx) =
-  let prefix = Option.value prefix ~default:"sup" in
-  let rec aux i =
-    let v = String.cat prefix (Int.to_string i) in
-    if List.mem v ctx.syms then aux (i + 1) else v
-  in
-  let v = aux (List.length ctx.syms) in
-  v, addsym ctx v
+let pp_decl ppf = function
+  | Decl (rec_flag, name, args, body) ->
+    let rec_flag =
+      match rec_flag with
+      | Rec -> "rec "
+      | NonRec -> ""
+    in
+    Format.fprintf
+      ppf
+      "@[<hv>let %s%s %a =@;<1 2>@[<hv>%a@]@;<0 0>;;@]@."
+      rec_flag
+      name
+      (Format.pp_print_list
+         ~pp_sep:(fun ppf () -> Format.fprintf ppf " ")
+         Format.pp_print_string)
+      args
+      pp_aexpr
+      body
 ;;
 
-let rec anf ctx (k : ctx -> immexpr -> aexpr) = function
-  | Ast.Const d -> k ctx (immnum d)
+module Ctx = struct
+  type t = { syms : string list }
+
+  let addsym v (ctx : t) = { syms = v :: ctx.syms }
+
+  let gensym ?prefix () (ctx : t) =
+    let prefix = Option.value prefix ~default:"sup" in
+    let rec aux i =
+      let v = String.cat prefix (Int.to_string i) in
+      if List.mem v ctx.syms then aux (i + 1) else v
+    in
+    let v = aux (List.length ctx.syms) in
+    v, addsym v ctx
+  ;;
+end
+
+module State = struct
+  include State.M (Ctx)
+
+  let addsym sym ctx = put (Ctx.addsym sym ctx) ()
+  let gensym = Ctx.gensym
+end
+
+open State
+
+let rec arg = function
+  | Ast.PUnit -> return ("()", [])
+  | Ast.Plug -> return ("_", [])
+  | Ast.Ident name -> return (name, [])
+  | Ast.Tuple els ->
+    let* els =
+      List.fold_right
+        (fun a acc ->
+           let* acc = acc in
+           let* a = arg a in
+           return (a :: acc))
+        els
+        (return [])
+    in
+    let* sym = gensym () in
+    let lets =
+      List.mapi (fun i (name, _) -> name, capp "nth" [ immid sym; immnum i ]) els
+    in
+    let lets = lets @ List.concat_map snd els in
+    return (sym, lets)
+;;
+
+let rec anf (k : immexpr -> Ctx.t -> aexpr * Ctx.t) = function
+  | Ast.Const d ->
+    let* ret = k (immnum d) in
+    return ret
   | Var s ->
-    let ctx = addsym ctx s in
-    k ctx (immid s)
+    let* () = addsym s in
+    let* ret = k (immid s) in
+    return ret
   | App _ as app ->
-    let rec aux ctx immexprs = function
+    let rec aux immexprs = function
       | Ast.Var s ->
-        let sym, ctx = gensym ctx in
-        alet sym (capp s immexprs) (k ctx (immid sym))
+        let* sym = gensym () in
+        let* expr = k (immid sym) in
+        let ret = alet sym (capp s immexprs) expr in
+        return ret
       | App (f', expr') ->
-        anf ctx (fun ctx immexpr -> aux ctx (immexpr :: immexprs) f') expr'
+        anf
+          (fun immexpr ->
+             let* f' = aux (immexpr :: immexprs) f' in
+             return f')
+          expr'
       | f ->
         anf
-          ctx
-          (fun ctx immf ->
-             let sym, ctx = gensym ctx in
-             let sym', ctx = gensym ctx in
-             alet sym (cimm immf) (alet sym' (capp sym immexprs) (k ctx (immid sym'))))
+          (fun immf ->
+             let* sym = gensym () in
+             let* sym' = gensym () in
+             let* expr = k (immid sym') in
+             return (alet sym (cimm immf) (alet sym' (capp sym immexprs) expr)))
           f
     in
-    aux ctx [] app
+    aux [] app
   | Let (_rec, name, bind, expr) ->
-    let name =
-      match name with
-      | PUnit -> "()"
-      | Plug -> "_"
-      | Ident s -> s
-      | Tuple _ -> failwith "tbd"
+    let* name, lets = arg name in
+    let* () = addsym name in
+    let* ret =
+      anf
+        (fun immbind ->
+           let* expr = anf k expr in
+           let expr =
+             List.fold_right (fun (name, bind) acc -> alet name bind acc) lets expr
+           in
+           let ret = alet name (cimm immbind) expr in
+           return ret)
+        bind
     in
-    let ctx = addsym ctx name in
-    anf ctx (fun ctx immbind -> alet name (cimm immbind) (anf ctx k expr)) bind
+    return ret
   | Ite (cond_, then_, else_) ->
-    anf
-      ctx
-      (fun ctx immcond ->
-         let then_ = anf ctx k then_ in
-         let else_ = anf ctx k else_ in
-         let sym, ctx = gensym ~prefix:"ite" ctx in
-         alet sym (cite immcond then_ else_) (k ctx (immid sym)))
-      cond_
+    let* ret =
+      anf
+        (fun immcond ->
+           let* then_ = anf (fun imm -> return (aexpr (cimm imm))) then_ in
+           let* else_ = anf (fun imm -> return (aexpr (cimm imm))) else_ in
+           let* sym = gensym ~prefix:"ite" () in
+           let* expr = k (immid sym) in
+           let ret = alet sym (cite immcond then_ else_) expr in
+           return ret)
+        cond_
+    in
+    return ret
   | Fun _ -> failwith "should be CC/LL first"
 ;;
 
-let anf = anf { syms = [] } (fun _ctx imm -> aexpr (cimm imm))
+let anf program =
+  List.fold_right
+    (fun a acc ->
+       let* acc = acc in
+       match a with
+       | Ast.LetDecl (rec_flag, name, Fun (args, body)) ->
+         let* args =
+           List.fold_right
+             (fun a acc ->
+                let* acc = acc in
+                let* a = arg a in
+                return (a :: acc))
+             args
+             (return [])
+         in
+         let args, lets = List.split args in
+         let lets = List.concat lets in
+         let* body = anf (fun imm -> return (aexpr (cimm imm))) body in
+         let* name, lets' = arg name in
+         let body =
+           List.fold_right (fun (name, bind) acc -> alet name bind acc) lets body
+         in
+         let ret = decl rec_flag name args body in
+         let lets' =
+           List.map (fun (name, bind) -> decl Ast.nonrec_ name [] (aexpr bind)) lets'
+         in
+         return ((ret :: lets') @ acc)
+       | Ast.LetDecl (rec_flag, name, v) ->
+         let* v = anf (fun imm -> return (aexpr (cimm imm))) v in
+         let* name, lets = arg name in
+         let v = List.fold_right (fun (name, bind) acc -> alet name bind acc) lets v in
+         let ret = decl rec_flag name [] v in
+         return (ret :: acc))
+    program
+    (return [])
+    { syms = [] }
+  |> fst
+;;
 
 let%expect_test "basic" =
   let ast =
@@ -125,20 +235,32 @@ let%expect_test "basic" =
       q ;;
   |}
     |> Result.get_ok
-    |> List.hd
   in
-  match ast with
-  | LetDecl (_, _name, body) ->
-    Format.printf "@[<v 2>@ %a@]@." pp_aexpr (anf body);
-    [%expect
-      {|
-      let sup2 = (*) 2 i in
-      let sup5 = (+) g sup0 in
-      let sup6 = (*) sup5 sup2 in
-      let sup7 = (f) sup6 in
-      let q = sup7 in
+  Format.printf
+    "%a"
+    (Format.pp_print_list ~pp_sep:Format.pp_print_newline pp_decl)
+    (anf ast);
+  [%expect
+    {|
+    let f  =
+      let sup2 =
+        (*) 2 i
+      in
+      let sup5 =
+        (+) g sup0
+      in
+      let sup6 =
+        (*) sup5 sup2
+      in
+      let sup7 =
+        (f) sup6
+      in
+      let q =
+        sup7
+      in
       q
-      |}]
+    ;;
+    |}]
 ;;
 
 let%expect_test "ite" =
@@ -151,23 +273,132 @@ let%expect_test "ite" =
   |}
     |> Result.map_error (fun err -> Format.printf "Error %s" err)
     |> Result.get_ok
-    |> List.hd
   in
-  match ast with
-  | LetDecl (_, _name, body) ->
-    Format.printf "@[<v 2>@ %a@]@." pp_aexpr (anf body);
-    [%expect
-      {|
-      let sup1 = (=) k 1 in
-      let ite2 =
+  Format.printf
+    "%a"
+    (Format.pp_print_list ~pp_sep:Format.pp_print_newline pp_decl)
+    (anf ast);
+  [%expect
+    {|
+    let rec fac  =
+      let sup1 =
+        (=) k 1
+      in
+      let ite7 =
         if sup1 then
           1
         else
-          let sup4 = (-) k 1 in
-          let sup5 = (fac) sup4 in
-          let sup6 = (*) sup5 k in
+          let sup4 =
+            (-) k 1
+          in
+          let sup5 =
+            (fac) sup4
+          in
+          let sup6 =
+            (*) sup5 k
+          in
           sup6
       in
-      ite2
-      |}]
+      ite7
+    ;;
+    |}]
+;;
+
+let%expect_test "task 2" =
+  let asts =
+    Fe.parse
+      {|
+    let main =
+      let x = if (if 0 then 1 else 2)
+              then 0 else 1 in
+      large x
+    ;;
+  |}
+    |> Result.map_error (fun err -> Format.printf "Error %s" err)
+    |> Result.get_ok
+    |> Cc.cc
+    |> Ll.ll
+    |> anf
+  in
+  Format.printf "%a" (Format.pp_print_list ~pp_sep:Format.pp_print_newline pp_decl) asts;
+  [%expect
+    {|
+    let main  =
+      let ite1 =
+        if 0 then 1 else 2
+      in
+      let ite2 =
+        if ite1 then 0 else 1
+      in
+      let x =
+        ite2
+      in
+      let sup4 =
+        (large) x
+      in
+      sup4
+    ;;
+    |}]
+;;
+
+let%expect_test "task 3" =
+  let asts =
+    Fe.parse
+      {|
+    let (f, g) = fun a (b, c) ->
+      let (b1, b2) = b in
+      let (c1, c2) = c in
+      b1 + b2 + c1 + c2
+    ;;
+  |}
+    |> Result.map_error (fun err -> Format.printf "Error %s" err)
+    |> Result.get_ok
+    |> Cc.cc
+    |> Ll.ll
+    |> anf
+  in
+  Format.printf "%a" (Format.pp_print_list ~pp_sep:Format.pp_print_newline pp_decl) asts;
+  [%expect
+    {|
+    let sup14 a sup0 =
+      let b =
+        (nth) sup0 0
+      in
+      let c =
+        (nth) sup0 1
+      in
+      let sup1 =
+        b
+      in
+      let b1 =
+        (nth) sup1 0
+      in
+      let b2 =
+        (nth) sup1 1
+      in
+      let sup4 =
+        c
+      in
+      let c1 =
+        (nth) sup4 0
+      in
+      let c2 =
+        (nth) sup4 1
+      in
+      let sup11 =
+        (+) b1 b2
+      in
+      let sup12 =
+        (+) sup11 c1
+      in
+      let sup13 =
+        (+) sup12 c2
+      in
+      sup13
+    ;;
+
+    let f  = (nth) sup14 0;;
+
+    let g  = (nth) sup14 1;;
+    |}]
 ;;
