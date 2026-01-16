@@ -109,9 +109,20 @@ let ident =
 ;;
 
 let punit = (string "()" |> token) *> return Ast.punit
+let plug = (string "_" |> token) *> return Ast.plug
+
+let tuple pattern =
+  let tuple =
+    let* fpattern = pattern in
+    let* patterns = many (token (char ',') *> pattern) in
+    return (Ast.tuple (fpattern :: patterns))
+  in
+  parens tuple
+;;
 
 let pattern =
-  fix (fun _pattern -> punit <|> (ident >>= fun ident -> return (Ast.ident ident)))
+  fix (fun pattern ->
+    punit <|> plug <|> tuple pattern <|> (ident >>= fun ident -> return (Ast.ident ident)))
 ;;
 
 let const =
@@ -302,11 +313,7 @@ let%expect_test "wrong let ins" =
     ;;
   |};
   [%expect
-    {|
-    expected pattern after 'let': char '('
-    expected expression after 'fun () '
-    expected expression after 'let some_test ='
-    |}]
+    {| expected expression after 'let some_test =': expected ident, but found keyword fun |}]
 ;;
 
 let%expect_test "simple call" =
@@ -346,6 +353,23 @@ let%expect_test "factorial" =
     let g = (+) f 3;;
 
     let h = (*) g 15;;
+    |}]
+;;
+
+let%expect_test "tuples and plugs" =
+  parse_and_print
+    {|
+    let () = _;;
+    let _ = _;;
+    let (a, b) = _;;
+  |};
+  [%expect
+    {|
+    let () = _;;
+
+    let _ = _;;
+
+    let (a, b) = _;;
     |}]
 ;;
 

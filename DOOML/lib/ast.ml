@@ -28,7 +28,7 @@ let rec pp_pattern ppf = function
   | Plug -> Format.fprintf ppf "_"
   | Ident s -> Format.fprintf ppf "%s" s
   | Tuple ss ->
-    Format.fprintf ppf "%a" (Format.pp_print_list ~pp_sep:pp_sep_quote pp_pattern) ss
+    Format.fprintf ppf "(%a)" (Format.pp_print_list ~pp_sep:pp_sep_quote pp_pattern) ss
 ;;
 
 type decl_body = pattern [@@deriving show]
