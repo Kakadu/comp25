@@ -216,15 +216,9 @@ let expr =
     let expr' =
       (let* kw = kw in
        match kw with
-       | "let" ->
-         let* () = commit in
-         let_ expr
-       | "fun" ->
-         let* () = commit in
-         fun_ expr
-       | "if" ->
-         let* () = commit in
-         ite expr
+       | "let" -> let_ expr
+       | "fun" -> fun_ expr
+       | "if" -> ite expr
        | _ -> fail "")
       <|> expr'
     in
@@ -247,8 +241,12 @@ let let_decl =
 let top_level =
   let* kw = kw in
   match kw with
-  | "let" -> let_decl
-  | "type" -> ty
+  | "let" ->
+    let* () = commit in
+    let_decl
+  | "type" ->
+    let* () = commit in
+    ty
   | _ -> fail "expected top level declaration"
 ;;
 
@@ -297,9 +295,15 @@ let%expect_test "use let ins for test" =
     {|
     let some_test =
       fun a b c ->
-        let a_plus_b = (+) a b in
-        let b_plus_c = (+) b c in
-        let c_plus_a = (+) c a in
+        let a_plus_b =
+          (+) a b
+        in
+        let b_plus_c =
+          (+) b c
+        in
+        let c_plus_a =
+          (+) c a
+        in
         5
     ;;
     |}]
@@ -354,6 +358,15 @@ let%expect_test "factorial" =
 
     let h = (*) g 15;;
     |}]
+;;
+
+let%expect_test "ite in ite" =
+  parse_and_print
+    {|
+    let f = if (if 1 then 0 else 0) then 1 else 0;;
+  |};
+  [%expect
+    {| let f = if if 1 then 0 else 0 then 1 else 0;; |}]
 ;;
 
 let%expect_test "tuples and plugs" =

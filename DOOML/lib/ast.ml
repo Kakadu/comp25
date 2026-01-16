@@ -47,9 +47,15 @@ type expr =
   | Fun of pattern list * expr
 [@@deriving variants]
 
+let fun_ args = function
+  | Fun (args', body') -> fun_ (args @ args') body'
+  | body -> fun_ args body
+;;
+
 let rec pp_expr ppf = function
   | Const c -> Format.fprintf ppf "%d" c
   | Var ident -> Format.fprintf ppf "%a" pp_ident ident
+  | App ((Fun _ as f), arg) -> Format.fprintf ppf "(%a) %a" pp_expr f pp_expr arg
   | App (f, (Const _ as arg)) | App (f, (Var _ as arg)) ->
     Format.fprintf ppf "%a %a" pp_expr f pp_expr arg
   | App (f, arg) -> Format.fprintf ppf "%a (%a)" pp_expr f pp_expr arg
@@ -61,7 +67,7 @@ let rec pp_expr ppf = function
     in
     Format.fprintf
       ppf
-      "@[<hv>let %s%a =@;<1 2>@[<hv>%a@]@;<1 0>in@]@;<0 0>%a"
+      "let %s%a =@;<1 2>@[<hv>%a@]@;<1 0>in@;<1 0>%a"
       rec_flag
       pp_pattern
       pattern
