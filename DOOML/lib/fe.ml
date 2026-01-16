@@ -84,7 +84,10 @@ let chainl1 e op =
   e >>= go
 ;;
 
-let kw = take_while1 is_idchar |> token
+let kw =
+  let* kw = take_while1 is_idchar |> token in
+  if Map.mem kws kw then return kw else fail (spf "expected keyword, but found %s" kw)
+;;
 
 let ident =
   let un_ident =
