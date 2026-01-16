@@ -1,7 +1,7 @@
 (library
  (name DOOML)
  (public_name DOOML.Lib)
- (modules Anf Ast Fe State)
+ (modules Anf Ast Builtin Cc Fe Ll State)
  (libraries base stdlib angstrom)
  (inline_tests)
  (preprocess
