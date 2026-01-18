@@ -115,13 +115,11 @@ let rec emit_cexpr binds =
         let then_bb = append_block ~name:"then" the_function in
         position_at_end then_bb;
         let then_lv = emit_aexpr binds then_ in
-        (** in case new block created inside then **)
         let new_then_bb = insertion_block () in
 
         let else_bb = append_block ~name:"else" the_function in
         position_at_end else_bb;
         let else_lv = emit_aexpr binds else_ in
-        (** in case new block created inside else **)
         let new_else_bb = insertion_block () in
 
         let merge_bb = append_block ~name:"merge" the_function in
