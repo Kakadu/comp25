@@ -59,7 +59,7 @@ let emit_capp binds name args =
              (emit_immexpr binds a) :: acc) []
          in
          let typ = lookup_func_type_exn name in
-         build_call ~name:name typ func args_lv
+         build_call typ func args_lv
     | `Fun (func, arity) when argc < arity ->
         let args_lv = args |> List.fold_left
          (fun acc a ->
