@@ -7,14 +7,14 @@ open (val Llvm_wrapper.make context builder the_module)
 
 let failf fmt = Format.kasprintf failwith fmt
 
-let define_ibinop name build_f = 
-    let func = define_func name i64_type [| i64_type; i64_type |] in
+let define_ibinop name ret build_f = 
+    let typ = function_type ret [| i64_type; i64_type |] in
+    let func = define_func name (Llvm.return_type typ) (Llvm.param_types typ) in
     let entry = entry_block func in
     position_at_end entry;
     (match params func with
     | [| lhs; rhs |] ->
         let binop = build_f lhs rhs in
-        let binop = build_intcast binop i64_type in
         build_ret binop |> ignore;
     | _ -> assert false);
     Llvm_analysis.assert_valid_function func
@@ -23,16 +23,15 @@ let emit_builtins () =
     declare_func "print_int" void_type [| i64_type |] |> ignore;
     declare_func "create_closure" i64_type [| i64_type; i64_type; i64_type; i64_type |] |> ignore;
     declare_func "apply_closure" i64_type [| i64_type; i64_type; i64_type |] |> ignore;
-    declare_func "exit2" void_type [| void_type |] |> ignore;
-    define_ibinop "+" build_add;
-    define_ibinop "-" build_sub;
-    define_ibinop "*" build_mul;
-    define_ibinop "/" build_sdiv;
-    define_ibinop "<" (build_icmp Llvm.Icmp.Slt);
-    define_ibinop ">" (build_icmp Llvm.Icmp.Sgt);
-    define_ibinop "<=" (build_icmp Llvm.Icmp.Sle);
-    define_ibinop ">=" (build_icmp Llvm.Icmp.Sge);
-    define_ibinop "=" (build_icmp Llvm.Icmp.Eq)
+    define_ibinop "+" i64_type build_add;
+    define_ibinop "-" i64_type build_sub;
+    define_ibinop "*" i64_type build_mul;
+    define_ibinop "/" i64_type build_sdiv;
+    define_ibinop "<" i1_type (build_icmp Llvm.Icmp.Slt);
+    define_ibinop ">" i1_type (build_icmp Llvm.Icmp.Sgt);
+    define_ibinop "<=" i1_type (build_icmp Llvm.Icmp.Sle);
+    define_ibinop ">=" i1_type (build_icmp Llvm.Icmp.Sge);
+    define_ibinop "=" i1_type (build_icmp Llvm.Icmp.Eq)
 
 let emit_immexpr binds = 
     function
@@ -59,7 +58,8 @@ let emit_capp binds name args =
          (fun acc a ->
              (emit_immexpr binds a) :: acc) []
          in
-         build_call ~name:name func args_lv
+         let typ = lookup_func_type_exn name in
+         build_call ~name:name typ func args_lv
     | `Fun (func, arity) when argc < arity ->
         let args_lv = args |> List.fold_left
          (fun acc a ->
@@ -76,7 +76,8 @@ let emit_capp binds name args =
              build_store a el_ptr |> ignore);
          let argv_lv = build_pointercast argv_lv i64_type ~name:"args_arr_toi64_cast" in 
          let create_closure_args = [ func; arity_lv; argc_lv; argv_lv ] in
-         build_call ~name:name create_closure create_closure_args
+         let typ = lookup_func_type_exn "create_closure" in
+         build_call ~name:name typ create_closure create_closure_args
     | `Fun (_, arity) ->
             failf
            "Too many arguments (%d) are passed for the function %s, expected %d"
@@ -97,14 +98,15 @@ let emit_capp binds name args =
              build_store a el_ptr |> ignore);
          let argv_lv = build_pointercast argv_lv i64_type ~name:"args_arr_toi64_cast" in 
          let apply_closure_args = [ closure; argc_lv; argv_lv ] in
-         build_call ~name:name apply_closure apply_closure_args
+         let typ = lookup_func_type_exn "apply_closure" in
+         build_call ~name:name typ apply_closure apply_closure_args
 
 let rec emit_cexpr binds =
     function
     | Anf.CImm imm -> emit_immexpr binds imm
     | Anf.CIte (cond_, then_, else_) ->
         let cond_lv = emit_immexpr binds cond_ in
-        let zero = const_int i64_type 0 in
+        let zero = const_int i1_type 0 in
         build_icmp Llvm.Icmp.Ne cond_lv zero |> ignore;
 
         let start_bb = insertion_block () in
@@ -166,11 +168,7 @@ let emit_decl (decl: Anf.decl) =
         (match rec_flag with
         | Ast.Rec -> ()
         | Ast.NonRec -> failf "todo");
-        (match name with
-        | "main" -> 
-                let exit = lookup_func_exn "exit2" in
-                build_call ~name:"exit" exit []
-        | _ -> build_ret body) |> ignore;
+        build_ret body |> ignore;
         Llvm_analysis.assert_valid_function f;
         f
 ;;
