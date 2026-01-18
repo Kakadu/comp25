@@ -1,13 +1,15 @@
 (library
  (name DOOML)
  (public_name DOOML.Lib)
- (modules Anf Ast Builtin Cc Fe Ll Riscv State Codegen Llvm_wrapper Ir)
- (libraries base stdlib angstrom
+ (modules Anf Ast Builtin Cc Fe Ll Riscv State Codegen Llvm_wrapper)
+ (libraries
+  base
+  stdlib
+  angstrom
   llvm
   llvm.analysis
   llvm.executionengine
-  llvm.passbuilder
-  )
+  llvm.passbuilder)
  (inline_tests)
  (preprocess
   (pps ppx_expect ppx_deriving.show ppx_variants_conv ppx_inline_test))
