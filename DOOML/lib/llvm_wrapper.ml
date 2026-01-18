@@ -30,7 +30,6 @@ module type S = sig
   val build_br : llbasicblock -> llvalue
   val build_cond_br : llvalue -> llbasicblock -> llbasicblock -> llvalue
   val build_phi : ?name:string -> (llvalue * llbasicblock) list -> llvalue
-
   val build_array_alloca : ?name:string -> lltype -> llvalue -> llvalue
   val build_gep : ?name:string -> llvalue -> llvalue array -> llvalue
 
@@ -48,7 +47,6 @@ module type S = sig
   val build_inttoptr : ?name:string -> llvalue -> lltype -> llvalue
   val build_pointercast : ?name:string -> llvalue -> lltype -> llvalue
   val build_intcast : ?name:string -> llvalue -> lltype -> llvalue
-
   val position_at_end : llbasicblock -> unit
   val append_block : ?name:string -> llvalue -> llbasicblock
   val insertion_block : unit -> llbasicblock
@@ -72,7 +70,6 @@ let make context builder module_ =
     let builder = builder
     let module_ = module_
     let func_types : (string, Llvm.lltype) Hashtbl.t = Hashtbl.create 100
-
     let build_store a b = Llvm.build_store a b builder
 
     let build_call ?(name = "") typ f args =
@@ -92,30 +89,26 @@ let make context builder module_ =
     ;;
 
     let add_func_type name typ = Hashtbl.add func_types name typ
-    let lookup_func_type_exn name = 
-        match Hashtbl.find_opt func_types name with
-        | Some t -> t
-        | None -> failwith (sprintf "Function '%s' not found" name)
 
-
-    let lookup_func fname = lookup_function fname module_
+    let lookup_func_type_exn name =
+      match Hashtbl.find_opt func_types name with
+      | Some t -> t
+      | None -> failwith (sprintf "Function '%s' not found" name)
     ;;
 
+    let lookup_func fname = lookup_function fname module_
+
     let declare_func name ret params =
-        let typ = Llvm.function_type ret params in
-        add_func_type name typ;
-        Llvm.declare_function
-          name
-          typ
-          module_
+      let typ = Llvm.function_type ret params in
+      add_func_type name typ;
+      Llvm.declare_function name typ module_
+    ;;
 
     let define_func name ret params =
-        let typ = Llvm.function_type ret params in
-        add_func_type name typ;
-        Llvm.define_function
-          name
-          typ
-          module_
+      let typ = Llvm.function_type ret params in
+      add_func_type name typ;
+      Llvm.define_function name typ module_
+    ;;
 
     let build_add ?(name = "") l r = build_add l r name builder
     let build_sub ?(name = "") l r = build_sub l r name builder
@@ -130,7 +123,6 @@ let make context builder module_ =
     let build_br bb = build_br bb builder
     let build_cond_br c tb fb = build_cond_br c tb fb builder
     let build_phi ?(name = "") rules = build_phi rules name builder
-
     let build_array_alloca ?(name = "") typ n = Llvm.build_array_alloca typ n name builder
     let build_gep ?(name = "") v ind = Llvm.build_gep (type_of v) v ind name builder
 
