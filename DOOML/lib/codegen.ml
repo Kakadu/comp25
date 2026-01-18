@@ -22,7 +22,7 @@ let define_ibinop name ret build_f =
 let emit_builtins () = 
     declare_func "print_int" void_type [| i64_type |] |> ignore;
     declare_func "create_closure" i64_type [| i64_type; i64_type; i64_type; i64_type |] |> ignore;
-    declare_func "apply_closure" i64_type [| i64_type; i64_type; i64_type |] |> ignore;
+    declare_func "closure_apply" i64_type [| i64_type; i64_type; i64_type |] |> ignore;
     define_ibinop "+" i64_type build_add;
     define_ibinop "-" i64_type build_sub;
     define_ibinop "*" i64_type build_mul;
@@ -92,17 +92,17 @@ let emit_capp binds name args =
          (fun a ->
              emit_immexpr binds a)
          in
-         let apply_closure = lookup_func_exn "apply_closure" in
+         let closure_apply = lookup_func_exn "closure_apply" in
          let argc_lv = const_int i64_type argc in
-         let argv_lv = build_array_alloca ~name:"apply_closure_argv" i64_type argc_lv in
+         let argv_lv = build_array_alloca ~name:"closure_apply_argv" i64_type argc_lv in
          args_lv |> List.iteri
          (fun i a ->
              let el_ptr = build_gep argv_lv [| (const_int i64_type i) |] in
              build_store a el_ptr |> ignore);
          let argv_lv = build_pointercast argv_lv i64_type ~name:"args_arr_toi64_cast" in 
-         let apply_closure_args = [ closure; argc_lv; argv_lv ] in
-         let typ = lookup_func_type_exn "apply_closure" in
-         build_call typ apply_closure apply_closure_args
+         let apply_args = [ closure; argc_lv; argv_lv ] in
+         let typ = lookup_func_type_exn "closure_apply" in
+         build_call typ closure_apply apply_args
 
 let rec emit_cexpr binds =
     function
