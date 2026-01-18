@@ -14,6 +14,7 @@ let define_ibinop name build_f =
     (match params func with
     | [| lhs; rhs |] ->
         let binop = build_f lhs rhs in
+        let binop = build_intcast binop i64_type in
         build_ret binop |> ignore;
     | _ -> assert false);
     Llvm_analysis.assert_valid_function func
