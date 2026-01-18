@@ -194,5 +194,160 @@ let optimize_ir ?(triple = "x86_64-pc-linux-gnu") module_ =
       (match Llvm_passbuilder.run_passes module_ "default<O2>" machine options with
       | Error e -> failf "Optimization error %s" e
       | Ok () -> ());
-    Llvm_passbuilder.dispose_passbuilder_options options;
+    Llvm_passbuilder.dispose_passbuilder_options options
 
+let pp_module ppf module_=
+    Format.fprintf ppf "%s" (Llvm.string_of_llmodule module_)
+
+let%expect_test "basic" =
+  let ast =
+    Fe.parse
+      {|
+    let rec f = fun n ->
+      if n = 1 then 1
+      else (f (n - 1)) * n
+    ;;
+  |}
+    |> Result.map_error (fun err -> Format.printf "Error %s" err)
+    |> Result.get_ok
+  in
+  Format.printf
+    "%a"
+    pp_module
+    (Cc.cc ast
+     |> fun asts ->
+     Format.printf
+       "CC: %a\n\n"
+       (Format.pp_print_list ~pp_sep:Format.pp_print_newline Ast.pp_top_level)
+       asts;
+     asts
+     |> Ll.ll
+     |> fun asts ->
+     Format.printf
+       "LL: %a\n\n"
+       (Format.pp_print_list ~pp_sep:Format.pp_print_newline Ast.pp_top_level)
+       asts;
+     asts
+     |> Anf.anf
+     |> fun asts ->
+     Format.printf
+       "ANF %a\n\n"
+       (Format.pp_print_list ~pp_sep:Format.pp_print_newline Anf.pp_decl)
+       asts;
+     asts |> emit_ir);
+  [%expect
+    {|
+    CC: let rec f = fun n -> if (=) n 1 then 1 else (*) (f ((-) n 1)) n;;
+
+
+    LL: let rec f = fun n -> if (=) n 1 then 1 else (*) (f ((-) n 1)) n;;
+
+
+    ANF let rec f n =
+            let sup1 =
+              (=) n 1
+            in
+            let ite7 =
+              if sup1 then
+                1
+              else
+                let sup4 =
+                  (-) n 1
+                in
+                let sup5 =
+                  (f) sup4
+                in
+                let sup6 =
+                  (*) sup5 n
+                in
+                sup6
+            in
+            ite7
+          ;;
+
+
+    ; ModuleID = 'main'
+    source_filename = "main"
+    target triple = "x86_64-pc-linux-gnu"
+
+    declare void @print_int(i64)
+
+    declare i64 @create_closure(i64, i64, i64, i64)
+
+    declare i64 @apply_closure(i64, i64, i64)
+
+    define i64 @"+"(i64 %0, i64 %1) {
+    entry:
+      %2 = add i64 %0, %1
+      ret i64 %2
+    }
+
+    define i64 @-(i64 %0, i64 %1) {
+    entry:
+      %2 = sub i64 %0, %1
+      ret i64 %2
+    }
+
+    define i64 @"*"(i64 %0, i64 %1) {
+    entry:
+      %2 = mul i64 %0, %1
+      ret i64 %2
+    }
+
+    define i64 @"/"(i64 %0, i64 %1) {
+    entry:
+      %2 = sdiv i64 %0, %1
+      ret i64 %2
+    }
+
+    define i1 @"<"(i64 %0, i64 %1) {
+    entry:
+      %2 = icmp slt i64 %0, %1
+      ret i1 %2
+    }
+
+    define i1 @">"(i64 %0, i64 %1) {
+    entry:
+      %2 = icmp sgt i64 %0, %1
+      ret i1 %2
+    }
+
+    define i1 @"<="(i64 %0, i64 %1) {
+    entry:
+      %2 = icmp sle i64 %0, %1
+      ret i1 %2
+    }
+
+    define i1 @">="(i64 %0, i64 %1) {
+    entry:
+      %2 = icmp sge i64 %0, %1
+      ret i1 %2
+    }
+
+    define i1 @"="(i64 %0, i64 %1) {
+    entry:
+      %2 = icmp eq i64 %0, %1
+      ret i1 %2
+    }
+
+    define i64 @f(i64 %0) {
+    entry:
+      %1 = call i1 @"="(i64 1, i64 %0)
+      %2 = icmp ne i1 %1, false
+      br i1 %1, label %then, label %else
+
+    then:                                             ; preds = %entry
+      br label %merge
+
+    else:                                             ; preds = %entry
+      %3 = call i64 @-(i64 1, i64 %0)
+      %4 = call i64 @f(i64 %3)
+      %5 = call i64 @"*"(i64 %0, i64 %4)
+      br label %merge
+
+    merge:                                            ; preds = %else, %then
+      %ifphi = phi i64 [ 1, %then ], [ %5, %else ]
+      ret i64 %ifphi
+    }
+    |}]
+;;
