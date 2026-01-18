@@ -46,6 +46,7 @@ module type S = sig
   val build_ptrtoint : ?name:string -> llvalue -> lltype -> llvalue
   val build_inttoptr : ?name:string -> llvalue -> lltype -> llvalue
   val build_pointercast : ?name:string -> llvalue -> lltype -> llvalue
+  val build_intcast : ?name:string -> llvalue -> lltype -> llvalue
 
   val position_at_end : llbasicblock -> unit
   val append_block : ?name:string -> llvalue -> llbasicblock
@@ -109,6 +110,7 @@ let make context builder module_ =
     let build_ptrtoint ?(name = "") e typ = Llvm.build_ptrtoint e typ name builder
     let build_inttoptr ?(name = "") e typ = Llvm.build_inttoptr e typ name builder
     let build_pointercast ?(name = "") f typ = Llvm.build_pointercast f typ name builder
+    let build_intcast ?(name = "") v typ = Llvm.build_intcast v typ name builder
     let build_ret v = build_ret v builder
     let build_br bb = build_br bb builder
     let build_cond_br c tb fb = build_cond_br c tb fb builder
