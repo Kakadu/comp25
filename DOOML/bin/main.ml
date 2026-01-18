@@ -23,8 +23,8 @@ let () =
   | [ _exe; input; output ] ->
     let module_ = (match parse input with
      | Error msg -> failf "%s" msg
-     | Ok anf_list -> Codegen.emit_ir anf_list) in
+     | Ok anf_list -> Codegen.emit_ir ~triple:"riscv64-unknown-linux-gnu" anf_list) in
     (* Codegen.optimize_ir module_; *)
-    Llvm.print_module output module_
+        Llvm.print_module output module_
   | _ -> exit 1
 ;;
