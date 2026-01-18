@@ -1,3 +1,2 @@
 val emit_ir : ?triple:string -> Anf.decl list -> Llvm.llmodule
-
 val optimize_ir : ?triple:string -> Llvm.llmodule -> unit
