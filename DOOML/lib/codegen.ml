@@ -33,13 +33,30 @@ let emit_builtins () =
     define_ibinop ">=" i1_type (build_icmp Llvm.Icmp.Sge);
     define_ibinop "=" i1_type (build_icmp Llvm.Icmp.Eq)
 
+let emit_create_closure func args = 
+     let arity = params func |> Array.length in
+    let argc = List.length args in
+     let create_closure = lookup_func_exn "create_closure" in
+     let func = build_pointercast func i64_type ~name:"func_toi64_cast" in 
+     let argc_lv = const_int i64_type argc in
+     let argv_lv = build_array_alloca ~name:"create_closure_argv" i64_type argc_lv in
+     args |> List.iteri
+     (fun i a ->
+         let el_ptr = build_gep argv_lv [| (const_int i64_type i) |] in
+         build_store a el_ptr |> ignore);
+     let argv_lv = build_pointercast argv_lv i64_type ~name:"args_arr_toi64_cast" in 
+     let arity_lv = const_int i64_type arity in
+     build_call (lookup_func_type_exn "create_closure") create_closure [ func; arity_lv; argc_lv; argv_lv ]
+
 let emit_immexpr binds = 
     function
   | Anf.ImmNum n -> const_int i64_type n
   | Anf.ImmId s ->
     (match Map.find binds s with
      | Some lv -> lv
-     | None -> failf "Unbound variable %s" s)
+     | None -> (match lookup_func s with
+        | Some f -> emit_create_closure f []
+        | None -> failf "Unbound variable %s" s))
 
 let emit_capp binds name args = 
     let app_type = match lookup_func name with
@@ -54,30 +71,16 @@ let emit_capp binds name args =
     in 
     match app_type with
     | `Fun (func, arity) when argc == arity ->
-        let args_lv = args |> List.fold_left
-         (fun acc a ->
-             (emit_immexpr binds a) :: acc) []
+        let args_lv = args |> List.map
+         (fun a ->
+             emit_immexpr binds a)
          in
          let typ = lookup_func_type_exn name in
          build_call typ func args_lv
     | `Fun (func, arity) when argc < arity ->
-        let args_lv = args |> List.fold_left
-         (fun acc a ->
-             (emit_immexpr binds a) :: acc) []
-         in
-         let create_closure = lookup_func_exn "create_closure" in
-         let func = build_pointercast func i64_type ~name:"func_toi64_cast" in 
-         let argc_lv = const_int i64_type argc in
-         let arity_lv = const_int i64_type arity in
-         let argv_lv = build_array_alloca ~name:"create_closure_argv" i64_type argc_lv in
-         args_lv |> List.iteri
-         (fun i a ->
-             let el_ptr = build_gep argv_lv [| (const_int i64_type i) |] in
-             build_store a el_ptr |> ignore);
-         let argv_lv = build_pointercast argv_lv i64_type ~name:"args_arr_toi64_cast" in 
-         let create_closure_args = [ func; arity_lv; argc_lv; argv_lv ] in
-         let typ = lookup_func_type_exn "create_closure" in
-         build_call ~name:name typ create_closure create_closure_args
+        let args = args |> List.map
+        (fun a -> emit_immexpr binds a) in
+        emit_create_closure func args
     | `Fun (_, arity) ->
             failf
            "Too many arguments (%d) are passed for the function %s, expected %d"
@@ -85,9 +88,9 @@ let emit_capp binds name args =
            name
            arity
     | `Closure closure ->
-        let args_lv = args |> List.fold_left
-         (fun acc a ->
-             (emit_immexpr binds a) :: acc) []
+        let args_lv = args |> List.map
+         (fun a ->
+             emit_immexpr binds a)
          in
          let apply_closure = lookup_func_exn "apply_closure" in
          let argc_lv = const_int i64_type argc in
@@ -99,7 +102,7 @@ let emit_capp binds name args =
          let argv_lv = build_pointercast argv_lv i64_type ~name:"args_arr_toi64_cast" in 
          let apply_closure_args = [ closure; argc_lv; argv_lv ] in
          let typ = lookup_func_type_exn "apply_closure" in
-         build_call ~name:name typ apply_closure apply_closure_args
+         build_call typ apply_closure apply_closure_args
 
 let rec emit_cexpr binds =
     function
@@ -153,9 +156,9 @@ let emit_decl (decl: Anf.decl) =
     | Anf.Decl (rec_flag, name, par, body) ->
         (if has_toplevel_func name then failf "Function redefinition %s" name);
         let declare () = List.map (fun _ -> i64_type) par |> Array.of_list |> declare_func name i64_type in
-        let f = match rec_flag with
+        let f = (match rec_flag with
         | Ast.Rec -> declare ()
-        | Ast.NonRec -> failf "todo" in
+        | Ast.NonRec -> failf "todo") in
         let par_binds = par |>
             List.mapi (fun i a -> (i, a)) |> 
             List.fold_left (fun acc (i, a) -> 
