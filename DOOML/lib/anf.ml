@@ -145,7 +145,7 @@ let rec anf (k : immexpr -> Ctx.t -> aexpr * Ctx.t) = function
       | [] ->
         let* tsym = gensym () in
         let* expr = k (immid tsym) in
-        return (alet tsym (cimm (immtuple immexprs)) expr)
+        return (alet tsym (cimm (immtuple (List.rev immexprs))) expr)
       | hd :: tl -> anf (fun immhd -> anf_list (immhd :: immexprs) tl) hd
     in
     anf_list [] exprs
