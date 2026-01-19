@@ -56,12 +56,8 @@ let fun_ args = function
 let rec pp_expr ppf = function
   | Const c -> Format.fprintf ppf "%d" c
   | Var ident -> Format.fprintf ppf "%a" pp_ident ident
-  | Tuple exprs -> 
-    Format.fprintf
-      ppf
-      "(%a)"
-      (Format.pp_print_list ~pp_sep:pp_sep_quote pp_expr)
-      exprs
+  | Tuple exprs ->
+    Format.fprintf ppf "(%a)" (Format.pp_print_list ~pp_sep:pp_sep_quote pp_expr) exprs
   | App ((Fun _ as f), arg) -> Format.fprintf ppf "(%a) %a" pp_expr f pp_expr arg
   | App (f, (Const _ as arg)) | App (f, (Var _ as arg)) ->
     Format.fprintf ppf "%a %a" pp_expr f pp_expr arg

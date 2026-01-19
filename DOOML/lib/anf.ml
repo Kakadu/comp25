@@ -1,11 +1,18 @@
 type immexpr =
   | ImmNum of int
   | ImmId of string
+  | ImmTuple of immexpr list
 [@@deriving variants]
 
-let pp_immexpr ppf = function
+let rec pp_immexpr ppf = function
   | ImmNum d -> Format.fprintf ppf "%d" d
   | ImmId s -> Format.fprintf ppf "%s" s
+  | ImmTuple s ->
+    Format.fprintf
+      ppf
+      "(%a)"
+      (Format.pp_print_list ~pp_sep:(fun ppf () -> Format.fprintf ppf ", ") pp_immexpr)
+      s
 ;;
 
 type cexpr =
@@ -133,8 +140,15 @@ let rec anf (k : immexpr -> Ctx.t -> aexpr * Ctx.t) = function
     let* () = addsym s in
     let* ret = k (immid s) in
     return ret
-  | Tuple _ -> 
-        failwith "todo tuples anf"
+  | Tuple exprs ->
+    let rec anf_list immexprs = function
+      | [] ->
+        let* tsym = gensym () in
+        let* expr = k (immid tsym) in
+        return (alet tsym (cimm (immtuple immexprs)) expr)
+      | hd :: tl -> anf (fun immhd -> anf_list (immhd :: immexprs) tl) hd
+    in
+    anf_list [] exprs
   | App _ as app ->
     let rec aux immexprs = function
       | Ast.Var s ->

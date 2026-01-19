@@ -96,8 +96,16 @@ let rec cc = function
   | Var name as v ->
     let* () = capture name in
     return v
-  | Tuple _ -> 
-        failwith "todo tuples cc"
+  | Tuple exprs ->
+    let rec cc_list = function
+      | [] -> return []
+      | hd :: tl ->
+        let* hd = cc hd in
+        let* tl = cc_list tl in
+        return (hd :: tl)
+    in
+    let* exprs = cc_list exprs in
+    return (Ast.tuple exprs)
   | Fun (args', body') ->
     (* fix rec here *)
     let* ctx' = of_args args' in
