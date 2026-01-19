@@ -7,7 +7,6 @@
 [@@@ocaml.text "/*"]
 
 open Llvm
-open Printf
 
 module type S = sig
   val context : Llvm.llcontext
