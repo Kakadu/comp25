@@ -189,7 +189,6 @@ let optimize_ir ?(triple = "x86_64-pc-linux-gnu") module_ =
         ~triple:triple target in
     let options = Llvm_passbuilder.create_passbuilder_options () in
     Llvm_passbuilder.passbuilder_options_set_verify_each options true;
-    Llvm_passbuilder.passbuilder_options_set_debug_logging options true;
     Llvm_passbuilder.passbuilder_options_set_slp_vectorization options true;
     Llvm_passbuilder.passbuilder_options_set_merge_functions options true;
     Llvm_passbuilder.passbuilder_options_set_inliner_threshold options 2;
