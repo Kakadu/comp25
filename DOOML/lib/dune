@@ -9,7 +9,8 @@
   llvm
   llvm.analysis
   llvm.executionengine
-  llvm.passbuilder)
+  llvm.passbuilder
+  llvm.all_backends)
  (inline_tests)
  (preprocess
   (pps ppx_expect ppx_deriving.show ppx_variants_conv ppx_inline_test))
