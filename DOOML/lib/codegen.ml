@@ -38,6 +38,8 @@ let emit_builtins () =
     [ declare_external "print_int" i64_type [| i64_type |];
     declare_internal "create_closure" i64_type [| i64_type; i64_type; i64_type; i64_type |];
     declare_internal "closure_apply" i64_type [| i64_type; i64_type; i64_type |];
+    declare_internal "create_tuple" i64_type [| i64_type; i64_type |];
+    declare_internal "tuple_nth" i64_type [| i64_type; i64_type |];
     define_ibinop "+" i64_type build_add;
     define_ibinop "-" i64_type build_sub;
     define_ibinop "*" i64_type build_mul;
@@ -63,7 +65,19 @@ let emit_create_closure funcs func args =
      let arity_lv = const_int i64_type arity in
      build_call typ create_closure [ func; arity_lv; argc_lv; argv_lv ]
 
-let emit_immexpr binds funcs = 
+let emit_create_tuple funcs init =
+    let size = List.length init in
+     let size_lv = const_int i64_type size in
+     let init_lv = build_array_alloca ~name:"create_tuple_init" i64_type size_lv in
+     init |> List.iteri
+     (fun i a ->
+         let el_ptr = build_gep init_lv [| (const_int i64_type i) |] in
+         build_store a el_ptr |> ignore);
+     let init_lv = build_pointercast init_lv i64_type ~name:"init_arr_toi64_cast" in 
+     let (create_tuple, typ, _) = Map.find_exn funcs "create_tuple" in
+     build_call typ create_tuple [ size_lv; init_lv ]
+
+let rec emit_immexpr binds funcs = 
     function
   | Anf.ImmNum n -> const_int i64_type n
   | Anf.ImmId s ->
@@ -73,7 +87,9 @@ let emit_immexpr binds funcs =
         | Some (f, _, External) -> emit_create_closure funcs f []
         | Some _
         | None -> failf "Unbound variable %s" s))
-  | Anf.ImmTuple _ -> failf "todo"
+  | Anf.ImmTuple immexprs -> 
+        let init = List.map (fun immexpr -> emit_immexpr binds funcs immexpr) immexprs in
+        emit_create_tuple funcs init
 
 let emit_capp binds funcs name args = 
     let app_type = match Map.find funcs name with
