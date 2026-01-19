@@ -15,12 +15,8 @@ module type S = sig
   val builder : Llvm.llbuilder
   val build_store : Llvm.llvalue -> Llvm.llvalue -> Llvm.llvalue
   val build_call : ?name:string -> lltype -> llvalue -> llvalue list -> llvalue
-  val lookup_func_exn : string -> llvalue
-  val lookup_func : string -> llvalue option
-  val lookup_func_type_exn : string -> lltype
   val define_func : string -> Llvm.lltype -> Llvm.lltype array -> Llvm.llvalue
   val declare_func : string -> Llvm.lltype -> Llvm.lltype array -> Llvm.llvalue
-  val has_toplevel_func : string -> bool
   val build_add : ?name:string -> llvalue -> llvalue -> llvalue
   val build_sub : ?name:string -> llvalue -> llvalue -> llvalue
   val build_mul : ?name:string -> llvalue -> llvalue -> llvalue
@@ -43,10 +39,7 @@ module type S = sig
 
   (* ?? *)
 
-  val build_ptrtoint : ?name:string -> llvalue -> lltype -> llvalue
-  val build_inttoptr : ?name:string -> llvalue -> lltype -> llvalue
   val build_pointercast : ?name:string -> llvalue -> lltype -> llvalue
-  val build_intcast : ?name:string -> llvalue -> lltype -> llvalue
   val position_at_end : llbasicblock -> unit
   val append_block : ?name:string -> llvalue -> llbasicblock
   val insertion_block : unit -> llbasicblock
@@ -69,44 +62,19 @@ let make context builder module_ =
     let context = context
     let builder = builder
     let module_ = module_
-    let func_types : (string, Llvm.lltype) Hashtbl.t = Hashtbl.create 100
     let build_store a b = Llvm.build_store a b builder
 
     let build_call ?(name = "") typ f args =
       build_call typ f (Array.of_list args) name builder
     ;;
 
-    let has_toplevel_func fname =
-      match lookup_function fname module_ with
-      | Some _ -> true
-      | None -> false
-    ;;
-
-    let lookup_func_exn fname =
-      match lookup_function fname module_ with
-      | Some f -> f
-      | None -> failwith (sprintf "Function '%s' not found" fname)
-    ;;
-
-    let add_func_type name typ = Hashtbl.add func_types name typ
-
-    let lookup_func_type_exn name =
-      match Hashtbl.find_opt func_types name with
-      | Some t -> t
-      | None -> failwith (sprintf "Function '%s' not found" name)
-    ;;
-
-    let lookup_func fname = lookup_function fname module_
-
     let declare_func name ret params =
       let typ = Llvm.function_type ret params in
-      add_func_type name typ;
       Llvm.declare_function name typ module_
     ;;
 
     let define_func name ret params =
       let typ = Llvm.function_type ret params in
-      add_func_type name typ;
       Llvm.define_function name typ module_
     ;;
 
@@ -115,10 +83,7 @@ let make context builder module_ =
     let build_mul ?(name = "") l r = build_mul l r name builder
     let build_sdiv ?(name = "") l r = build_sdiv l r name builder
     let build_icmp ?(name = "") op l r = build_icmp op l r name builder
-    let build_ptrtoint ?(name = "") e typ = Llvm.build_ptrtoint e typ name builder
-    let build_inttoptr ?(name = "") e typ = Llvm.build_inttoptr e typ name builder
     let build_pointercast ?(name = "") f typ = Llvm.build_pointercast f typ name builder
-    let build_intcast ?(name = "") v typ = Llvm.build_intcast v typ name builder
     let build_ret v = build_ret v builder
     let build_br bb = build_br bb builder
     let build_cond_br c tb fb = build_cond_br c tb fb builder
