@@ -11,7 +11,7 @@ module Ctx = struct
   let rec of_pattern = function
     | Ast.PUnit | Plug -> Scope.empty
     | Ident s -> Scope.singleton s
-    | Tuple patterns ->
+    | PTuple patterns ->
       List.map of_pattern patterns |> List.fold_left Scope.union Scope.empty
   ;;
 
@@ -96,6 +96,8 @@ let rec cc = function
   | Var name as v ->
     let* () = capture name in
     return v
+  | Tuple _ -> 
+        failwith "todo tuples cc"
   | Fun (args', body') ->
     (* fix rec here *)
     let* ctx' = of_args args' in
