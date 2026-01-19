@@ -126,7 +126,7 @@ let rec arg = function
     in
     let* sym = gensym () in
     let lets =
-      List.mapi (fun i (name, _) -> name, capp "nth" [ immid sym; immnum i ]) els
+      List.mapi (fun i (name, _) -> name, capp "tuple_nth" [ immid sym; immnum i ]) els
     in
     let lets = lets @ List.concat_map snd els in
     return (sym, lets)

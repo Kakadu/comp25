@@ -26,13 +26,13 @@ static int64_t *xmalloc(int64_t size) {
 
 typedef int64_t *tuple_t;
 
-tuple_t create_tuple(int64_t size, int64_t init) {
+int64_t create_tuple(int64_t size, int64_t init) {
   tuple_t tuple = xmalloc(size + 1);
   tuple[0] = size;
   for (int64_t i = 0; i < size; i++)
     tuple[i + 1] = ((int64_t*) init)[i];
 
-  return tuple;
+  return (int64_t) tuple;
 }
 
 int64_t tuple_nth(int64_t tuple, int64_t i) {
