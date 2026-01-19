@@ -73,6 +73,7 @@ let emit_immexpr binds funcs =
         | Some (f, _, External) -> emit_create_closure funcs f []
         | Some _
         | None -> failf "Unbound variable %s" s))
+  | Anf.ImmTuple _ -> failf "todo"
 
 let emit_capp binds funcs name args = 
     let app_type = match Map.find funcs name with

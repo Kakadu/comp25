@@ -54,8 +54,16 @@ open State
 let rec ll = function
   | Ast.Const _ as c -> return c
   | Var _ as v -> return v
-  | Tuple _ -> 
-        failwith "todo tuples ll"
+  | Tuple exprs ->
+    let rec ll_list = function
+      | [] -> return []
+      | hd :: tl ->
+        let* hd = ll hd in
+        let* tl = ll_list tl in
+        return (hd :: tl)
+    in
+    let* exprs = ll_list exprs in
+    return (Ast.tuple exprs)
   | Fun (args', body') ->
     let* body' = ll body' in
     let* f = lift args' body' in

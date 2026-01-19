@@ -407,6 +407,7 @@ let immexpr reg = function
        let* () = emit (ld reg offset bp) in
        return reg
      | None -> failf "Unknown variable %s" var)
+  | Anf.ImmTuple _ -> failf "todo"
 ;;
 
 let rec cexpr =
