@@ -7,6 +7,10 @@ open (val Llvm_wrapper.make context builder the_module)
 
 let failf fmt = Format.kasprintf failwith fmt
 
+type visibility =
+    | Internal
+    | External
+
 let define_ibinop name ret build_f = 
     let typ = function_type ret [| i64_type; i64_type |] in
     let func = define_func name (Llvm.return_type typ) (Llvm.param_types typ) in
@@ -17,12 +21,23 @@ let define_ibinop name ret build_f =
         let binop = build_f lhs rhs in
         build_ret binop |> ignore;
     | _ -> assert false);
-    Llvm_analysis.assert_valid_function func
+    Llvm_analysis.assert_valid_function func;
+    ( name, (func, typ, External) )
+
+let declare_internal name ret params = 
+    let f = declare_func name ret params in
+    let t = function_type ret params in
+    ( name, (f, t, Internal ) )
+
+let declare_external name ret params = 
+    let f = declare_func name ret params in
+    let t = function_type ret params in
+    ( name, (f, t, External ) )
 
 let emit_builtins () = 
-    declare_func "print_int" void_type [| i64_type |] |> ignore;
-    declare_func "create_closure" i64_type [| i64_type; i64_type; i64_type; i64_type |] |> ignore;
-    declare_func "closure_apply" i64_type [| i64_type; i64_type; i64_type |] |> ignore;
+    [ declare_external "print_int" void_type [| i64_type |];
+    declare_internal "create_closure" i64_type [| i64_type; i64_type; i64_type; i64_type |];
+    declare_internal "closure_apply" i64_type [| i64_type; i64_type; i64_type |];
     define_ibinop "+" i64_type build_add;
     define_ibinop "-" i64_type build_sub;
     define_ibinop "*" i64_type build_mul;
@@ -31,12 +46,12 @@ let emit_builtins () =
     define_ibinop ">" i1_type (build_icmp Llvm.Icmp.Sgt);
     define_ibinop "<=" i1_type (build_icmp Llvm.Icmp.Sle);
     define_ibinop ">=" i1_type (build_icmp Llvm.Icmp.Sge);
-    define_ibinop "=" i1_type (build_icmp Llvm.Icmp.Eq)
+    define_ibinop "=" i1_type (build_icmp Llvm.Icmp.Eq) ] |> Map.of_alist_exn
 
-let emit_create_closure func args = 
+let emit_create_closure funcs func args = 
      let arity = params func |> Array.length in
     let argc = List.length args in
-     let create_closure = lookup_func_exn "create_closure" in
+     let (create_closure, typ, _) = Map.find_exn funcs "create_closure" in
      let func = build_pointercast func i64_type ~name:"func_toi64_cast" in 
      let argc_lv = const_int i64_type argc in
      let argv_lv = build_array_alloca ~name:"create_closure_argv" i64_type argc_lv in
@@ -46,23 +61,25 @@ let emit_create_closure func args =
          build_store a el_ptr |> ignore);
      let argv_lv = build_pointercast argv_lv i64_type ~name:"args_arr_toi64_cast" in 
      let arity_lv = const_int i64_type arity in
-     build_call (lookup_func_type_exn "create_closure") create_closure [ func; arity_lv; argc_lv; argv_lv ]
+     build_call typ create_closure [ func; arity_lv; argc_lv; argv_lv ]
 
-let emit_immexpr binds = 
+let emit_immexpr binds funcs = 
     function
   | Anf.ImmNum n -> const_int i64_type n
   | Anf.ImmId s ->
     (match Map.find binds s with
      | Some lv -> lv
-     | None -> (match lookup_func s with
-        | Some f -> emit_create_closure f []
+     | None -> (match Map.find funcs s with
+        | Some (f, _, External) -> emit_create_closure funcs f []
+        | Some _
         | None -> failf "Unbound variable %s" s))
 
-let emit_capp binds name args = 
-    let app_type = match lookup_func name with
+let emit_capp binds funcs name args = 
+    let app_type = match Map.find funcs name with
     (** binops are defined inside llvm ir and processed as regular functions
         they will be inlined **)
-    | Some func -> `Fun (func, params func |> Array.length)
+    | Some (func, typ, External) -> `Fun (func, typ, params func |> Array.length)
+    | Some _
     | None -> (match Map.find binds name with
         | Some closure -> `Closure closure
         | None -> failf "Unbound application %s" name)
@@ -70,18 +87,17 @@ let emit_capp binds name args =
     let argc = List.length args
     in 
     match app_type with
-    | `Fun (func, arity) when argc == arity ->
+    | `Fun (func, typ, arity) when argc == arity ->
         let args_lv = args |> List.map
          (fun a ->
-             emit_immexpr binds a)
+             emit_immexpr binds funcs a)
          in
-         let typ = lookup_func_type_exn name in
          build_call typ func args_lv
-    | `Fun (func, arity) when argc < arity ->
+    | `Fun (func, _, arity) when argc < arity ->
         let args = args |> List.map
-        (fun a -> emit_immexpr binds a) in
-        emit_create_closure func args
-    | `Fun (_, arity) ->
+        (fun a -> emit_immexpr binds funcs a) in
+        emit_create_closure funcs func args
+    | `Fun (_, _, arity) ->
             failf
            "Too many arguments (%d) are passed for the function %s, expected %d"
            argc
@@ -90,9 +106,9 @@ let emit_capp binds name args =
     | `Closure closure ->
         let args_lv = args |> List.map
          (fun a ->
-             emit_immexpr binds a)
+             emit_immexpr binds funcs a)
          in
-         let closure_apply = lookup_func_exn "closure_apply" in
+         let (closure_apply, typ, _) = Map.find_exn funcs "closure_apply" in
          let argc_lv = const_int i64_type argc in
          let argv_lv = build_array_alloca ~name:"closure_apply_argv" i64_type argc_lv in
          args_lv |> List.iteri
@@ -101,14 +117,13 @@ let emit_capp binds name args =
              build_store a el_ptr |> ignore);
          let argv_lv = build_pointercast argv_lv i64_type ~name:"args_arr_toi64_cast" in 
          let apply_args = [ closure; argc_lv; argv_lv ] in
-         let typ = lookup_func_type_exn "closure_apply" in
          build_call typ closure_apply apply_args
 
-let rec emit_cexpr binds =
+let rec emit_cexpr binds funcs =
     function
-    | Anf.CImm imm -> emit_immexpr binds imm
+    | Anf.CImm imm -> emit_immexpr binds funcs imm
     | Anf.CIte (cond_, then_, else_) ->
-        let cond_lv = emit_immexpr binds cond_ in
+        let cond_lv = emit_immexpr binds funcs cond_ in
         let zero = const_int i1_type 0 in
         build_icmp Llvm.Icmp.Ne cond_lv zero |> ignore;
 
@@ -117,12 +132,12 @@ let rec emit_cexpr binds =
 
         let then_bb = append_block ~name:"then" the_function in
         position_at_end then_bb;
-        let then_lv = emit_aexpr binds then_ in
+        let then_lv = emit_aexpr binds funcs then_ in
         let new_then_bb = insertion_block () in
 
         let else_bb = append_block ~name:"else" the_function in
         position_at_end else_bb;
-        let else_lv = emit_aexpr binds else_ in
+        let else_lv = emit_aexpr binds funcs else_ in
         let new_else_bb = insertion_block () in
 
         let merge_bb = append_block ~name:"merge" the_function in
@@ -141,44 +156,44 @@ let rec emit_cexpr binds =
 
         phi
     | Anf.CApp (name, args) ->
-        emit_capp binds name args
+        emit_capp binds funcs name args
 
-and emit_aexpr binds = function
-    | Anf.AExpr expr -> emit_cexpr binds expr
+and emit_aexpr binds funcs = function
+    | Anf.AExpr expr -> emit_cexpr binds funcs expr
     | Anf.ALet (pattern, bind, body) -> 
-        let bind_lv = emit_cexpr binds bind in
+        let bind_lv = emit_cexpr binds funcs bind in
         let binds = Map.update binds pattern ~f:(fun _ -> bind_lv) in
-        emit_aexpr binds body
+        emit_aexpr binds funcs body
 
-
-let emit_decl (decl: Anf.decl) = 
+let emit_decl funcs (decl: Anf.decl) = 
     match decl with
     | Anf.Decl (rec_flag, name, par, body) ->
-        (if has_toplevel_func name then failf "Function redefinition %s" name);
-        let declare () = List.map (fun _ -> i64_type) par |> Array.of_list |> declare_func name i64_type in
-        let f = (match rec_flag with
-        | Ast.Rec -> declare ()
-        | Ast.NonRec -> failf "todo") in
+        (if Map.find funcs name != None then failf "Function redefinition %s" name);
+        let (_, funcs_entry) = List.map (fun _ -> i64_type) par |> Array.of_list |> declare_external name i64_type in
+        let (f, _, _) = funcs_entry in
+        let funcs = (match rec_flag with
+        | Ast.Rec -> funcs |> Map.add_exn ~key:name ~data:funcs_entry
+        | Ast.NonRec -> funcs) in
         let par_binds = par |>
             List.mapi (fun i a -> (i, a)) |> 
             List.fold_left (fun acc (i, a) -> 
                 (a, (params f).(i)) :: acc) [ ] |> Map.of_alist_exn in
         let entry_bb = append_block ~name:"entry" f in
         position_at_end entry_bb;
-        let body = emit_aexpr par_binds body in
-        (match rec_flag with
-        | Ast.Rec -> ()
-        | Ast.NonRec -> failf "todo");
+        let body = emit_aexpr par_binds funcs body in
         build_ret body |> ignore;
+        let funcs = (match rec_flag with
+        | Ast.Rec -> funcs
+        | Ast.NonRec -> funcs |> Map.add_exn ~key:name ~data:funcs_entry) in
         Llvm_analysis.assert_valid_function f;
-        f
+        funcs
 ;;
 
 let emit_ir ?(triple = "x86_64-pc-linux-gnu") program  =
     assert (Llvm_executionengine.initialize ());
     Llvm.set_target_triple triple the_module;
-    emit_builtins ();
-    List.iter (fun d -> emit_decl d |> ignore) program;
+    let funcs = emit_builtins () in
+    List.fold_left (fun funcs d -> emit_decl funcs d) funcs program |> ignore;
     Llvm_all_backends.initialize ();
     the_module
 
