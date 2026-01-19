@@ -111,18 +111,18 @@ let ident =
 let punit = (string "()" |> token) *> return Ast.punit
 let plug = (string "_" |> token) *> return Ast.plug
 
-let tuple pattern =
+let ptuple pattern =
   let tuple =
     let* fpattern = pattern in
     let* patterns = many (token (char ',') *> pattern) in
-    return (Ast.tuple (fpattern :: patterns))
+    return (Ast.ptuple (fpattern :: patterns))
   in
   parens tuple
 ;;
 
 let pattern =
   fix (fun pattern ->
-    punit <|> plug <|> tuple pattern <|> (ident >>= fun ident -> return (Ast.ident ident)))
+    punit <|> plug <|> ptuple pattern <|> (ident >>= fun ident -> return (Ast.ident ident)))
 ;;
 
 let const =
@@ -200,6 +200,15 @@ let ite expr =
   Ast.ite cond then_ else_ |> return
 ;;
 
+let tuple expr =
+  let tuple =
+    let* fexpr = expr in
+    let* exprs = many (token (char ',') *> expr) in
+    return (Ast.tuple (fexpr :: exprs))
+  in
+  parens tuple
+;;
+
 let expr =
   fix (fun expr ->
     let expr' =
@@ -207,7 +216,7 @@ let expr =
       match c with
       | Some '0' .. '9' -> const
       | Some '(' ->
-        let* r = parens expr <|> var in
+        let* r = parens expr <|> tuple expr <|> var in
         r |> return
       | _ -> var
     in

@@ -20,14 +20,14 @@ type pattern =
   | PUnit (** () *)
   | Plug (** _ *)
   | Ident of ident
-  | Tuple of pattern list
+  | PTuple of pattern list
 [@@deriving variants]
 
 let rec pp_pattern ppf = function
   | PUnit -> Format.fprintf ppf "()"
   | Plug -> Format.fprintf ppf "_"
   | Ident s -> Format.fprintf ppf "%s" s
-  | Tuple ss ->
+  | PTuple ss ->
     Format.fprintf ppf "(%a)" (Format.pp_print_list ~pp_sep:pp_sep_quote pp_pattern) ss
 ;;
 
@@ -41,6 +41,7 @@ type rec_flag =
 type expr =
   | Const of int
   | Var of ident
+  | Tuple of expr list
   | App of expr * expr
   | Let of rec_flag * pattern * expr * expr
   | Ite of expr * expr * expr
@@ -55,6 +56,12 @@ let fun_ args = function
 let rec pp_expr ppf = function
   | Const c -> Format.fprintf ppf "%d" c
   | Var ident -> Format.fprintf ppf "%a" pp_ident ident
+  | Tuple exprs -> 
+    Format.fprintf
+      ppf
+      "(%a)"
+      (Format.pp_print_list ~pp_sep:pp_sep_quote pp_expr)
+      exprs
   | App ((Fun _ as f), arg) -> Format.fprintf ppf "(%a) %a" pp_expr f pp_expr arg
   | App (f, (Const _ as arg)) | App (f, (Var _ as arg)) ->
     Format.fprintf ppf "%a %a" pp_expr f pp_expr arg

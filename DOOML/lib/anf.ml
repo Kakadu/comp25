@@ -107,7 +107,7 @@ let rec arg = function
   | Ast.PUnit -> return ("()", [])
   | Ast.Plug -> return ("_", [])
   | Ast.Ident name -> return (name, [])
-  | Ast.Tuple els ->
+  | Ast.PTuple els ->
     let* els =
       List.fold_right
         (fun a acc ->
@@ -133,6 +133,8 @@ let rec anf (k : immexpr -> Ctx.t -> aexpr * Ctx.t) = function
     let* () = addsym s in
     let* ret = k (immid s) in
     return ret
+  | Tuple _ -> 
+        failwith "todo tuples anf"
   | App _ as app ->
     let rec aux immexprs = function
       | Ast.Var s ->
