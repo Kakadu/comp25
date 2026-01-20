@@ -39,7 +39,7 @@ let emit_builtins () =
     declare_internal "create_closure" i64_type [| i64_type; i64_type; i64_type; i64_type |];
     declare_internal "closure_apply" i64_type [| i64_type; i64_type; i64_type |];
     declare_internal "create_tuple" i64_type [| i64_type; i64_type |];
-    declare_internal "tuple_nth" i64_type [| i64_type; i64_type |];
+    declare_external "tuple_nth" i64_type [| i64_type; i64_type |];
     define_ibinop "+" i64_type build_add;
     define_ibinop "-" i64_type build_sub;
     define_ibinop "*" i64_type build_mul;
