@@ -215,11 +215,11 @@ let optimize_ir ?(triple = "x86_64-pc-linux-gnu") module_ =
       | Ok () -> ());
     Llvm_passbuilder.dispose_passbuilder_options options
 
-let emit_binary ?(triple = "x86_64-pc-linux-gnu") module_ file = 
+let emit_binary ?(triple = "x86_64-pc-linux-gnu") ?(features = "") module_ file = 
     let target = Llvm_target.Target.by_triple triple in
     let machine =
       Llvm_target.TargetMachine.create
-        ~triple:triple target in
+        ~triple:triple ~features:features target in
     Llvm_target.TargetMachine.emit_to_file module_ Llvm_target.CodeGenFileType.ObjectFile file machine
 
 let pp_module ppf module_=
