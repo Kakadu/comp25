@@ -19,18 +19,24 @@
 
 (rule
  (targets runtime.so)
- (deps runtime.c)
+ (deps runtime/runtime.c runtime/call-runtime.h runtime/any-call-runtime.c)
  (action
   (run gcc -fPIC -shared %{deps} -o %{targets} -lffi)))
 
 (rule
- (targets riscv64-runtime.o)
- (deps riscv-runtime.c)
+ (targets riscv-call-runtime.o)
+ (deps runtime/riscv-call-runtime.c runtime/call-runtime.h)
  (action
-  (run riscv64-linux-gnu-gcc -o %{targets} -c %{deps})))
+  (run riscv64-linux-gnu-gcc -c %{deps})))
+
+(rule
+ (targets runtime.o)
+ (deps runtime/runtime.c runtime/call-runtime.h)
+ (action
+  (run riscv64-linux-gnu-gcc -c %{deps})))
 
 (rule
  (targets riscv64-runtime.a)
- (deps riscv64-runtime.o)
+ (deps runtime.o riscv-call-runtime.o)
  (action
   (run riscv64-linux-gnu-ar rcs %{targets} %{deps})))
