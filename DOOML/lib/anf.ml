@@ -378,28 +378,28 @@ let%expect_test "task 3" =
     {|
     let sup14 a sup0 =
       let b =
-        (nth) sup0 0
+        (tuple_nth) sup0 0
       in
       let c =
-        (nth) sup0 1
+        (tuple_nth) sup0 1
       in
       let sup1 =
         b
       in
       let b1 =
-        (nth) sup1 0
+        (tuple_nth) sup1 0
       in
       let b2 =
-        (nth) sup1 1
+        (tuple_nth) sup1 1
       in
       let sup4 =
         c
       in
       let c1 =
-        (nth) sup4 0
+        (tuple_nth) sup4 0
       in
       let c2 =
-        (nth) sup4 1
+        (tuple_nth) sup4 1
       in
       let sup11 =
         (+) b1 b2
@@ -413,8 +413,8 @@ let%expect_test "task 3" =
       sup13
     ;;
 
-    let f  = (nth) sup14 0;;
+    let f  = (tuple_nth) sup14 0;;
 
-    let g  = (nth) sup14 1;;
+    let g  = (tuple_nth) sup14 1;;
     |}]
 ;;
