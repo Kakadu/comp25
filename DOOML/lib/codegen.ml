@@ -11,14 +11,24 @@ type visibility =
     | Internal
     | External
 
-let define_ibinop name ret build_f = 
+let unbox funcs v =
+    let (f, typ, _) = Map.find_exn funcs "unbox" in
+    build_call typ f [ v ]
+
+let box_imm funcs imm =
+    let (f, typ, _) = Map.find_exn funcs "box_imm" in
+    build_call typ f [ imm ]
+
+let define_ibinop ?(box_ret = false) funcs name ret build_f =
     let typ = function_type ret [| i64_type; i64_type |] in
     let func = define_func name (Llvm.return_type typ) (Llvm.param_types typ) in
     let entry = entry_block func in
     position_at_end entry;
     (match params func with
     | [| lhs; rhs |] ->
+        let (lhs, rhs) = (unbox funcs lhs, unbox funcs rhs) in
         let binop = build_f lhs rhs in
+        let binop = if box_ret then box_imm funcs binop else binop in
         build_ret binop |> ignore;
     | _ -> assert false);
     Llvm_analysis.assert_valid_function func;
@@ -35,20 +45,25 @@ let declare_external name ret params =
     ( name, (f, t, External ) )
 
 let emit_builtins () = 
-    [ declare_external "print_int" i64_type [| i64_type |];
+    let rt = [ declare_external "print_int" i64_type [| i64_type |];
     declare_internal "create_closure" i64_type [| i64_type; i64_type; i64_type; i64_type |];
     declare_internal "closure_apply" i64_type [| i64_type; i64_type; i64_type |];
     declare_internal "create_tuple" i64_type [| i64_type; i64_type |];
     declare_external "tuple_nth" i64_type [| i64_type; i64_type |];
-    define_ibinop "+" i64_type build_add;
-    define_ibinop "-" i64_type build_sub;
-    define_ibinop "*" i64_type build_mul;
-    define_ibinop "/" i64_type build_sdiv;
-    define_ibinop "<" i1_type (build_icmp Llvm.Icmp.Slt);
-    define_ibinop ">" i1_type (build_icmp Llvm.Icmp.Sgt);
-    define_ibinop "<=" i1_type (build_icmp Llvm.Icmp.Sle);
-    define_ibinop ">=" i1_type (build_icmp Llvm.Icmp.Sge);
-    define_ibinop "=" i1_type (build_icmp Llvm.Icmp.Eq) ] |> Map.of_alist_exn
+    declare_internal "unbox" i64_type [| i64_type |];
+    declare_internal "box_imm" i64_type [| i64_type |];
+    declare_internal "init_gc" void_type [| |];
+    ] |> Map.of_alist_exn in
+    let binops =[ define_ibinop ~box_ret:true rt "+" i64_type build_add;
+    define_ibinop ~box_ret:true rt "-" i64_type build_sub;
+    define_ibinop ~box_ret:true rt "*" i64_type build_mul;
+    define_ibinop ~box_ret:true rt "/" i64_type build_sdiv;
+    define_ibinop rt "<" i1_type (build_icmp Llvm.Icmp.Slt);
+    define_ibinop rt ">" i1_type (build_icmp Llvm.Icmp.Sgt);
+    define_ibinop rt "<=" i1_type (build_icmp Llvm.Icmp.Sle);
+    define_ibinop rt ">=" i1_type (build_icmp Llvm.Icmp.Sge);
+    define_ibinop rt "=" i1_type (build_icmp Llvm.Icmp.Eq) ] |> Map.of_alist_exn in
+    Map.merge_disjoint_exn rt binops
 
 let emit_create_closure funcs func args = 
      let arity = params func |> Array.length in
@@ -79,7 +94,7 @@ let emit_create_tuple funcs init =
 
 let rec emit_immexpr binds funcs = 
     function
-  | Anf.ImmNum n -> const_int i64_type n
+  | Anf.ImmNum n -> const_int i64_type n |> box_imm funcs
   | Anf.ImmId s ->
     (match Map.find binds s with
      | Some lv -> lv
@@ -200,7 +215,11 @@ let emit_decl funcs (decl: Anf.decl) =
         | `Ok m ->  m in
         let entry_bb = append_block ~name:"entry" f in
         position_at_end entry_bb;
+        (if name = "main" then 
+            let (init, init_t, _) = Map.find_exn funcs "init_gc" in
+            build_call init_t init [ ] |> ignore);
         let body = emit_aexpr par_binds funcs body in
+        let body = if name = "main" then unbox funcs body else body in
         build_ret body |> ignore;
         let funcs = (match rec_flag with
         | Ast.Rec -> funcs
