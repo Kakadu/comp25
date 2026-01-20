@@ -367,6 +367,10 @@ let%expect_test "basic" =
       ret i64 %2
     }
 
+    declare i64 @tuple_nth(i64, i64)
+
+    declare i64 @create_tuple(i64, i64)
+
     declare i64 @closure_apply(i64, i64, i64)
 
     declare i64 @create_closure(i64, i64, i64, i64)
