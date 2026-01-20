@@ -21,13 +21,14 @@ let parse input =
 let () =
   match Array.to_list Sys.argv with
   | [ _exe; input; output ] ->
-    let triple = "riscv64-unknown-linux-gnu" in
+    let riscv_triple = "riscv64-unknown-linux-gnu" in
+    let riscv_features = "+d" in
     let module_ =
       match parse input with
       | Error msg -> failf "%s" msg
-      | Ok anf_list -> Codegen.emit_ir ~triple anf_list
+      | Ok anf_list -> Codegen.emit_ir ~triple:riscv_triple anf_list
     in
-    Codegen.optimize_ir ~triple module_;
-    Codegen.emit_binary ~triple module_ output
+    Codegen.optimize_ir ~triple:riscv_triple module_;
+    Codegen.emit_binary ~triple:riscv_triple ~features:riscv_features module_ output
   | _ -> exit 1
 ;;
