@@ -296,51 +296,9 @@ let%expect_test "basic" =
     source_filename = "main"
     target triple = "x86_64-pc-linux-gnu"
 
-    declare void @print_int(i64)
-
-    declare i64 @create_closure(i64, i64, i64, i64)
-
-    declare i64 @apply_closure(i64, i64, i64)
-
-    define i64 @"+"(i64 %0, i64 %1) {
+    define i1 @"="(i64 %0, i64 %1) {
     entry:
-      %2 = add i64 %0, %1
-      ret i64 %2
-    }
-
-    define i64 @-(i64 %0, i64 %1) {
-    entry:
-      %2 = sub i64 %0, %1
-      ret i64 %2
-    }
-
-    define i64 @"*"(i64 %0, i64 %1) {
-    entry:
-      %2 = mul i64 %0, %1
-      ret i64 %2
-    }
-
-    define i64 @"/"(i64 %0, i64 %1) {
-    entry:
-      %2 = sdiv i64 %0, %1
-      ret i64 %2
-    }
-
-    define i1 @"<"(i64 %0, i64 %1) {
-    entry:
-      %2 = icmp slt i64 %0, %1
-      ret i1 %2
-    }
-
-    define i1 @">"(i64 %0, i64 %1) {
-    entry:
-      %2 = icmp sgt i64 %0, %1
-      ret i1 %2
-    }
-
-    define i1 @"<="(i64 %0, i64 %1) {
-    entry:
-      %2 = icmp sle i64 %0, %1
+      %2 = icmp eq i64 %0, %1
       ret i1 %2
     }
 
@@ -350,15 +308,57 @@ let%expect_test "basic" =
       ret i1 %2
     }
 
-    define i1 @"="(i64 %0, i64 %1) {
+    define i1 @"<="(i64 %0, i64 %1) {
     entry:
-      %2 = icmp eq i64 %0, %1
+      %2 = icmp sle i64 %0, %1
       ret i1 %2
     }
 
+    define i1 @">"(i64 %0, i64 %1) {
+    entry:
+      %2 = icmp sgt i64 %0, %1
+      ret i1 %2
+    }
+
+    define i1 @"<"(i64 %0, i64 %1) {
+    entry:
+      %2 = icmp slt i64 %0, %1
+      ret i1 %2
+    }
+
+    define i64 @"/"(i64 %0, i64 %1) {
+    entry:
+      %2 = sdiv i64 %0, %1
+      ret i64 %2
+    }
+
+    define i64 @"*"(i64 %0, i64 %1) {
+    entry:
+      %2 = mul i64 %0, %1
+      ret i64 %2
+    }
+
+    define i64 @-(i64 %0, i64 %1) {
+    entry:
+      %2 = sub i64 %0, %1
+      ret i64 %2
+    }
+
+    define i64 @"+"(i64 %0, i64 %1) {
+    entry:
+      %2 = add i64 %0, %1
+      ret i64 %2
+    }
+
+    declare i64 @closure_apply(i64, i64, i64)
+
+    declare i64 @create_closure(i64, i64, i64, i64)
+
+    declare void @print_int(i64)
+
     define i64 @f(i64 %0) {
     entry:
-      %1 = call i1 @"="(i64 1, i64 %0)
+      %1 = call i1 @"="(i64 %0, i64 1)
       %2 = icmp ne i1 %1, false
       br i1 %1, label %then, label %else
 
@@ -366,9 +366,9 @@ let%expect_test "basic" =
       br label %merge
 
     else:                                             ; preds = %entry
-      %3 = call i64 @-(i64 1, i64 %0)
+      %3 = call i64 @-(i64 %0, i64 1)
       %4 = call i64 @f(i64 %3)
-      %5 = call i64 @"*"(i64 %0, i64 %4)
+      %5 = call i64 @"*"(i64 %4, i64 %0)
       br label %merge
 
     merge:                                            ; preds = %else, %then
