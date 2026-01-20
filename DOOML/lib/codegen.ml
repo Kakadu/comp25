@@ -177,7 +177,10 @@ let emit_decl funcs (decl: Anf.decl) =
         let par_binds = par |>
             List.mapi (fun i a -> (i, a)) |> 
             List.fold_left (fun acc (i, a) -> 
-                (a, (params f).(i)) :: acc) [ ] |> Map.of_alist_exn in
+                (a, (params f).(i)) :: acc) [ ] |> Map.of_alist in
+        let par_binds = match par_binds with
+        | `Duplicate_key k -> failf "Multiple parameters %s in fun %s" k name
+        | `Ok m ->  m in
         let entry_bb = append_block ~name:"entry" f in
         position_at_end entry_bb;
         let body = emit_aexpr par_binds funcs body in
