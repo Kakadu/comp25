@@ -18,6 +18,6 @@ let all =
   ; { name = "&&"; arity = 2 }
   ; { name = "||"; arity = 2 }
   ; { name = "print_int"; arity = 1 }
-  ; { name = "nth"; arity = 2 }
+  ; { name = "tuple_nth"; arity = 2 }
   ]
 ;;
