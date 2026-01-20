@@ -3,14 +3,12 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
 #define MEM 65536
 
 typedef long int64_t;
-
-__attribute__((aligned(16)))
-int64_t mem[MEM];
 
 typedef struct {
     uint32_t size;
@@ -48,14 +46,19 @@ typedef struct {
     int64_t callee;
     int64_t arity;
     int64_t argc;
-    int64_t *args;
+    int64_t args[];
 } GCClosure;
 
 typedef struct {
     GCObjHeader header;
     int64_t size;
-    int64_t *fields;
+    int64_t fields[];
 } GCTuple;
+
+typedef struct {
+    GCObjHeader header;
+    int64_t ptr;
+} GCForward;
 
 static const uint64_t GC_BANK_SIZE = MEM;
 static GC gc;
@@ -97,15 +100,20 @@ int64_t *alloc_gc(uint32_t size, GCObjTag tag) {
     return ptr;
 }
 
-static int64_t ptr = 0;
-static int64_t *xmalloc(int64_t size) {
-  int64_t *res = &(mem[ptr]);
-  ptr += size;
-  return res;
+int64_t box_imm(int64_t n) {
+    return (n << 1) + 1;
+}
+
+int64_t unbox_imm(int64_t n) {
+    return n >> 1;
+}
+
+bool is_imm(int64_t n) {
+    return n | 1;
 }
 
 int64_t create_tuple(int64_t size, int64_t init) {
-  GCTuple *tuple = (GCTuple *)alloc_gc(sizeof(GCTuple), Tuple);
+  GCTuple *tuple = (GCTuple *)alloc_gc(sizeof(GCTuple) + size, Tuple);
   tuple->size = size;
   for (int64_t i = 0; i < size; i++)
     tuple->fields[i] = ((int64_t*) init)[i];
@@ -126,7 +134,7 @@ int64_t create_closure(int64_t callee, int64_t arity, int64_t argc, int64_t argv
 
   int64_t *argv = (int64_t*) argv_;
 
-  GCClosure *closure = (GCClosure *)alloc_gc(sizeof(GCClosure), Closure);
+  GCClosure *closure = (GCClosure *)alloc_gc(sizeof(GCClosure) + arity, Closure);
   closure->callee = callee;
   closure->arity = arity;
   closure->argc = argc;
@@ -142,7 +150,7 @@ int64_t create_closure(int64_t callee, int64_t arity, int64_t argc, int64_t argv
 GCClosure *copy_closure(GCClosure *closure) {
   debugf("> copy_closure(%ld)\n", (int64_t) closure);
 
-  GCClosure *closure2 = (GCClosure *)alloc_gc(sizeof(GCClosure), Closure);
+  GCClosure *closure2 = (GCClosure *)alloc_gc(sizeof(GCClosure) + closure->arity, Closure);
   closure2->callee = closure->callee;
   closure2->arity = closure->arity;
   closure2->argc = closure->argc;
