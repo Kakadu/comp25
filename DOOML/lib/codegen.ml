@@ -35,7 +35,7 @@ let declare_external name ret params =
     ( name, (f, t, External ) )
 
 let emit_builtins () = 
-    [ declare_external "print_int" void_type [| i64_type |];
+    [ declare_external "print_int" i64_type [| i64_type |];
     declare_internal "create_closure" i64_type [| i64_type; i64_type; i64_type; i64_type |];
     declare_internal "closure_apply" i64_type [| i64_type; i64_type; i64_type |];
     define_ibinop "+" i64_type build_add;

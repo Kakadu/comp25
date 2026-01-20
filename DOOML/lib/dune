@@ -21,11 +21,11 @@
  (targets runtime.so)
  (deps runtime.c)
  (action
-  (run gcc -fPIC -shared %{deps} -o %{targets})))
+  (run gcc -fPIC -shared %{deps} -o %{targets} -lffi)))
 
 (rule
  (targets riscv64-runtime.o)
- (deps runtime.c)
+ (deps riscv-runtime.c)
  (action
   (run riscv64-linux-gnu-gcc -o %{targets} -c %{deps})))
 
