@@ -1,7 +1,8 @@
+#include "call-runtime.h"
+
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <ffi.h>
 #include <stdlib.h>
 
 #define MEM 65536
@@ -93,26 +94,7 @@ int64_t closure_apply(int64_t closure_, int64_t argc, int64_t argv_) {
 
   if (closure[2] >= closure[1]) {
     debugf("  closure_apply: calling %ld %ld %ld\n", closure[0], closure[1], (int64_t) &(closure[3]));
-
-    ffi_cif func;
-
-    int64_t arity = closure[1];
-    ffi_type *args_t[arity];
-    void *args_v[arity];
-    for (int64_t i = 0; i < arity; i++) {
-        args_t[i] = &ffi_type_sint64;
-        args_v[i] = &closure[i + 3];
-    }
-
-    if (ffi_prep_cif(&func, FFI_DEFAULT_ABI, arity, &ffi_type_sint64, args_t) != FFI_OK) {
-        debugf("closure call failed");
-        exit(1);
-    }
-
-    ffi_sarg ret;
-    ffi_call(&func, FFI_FN(closure[0]), &ret, args_v);
-
-    return ret;
+    return call_function((void*) closure[0], closure[1], &(closure[3]));
   } else {
     debugf("  closure_apply: returning a new closure %ld %ld %ld\n", closure[0], closure[1], (int64_t) &(closure[3]));
     return (int64_t) closure;
