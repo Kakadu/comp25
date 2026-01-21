@@ -50,6 +50,7 @@ module type S = sig
   val entry_block : Llvm.llvalue -> Llvm.llbasicblock
   val i64_type : Llvm.lltype
   val i1_type : Llvm.lltype
+  val ptr_type : Llvm.lltype
   val function_type : lltype -> lltype array -> lltype
   val const_int : Llvm.lltype -> int -> Llvm.llvalue
   val params : Llvm.llvalue -> Llvm.llvalue array
@@ -108,6 +109,7 @@ let make context builder module_ =
     let void_type = Llvm.void_type context
     let i64_type = Llvm.i64_type context
     let i1_type = Llvm.i1_type context
+    let ptr_type = Llvm.pointer_type context
     let function_type = Llvm.function_type
     let const_int = Llvm.const_int
     let params = Llvm.params
