@@ -52,7 +52,10 @@ let emit_builtins () =
     declare_external "tuple_nth" i64_type [| i64_type; i64_type |];
     declare_internal "unbox" i64_type [| i64_type |];
     declare_internal "box_imm" i64_type [| i64_type |];
-    declare_internal "init_gc" void_type [| |];
+    declare_internal "gc_init" void_type [| |];
+    declare_internal "sp_init" void_type [| i64_type |];
+    declare_internal "llvm.stacksave.p0" ptr_type [| |];
+    declare_external "collect" void_type [| |];
     ] |> Map.of_alist_exn in
     let binops =[ define_ibinop ~box_ret:true rt "+" i64_type build_add;
     define_ibinop ~box_ret:true rt "-" i64_type build_sub;
@@ -216,8 +219,13 @@ let emit_decl funcs (decl: Anf.decl) =
         let entry_bb = append_block ~name:"entry" f in
         position_at_end entry_bb;
         (if name = "main" then 
-            let (init, init_t, _) = Map.find_exn funcs "init_gc" in
-            build_call init_t init [ ] |> ignore);
+            let (gc_init, gc_init_t, _) = Map.find_exn funcs "gc_init" in
+            build_call gc_init_t gc_init [ ] |> ignore;
+            let (sp_init, sp_init_t, _) = Map.find_exn funcs "sp_init" in
+            let (ss, ss_t, _) = Map.find_exn funcs "llvm.stacksave.p0" in
+            let sp = build_call ss_t ss [ ] in
+            let sp = build_pointercast sp i64_type in
+            build_call sp_init_t sp_init [ sp ] |> ignore);
         let body = emit_aexpr par_binds funcs body in
         let body = if name = "main" then unbox funcs body else body in
         build_ret body |> ignore;
