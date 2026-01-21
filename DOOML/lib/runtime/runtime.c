@@ -62,10 +62,11 @@ typedef struct {
 
 static const uint64_t GC_BANK_SIZE = MEM;
 static GC gc;
+static int64_t *initial_sp; 
 
 #define debugf printf
 
-void init_gc() {
+void gc_init() {
     GCStats init_stats = {
         .runs = 0,
         .bank_idx = 0,
@@ -83,15 +84,27 @@ void init_gc() {
     gc = init_gc;
 }
 
-int64_t *alloc_gc(uint32_t size, GCObjTag tag) {
+void sp_init(int64_t sp) {
+    initial_sp = (int64_t *)sp;
+}
+
+void collect();
+
+int64_t *gc_alloc(uint32_t size, GCObjTag tag) {
     int64_t *ptr = gc.free_space_start;
     uint32_t taken_bytes = ((uint32_t) (ptr - gc.from_bank_start)) / 8;
     uint32_t free_space = gc.from_bank_size - taken_bytes;
     debugf("> alloc_gc(%u): had %u free space\n", size, free_space);
 
     if (free_space < size) {
-        fprintf(stderr, "GC OOM\n");
-        exit(1);
+        collect();
+        ptr = gc.free_space_start;
+        taken_bytes = ((uint32_t) (ptr - gc.from_bank_start)) / 8;
+        free_space = gc.from_bank_size - taken_bytes;
+        if (free_space < size) {
+            fprintf(stderr, "GC OOM\n");
+            exit(1);
+        }
     }
 
     gc.free_space_start += size * 8;
@@ -101,6 +114,25 @@ int64_t *alloc_gc(uint32_t size, GCObjTag tag) {
     ((GCObjHeader *)ptr)->tag = tag;
 
     return ptr;
+}
+
+GCClosure *gc_alloc_closure_base(int64_t callee, int64_t arity, int64_t argc) {
+  GCClosure *closure = (GCClosure *)gc_alloc(sizeof(GCClosure) + arity * 8, Closure);
+  closure->callee = callee;
+  closure->arity = arity;
+  closure->argc = argc;
+  return closure;
+}
+
+GCTuple *gc_alloc_tuple_base(int64_t size) {
+  GCTuple *tuple = (GCTuple *)gc_alloc(sizeof(GCTuple) + size * 8, Tuple);
+  tuple->size = size;
+  return tuple;
+}
+
+void gc_make_fwd(int64_t ptr, int64_t new_ptr) {
+    ((GCObjHeader *)ptr)->tag = Forward;
+    ((GCForward *)ptr)->ptr = new_ptr;
 }
 
 int64_t box_imm(int64_t n) {
@@ -118,9 +150,95 @@ int64_t unbox(int64_t n) {
     return n >> 1;
 }
 
+int64_t *get_sp() {
+    return (int64_t *)__builtin_frame_address(0);
+}
+
+int64_t gc_scan_ptrs_on_stack(int64_t *range_start, int64_t *range_end, int64_t** ptrs) {
+    int64_t *sp = get_sp(); 
+    int64_t ptrs_idx = 0;
+    // start from stack bottom to preserve order for minimizing forward ptr usages
+    for (int64_t i = 0; initial_sp + i < sp; i++) {
+        int64_t stack_val = initial_sp[i];
+        if (!is_imm(stack_val) && stack_val > (int64_t)range_start && stack_val < (int64_t)range_end) {
+            ptrs[ptrs_idx] = initial_sp + i;
+            ptrs_idx += 1;
+        }
+    }
+
+    return ptrs_idx;
+}
+
+int64_t gc_mark_and_copy(int64_t ptr) {
+    GCObjTag tag = ((GCObjHeader *)ptr)->tag;
+    if (tag == Forward) {
+        return ((GCForward *)ptr)->ptr;
+    }
+
+    GCObjTag size = ((GCObjHeader *)ptr)->tag;
+
+    if (tag == Closure) {
+        GCClosure *closure = (GCClosure *)ptr;
+        GCClosure *closure2 = gc_alloc_closure_base(closure->callee, closure->arity, closure->argc);
+
+        for (int64_t i = 0; i < closure2->argc; i++) {
+            int64_t arg = closure->args[i];
+            if (is_imm(arg)) {
+                closure2->args[i] = arg;
+            } else {
+                closure2->args[i] = gc_mark_and_copy(arg);
+            }
+        }
+
+        gc_make_fwd(ptr, (int64_t)closure2);
+        return (int64_t)closure2;
+    }
+
+    if (tag == Tuple) {
+        GCTuple *tuple = (GCTuple *)ptr;
+        GCTuple *tuple2 = gc_alloc_tuple_base(tuple->size);
+
+        for (int64_t i = 0; i < tuple2->size; i++) {
+            int64_t field = tuple->fields[i];
+            if (is_imm(field)) {
+                tuple2->fields[i] = field;
+            } else {
+                tuple2->fields[i] = gc_mark_and_copy(field);
+            }
+        }
+
+        gc_make_fwd(ptr, (int64_t)tuple2);
+        return (int64_t)tuple2;
+    }
+
+    fprintf(stderr, "unknown gc tag %u\n", tag);
+    exit(1);
+}
+
+void collect() {
+    int64_t *ptrs[UINT32_MAX];
+    int64_t ptrs_size = gc_scan_ptrs_on_stack(gc.from_bank_start, gc.free_space_start, ptrs);
+
+    int64_t *to_bank_start = gc.to_bank_start;
+    int64_t to_bank_size = gc.to_bank_size;
+    gc.to_bank_start = gc.from_bank_start;
+    gc.from_bank_start = to_bank_start;
+    gc.to_bank_size = gc.from_bank_size;
+    gc.from_bank_size = to_bank_size;
+    gc.free_space_start = gc.from_bank_start;
+    gc.stats.bank_idx = 1 - gc.stats.bank_idx;
+    gc.stats.size = 0;
+
+    for (int64_t i = 0; i < ptrs_size; i++) {
+        int64_t *old_ptr_on_stack = ptrs[i];
+        *old_ptr_on_stack = gc_mark_and_copy(*old_ptr_on_stack);
+    }
+
+    gc.stats.runs += 1;
+}
+
 int64_t create_tuple(int64_t size, int64_t init) {
-  GCTuple *tuple = (GCTuple *)alloc_gc(sizeof(GCTuple) + size * 8, Tuple);
-  tuple->size = size;
+  GCTuple *tuple = gc_alloc_tuple_base(size);
   for (int64_t i = 0; i < size; i++) {
     tuple->fields[i] = ((int64_t*) init)[i];
   }
@@ -143,13 +261,9 @@ int64_t create_closure(int64_t callee, int64_t arity, int64_t argc, int64_t argv
 
   debugf("> create_closure(%ld, %ld, %ld, %ld)\n", callee, arity, argc, argv_);
 
+  GCClosure *closure = gc_alloc_closure_base(callee, arity, argc);
+
   int64_t *argv = (int64_t*) argv_;
-
-  GCClosure *closure = (GCClosure *)alloc_gc(sizeof(GCClosure) + arity * 8, Closure);
-  closure->callee = callee;
-  closure->arity = arity;
-  closure->argc = argc;
-
   for (int64_t i = 0; i < argc; i++) {
     closure->args[i] = argv[i];
   }
@@ -161,10 +275,7 @@ int64_t create_closure(int64_t callee, int64_t arity, int64_t argc, int64_t argv
 GCClosure *copy_closure(GCClosure *closure) {
   debugf("> copy_closure(%ld)\n", (int64_t) closure);
 
-  GCClosure *closure2 = (GCClosure *)alloc_gc(sizeof(GCClosure) + closure->arity * 8, Closure);
-  closure2->callee = closure->callee;
-  closure2->arity = closure->arity;
-  closure2->argc = closure->argc;
+  GCClosure *closure2 = gc_alloc_closure_base(closure->callee, closure->arity, closure->argc);
   for (int64_t i = 0; i < closure->argc; i++) {
     closure2->args[i] = closure->args[i];
   }
