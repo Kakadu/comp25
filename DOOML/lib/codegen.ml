@@ -55,7 +55,7 @@ let emit_builtins () =
     declare_internal "gc_init" void_type [| |];
     declare_internal "sp_init" void_type [| i64_type |];
     declare_internal "llvm.stacksave.p0" ptr_type [| |];
-    declare_external "collect" void_type [| |];
+    declare_external "collect" void_type [| i64_type |];
     ] |> Map.of_alist_exn in
     let binops =[ define_ibinop ~box_ret:true rt "+" i64_type build_add;
     define_ibinop ~box_ret:true rt "-" i64_type build_sub;
@@ -98,6 +98,7 @@ let emit_create_tuple funcs init =
 let rec emit_immexpr binds funcs = 
     function
   | Anf.ImmNum n -> const_int i64_type n |> box_imm funcs
+  | Anf.ImmUnit -> const_int i64_type 0 |> box_imm funcs
   | Anf.ImmId s ->
     (match Map.find binds s with
      | Some lv -> lv

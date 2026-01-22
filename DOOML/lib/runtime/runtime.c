@@ -88,7 +88,7 @@ void sp_init(int64_t sp) {
     initial_sp = (int64_t *)sp;
 }
 
-void collect();
+void gc_collect();
 
 int64_t *gc_alloc(uint32_t size, GCObjTag tag) {
     int64_t *ptr = gc.free_space_start;
@@ -97,7 +97,7 @@ int64_t *gc_alloc(uint32_t size, GCObjTag tag) {
     debugf("> alloc_gc(%u): had %u free space\n", size, free_space);
 
     if (free_space < size) {
-        collect();
+        gc_collect();
         ptr = gc.free_space_start;
         taken_bytes = ((uint32_t) (ptr - gc.from_bank_start)) / 8;
         free_space = gc.from_bank_size - taken_bytes;
@@ -215,7 +215,7 @@ int64_t gc_mark_and_copy(int64_t ptr) {
     exit(1);
 }
 
-void collect() {
+void gc_collect() {
     int64_t *ptrs[UINT32_MAX];
     int64_t ptrs_size = gc_scan_ptrs_on_stack(gc.from_bank_start, gc.free_space_start, ptrs);
 
@@ -235,6 +235,10 @@ void collect() {
     }
 
     gc.stats.runs += 1;
+}
+
+void collect(int64_t unit) {
+    gc_collect();
 }
 
 int64_t create_tuple(int64_t size, int64_t init) {

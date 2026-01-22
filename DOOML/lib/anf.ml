@@ -1,11 +1,13 @@
 type immexpr =
   | ImmNum of int
+  | ImmUnit
   | ImmId of string
   | ImmTuple of immexpr list
 [@@deriving variants]
 
 let rec pp_immexpr ppf = function
   | ImmNum d -> Format.fprintf ppf "%d" d
+  | ImmUnit -> Format.fprintf ppf "()"
   | ImmId s -> Format.fprintf ppf "%s" s
   | ImmTuple s ->
     Format.fprintf
@@ -134,7 +136,12 @@ let rec arg = function
 
 let rec anf (k : immexpr -> Ctx.t -> aexpr * Ctx.t) = function
   | Ast.Const d ->
-    let* ret = k (immnum d) in
+    let imm =
+      match d with
+      | Ast.CInt d -> immnum d
+      | Ast.CUnit -> ImmUnit
+    in
+    let* ret = k imm in
     return ret
   | Var s ->
     let* () = addsym s in
