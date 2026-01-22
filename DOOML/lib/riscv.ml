@@ -400,6 +400,7 @@ let immexpr reg = function
   | Anf.ImmNum c ->
     let* () = emit (li reg c) in
     return reg
+  | Anf.ImmUnit -> failf "todo"
   | ImmId var ->
     let* offset = offset var in
     (match offset with
