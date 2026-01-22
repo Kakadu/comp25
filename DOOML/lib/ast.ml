@@ -38,8 +38,13 @@ type rec_flag =
   | NonRec
 [@@deriving variants]
 
+type const =
+    | CInt of int
+    | CUnit
+[@@deriving variants]
+
 type expr =
-  | Const of int
+  | Const of const
   | Var of ident
   | Tuple of expr list
   | App of expr * expr
@@ -53,8 +58,12 @@ let fun_ args = function
   | body -> fun_ args body
 ;;
 
+let pp_const ppf = function
+  | CInt c -> Format.fprintf ppf "%d" c
+  | CUnit -> Format.fprintf ppf "()"
+
 let rec pp_expr ppf = function
-  | Const c -> Format.fprintf ppf "%d" c
+  | Const c -> Format.fprintf ppf "%a" pp_const c
   | Var ident -> Format.fprintf ppf "%a" pp_ident ident
   | Tuple exprs ->
     Format.fprintf ppf "(%a)" (Format.pp_print_list ~pp_sep:pp_sep_quote pp_expr) exprs

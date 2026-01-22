@@ -126,8 +126,9 @@ let pattern =
 ;;
 
 let const =
-  let* v = take_while1 is_digit |> token in
-  v |> int_of_string |> Ast.const |> return
+  (string "()" |> token) *> return (Ast.cunit |> Ast.const) <|>
+  (let* v = take_while1 is_digit |> token in
+  v |> int_of_string |> Ast.cint |> Ast.const |> return)
 ;;
 
 let var =
@@ -216,7 +217,7 @@ let expr =
       match c with
       | Some '0' .. '9' -> const
       | Some '(' ->
-        let* r = parens expr <|> tuple expr <|> var in
+        let* r = const <|> parens expr <|> tuple expr <|> var in
         r |> return
       | _ -> var
     in
