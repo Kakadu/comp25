@@ -117,7 +117,7 @@ void sp_init() {
 
 void print_obj_helper(int64_t ptr) {
     if (is_imm(ptr)) {
-        printf("int %ld", ptr);
+        printf("int %ld", unbox(ptr));
         return;
     }
     GCObjTag tag = ((GCObjHeader *)ptr)->tag;
