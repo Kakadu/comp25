@@ -221,6 +221,9 @@ int64_t gc_mark_and_copy(int64_t ptr) {
         GCClosure *closure = (GCClosure *)ptr;
         GCClosure *closure2 = gc_alloc_closure_base(closure->callee, closure->arity, closure->argc);
 
+        // rewrites header and callee
+        gc_make_fwd(ptr, (int64_t)closure2);
+
         for (int64_t i = 0; i < closure2->argc; i++) {
             int64_t arg = closure->args[i];
             if (is_imm(arg)) {
@@ -230,13 +233,15 @@ int64_t gc_mark_and_copy(int64_t ptr) {
             }
         }
 
-        gc_make_fwd(ptr, (int64_t)closure2);
         return (int64_t)closure2;
     }
 
     if (tag == Tuple) {
         GCTuple *tuple = (GCTuple *)ptr;
         GCTuple *tuple2 = gc_alloc_tuple_base(tuple->size);
+
+        // rewrites header and size
+        gc_make_fwd(ptr, (int64_t)tuple2);
 
         for (int64_t i = 0; i < tuple2->size; i++) {
             int64_t field = tuple->fields[i];
@@ -247,7 +252,6 @@ int64_t gc_mark_and_copy(int64_t ptr) {
             }
         }
 
-        gc_make_fwd(ptr, (int64_t)tuple2);
         return (int64_t)tuple2;
     }
 
