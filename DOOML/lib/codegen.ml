@@ -55,6 +55,9 @@ let emit_builtins () =
     declare_internal "gc_init" void_type [| |];
     declare_internal "sp_init" void_type [| |];
     declare_external "collect" void_type [| i64_type |];
+    declare_external "get_heap_start" i64_type [| i64_type |];
+    declare_external "get_heap_fin" i64_type [| i64_type |];
+    declare_external "print_gc_status" void_type [| i64_type |];
     ] |> Map.of_alist_exn in
     let binops =[ define_ibinop ~box_ret:true rt "+" i64_type build_add;
     define_ibinop ~box_ret:true rt "-" i64_type build_sub;
