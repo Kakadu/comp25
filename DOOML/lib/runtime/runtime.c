@@ -289,6 +289,23 @@ void collect(int64_t unit) {
     gc_collect();
 }
 
+int64_t get_heap_start(int64_t unit) {
+    return box_imm((int64_t)gc.from_bank_start);
+}
+
+int64_t get_heap_fin(int64_t unit) {
+    return box_imm((int64_t)(gc.from_bank_start + gc.from_bank_size));
+}
+
+void print_gc_status(int64_t unit) {
+    printf("GC status\n");
+    printf("Bank index: %u\n", gc.stats.bank_idx);
+    printf("Bank capacity: %u\n", gc.from_bank_size);
+    printf("Allocated: %u\n", gc.stats.size);
+    printf("Total allocated: %u\n", gc.stats.allocated_size);
+    printf("GC runs: %ld\n", gc.stats.runs);
+}
+
 int64_t create_tuple(int64_t size, int64_t init) {
   GCTuple *tuple = gc_alloc_tuple_base(size);
   for (int64_t i = 0; i < size; i++) {
