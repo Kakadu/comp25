@@ -126,9 +126,10 @@ let pattern =
 ;;
 
 let const =
-  (string "()" |> token) *> return (Ast.cunit |> Ast.const) <|>
-  (let* v = take_while1 is_digit |> token in
-  v |> int_of_string |> Ast.cint |> Ast.const |> return)
+  (string "()" |> token) *> return (Ast.cunit |> Ast.const)
+  <|>
+  let* v = take_while1 is_digit |> token in
+  v |> int_of_string |> Ast.cint |> Ast.const |> return
 ;;
 
 let var =
@@ -186,8 +187,14 @@ let binops expr =
   expr
   |> binop (combine "*" <|> combine "/")
   |> binop (combine "+" <|> combine "-")
-  |> binop (combine "<" <|> combine "<=" <|> combine "==" <|> combine "=" <|> combine "<>")
-  |> binop (combine ">" <|> combine ">=")
+  |> binop
+       (combine "<="
+        <|> combine "=="
+        <|> combine "<>"
+        <|> combine "="
+        <|> combine "<"
+        <|> combine ">")
+  |> binop (combine ">=" <|> combine ">")
   |> binop (combine "&&")
   |> binop (combine "||")
 ;;

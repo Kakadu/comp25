@@ -1,7 +1,15 @@
 (executable
- (public_name DOOML)
- (name main)
- (modules main)
+ (public_name Dooml-Llvm)
+ (name llvm)
+ (modules llvm)
+ (libraries DOOML)
+ (instrumentation
+  (backend bisect_ppx)))
+
+(executable
+ (public_name Dooml-Riscv)
+ (name riscv)
+ (modules riscv)
  (libraries DOOML)
  (instrumentation
   (backend bisect_ppx)))

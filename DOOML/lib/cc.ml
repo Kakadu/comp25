@@ -107,9 +107,8 @@ let rec cc = function
     let* exprs = cc_list exprs in
     return (Ast.tuple exprs)
   | Fun (args', body') ->
-    (* fix rec here *)
-    let* ctx' = of_args args' in
-    let body'', ctx'' = cc body' ctx' in
+    let* ctx' = get in
+    let body'', ctx'' = cc body' (of_args args' ctx' |> fst) in
     let f = Ast.fun_ args' body'' in
     let captured = ctx''.captured in
     (match captured with
