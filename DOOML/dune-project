@@ -27,7 +27,8 @@
   (llvm
    (= "18-shared"))
   (qcheck :with-tests)
-  (ppx_deriving_qcheck
-   (= "0.6"))))
+  ppx_expect
+  ppx_inline_test
+  ppx_variants_conv))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project

@@ -38,6 +38,7 @@ module Ctx = struct
     v, { ctx with lifts = (name, args, body) :: ctx.lifts }
   ;;
 
+  let reset (ctx : t) = { ctx with lifts = [] }
   let empty = { lifts = []; symbols = Scope.empty }
 end
 
@@ -46,6 +47,7 @@ module State = struct
 
   let empty = Ctx.empty
   let lift = Ctx.lift
+  let reset = Ctx.reset
   let extend v ctx = put (Ctx.extend v ctx) ()
 end
 
@@ -99,15 +101,16 @@ let ll =
        := match rec_flag with
           | Ast.Rec -> extend pattern !ctx |> snd
           | Ast.NonRec -> !ctx);
-      let lifts, body =
+      let lifts, ctx', body =
         match body with
         | Fun (args, body) ->
-          let body, ctx = ll body !ctx in
-          ctx.lifts, Ast.fun_ args body
+          let body, ctx' = ll body !ctx in
+          ctx'.lifts, ctx', Ast.fun_ args body
         | ast ->
-          let ast, ctx = ll ast !ctx in
-          ctx.lifts, ast
+          let ast, ctx' = ll ast !ctx in
+          ctx'.lifts, ctx', ast
       in
+      ctx := reset ctx';
       ctx := extend pattern !ctx |> snd;
       Ast.letdecl rec_flag pattern body
       :: List.map

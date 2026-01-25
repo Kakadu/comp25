@@ -286,7 +286,8 @@ module Ctx = struct
   let arities =
     Builtin.all
     |> List.map (fun (builtin : Builtin.t) -> builtin.name, builtin.arity)
-    |> Map.of_list
+    |> List.to_seq
+    |> Map.of_seq
   ;;
 
   let empty =
@@ -349,6 +350,13 @@ module Ctx = struct
     new_offset, { ctx with offset = new_offset }
   ;;
 
+  let pop r (ctx : t) =
+    let new_offset = ctx.offset + 8 in
+    let ctx = emit (ld r 0 sp) ctx in
+    let ctx = emit (addi sp sp 8) ctx in
+    new_offset, { ctx with offset = new_offset }
+  ;;
+
   let var (name : string) (ctx : t) =
     let offset, ctx = push zero ctx in
     let offsets = Map.add name offset ctx.offsets in
@@ -368,7 +376,21 @@ module Ctx = struct
       ctx
   ;;
 
-  let define name argc ctx = { ctx with arities = Map.add name argc arities }
+  let define name argc ctx = { ctx with arities = Map.add name argc ctx.arities }
+
+  let bind2 m f st =
+    let v, st' = m st in
+    let offset' = st.offset - st'.offset in
+    let st = { st with lbls = st'.lbls; code = st'.code } in
+    let st =
+      if offset' <> 0
+      then (
+        let st = comment "adjusting" st in
+        emit (addi sp sp offset') st)
+      else st
+    in
+    f v st
+  ;;
 end
 
 module State = struct
@@ -384,6 +406,7 @@ module State = struct
   let as_arg = Ctx.as_arg
   let var = Ctx.var
   let push = Ctx.push
+  let pop = Ctx.pop
   let define name argc ctx = put (Ctx.define name argc ctx) ()
   let args args' ctx = put (Ctx.args args' ctx) ()
   let empty = Ctx.empty
@@ -395,6 +418,7 @@ open State
 
 let spf = Format.asprintf
 let failf fmt = Format.kasprintf failwith fmt
+let ( let+ ) = Ctx.bind2
 
 let immexpr reg = function
   | Anf.ImmNum c ->
@@ -407,7 +431,28 @@ let immexpr reg = function
      | Some offset ->
        let* () = emit (ld reg offset bp) in
        return reg
-     | None -> failf "Unknown variable %s" var)
+     | None ->
+       let* arity = arity var in
+       (match arity with
+        | Some arity ->
+          let* () = comment (Format.sprintf "a partial call for %s with no args" var) in
+          let* _ = push (arg 0) in
+          let* _ = push (arg 1) in
+          let* _ = push (arg 2) in
+          let* _ = push (arg 3) in
+          let* () = emit (la (arg 0) var) in
+          let* () = emit (li (arg 1) arity) in
+          let* () = emit (li (arg 2) 0) in
+          let* () = emit (mv (arg 3) sp) in
+          let* () = emit (jal ra "create_closure") in
+          let* () = emit (mv (temp 0) rv) in
+          let* _ = pop (arg 3) in
+          let* _ = pop (arg 2) in
+          let* _ = pop (arg 1) in
+          let* _ = pop (arg 0) in
+          let* () = emit (mv reg (temp 0)) in
+          return reg
+        | None -> failf "Unknown variable %s" var))
   | Anf.ImmTuple _ -> failf "todo"
 ;;
 
@@ -443,8 +488,8 @@ let rec cexpr =
       return rv
     in
     match name, args with
-    | (("+" | "-" | "*" | "/" | "<" | ">" | "<=" | ">=" | "=") as op), [ lhs; rhs ] ->
-      binop op lhs rhs
+    | (("+" | "-" | "*" | "/" | "<" | ">" | "<=" | ">=" | "=" | "<>") as op), [ lhs; rhs ]
+      -> binop op lhs rhs
     | name, args ->
       let* arity = arity name in
       let* arity =
@@ -455,7 +500,7 @@ let rec cexpr =
           let* arity =
             match offset with
             | Some offset ->
-              let* () = comment "here should be a partial call" in
+              let* () = comment (Format.sprintf "a partial call for %s" name) in
               return (`Closure offset)
             | None -> todo ()
           in
@@ -516,14 +561,14 @@ let rec cexpr =
            arity)
   in
   let cite cond_ then_ else_ =
-    let* cond_ = immexpr (temp 0) cond_ in
+    let+ cond_ = immexpr (temp 0) cond_ in
     let* then_lbl = lbl ~prefix:"then" in
     let* end_lbl = lbl ~prefix:"end" in
     let* () = emit (bne cond_ zero then_lbl) in
-    let* _else_ = aexpr else_ in
+    let+ _else_ = aexpr else_ in
     let* () = emit (j end_lbl) in
     let* () = label then_lbl in
-    let* _then_ = aexpr then_ in
+    let+ _then_ = aexpr then_ in
     let* () = label end_lbl in
     return rv
   in
@@ -536,7 +581,7 @@ and aexpr = function
   | Anf.AExpr expr -> cexpr expr
   | ALet (bind, v, body) ->
     let* bind = var bind in
-    let* v = cexpr v in
+    let+ v = cexpr v in
     let* () = emit (sd v bind bp) in
     aexpr body
 ;;
@@ -564,9 +609,12 @@ let decl rec_flag name args' body =
     | Ast.Rec -> define name (List.length args')
     | Ast.NonRec -> return ()
   in
-  let* () = args args' in
-  let* () = comment (spf "Prelude of %s ended here" name) in
-  let* _ = aexpr body in
+  let+ _ =
+    args args'
+    >>= fun () ->
+    let* () = comment (spf "Prelude of %s ended here" name) in
+    aexpr body
+  in
   let* () = comment (spf "Body of %s ended here" name) in
   let* total = total () in
   let* () = emit (addi sp sp ~-total) in
@@ -719,14 +767,19 @@ let%expect_test "basic" =
       mul a0, a0, a1
       sd a0, -64(s0)
       ld a0, -64(s0)
+    # adjusting:
+      addi sp, sp, 24
       j end0
     then0:
       addi a0, zero, 1
     end0:
       sd a0, -40(s0)
       ld a0, -40(s0)
+    # adjusting:
+      addi sp, sp, 24
     # Body of f ended here:
       addi sp, sp, 64
+      addi sp, sp, 16
       ld ra, -8(s0)
       ld s0, -16(s0)
       ret

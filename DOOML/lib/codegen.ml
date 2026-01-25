@@ -68,7 +68,7 @@ let emit_builtins () =
     define_ibinop rt "<=" i1_type (build_icmp Llvm.Icmp.Sle);
     define_ibinop rt ">=" i1_type (build_icmp Llvm.Icmp.Sge);
     define_ibinop rt "=" i1_type (build_icmp Llvm.Icmp.Eq) ] |> Map.of_alist_exn in
-    Map.merge_disjoint_exn rt binops
+    Map.merge_skewed ~combine:(fun ~key:_ _ _ -> assert false) rt binops
 
 let emit_create_closure funcs func args = 
      let arity = params func |> Array.length in
