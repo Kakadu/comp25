@@ -1,0 +1,34 @@
+(lang dune 3.8)
+
+(name DOOML)
+
+(generate_opam_files true)
+
+(source
+ (github Kakadu/comp24))
+
+(authors "Georgiy Belyanin" "Ignatiy Sergeev")
+
+(maintainers "Georgiy Belyanin" "Ignatiy Sergeev")
+
+(license "LGPL-3.0-or-later WITH OCaml-LGPL-linking-exception")
+
+(package
+ (name DOOML)
+ (synopsis "A short LLVM demo")
+ (depends
+  ocaml
+  (dune
+   (= "3.19.1"))
+  (angstrom
+   (= "0.16.0"))
+  qcheck
+  bisect_ppx
+  (llvm
+   (= "18-shared"))
+  (qcheck :with-tests)
+  ppx_expect
+  ppx_inline_test
+  ppx_variants_conv))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project

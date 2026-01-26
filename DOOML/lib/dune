@@ -1,0 +1,48 @@
+(library
+ (name DOOML)
+ (public_name DOOML.Lib)
+ (modules Anf Ast Builtin Cc Fe Ll Riscv State Codegen Llvm_wrapper)
+ (libraries
+  base
+  stdlib
+  angstrom
+  llvm
+  llvm.analysis
+  llvm.executionengine
+  llvm.passbuilder
+  llvm.all_backends)
+ (inline_tests)
+ (preprocess
+  (pps ppx_expect ppx_deriving.show ppx_variants_conv ppx_inline_test))
+ (instrumentation
+  (backend bisect_ppx)))
+
+(rule
+ (targets runtime.so)
+ (deps runtime/runtime.c runtime/call-runtime.h runtime/any-call-runtime.c)
+ (action
+  (run gcc -fPIC -shared %{deps} -o %{targets} -lffi)))
+
+(rule
+ (targets debug-runtime.so)
+ (deps runtime/runtime.c runtime/call-runtime.h runtime/any-call-runtime.c)
+ (action
+  (run gcc -fPIC -DDEBUG -shared %{deps} -o %{targets} -lffi)))
+
+(rule
+ (targets riscv-call-runtime.o)
+ (deps runtime/riscv-call-runtime.c runtime/call-runtime.h)
+ (action
+  (run riscv64-linux-gnu-gcc -c %{deps})))
+
+(rule
+ (targets runtime.o)
+ (deps runtime/runtime.c runtime/call-runtime.h)
+ (action
+  (run riscv64-linux-gnu-gcc -c %{deps})))
+
+(rule
+ (targets riscv64-runtime.a)
+ (deps runtime.o riscv-call-runtime.o)
+ (action
+  (run riscv64-linux-gnu-ar rcs %{targets} %{deps})))
