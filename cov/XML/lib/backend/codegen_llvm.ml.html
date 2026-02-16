@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>codegen_llvm.ml &mdash; Coverage report</title>
-    <meta name="description" content="84.36% coverage in lib/backend/codegen_llvm.ml">
+    <meta name="description" content="83.75% coverage in lib/backend/codegen_llvm.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,7 +15,7 @@
           <span class="dirname">lib/backend/</span>codegen_llvm.ml
         </a>
       </h1>
-      <h2>84.36%</h2>
+      <h2>83.75%</h2>
     </div>
     <div id="navbar">
       <span class="unvisited" style="top:11.89%"></span>
@@ -1176,8 +1176,8 @@ let rec gen_comp_expr_ir fmap = function
           <span data-count="63">L</span>lvm.set_alignment gl_align clos_val;
           <span data-count="63">l</span>et argvs = List.map (fun arg -&gt; <span data-count="63">g</span>en_im_expr_ir fmap arg) args in
           <span data-count="63">b</span>uild_apply_part fmap clos_val argvs
-        | <span data-count="0">_</span> -&gt; failwith ("Id: " ^ f ^ " not found")))
-  | <span data-count="0">C</span>omp_app (Imm_num _, _) -&gt; failwith "cannot apply number as a function"
+        | <span data-count="0">_</span> -&gt; invalid_arg ("Id: " ^ f ^ " not found")))
+  | <span data-count="0">C</span>omp_app (Imm_num _, _) -&gt; invalid_arg "cannot apply number as a function"
   | <span data-count="20">C</span>omp_branch (cond, br_then, br_else) -&gt;
     let cv = gen_im_expr_ir fmap cond in
     <span data-count="20">l</span>et zero = Llvm.const_int i64_type 0 in
@@ -1233,7 +1233,7 @@ let rec gen_comp_expr_ir fmap = function
     <span data-count="32">l</span>et voffst = Llvm.const_int i64_type (offset / Target.word_size) in
     <span data-count="32">l</span>et fifn, fity, _ = FuncMap.find_exn fmap "field" in
     <span data-count="32">L</span>lvm.build_call fity fifn [| vbase; voffst |] "load_tmp" builder
-  | <span data-count="0">C</span>omp_func (_, _) -&gt; failwith "anonymous functions should be lambda-lifted"
+  | <span data-count="0">C</span>omp_func (_, _) -&gt; invalid_arg "anonymous functions should be lambda-lifted"
 
 and gen_anf_expr fmap = function
   | <span data-count="113">A</span>nf_comp_expr comp -&gt; gen_comp_expr_ir fmap comp
@@ -1283,13 +1283,13 @@ let gen_function fmap name params body =
   (* Need to check for error here *)
   <span data-count="45">l</span>et ret_val = gen_anf_expr fmap body in
   <span data-count="45">l</span>et _ = Llvm.build_ret ret_val builder in
-  <span data-count="45">(</span>match Llvm_analysis.verify_function the_fun with
-   | <span data-count="45">t</span>rue -&gt; ()
-   | <span data-count="0">f</span>alse -&gt;
-     Stdlib.Format.printf
-       "invalid function generated\n%s\n"
-       (Llvm.string_of_llvalu<span data-count="0">e</span> the_fun);
-     <span data-count="0">L</span>lvm_analysis.assert_valid_functio<span data-count="0">n</span> the_fun);
+  <span data-count="45">i</span>f Llvm_analysis.verify_function the_fun
+  then <span data-count="45">(</span>)
+  else <span data-count="0">(</span>
+    Stdlib.Format.printf
+      "invalid function generated\n%s\n"
+      (Llvm.string_of_llvalu<span data-count="0">e</span> the_fun);
+    <span data-count="0">L</span>lvm_analysis.assert_valid_functio<span data-count="0">n</span> the_fun);
   the_fun
 ;;
 
@@ -1301,7 +1301,7 @@ let gen_astructure_item fmap = function
     let main_fn =
       match Llvm.lookup_function "main" the_module with
       | <span data-count="28">S</span>ome fn -&gt; fn
-      | <span data-count="0">_</span> -&gt; failwith ("cannot generate value: " ^ name ^ ", main function not found")
+      | <span data-count="0">_</span> -&gt; invalid_ar<span data-count="0">g</span> ("cannot generate value: " ^ name ^ ", main function not found")
     in
     Llvm.position_at_end (Llvm.entry_bloc<span data-count="28">k</span> main_fn) builder;
     <span data-count="28">l</span>et value = gen_anf_expr fmap expr in
@@ -1323,7 +1323,7 @@ let optimize_ir (triple : string) (opt : string option) =
   in
   let optflag = "default&lt;" ^ optflag ^ "&gt;" in
   (match Llvm_passbuilder.run_passes the_module optflag machine opts with
-   | <span data-count="0">E</span>rror e -&gt; failwith e
+   | <span data-count="0">E</span>rror e -&gt; invalid_ar<span data-count="0">g</span> e
    | <span data-count="27">O</span>k () -&gt; ());
   Llvm_passbuilder.dispose_passbuilder_options opts
 ;;
@@ -1349,7 +1349,7 @@ let gen_program_ir (program : aprogram) (triple : string) (opt : string option) 
   <span data-count="27">l</span>et _ = Llvm.build_ret (Llvm.const_in<span data-count="27">t</span> i64_type 0) builder in
   <span data-count="27">o</span>ptimize_ir triple opt;
   <span data-count="27">m</span>atch Llvm_analysis.verify_module the_module with
-  | <span data-count="0">S</span>ome r -&gt; failwith r
+  | <span data-count="0">S</span>ome r -&gt; invalid_arg r
   | <span data-count="27">N</span>one -&gt; Llvm.string_of_llmodule the_module
 ;;
 </code></pre>

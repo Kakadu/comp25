@@ -612,7 +612,7 @@ let occurs_im x = function
 ;;
 
 let rec escapes_comp x = function
-  | <span data-count="0">C</span>omp_func (ps, body) -&gt; if List.mem x ps then <span data-count="0">f</span>alse else <span data-count="0">S</span>Set.mem x (fv_an<span data-count="0">f</span> body)
+  | <span data-count="0">C</span>omp_func (ps, body) -&gt; (not (List.me<span data-count="0">m</span> x ps)) &amp;&amp; <span data-count="0">S</span>Set.mem x (fv_an<span data-count="0">f</span> body)
   | <span data-count="0">C</span>omp_branch (_c, t, e) -&gt; escapes_an<span data-count="0">f</span> x <span data-count="0">t</span> || escapes_anf x e
   | <span data-count="20">C</span>omp_app (_, _)
   | <span data-count="4">C</span>omp_binop (_, _, _)
