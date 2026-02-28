@@ -1,0 +1,7 @@
+(rule
+ (targets rv64_runtime.a)
+ (deps runtime.c)
+ (action
+  (progn
+   (run riscv64-linux-gnu-gcc -march=rv64gc -mabi=lp64d -O2 -c %{dep:runtime.c} -o rv64_runtime.o)
+   (run riscv64-linux-gnu-ar rcs %{targets} rv64_runtime.o))))

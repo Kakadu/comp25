@@ -19,4 +19,4 @@
 
 (cram
  (package EML)
- (deps ./main.exe runtime.c))
+ (deps ./main.exe))

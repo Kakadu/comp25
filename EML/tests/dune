@@ -7,3 +7,10 @@
  (inline_tests)
  (instrumentation
   (backend bisect_ppx)))
+
+(cram
+ (applies_to riscv)
+ (deps
+  (package EML)
+  (file ../lib/runtime/rv64_runtime.a)
+  (source_tree manytests)))

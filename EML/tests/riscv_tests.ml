@@ -536,3 +536,117 @@ let%expect_test "test1" =
         ret
 |}]
 ;;
+
+
+let%expect_test "codegen closure fn with 10 arg" =
+  run
+    {|
+  let add a b c d e f g = a + b + c + d + e + f + g
+
+  let main =
+    let temp1 = add 1 1 1 1 in
+    let temp2 = temp1 1 1 in
+    let temp3 = temp2 1 1 in
+    print_int temp3
+  ;;
+  |};
+  [%expect
+    {|
+    .section .text
+      .globl add
+      .type add, @function
+    add:
+      addi sp, sp, -56
+      sd ra, 48(sp)
+      sd fp, 40(sp)
+      addi fp, sp, 40
+      mv t0, a0
+      mv t1, a1
+      mv a7, a0
+      add a0, t0, t1
+      addi a0, a0, -1
+      sd a0, -8(fp)
+      ld t0, -8(fp)
+      mv t1, a2
+      add a0, t0, t1
+      addi a0, a0, -1
+      sd a0, -16(fp)
+      ld t0, -16(fp)
+      mv t1, a3
+      add a0, t0, t1
+      addi a0, a0, -1
+      sd a0, -24(fp)
+      ld t0, -24(fp)
+      mv t1, a4
+      add a0, t0, t1
+      addi a0, a0, -1
+      sd a0, -32(fp)
+      ld t0, -32(fp)
+      mv t1, a5
+      add a0, t0, t1
+      addi a0, a0, -1
+      sd a0, -40(fp)
+      ld t0, -40(fp)
+      mv t1, a6
+      add a0, t0, t1
+      addi a0, a0, -1
+      addi sp, fp, 16
+      ld ra, 8(fp)
+      ld fp, 0(fp)
+      ret
+
+      .globl main
+      .type main, @function
+    main:
+      addi sp, sp, -40
+      sd ra, 32(sp)
+      sd fp, 24(sp)
+      addi fp, sp, 24
+      la a0, add
+      li a1, 7
+      call alloc_closure
+      li a1, 4
+      addi sp, sp, -32
+      li t0, 3
+      sd t0, 0(sp)
+      li t0, 3
+      sd t0, 8(sp)
+      li t0, 3
+      sd t0, 16(sp)
+      li t0, 3
+      sd t0, 24(sp)
+      mv a2, sp
+      call eml_applyN
+      addi sp, sp, 32
+      sd a0, -8(fp)
+      ld a0, -8(fp)
+      li a1, 2
+      addi sp, sp, -16
+      li t0, 3
+      sd t0, 0(sp)
+      li t0, 3
+      sd t0, 8(sp)
+      mv a2, sp
+      call eml_applyN
+      addi sp, sp, 16
+      sd a0, -16(fp)
+      ld a0, -16(fp)
+      li a1, 2
+      addi sp, sp, -16
+      li t0, 3
+      sd t0, 0(sp)
+      li t0, 3
+      sd t0, 8(sp)
+      mv a2, sp
+      call eml_applyN
+      addi sp, sp, 16
+      sd a0, -24(fp)
+      ld a0, -24(fp)
+      call print_int
+      addi sp, fp, 16
+      ld ra, 8(fp)
+      ld fp, 0(fp)
+      li a0, 0
+      ret
+  |}]
+;;
