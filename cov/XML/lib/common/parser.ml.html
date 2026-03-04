@@ -1388,7 +1388,7 @@ open Char
 
 let is_whitespace = function
   | <span data-count="4588679">'</span> ' | <span data-count="0">'</span>\t' | <span data-count="1326046">'</span>\n' | <span data-count="0">'</span>\r' -&gt; true
-  | <span data-count="33358913">_</span> -&gt; false
+  | <span data-count="33358923">_</span> -&gt; false
 ;;
 
 let pass_ws = skip_whil<span data-count="88">e</span> is_whitespace
@@ -1408,7 +1408,7 @@ let pident_cap =
   let first_char_str =
     satisfy (function
       | <span data-count="20">'</span>A' .. 'Z' -&gt; true
-      | <span data-count="1341158">_</span> -&gt; false)
+      | <span data-count="1341160">_</span> -&gt; false)
   in
   <span data-count="88">l</span>ift<span data-count="88">2</span> (fun fc rs -&gt; <span data-count="20">S</span>tring.mak<span data-count="20">e</span> 1 fc ^ rs) first_char_str (take_whil<span data-count="88">e</span> ptowhitespace)
   &gt;&gt;<span data-count="88">=</span> fun ident -&gt;
@@ -1421,7 +1421,7 @@ let pident_lc =
   let first_char_str =
     satisfy (function
       | <span data-count="630594">'</span>a' .. 'z' | <span data-count="5496">'</span>_' -&gt; true
-      | <span data-count="1136209">_</span> -&gt; false)
+      | <span data-count="1136211">_</span> -&gt; false)
   in
   <span data-count="88">l</span>ift<span data-count="88">2</span> (fun fc rs -&gt; <span data-count="636090">S</span>tring.mak<span data-count="636090">e</span> 1 fc ^ rs) first_char_str (take_whil<span data-count="88">e</span> ptowhitespace)
   &gt;&gt;<span data-count="88">=</span> fun ident -&gt;
@@ -1449,7 +1449,7 @@ let pident_lc =
 *)
 let pconstint =
   let* number = Int.of_string &lt;$<span data-count="88">&gt;</span> take_while<span data-count="88">1</span> is_digit in
-  <span data-count="453691">r</span>eturn (Constant.Const_integer number)
+  <span data-count="453693">r</span>eturn (Constant.Const_integer number)
 ;;
 
 let pconstchar =
@@ -1721,7 +1721,7 @@ let pexplist expr =
 
 let pexprconst =
   let* const = pconst in
-  <span data-count="453747">r</span>eturn (Expression.Exp_constant const)
+  <span data-count="453749">r</span>eturn (Expression.Exp_constant const)
 ;;
 
 let pidentexpr =
@@ -1868,7 +1868,7 @@ let pexpr =
     <span data-count="85">l</span>et poprnd =
       pass_ws
       *&gt; choic<span data-count="85">e</span>
-           [ (pspecials &gt;&gt;<span data-count="85">|</span> fun name -&gt; <span data-count="2246">E</span>xpression.Exp_construct (name, None))
+           [ (pspecials &gt;&gt;<span data-count="85">|</span> fun name -&gt; <span data-count="2244">E</span>xpression.Exp_construct (name, None))
            ; pparent<span data-count="85">h</span> pexpr
            ; pidentexpr
            ; pexprconstrain<span data-count="85">t</span> pexpr

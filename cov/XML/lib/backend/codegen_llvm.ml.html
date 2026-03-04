@@ -927,17 +927,17 @@ module FuncMap = struct
 
   type t = (Llvm.llvalue * Llvm.lltype * status) M.t
 
-  let empty () : t = <span data-count="39">M</span>.empty
+  let empty () : t = <span data-count="40">M</span>.empty
 
   let bind (t : t) (x : ident) (ll : Llvm.llvalue * Llvm.lltype * status) : t =
-    <span data-count="444">M</span>.add x ll t
+    <span data-count="454">M</span>.add x ll t
   ;;
 
   let find (t : t) (x : ident) : (Llvm.llvalue * Llvm.lltype * status) option =
     <span data-count="288">M</span>.find_opt x t
   ;;
 
-  let find_exn (t : t) (x : ident) : Llvm.llvalue * Llvm.lltype * status = <span data-count="283">M</span>.find x t
+  let find_exn (t : t) (x : ident) : Llvm.llvalue * Llvm.lltype * status = <span data-count="285">M</span>.find x t
   let keys = M.bindings
 
   let print_fmap (t : t) =
@@ -962,36 +962,36 @@ end
 
 (* Return types from runtime.c *)
 let initial_fmap the_mod =
-  <span data-count="39">l</span>et decl fmap id retty argtyps =
-    <span data-count="390">l</span>et ftyp = Llvm.function_type retty argtyps in
-    <span data-count="390">l</span>et fval = Llvm.declare_function id ftyp the_mod in
-    <span data-count="390">F</span>uncMap.bind fmap id (fval, ftyp, FuncMap.Lib)
+  <span data-count="40">l</span>et decl fmap id retty argtyps =
+    <span data-count="400">l</span>et ftyp = Llvm.function_type retty argtyps in
+    <span data-count="400">l</span>et fval = Llvm.declare_function id ftyp the_mod in
+    <span data-count="400">F</span>uncMap.bind fmap id (fval, ftyp, FuncMap.Lib)
   in
   let fmap = FuncMap.empty () in
-  <span data-count="39">l</span>et fmap = decl fmap "print_int" void_type [| i64_type |] in
-  <span data-count="39">l</span>et fmap = decl fmap "alloc_block" i64_type (*ptr*) [| i64_type |] in
-  <span data-count="39">l</span>et fmap =
+  <span data-count="40">l</span>et fmap = decl fmap "print_int" void_type [| i64_type |] in
+  <span data-count="40">l</span>et fmap = decl fmap "alloc_block" i64_type (*ptr*) [| i64_type |] in
+  <span data-count="40">l</span>et fmap =
     decl fmap "alloc_closure" i64_type (*ptr*) [| i64_type (*ptr*); i64_type |]
   in
-  <span data-count="39">l</span>et fmap =
+  <span data-count="40">l</span>et fmap =
     decl fmap "apply1" i64_type (*ptr or int*) [| i64_type (*ptr*); i64_type |]
   in
-  <span data-count="39">l</span>et fmap = decl fmap "print_gc_status" void_type [||] in
-  <span data-count="39">l</span>et fmap = decl fmap "collect" void_type [||] in
-  <span data-count="39">l</span>et fmap = decl fmap "create_tuple" i64_type (*ptr*) [| i64_type |] in
-  <span data-count="39">l</span>et fmap =
+  <span data-count="40">l</span>et fmap = decl fmap "print_gc_status" void_type [||] in
+  <span data-count="40">l</span>et fmap = decl fmap "collect" void_type [||] in
+  <span data-count="40">l</span>et fmap = decl fmap "create_tuple" i64_type (*ptr*) [| i64_type |] in
+  <span data-count="40">l</span>et fmap =
     decl fmap "create_tuple_init" i64_type (*ptr*) [| i64_type; i64_type (*ptr*) |]
   in
-  <span data-count="39">l</span>et fmap = decl fmap "field" i64_type (*ptr or int*) [| i64_type (*ptr*); i64_type |] in
-  <span data-count="39">l</span>et fmap = decl fmap "rt_init" void_type [| i64_type |] in
-  <span data-count="39">f</span>map
+  <span data-count="40">l</span>et fmap = decl fmap "field" i64_type (*ptr or int*) [| i64_type (*ptr*); i64_type |] in
+  <span data-count="40">l</span>et fmap = decl fmap "rt_init" void_type [| i64_type |] in
+  <span data-count="40">f</span>map
 ;;
 
 let build_call_mb_void ftype fval argvs name =
-  <span data-count="261">m</span>atch Llvm.return_type ftype with
-  | <span data-count="261">t</span>y when ty = void_type -&gt;
-    <span data-count="130">l</span>et _ = Llvm.build_call ftype fval argvs "" builder in
-    <span data-count="130">L</span>lvm.const_int i64_type 0
+  <span data-count="263">m</span>atch Llvm.return_type ftype with
+  | <span data-count="263">t</span>y when ty = void_type -&gt;
+    <span data-count="132">l</span>et _ = Llvm.build_call ftype fval argvs "" builder in
+    <span data-count="132">L</span>lvm.const_int i64_type 0
   | <span data-count="131">_</span> -&gt; Llvm.build_call ftype fval argvs name builder
 ;;
 
@@ -1008,14 +1008,14 @@ let decl_and_bind fmap the_mod id retty argc =
 ;;
 
 let prefill_fmap (fmap0 : FuncMap.t) the_mod (program : aprogram) : FuncMap.t =
-  <span data-count="39">L</span>ist.fold_left
+  <span data-count="40">L</span>ist.fold_left
     (fun fm -&gt; function
        | <span data-count="94">A</span>nf_str_value (_rf, name, anf_expr) -&gt;
          (match anf_expr with
           | <span data-count="0">A</span>nf_let (_, _, Comp_func (ps, _), _) | <span data-count="54">A</span>nf_comp_expr (Comp_func (ps, _)) -&gt;
             decl_and_bind fm the_mod name i64_type (List.lengt<span data-count="54">h</span> ps)
           | <span data-count="40">_</span> -&gt; decl_and_bind fm the_mod name i64_type 0)
-       | <span data-count="5">_</span> -&gt; fm)
+       | <span data-count="6">_</span> -&gt; fm)
     fmap0
     program
 ;;
@@ -1036,13 +1036,13 @@ let build_alloc_closure fmap func =
 ;;
 
 let gen_im_expr_ir fmap env = function
-  | <span data-count="156">I</span>mm_num n -&gt; Llvm.const_int i64_type ((n lsl 1) lor 1)
-  | <span data-count="466">I</span>mm_ident id -&gt;
+  | <span data-count="159">I</span>mm_num n -&gt; Llvm.const_int i64_type ((n lsl 1) lor 1)
+  | <span data-count="467">I</span>mm_ident id -&gt;
     (match ParamMap.find_opt id env with
-     | <span data-count="443">S</span>ome v -&gt;
+     | <span data-count="444">S</span>ome v -&gt;
        let temp = Llvm.build_load i64_type v id builder in
-       <span data-count="443">L</span>lvm.set_alignment gl_align temp;
-       <span data-count="443">t</span>emp
+       <span data-count="444">L</span>lvm.set_alignment gl_align temp;
+       <span data-count="444">t</span>emp
      | <span data-count="23">N</span>one -&gt;
        let id = if id = "main" then <span data-count="0">s</span>ubst_main else <span data-count="23">i</span>d in
        (match FuncMap.find fmap id with
@@ -1054,8 +1054,8 @@ let gen_im_expr_ir fmap env = function
 ;;
 
 let create_entry_alloca the_fun var_name =
-  <span data-count="530">l</span>et builder = Llvm.builder_at context (Llvm.instr_begi<span data-count="530">n</span> (Llvm.entry_bloc<span data-count="530">k</span> the_fun)) in
-  <span data-count="530">L</span>lvm.build_alloca i64_type var_name builder
+  <span data-count="531">l</span>et builder = Llvm.builder_at context (Llvm.instr_begi<span data-count="531">n</span> (Llvm.entry_bloc<span data-count="531">k</span> the_fun)) in
+  <span data-count="531">L</span>lvm.build_alloca i64_type var_name builder
 ;;
 
 (* working with tagged integers *)
@@ -1113,7 +1113,7 @@ let build_apply_part fmap fclos args =
 ;;
 
 let rec gen_comp_expr_ir fmap env = function
-  | <span data-count="217">C</span>omp_imm imm -&gt; gen_im_expr_ir fmap env imm
+  | <span data-count="220">C</span>omp_imm imm -&gt; gen_im_expr_ir fmap env imm
   | <span data-count="68">C</span>omp_binop (op, lhs, rhs) -&gt; gen_tagged_binop fmap env op lhs rhs
   | <span data-count="171">C</span>omp_app (Imm_ident f, args) -&gt;
     let f_map = if f = "main" then <span data-count="2">s</span>ubst_main else <span data-count="169">f</span> in
@@ -1135,32 +1135,32 @@ let rec gen_comp_expr_ir fmap env = function
           <span data-count="67">b</span>uild_apply_part fmap clos_val argvs
         | <span data-count="0">N</span>one -&gt; invalid_arg ("Id: " ^ f ^ " not found")))
   | <span data-count="0">C</span>omp_app (Imm_num _, _) -&gt; invalid_arg "cannot apply number as a function"
-  | <span data-count="20">C</span>omp_branch (cond, br_then, br_else) -&gt;
+  | <span data-count="21">C</span>omp_branch (cond, br_then, br_else) -&gt;
     let cv = gen_im_expr_ir fmap env cond in
-    <span data-count="20">l</span>et zero = Llvm.const_int i64_type 0 in
-    <span data-count="20">l</span>et cond_val = Llvm.build_icmp Llvm.Icmp.Ne cv zero "cond" builder in
-    <span data-count="20">l</span>et start_bb = Llvm.insertion_block builder in
-    <span data-count="20">l</span>et the_fun = Llvm.block_parent start_bb in
-    <span data-count="20">l</span>et then_bb = Llvm.append_block context "then" the_fun in
-    <span data-count="20">L</span>lvm.position_at_end then_bb builder;
-    <span data-count="20">l</span>et then_val, _ = gen_anf_expr fmap env br_then in
-    <span data-count="20">l</span>et new_then_bb = Llvm.insertion_block builder in
-    <span data-count="20">l</span>et else_bb = Llvm.append_block context "else" the_fun in
-    <span data-count="20">L</span>lvm.position_at_end else_bb builder;
-    <span data-count="20">l</span>et else_val, _ = gen_anf_expr fmap env br_else in
-    <span data-count="20">l</span>et new_else_bb = Llvm.insertion_block builder in
-    <span data-count="20">l</span>et merge_bb = Llvm.append_block context "ifcont" the_fun in
-    <span data-count="20">L</span>lvm.position_at_end merge_bb builder;
-    <span data-count="20">l</span>et incoming = [ then_val, new_then_bb; else_val, new_else_bb ] in
+    <span data-count="21">l</span>et zero = Llvm.const_int i64_type 0 in
+    <span data-count="21">l</span>et cond_val = Llvm.build_icmp Llvm.Icmp.Ne cv zero "cond" builder in
+    <span data-count="21">l</span>et start_bb = Llvm.insertion_block builder in
+    <span data-count="21">l</span>et the_fun = Llvm.block_parent start_bb in
+    <span data-count="21">l</span>et then_bb = Llvm.append_block context "then" the_fun in
+    <span data-count="21">L</span>lvm.position_at_end then_bb builder;
+    <span data-count="21">l</span>et then_val, _ = gen_anf_expr fmap env br_then in
+    <span data-count="21">l</span>et new_then_bb = Llvm.insertion_block builder in
+    <span data-count="21">l</span>et else_bb = Llvm.append_block context "else" the_fun in
+    <span data-count="21">L</span>lvm.position_at_end else_bb builder;
+    <span data-count="21">l</span>et else_val, _ = gen_anf_expr fmap env br_else in
+    <span data-count="21">l</span>et new_else_bb = Llvm.insertion_block builder in
+    <span data-count="21">l</span>et merge_bb = Llvm.append_block context "ifcont" the_fun in
+    <span data-count="21">L</span>lvm.position_at_end merge_bb builder;
+    <span data-count="21">l</span>et incoming = [ then_val, new_then_bb; else_val, new_else_bb ] in
     let phi = Llvm.build_phi incoming "iftmp" builder in
-    <span data-count="20">L</span>lvm.position_at_end start_bb builder;
-    <span data-count="20">l</span>et _ = Llvm.build_cond_br cond_val then_bb else_bb builder in
-    <span data-count="20">L</span>lvm.position_at_end new_then_bb builder;
-    <span data-count="20">l</span>et _ = Llvm.build_br merge_bb builder in
-    <span data-count="20">L</span>lvm.position_at_end new_else_bb builder;
-    <span data-count="20">l</span>et _ = Llvm.build_br merge_bb builder in
-    <span data-count="20">L</span>lvm.position_at_end merge_bb builder;
-    <span data-count="20">p</span>hi
+    <span data-count="21">L</span>lvm.position_at_end start_bb builder;
+    <span data-count="21">l</span>et _ = Llvm.build_cond_br cond_val then_bb else_bb builder in
+    <span data-count="21">L</span>lvm.position_at_end new_then_bb builder;
+    <span data-count="21">l</span>et _ = Llvm.build_br merge_bb builder in
+    <span data-count="21">L</span>lvm.position_at_end new_else_bb builder;
+    <span data-count="21">l</span>et _ = Llvm.build_br merge_bb builder in
+    <span data-count="21">L</span>lvm.position_at_end merge_bb builder;
+    <span data-count="21">p</span>hi
   | <span data-count="17">C</span>omp_alloc imms | <span data-count="0">C</span>omp_tuple imms -&gt;
     let ctval, cttyp, _ = FuncMap.find_exn fmap "create_tuple_init" in
     <span data-count="17">l</span>et argc = Llvm.const_int i64_type (List.lengt<span data-count="17">h</span> imms) in
@@ -1190,17 +1190,17 @@ let rec gen_comp_expr_ir fmap env = function
   | <span data-count="0">C</span>omp_func (_, _) -&gt; invalid_arg "anonymous functions should be lambda-lifted"
 
 and gen_anf_expr fmap env = function
-  | <span data-count="139">A</span>nf_comp_expr comp -&gt;
+  | <span data-count="142">A</span>nf_comp_expr comp -&gt;
     let v = gen_comp_expr_ir fmap env comp in
-    <span data-count="139">v</span>, env
-  | <span data-count="388">A</span>nf_let (_, name, comp_expr, body) -&gt;
+    <span data-count="142">v</span>, env
+  | <span data-count="389">A</span>nf_let (_, name, comp_expr, body) -&gt;
     let init_val = gen_comp_expr_ir fmap env comp_expr in
-    <span data-count="388">l</span>et the_fun = Llvm.block_parent (Llvm.insertion_bloc<span data-count="388">k</span> builder) in
-    <span data-count="388">l</span>et alloca = create_entry_alloca the_fun name in
-    <span data-count="388">l</span>et store = Llvm.build_store init_val alloca builder in
-    <span data-count="388">L</span>lvm.set_alignment gl_align store;
-    <span data-count="388">l</span>et new_env = ParamMap.add name alloca env in
-    <span data-count="388">g</span>en_anf_expr fmap new_env body
+    <span data-count="389">l</span>et the_fun = Llvm.block_parent (Llvm.insertion_bloc<span data-count="389">k</span> builder) in
+    <span data-count="389">l</span>et alloca = create_entry_alloca the_fun name in
+    <span data-count="389">l</span>et store = Llvm.build_store init_val alloca builder in
+    <span data-count="389">L</span>lvm.set_alignment gl_align store;
+    <span data-count="389">l</span>et new_env = ParamMap.add name alloca env in
+    <span data-count="389">g</span>en_anf_expr fmap new_env body
 ;;
 
 let gen_function fmap the_mod name params body =
@@ -1244,9 +1244,9 @@ let gen_function fmap the_mod name params body =
 ;;
 
 let gen_astructure_item fmap the_mod main_fn env = function
-  | <span data-count="5">A</span>nf_str_eval expr -&gt;
+  | <span data-count="6">A</span>nf_str_eval expr -&gt;
     let _, new_env = gen_anf_expr fmap env expr in
-    <span data-count="5">n</span>ew_env
+    <span data-count="6">n</span>ew_env
   | <span data-count="54">A</span>nf_str_value (_, name, Anf_comp_expr (Comp_func (params, body))) -&gt;
     let _ = gen_function fmap the_mod name params body in
     <span data-count="54">e</span>nv
@@ -1260,50 +1260,50 @@ let gen_astructure_item fmap the_mod main_fn env = function
 ;;
 
 let optimize_ir the_mod (triple : string) (opt : string option) =
-  <span data-count="39">l</span>et target = Llvm_target.Target.by_triple triple in
-  <span data-count="39">l</span>et machine = Llvm_target.TargetMachine.create ~triple target in
-  <span data-count="39">l</span>et opts = Llvm_passbuilder.create_passbuilder_options () in
-  <span data-count="39">l</span>et optflag =
+  <span data-count="40">l</span>et target = Llvm_target.Target.by_triple triple in
+  <span data-count="40">l</span>et machine = Llvm_target.TargetMachine.create ~triple target in
+  <span data-count="40">l</span>et opts = Llvm_passbuilder.create_passbuilder_options () in
+  <span data-count="40">l</span>et optflag =
     match opt with
     | <span data-count="4">S</span>ome opt -&gt; opt
-    | <span data-count="35">_</span> -&gt; "O0"
+    | <span data-count="36">_</span> -&gt; "O0"
   in
   let optflag = "default&lt;" ^ optflag ^ "&gt;" in
   (match Llvm_passbuilder.run_passes the_mod optflag machine opts with
    | <span data-count="0">E</span>rror e -&gt; invalid_ar<span data-count="0">g</span> e
-   | <span data-count="39">O</span>k () -&gt; ());
+   | <span data-count="40">O</span>k () -&gt; ());
   Llvm_passbuilder.dispose_passbuilder_options opts
 ;;
 
 let gen_program_ir (program : aprogram) (triple : string) (opt : string option) =
-  <span data-count="39">l</span>et the_module = Llvm.create_module context "main" in
-  <span data-count="39">L</span>lvm_all_backends.initialize ();
-  <span data-count="39">L</span>lvm.set_target_triple triple the_module;
-  <span data-count="39">a</span>ssert <span data-count="39">(</span>Llvm_executionengine.initializ<span data-count="39">e</span> ());
-  let fmap = prefill_fmap (initial_fma<span data-count="39">p</span> the_module) the_module program in
-  <span data-count="39">l</span>et main_ty = Llvm.function_type i64_type [||] in
-  <span data-count="39">l</span>et main_fn = Llvm.define_function "main" main_ty the_module in
-  <span data-count="39">L</span>lvm.position_at_end (Llvm.entry_bloc<span data-count="39">k</span> main_fn) builder;
-  <span data-count="39">l</span>et initfn, initty, _ = FuncMap.find_exn fmap "rt_init" in
-  <span data-count="39">l</span>et _ =
-    build_call_mb_void initty initfn [| Llvm.const_in<span data-count="39">t</span> i64_type (5 * 1024) |] "inittmp"
+  <span data-count="40">l</span>et the_module = Llvm.create_module context "main" in
+  <span data-count="40">L</span>lvm_all_backends.initialize ();
+  <span data-count="40">L</span>lvm.set_target_triple triple the_module;
+  <span data-count="40">a</span>ssert <span data-count="40">(</span>Llvm_executionengine.initializ<span data-count="40">e</span> ());
+  let fmap = prefill_fmap (initial_fma<span data-count="40">p</span> the_module) the_module program in
+  <span data-count="40">l</span>et main_ty = Llvm.function_type i64_type [||] in
+  <span data-count="40">l</span>et main_fn = Llvm.define_function "main" main_ty the_module in
+  <span data-count="40">L</span>lvm.position_at_end (Llvm.entry_bloc<span data-count="40">k</span> main_fn) builder;
+  <span data-count="40">l</span>et initfn, initty, _ = FuncMap.find_exn fmap "rt_init" in
+  <span data-count="40">l</span>et _ =
+    build_call_mb_void initty initfn [| Llvm.const_in<span data-count="40">t</span> i64_type (5 * 1024) |] "inittmp"
   in
-  <span data-count="39">l</span>et env = ParamMap.empty in
+  <span data-count="40">l</span>et env = ParamMap.empty in
   let _ =
     List.fold_left
-      (fun env item -&gt; <span data-count="99">g</span>en_astructure_item fmap the_module main_fn env item)
+      (fun env item -&gt; <span data-count="100">g</span>en_astructure_item fmap the_module main_fn env item)
       env
       program
   in
-  <span data-count="39">l</span>et bbs = Llvm.basic_blocks main_fn in
-  <span data-count="39">L</span>lvm.position_at_end bbs.(Array.lengt<span data-count="39">h</span> bbs - 1) builder;
-  <span data-count="39">l</span>et col_fn, col_ty, _ = FuncMap.find_exn fmap "collect" in
-  <span data-count="39">l</span>et _ = build_call_mb_void col_ty col_fn [||] "_" in
-  <span data-count="39">l</span>et _ = Llvm.build_ret (Llvm.const_in<span data-count="39">t</span> i64_type 0) builder in
-  <span data-count="39">o</span>ptimize_ir the_module triple opt;
-  <span data-count="39">m</span>atch Llvm_analysis.verify_module the_module with
+  <span data-count="40">l</span>et bbs = Llvm.basic_blocks main_fn in
+  <span data-count="40">L</span>lvm.position_at_end bbs.(Array.lengt<span data-count="40">h</span> bbs - 1) builder;
+  <span data-count="40">l</span>et col_fn, col_ty, _ = FuncMap.find_exn fmap "collect" in
+  <span data-count="40">l</span>et _ = build_call_mb_void col_ty col_fn [||] "_" in
+  <span data-count="40">l</span>et _ = Llvm.build_ret (Llvm.const_in<span data-count="40">t</span> i64_type 0) builder in
+  <span data-count="40">o</span>ptimize_ir the_module triple opt;
+  <span data-count="40">m</span>atch Llvm_analysis.verify_module the_module with
   | <span data-count="0">S</span>ome r -&gt; invalid_arg r
-  | <span data-count="39">N</span>one -&gt; Llvm.string_of_llmodule the_module
+  | <span data-count="40">N</span>one -&gt; Llvm.string_of_llmodule the_module
 ;;
 </code></pre>
       </div>

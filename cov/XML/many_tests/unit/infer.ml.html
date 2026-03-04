@@ -1210,12 +1210,12 @@ let%expect_test _=
  <span data-count="1">[</span>%expect{| ('b -&gt; 'c) -&gt; 'b -&gt; 'c |}<span data-count="7">]</span>
 
 
-let%expect_test _ =
+let%expect_test {| fun x y -&gt; x y |} =
   <span data-count="1">i</span>nfer_exp_str {| fun x y -&gt; x y |};
   <span data-count="1">[</span>%expect{| ('b -&gt; 'c) -&gt; 'b -&gt; 'c |}<span data-count="7">]</span>
 
 
-let%expect_test _ =
+let%expect_test {| (fun f a b -&gt; f a, f b) (fun x -&gt; x) 1 "mystr" |}  =
   <span data-count="1">i</span>nfer_exp_str {| (fun f a b -&gt; f a, f b) (fun x -&gt; x) 1 "mystr" |};
   <span data-count="1">[</span>%expect{| Cannot unify different constructors: int and string |}<span data-count="7">]</span>
 
@@ -1289,22 +1289,22 @@ let%expect_test "function different types of expr 2" =
 
 (************************** Let in **************************)
 
-let%expect_test _ =
+let%expect_test {| let 1 = 1 in 2 |}  =
   <span data-count="1">i</span>nfer_exp_str {| let 1 = 1 in 2 |};
   <span data-count="1">[</span>%expect{| int |}<span data-count="7">]</span>
 
 
-let%expect_test _ =
+let%expect_test {| let a = 1 in 2 |} =
   <span data-count="1">i</span>nfer_exp_str {| let a = 1 in 2 |};
   <span data-count="1">[</span>%expect{| int |}<span data-count="7">]</span>
 
 
-let%expect_test _ =
+let%expect_test {| let a = 1 in a |} =
 <span data-count="1">i</span>nfer_exp_str {| let a = 1 in a |};
   <span data-count="1">[</span>%expect{| int |}<span data-count="7">]</span>
 
 
-let%expect_test _ =
+let%expect_test {| let a = 1 in "str" |} =
   <span data-count="1">i</span>nfer_exp_str {| let a = 1 in "str" |};
   <span data-count="1">[</span>%expect{| string |}<span data-count="7">]</span>
 
@@ -1325,17 +1325,17 @@ let%expect_test "poly in env" =
   <span data-count="1">[</span>%expect{| bool * bool |}<span data-count="7">]</span>
 
 
-let%expect_test _ =
+let%expect_test {| let a, b = 1, 2 in a |} =
   <span data-count="1">i</span>nfer_exp_str  {| let a, b = 1, 2 in a |} ;
   <span data-count="1">[</span>%expect{| int |}<span data-count="7">]</span>
 
 
-let%expect_test _ =
+let%expect_test {| let a, b, c = 1, 2 in a |} =
   <span data-count="1">i</span>nfer_exp_str  {| let a, b, c = 1, 2 in a |} ;
   <span data-count="1">[</span>%expect{| Cannot unify tuples of different sizes |}<span data-count="7">]</span>
 
 
-let%expect_test _ =
+let%expect_test {| let a, b = 1, 2, 3 in a |} =
   <span data-count="1">i</span>nfer_exp_str {| let a, b = 1, 2, 3 in a |};
   <span data-count="1">[</span>%expect{| Cannot unify tuples of different sizes |}<span data-count="7">]</span>
 
