@@ -1205,7 +1205,7 @@ let%expect_test "fun 'a -&gt; 'b (in env)" =
   <span data-count="1">[</span>%expect{| 'a -&gt; 's |}<span data-count="7">]</span>
 
 
-let%expect_test _=
+let%expect_test {| fun x -&gt; fun y -&gt; x y |} =
   <span data-count="1">i</span>nfer_exp_str {| fun x -&gt; fun y -&gt; x y |};
  <span data-count="1">[</span>%expect{| ('b -&gt; 'c) -&gt; 'b -&gt; 'c |}<span data-count="7">]</span>
 
