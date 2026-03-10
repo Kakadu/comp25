@@ -374,7 +374,6 @@ let gen_func
       (func_name : string)
       (params : ident list)
       (body_anf : anf_expr)
-      ppf
       (st : cg_state)
   : cg_state r
   =
@@ -408,7 +407,6 @@ let gen_func
   in
   let* state_after = gen_anf_expr initial_state_for_body (A 0) body_anf in
   if func_name = "main" && st.gc_stats then emit call "print_gc_status";
-  flush_queue ppf;
   emit_epilogue initial_frame_size;
   ok { st with next_label = state_after.next_label; deferred = state_after.deferred }
 ;;
@@ -456,7 +454,7 @@ let gen_program_res_with_gc ~gc_stats ppf (program : aprogram) : unit r =
       (fun acc_res item ->
          let* st = acc_res in
          match item with
-         | Anf_str_eval anf_expr -> gen_func ~arity_map "main" [] anf_expr ppf st
+         | Anf_str_eval anf_expr -> gen_func ~arity_map "main" [] anf_expr st
          | Anf_str_value (_rec_flag, name, anf_expr) ->
            let params, body =
              match anf_expr with
@@ -464,7 +462,7 @@ let gen_program_res_with_gc ~gc_stats ppf (program : aprogram) : unit r =
              | Anf_comp_expr (Comp_func (ps, b)) -> ps, b
              | _ -> [], anf_expr
            in
-           gen_func ~arity_map name params body ppf st)
+           gen_func ~arity_map name params body st)
       (ok st0)
       program
   in
@@ -477,7 +475,7 @@ let gen_program_res_with_gc ~gc_stats ppf (program : aprogram) : unit r =
         List.fold_left
           (fun acc_res (name, ps, body) ->
              let* st_acc = acc_res in
-             gen_func ~arity_map name ps body ppf st_acc)
+             gen_func ~arity_map name ps body st_acc)
           (ok st')
           (List.rev defs)
       in
