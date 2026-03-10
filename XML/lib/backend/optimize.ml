@@ -23,10 +23,22 @@ let rec elim_sd_ld_same_offset = function
   | [] -> []
 ;;
 
+let rec elim_addi_sd_mv_addi = function
+  | (Addi (_, _, aimm1), _)
+    :: (Sd (sr, _), _)
+    :: ((Mv (_, mr2), _) as mv_i)
+    :: (Addi (_, _, aimm2), _)
+    :: rest
+    when aimm1 == -aimm2 && equal_reg sr mr2 -> elim_addi_sd_mv_addi (mv_i :: rest)
+  | x :: rest -> x :: elim_addi_sd_mv_addi rest
+  | [] -> []
+;;
+
 let peephole code : (instr * string) Queue.t =
   let code = Queue.to_list code in
   let optimized = elim_sd_ld_same_reg code in
   let optimized = elim_sd_ld_same_offset optimized in
+  let optimized = elim_addi_sd_mv_addi optimized in
   Queue.of_list optimized
 ;;
 
