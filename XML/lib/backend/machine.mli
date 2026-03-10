@@ -49,6 +49,7 @@ type instr =
   | Srai of reg * reg * int (* >> imm (arith) *)
 
 val gen_instr : instr QCheck.Gen.t
+val equal_instr : instr -> instr -> bool
 val pp_instr : Format.formatter -> instr -> unit
 val addi : (instr -> 'a) -> reg -> reg -> int -> 'a
 val add : (instr -> 'a) -> reg -> reg -> reg -> 'a

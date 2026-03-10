@@ -19,9 +19,7 @@
     j endif_1
   else_0:
     mv t0, a0
-    li t1, 3
-    sub t0, t0, t1
-    addi t0, t0, 1
+    addi t0, t0, -2
     sd t0, -16(s0)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -58,12 +56,9 @@
     li t0, 9
     mv a0, t0
     call fac
-    mv t0, a0
-    mv a0, t0
     call print_int
     mv t0, a0
     sd t0, -16(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -96,9 +91,7 @@
     j endif_1
   else_0:
     mv t0, a0
-    li t1, 3
-    sub t0, t0, t1
-    addi t0, t0, 1
+    addi t0, t0, -2
     sd t0, -16(s0)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -112,9 +105,7 @@
     addi sp, sp, 8
     sd t0, -24(s0)
     mv t0, a0
-    li t1, 5
-    sub t0, t0, t1
-    addi t0, t0, 1
+    addi t0, t0, -4
     sd t0, -32(s0)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -148,12 +139,9 @@
     li t0, 13
     mv a0, t0
     call fib
-    mv t0, a0
-    mv a0, t0
     call print_int
     mv t0, a0
     sd t0, -16(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -258,7 +246,6 @@
     call large
     mv t0, a0
     sd t0, -80(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -307,9 +294,7 @@
     la a0, simplesum
     li a1, 2
     call alloc_closure
-    mv t0, a0
     ld t1, 0(sp)
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -328,17 +313,12 @@
     li a0, 5120
     call rt_init
     call partialapp_sum
-    mv t0, a0
     li t1, 11
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
-    mv a0, t0
     call print_int
     mv t0, a0
     sd t0, -16(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -432,9 +412,7 @@
     j endif_1
   else_0:
     mv t0, a0
-    li t1, 3
-    sub t0, t0, t1
-    addi t0, t0, 1
+    addi t0, t0, -2
     sd t0, -16(s0)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -446,9 +424,7 @@
     la a0, fac_cps
     li a1, 2
     call alloc_closure
-    mv t0, a0
     ld t1, 0(sp)
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -468,9 +444,7 @@
     la a0, fresh_1
     li a1, 3
     call alloc_closure
-    mv t0, a0
     ld t1, 0(sp)
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -485,9 +459,7 @@
     addi sp, sp, -8
     sd a1, 0(sp)
     ld t0, -32(s0)
-    mv t1, a1
     mv a0, t0
-    mv a1, t1
     call apply1
     mv t0, a0
     ld a1, 0(sp)
@@ -529,9 +501,7 @@
     la a0, fac_cps
     li a1, 2
     call alloc_closure
-    mv t0, a0
     ld t1, 0(sp)
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -543,8 +513,6 @@
     mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
-    mv a0, t0
     call print_int
     mv t0, a0
     sd t0, -24(s0)
@@ -618,9 +586,7 @@
     sd s0, 80(sp)
     addi s0, sp, 80
     mv t0, a0
-    li t1, 5
-    sub t0, t0, t1
-    addi t0, t0, 1
+    addi t0, t0, -4
     sd t0, -8(s0)
     addi sp, sp, -8
     sd a3, 0(sp)
@@ -659,9 +625,7 @@
     la a0, fresh_2
     li a1, 3
     call alloc_closure
-    mv t0, a0
     ld t1, 0(sp)
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -684,9 +648,7 @@
     addi sp, sp, -8
     sd a2, 0(sp)
     ld t0, -24(s0)
-    mv t1, a1
     mv a0, t0
-    mv a1, t1
     call apply1
     mv t0, a0
     ld a2, 0(sp)
@@ -751,9 +713,7 @@
     j endif_1
   else_0:
     mv t0, a0
-    li t1, 3
-    sub t0, t0, t1
-    addi t0, t0, 1
+    addi t0, t0, -2
     sd t0, -16(s0)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -765,9 +725,7 @@
     la a0, fib
     li a1, 2
     call alloc_closure
-    mv t0, a0
     ld t1, 0(sp)
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -787,9 +745,7 @@
     la a0, fresh_1
     li a1, 4
     call alloc_closure
-    mv t0, a0
     ld t1, 0(sp)
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -804,9 +760,7 @@
     addi sp, sp, -8
     sd a1, 0(sp)
     ld t0, -32(s0)
-    mv t1, a1
     mv a0, t0
-    mv a1, t1
     call apply1
     mv t0, a0
     ld a1, 0(sp)
@@ -866,9 +820,7 @@
     la a0, fib
     li a1, 2
     call alloc_closure
-    mv t0, a0
     ld t1, 0(sp)
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -880,8 +832,6 @@
     mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
-    mv a0, t0
     call print_int
     mv t0, a0
     sd t0, -32(s0)
@@ -934,8 +884,6 @@
     addi sp, sp, -8
     sd a0, 0(sp)
     addi sp, sp, -8
-    mv t0, a0
-    mv a0, t0
     call print_int
     mv t0, a0
     addi sp, sp, 8
@@ -1024,83 +972,51 @@
     la a0, test10
     li a1, 10
     call alloc_closure
-    mv t0, a0
-    mv a0, t0
     call wrap
-    mv t0, a0
     li t1, 3
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
     li t1, 21
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
     li t1, 201
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
     li t1, 2001
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
     li t1, 20001
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
     li t1, 200001
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
     li t1, 2000001
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
     li t1, 20000001
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
     li t1, 200000001
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
     li t1, 2000000001
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
-    mv a0, t0
     call print_int
     mv t0, a0
     sd t0, -104(s0)
     la a0, test3
     li a1, 3
     call alloc_closure
-    mv t0, a0
-    mv a0, t0
     call wrap
-    mv t0, a0
     li t1, 3
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
     li t1, 21
-    mv a0, t0
     mv a1, t1
     call apply1
-    mv t0, a0
     li t1, 201
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -1137,8 +1053,7 @@
     sd ra, 56(sp)
     sd s0, 48(sp)
     addi s0, sp, 48
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     sd a1, 0(sp)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -1180,9 +1095,7 @@
     la a0, make_pair
     li a1, 2
     call alloc_closure
-    mv t0, a0
     ld t1, 0(sp)
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -1193,7 +1106,6 @@
     call apply1
     mv t0, a0
     sd t0, -32(s0)
-    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -1211,7 +1123,6 @@
     call print_int
     mv t0, a0
     sd t0, -80(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1265,8 +1176,7 @@
     ld a0, 0(sp)
     addi sp, sp, 8
     sd t0, -40(s0)
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     sd a0, 0(sp)
     li a0, 2
     call create_tuple
@@ -1296,8 +1206,7 @@
     addi s0, sp, 120
     li a0, 5120
     call rt_init
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     li a0, 2
     call create_tuple
     addi sp, sp, 8
@@ -1316,7 +1225,6 @@
     call swap
     mv t0, a0
     sd t0, -40(s0)
-    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -1331,7 +1239,6 @@
     call print_int
     mv t0, a0
     sd t0, -80(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1380,8 +1287,7 @@
     call f
     mv t0, a0
     sd t0, -16(s0)
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     li a0, 2
     call create_tuple
     addi sp, sp, 8
@@ -1415,7 +1321,6 @@
     call print_int
     mv t0, a0
     sd t0, -88(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1503,8 +1408,7 @@
     addi s0, sp, 88
     li a0, 5120
     call rt_init
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     li a0, 2
     call create_tuple
     addi sp, sp, 8
@@ -1520,8 +1424,7 @@
     ld t0, 0(sp)
     addi sp, sp, 8
     sd t0, -8(s0)
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     li a0, 2
     call create_tuple
     addi sp, sp, 8
@@ -1537,8 +1440,7 @@
     ld t0, 0(sp)
     addi sp, sp, 8
     sd t0, -16(s0)
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     li a0, 2
     call create_tuple
     addi sp, sp, 8
@@ -1555,12 +1457,9 @@
     addi sp, sp, 8
     mv a0, t0
     call sum_list
-    mv t0, a0
-    mv a0, t0
     call print_int
     mv t0, a0
     sd t0, -48(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1587,8 +1486,7 @@
     addi s0, sp, 232
     li a0, 5120
     call rt_init
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     li a0, 10
     call create_tuple
     addi sp, sp, 8
@@ -1684,12 +1582,9 @@
     ld a0, -24(s0)
     li a1, 9
     call field
-    mv t0, a0
-    mv a0, t0
     call print_int
     mv t0, a0
     sd t0, -192(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1716,8 +1611,7 @@
     addi s0, sp, 112
     li a0, 5120
     call rt_init
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     li a0, 2
     call create_tuple
     addi sp, sp, 8
@@ -1751,7 +1645,6 @@
     call print_int
     mv t0, a0
     sd t0, -72(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1778,8 +1671,7 @@
     addi s0, sp, 152
     li a0, 5120
     call rt_init
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     li a0, 2
     call create_tuple
     addi sp, sp, 8
@@ -1795,8 +1687,7 @@
     ld t0, 0(sp)
     addi sp, sp, 8
     sd t0, -8(s0)
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     li a0, 2
     call create_tuple
     addi sp, sp, 8
@@ -1822,7 +1713,6 @@
     call field
     mv t0, a0
     sd t0, -56(s0)
-    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -1843,7 +1733,6 @@
     call print_int
     mv t0, a0
     sd t0, -112(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1912,8 +1801,7 @@
     addi s0, sp, 72
     li a0, 5120
     call rt_init
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     li a0, 2
     call create_tuple
     addi sp, sp, 8
@@ -1930,12 +1818,9 @@
     addi sp, sp, 8
     mv a0, t0
     call sum_pair
-    mv t0, a0
-    mv a0, t0
     call print_int
     mv t0, a0
     sd t0, -32(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1973,9 +1858,7 @@
     j endif_1
   else_0:
     mv t0, a0
-    li t1, 3
-    sub t0, t0, t1
-    addi t0, t0, 1
+    addi t0, t0, -2
     sd t0, -16(s0)
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -1987,9 +1870,7 @@
     la a0, make_list
     li a1, 2
     call alloc_closure
-    mv t0, a0
     ld t1, 0(sp)
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -1999,8 +1880,7 @@
     ld a0, 0(sp)
     addi sp, sp, 8
     sd t0, -24(s0)
-    addi sp, sp, -8
-    addi sp, sp, -8
+    addi sp, sp, -16
     sd a0, 0(sp)
     addi sp, sp, -8
     sd a1, 0(sp)
@@ -2061,9 +1941,7 @@
     la a0, make_list
     li a1, 2
     call alloc_closure
-    mv t0, a0
     ld t1, 0(sp)
-    mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
@@ -2074,7 +1952,6 @@
     call apply1
     mv t0, a0
     sd t0, -40(s0)
-    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -2092,7 +1969,6 @@
     call print_int
     mv t0, a0
     sd t0, -88(s0)
-    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)

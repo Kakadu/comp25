@@ -3,9 +3,7 @@
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
 open Base
-open Format
 open Machine
-open Target
 
 let rec elim_sd_ld_same_reg = function
   | (Sd (r1, o1), _) :: (Ld (r2, o2), _) :: rest
@@ -31,6 +29,18 @@ let rec elim_addi_sd_mv_addi = function
     :: rest
     when aimm1 == -aimm2 && equal_reg sr mr2 -> elim_addi_sd_mv_addi (mv_i :: rest)
   | x :: rest -> x :: elim_addi_sd_mv_addi rest
+  | [] -> []
+;;
+
+let rec fold_constants = function
+  | (Li (lid, lii), _) :: (Sub (srd, sr1, sr2), _) :: rest when equal_reg lid sr2 ->
+    let addi = Addi (srd, sr1, -lii), "" in
+    fold_constants (addi :: rest)
+  | (Addi (aid1, ai1, aii1), _) :: (Addi (aid2, ai2, aii2), _) :: rest
+    when equal_reg aid1 ai1 && equal_reg aid1 ai2 ->
+    let addi = Addi (aid2, ai1, aii1 + aii2), "" in
+    fold_constants (addi :: rest)
+  | x :: rest -> x :: fold_constants rest
   | [] -> []
 ;;
 
@@ -76,11 +86,82 @@ let rec fold_branch = function
   | [] -> []
 ;;
 
+let is_arg_reg r =
+  equal_reg r (A 0)
+  || equal_reg r (A 1)
+  || equal_reg r (A 2)
+  || equal_reg r (A 3)
+  || equal_reg r (A 4)
+  || equal_reg r (A 5)
+  || equal_reg r (A 6)
+  || equal_reg r (A 7)
+;;
+
+let reg_used_in_instr reg instr =
+  match instr with
+  | Add (_, r1, r2)
+  | Sub (_, r1, r2)
+  | Mul (_, r1, r2)
+  | Slt (_, r1, r2)
+  | Xor (_, r1, r2)
+    when equal_reg reg r1 || equal_reg reg r2 -> true
+  | Seqz (_, r1)
+  | Snez (_, r1)
+  | Beq (_, r1, _)
+  | Addi (_, r1, _)
+  | Xori (_, r1, _)
+  | Sd (r1, _)
+  | Mv (_, r1)
+  | Slli (_, r1, _)
+  | Srai (_, r1, _)
+    when equal_reg reg r1 -> true
+  | Call _ when is_arg_reg reg -> true
+  | _ -> false
+;;
+
+let reg_modified_in_instr reg instr =
+  match instr with
+  | Add (r1, _, _)
+  | Sub (r1, _, _)
+  | Mul (r1, _, _)
+  | Slt (r1, _, _)
+  | Xor (r1, _, _)
+  | Seqz (r1, _)
+  | Snez (r1, _)
+  | Addi (r1, _, _)
+  | Xori (r1, _, _)
+  | Mv (r1, _)
+  | Slli (r1, _, _)
+  | Srai (r1, _, _)
+  | Lla (r1, _)
+  | Li (r1, _)
+  | Ld (r1, _)
+  | La (r1, _)
+    when equal_reg reg r1 -> true
+  | Call _ when is_arg_reg reg -> true
+  | _ -> false
+;;
+
+let rec elim_inverse_mv = function
+  | (Mv (md1, mv1), _) :: (Mv (md2, mv2), _) :: rest
+    when equal_reg md1 mv2 && equal_reg mv1 md2 -> elim_inverse_mv rest
+  | (Mv (md1, mv1), _) :: ((i2, _) as i2c) :: (Mv (md2, mv2), _) :: rest
+    when equal_reg md1 mv2 && equal_reg mv1 md2 && not (reg_used_in_instr md1 i2) ->
+    elim_inverse_mv (i2c :: rest) (* can eliminate both *)
+  | ((Mv (md1, mv1), _) as i1) :: ((i2, _) as i2c) :: (Mv (md2, mv2), _) :: rest
+    when equal_reg md1 mv2 && equal_reg mv1 md2 && not (reg_modified_in_instr md1 i2) ->
+    elim_inverse_mv (i1 :: i2c :: rest) (* can eliminate the second one *)
+  | x :: rest -> x :: elim_inverse_mv rest
+  | [] -> []
+;;
+
 let peephole code : (instr * string) Queue.t =
   let code = Queue.to_list code in
   let optimized = elim_sd_ld_same_reg code in
   let optimized = elim_sd_ld_same_offset optimized in
   let optimized = elim_addi_sd_mv_addi optimized in
+  let optimized = fold_constants optimized in
+  let optimized = elim_inverse_mv optimized in
   let optimized = fold_branch optimized in
   Queue.of_list optimized
 ;;
