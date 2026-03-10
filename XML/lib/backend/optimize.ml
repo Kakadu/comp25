@@ -34,11 +34,54 @@ let rec elim_addi_sd_mv_addi = function
   | [] -> []
 ;;
 
+let rec fold_branch = function
+  | (Slt (sld, sl1, sl2), _) :: (Beq (brc, Zero, label), _) :: rest when equal_reg sld brc
+    ->
+    let br = Ble (sl2, sl1, label), "" in
+    fold_branch (br :: rest)
+  | ((Li (lid, _), _) as li)
+    :: (Xor (xd, x1, x2), _)
+    :: (Seqz (sd, s1), _)
+    :: (Beq (br, Zero, label), _)
+    :: rest
+    when equal_reg lid x2 && equal_reg xd s1 && equal_reg sd br ->
+    let br = Bne (x1, x2, label), "" in
+    fold_branch (li :: br :: rest)
+  | ((Li (lid, _), _) as li)
+    :: (Slt (sld, sl1, sl2), _)
+    :: (Seqz (sd, s1), _)
+    :: (Beq (br, Zero, label), _)
+    :: rest
+    when equal_reg lid sl1 && equal_reg sld s1 && equal_reg sd br ->
+    let br = Blt (lid, sl2, label), "" in
+    fold_branch (li :: br :: rest)
+  | ((Li (lid, _), _) as li)
+    :: (Xor (xd, x1, x2), _)
+    :: (Snez (snd, sn1), _)
+    :: (Beq (br, Zero, label), _)
+    :: rest
+    when equal_reg lid x2 && equal_reg xd sn1 && equal_reg snd br ->
+    let br = Beq (x1, lid, label), "" in
+    fold_branch (li :: br :: rest)
+  | ((Mv (mvd, mv1), _) as li)
+    :: (Xor (xd, x1, x2), _)
+    :: (Snez (snd, sn1), _)
+    :: (Beq (br, Zero, label), _)
+    :: rest
+    when equal_reg mvd x2 && equal_reg xd sn1 && equal_reg snd br ->
+    let br = Beq (x1, mv1, label), "" in
+    fold_branch (li :: br :: rest)
+  (* | XOR :: SNEZ :: BEQ *)
+  | x :: rest -> x :: fold_branch rest
+  | [] -> []
+;;
+
 let peephole code : (instr * string) Queue.t =
   let code = Queue.to_list code in
   let optimized = elim_sd_ld_same_reg code in
   let optimized = elim_sd_ld_same_offset optimized in
   let optimized = elim_addi_sd_mv_addi optimized in
+  let optimized = fold_branch optimized in
   Queue.of_list optimized
 ;;
 

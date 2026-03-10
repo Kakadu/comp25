@@ -14,9 +14,7 @@
     addi s0, sp, 72
     mv t0, a0
     li t1, 1
-    xor t2, t0, t1
-    seqz t0, t2
-    beq t0, zero, else_0
+    bne t0, t1, else_0
     li t0, 3
     j endif_1
   else_0:
@@ -93,9 +91,7 @@
     addi s0, sp, 88
     mv t0, a0
     li t1, 3
-    slt t2, t1, t0
-    seqz t0, t2
-    beq t0, zero, else_0
+    blt t1, t0, else_0
     mv t0, a0
     j endif_1
   else_0:
@@ -189,9 +185,7 @@
     addi s0, sp, 56
     li t0, 1
     mv t1, a0
-    xor t2, t0, t1
-    snez t0, t2
-    beq t0, zero, else_0
+    beq t0, a0, else_0
     addi sp, sp, -8
     sd a0, 0(sp)
     addi sp, sp, -8
@@ -230,9 +224,7 @@
     call rt_init
     li t0, 1
     li t1, 3
-    xor t2, t0, t1
-    seqz t0, t2
-    beq t0, zero, else_2
+    bne t0, t1, else_2
     li t0, 1
     li t1, 3
     xor t2, t0, t1
@@ -256,9 +248,7 @@
     li t0, 3
   endif_5:
     li t1, 3
-    xor t2, t0, t1
-    seqz t0, t2
-    beq t0, zero, else_6
+    bne t0, t1, else_6
     li t0, 1
     j endif_7
   else_6:
@@ -424,9 +414,7 @@
     addi s0, sp, 88
     mv t0, a0
     li t1, 3
-    xor t2, t0, t1
-    seqz t0, t2
-    beq t0, zero, else_0
+    bne t0, t1, else_0
     addi sp, sp, -8
     sd a0, 0(sp)
     addi sp, sp, -8
@@ -745,8 +733,7 @@
     addi s0, sp, 96
     mv t0, a0
     li t1, 5
-    slt t0, t0, t1
-    beq t0, zero, else_0
+    ble t1, t0, else_0
     addi sp, sp, -8
     sd a0, 0(sp)
     addi sp, sp, -8
@@ -923,9 +910,7 @@
     addi s0, sp, 56
     li t0, 3
     li t1, 3
-    xor t2, t0, t1
-    seqz t0, t2
-    beq t0, zero, else_0
+    bne t0, t1, else_0
     mv t0, a0
     j endif_1
   else_0:
@@ -1461,9 +1446,7 @@
     addi s0, sp, 104
     mv t0, a0
     li t1, 1
-    xor t2, t0, t1
-    seqz t0, t2
-    beq t0, zero, else_0
+    bne t0, t1, else_0
     li t0, 1
     j endif_1
   else_0:
@@ -1985,9 +1968,7 @@
     addi s0, sp, 80
     mv t0, a0
     li t1, 1
-    xor t2, t0, t1
-    seqz t0, t2
-    beq t0, zero, else_0
+    bne t0, t1, else_0
     mv t0, a1
     j endif_1
   else_0:

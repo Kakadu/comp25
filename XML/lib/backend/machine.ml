@@ -187,6 +187,7 @@ let pp_instr ppf =
   | Snez (rd, r1) -> fprintf ppf "snez %a, %a" pp_reg rd pp_reg r1
   | Mv (r1, r2) -> fprintf ppf "mv %a, %a" pp_reg r1 pp_reg r2
   | Beq (r1, r2, s) -> fprintf ppf "beq %a, %a, %s" pp_reg r1 pp_reg r2 s
+  | Bne (r1, r2, s) -> fprintf ppf "bne %a, %a, %s" pp_reg r1 pp_reg r2 s
   | Blt (r1, r2, s) -> fprintf ppf "blt %a, %a, %s" pp_reg r1 pp_reg r2 s
   | Ble (r1, r2, s) -> fprintf ppf "ble %a, %a, %s" pp_reg r1 pp_reg r2 s
   | La (r, label) -> fprintf ppf "la %a, %s" pp_reg r label

@@ -30,6 +30,7 @@ type instr =
   | Xor of reg * reg * reg (* XOR *)
   | Xori of reg * reg * int (* XOR immediate *)
   | Beq of reg * reg * string (* BEQ: branch if equal *)
+  | Bne of reg * reg * string (* BNE: branch if not equal *)
   | Blt of reg * reg * string (* BLT: branch if less than *)
   | Ble of reg * reg * string (* BLE: branch if less or equal *)
   | Lla of reg * string (* LLA: load address *)
