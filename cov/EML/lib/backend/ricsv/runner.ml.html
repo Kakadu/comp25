@@ -29,10 +29,9 @@
 <a id="L5"></a><span > </span>
 <a id="L6"></a><span > </span>
 <a id="L7"></a><span > </span>
-<a id="L8"></a><span > </span>
+<a id="L8"></a><span class="visited"> </span>
 <a id="L9"></a><span class="visited"> </span>
-<a id="L10"></a><span class="visited"> </span>
-<a id="L11"></a><span > </span>
+<a id="L10"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -47,7 +46,6 @@
 <a href="#L8"> 8</a>
 <a href="#L9"> 9</a>
 <a href="#L10">10</a>
-<a href="#L11">11</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2025-2026, Victoria Ostrovskaya &amp; Danil Usoltsev *)
 
@@ -56,9 +54,8 @@
 open Middleend.Anf
 open Analysis
 
-let gen_program ppf (program : anf_program) =
-  <span data-count="14">l</span>et analysis = analyze program in
-  <span data-count="14">G</span>enerator.gen_program ppf analysis
+let gen_program ?(enable_gc = <span data-count="12">f</span>alse) ppf (program : anf_program) =
+  <span data-count="37">p</span>rogram |&gt; analyze |&gt; <span data-count="37">G</span>enerator.gen_program ~enable_gc ppf
 ;;
 </code></pre>
       </div>
