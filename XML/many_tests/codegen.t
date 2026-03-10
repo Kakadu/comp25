@@ -31,7 +31,7 @@
     ld t0, -16(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call fac
     mv t0, a0
@@ -48,7 +48,7 @@
     addi t0, t0, 1
   endif_1:
     sd t0, -40(s0)
-    ld a0, -40(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -63,18 +63,18 @@
     li t0, 9
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call fac
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -16(s0)
-    ld a0, -16(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -119,7 +119,7 @@
     ld t0, -16(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call fib
     mv t0, a0
@@ -138,7 +138,7 @@
     ld t0, -32(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call fib
     mv t0, a0
@@ -152,7 +152,7 @@
     addi t0, t0, -1
   endif_1:
     sd t0, -56(s0)
-    ld a0, -56(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -167,18 +167,18 @@
     li t0, 13
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call fib
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -16(s0)
-    ld a0, -16(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -219,7 +219,7 @@
     li t0, 1
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
@@ -234,7 +234,7 @@
     li t0, 3
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
@@ -243,7 +243,7 @@
     addi sp, sp, 8
   endif_1:
     sd t0, -24(s0)
-    ld a0, -24(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -269,7 +269,7 @@
     li t0, 85
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
@@ -296,12 +296,12 @@
   endif_7:
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call large
     mv t0, a0
     sd t0, -80(s0)
-    ld a0, -80(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -334,7 +334,7 @@
     add t0, t0, t1
     addi t0, t0, -1
     sd t0, -8(s0)
-    ld a0, -8(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -358,7 +358,7 @@
     mv t0, a0
     addi sp, sp, 8
     sd t0, -8(s0)
-    ld a0, -8(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -379,12 +379,12 @@
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -16(s0)
-    ld a0, -16(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -448,7 +448,7 @@
     ld a2, 0(sp)
     addi sp, sp, 8
     sd t0, -16(s0)
-    ld a0, -16(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -559,7 +559,7 @@
     addi sp, sp, 8
   endif_1:
     sd t0, -56(s0)
-    ld a0, -56(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -594,7 +594,7 @@
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
@@ -658,7 +658,7 @@
     ld a2, 0(sp)
     addi sp, sp, 8
     sd t0, -16(s0)
-    ld a0, -16(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -772,7 +772,7 @@
     ld a3, 0(sp)
     addi sp, sp, 8
     sd t0, -40(s0)
-    ld a0, -40(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -900,7 +900,7 @@
     addi sp, sp, 8
   endif_1:
     sd t0, -64(s0)
-    ld a0, -64(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -935,7 +935,7 @@
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
@@ -974,7 +974,7 @@
     mv t0, a0
   endif_1:
     sd t0, -16(s0)
-    ld a0, -16(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -994,7 +994,7 @@
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
@@ -1013,7 +1013,7 @@
     mv t0, a1
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
@@ -1028,7 +1028,7 @@
     mv t0, a2
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
@@ -1075,7 +1075,7 @@
     add t0, t0, t1
     addi t0, t0, -1
     sd t0, -72(s0)
-    ld a0, -72(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1093,7 +1093,7 @@
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call wrap
     mv t0, a0
@@ -1149,7 +1149,7 @@
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
@@ -1160,7 +1160,7 @@
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call wrap
     mv t0, a0
@@ -1237,7 +1237,7 @@
     ld t0, 0(sp)
     addi sp, sp, 8
     sd t0, -8(s0)
-    ld a0, -8(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1268,7 +1268,7 @@
     call apply1
     mv t0, a0
     sd t0, -32(s0)
-    ld a0, -32(s0)
+    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -1284,12 +1284,12 @@
     addi t0, t0, -1
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -80(s0)
-    ld a0, -80(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1362,7 +1362,7 @@
     ld t0, 0(sp)
     addi sp, sp, 8
     sd t0, -48(s0)
-    ld a0, -48(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1392,12 +1392,12 @@
     addi sp, sp, 8
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call swap
     mv t0, a0
     sd t0, -40(s0)
-    ld a0, -40(s0)
+    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -1410,12 +1410,12 @@
     ld t0, -56(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -80(s0)
-    ld a0, -80(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1457,7 +1457,7 @@
     li t0, 21
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call f
     mv t0, a0
@@ -1465,7 +1465,7 @@
     li t0, 41
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call f
     mv t0, a0
@@ -1487,7 +1487,7 @@
     ld t0, 0(sp)
     addi sp, sp, 8
     sd t0, -40(s0)
-    ld a0, -40(s0)
+    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -1503,12 +1503,12 @@
     addi t0, t0, -1
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -88(s0)
-    ld a0, -88(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1575,7 +1575,7 @@
     ld t0, -48(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call sum_list
     mv t0, a0
@@ -1589,7 +1589,7 @@
     addi t0, t0, -1
   endif_1:
     sd t0, -72(s0)
-    ld a0, -72(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1653,18 +1653,18 @@
     addi sp, sp, 8
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call sum_list
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -48(s0)
-    ld a0, -48(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1740,7 +1740,7 @@
     ld t0, 0(sp)
     addi sp, sp, 8
     sd t0, -24(s0)
-    ld a0, -24(s0)
+    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -1791,12 +1791,12 @@
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -192(s0)
-    ld a0, -192(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1840,7 +1840,7 @@
     ld t0, 0(sp)
     addi sp, sp, 8
     sd t0, -24(s0)
-    ld a0, -24(s0)
+    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -1856,12 +1856,12 @@
     addi t0, t0, -1
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -72(s0)
-    ld a0, -72(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -1922,7 +1922,7 @@
     ld t0, 0(sp)
     addi sp, sp, 8
     sd t0, -32(s0)
-    ld a0, -32(s0)
+    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -1932,7 +1932,7 @@
     call field
     mv t0, a0
     sd t0, -56(s0)
-    ld a0, -56(s0)
+    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -1951,12 +1951,12 @@
     addi t0, t0, -1
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -112(s0)
-    ld a0, -112(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -2013,7 +2013,7 @@
     add t0, t0, t1
     addi t0, t0, -1
     sd t0, -48(s0)
-    ld a0, -48(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -2043,18 +2043,18 @@
     addi sp, sp, 8
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call sum_pair
     mv t0, a0
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -32(s0)
-    ld a0, -32(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -2161,7 +2161,7 @@
     addi sp, sp, 8
   endif_1:
     sd t0, -48(s0)
-    ld a0, -48(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
@@ -2195,7 +2195,7 @@
     call apply1
     mv t0, a0
     sd t0, -40(s0)
-    ld a0, -40(s0)
+    mv a0, t0
     li a1, 0
     call field
     mv t0, a0
@@ -2211,12 +2211,12 @@
     ld t0, -56(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
-    ld a0, 0(sp)
+    mv a0, t0
     addi sp, sp, 8
     call print_int
     mv t0, a0
     sd t0, -88(s0)
-    ld a0, -88(s0)
+    mv a0, t0
     addi sp, s0, 16
     ld ra, 8(s0)
     ld s0, 0(s0)
