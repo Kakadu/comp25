@@ -53,8 +53,7 @@
     addi s0, sp, 56
     li a0, 5120
     call rt_init
-    li t0, 9
-    mv a0, t0
+    li a0, 9
     call fac
     call print_int
     mv t0, a0
@@ -136,8 +135,7 @@
     addi s0, sp, 56
     li a0, 5120
     call rt_init
-    li t0, 13
-    mv a0, t0
+    li a0, 13
     call fib
     call print_int
     mv t0, a0
@@ -177,8 +175,7 @@
     addi sp, sp, -8
     sd a0, 0(sp)
     addi sp, sp, -8
-    li t0, 1
-    mv a0, t0
+    li a0, 1
     call print_int
     mv t0, a0
     addi sp, sp, 8
@@ -189,8 +186,7 @@
     addi sp, sp, -8
     sd a0, 0(sp)
     addi sp, sp, -8
-    li t0, 3
-    mv a0, t0
+    li a0, 3
     call print_int
     mv t0, a0
     addi sp, sp, 8
@@ -219,8 +215,7 @@
     seqz t0, t2
     j endif_3
   else_2:
-    li t0, 85
-    mv a0, t0
+    li a0, 85
     call print_int
     mv t0, a0
     sd t0, -24(s0)
@@ -313,8 +308,7 @@
     li a0, 5120
     call rt_init
     call partialapp_sum
-    li t1, 11
-    mv a1, t1
+    li a1, 11
     call apply1
     call print_int
     mv t0, a0
@@ -973,35 +967,25 @@
     li a1, 10
     call alloc_closure
     call wrap
-    li t1, 3
-    mv a1, t1
+    li a1, 3
     call apply1
-    li t1, 21
-    mv a1, t1
+    li a1, 21
     call apply1
-    li t1, 201
-    mv a1, t1
+    li a1, 201
     call apply1
-    li t1, 2001
-    mv a1, t1
+    li a1, 2001
     call apply1
-    li t1, 20001
-    mv a1, t1
+    li a1, 20001
     call apply1
-    li t1, 200001
-    mv a1, t1
+    li a1, 200001
     call apply1
-    li t1, 2000001
-    mv a1, t1
+    li a1, 2000001
     call apply1
-    li t1, 20000001
-    mv a1, t1
+    li a1, 20000001
     call apply1
-    li t1, 200000001
-    mv a1, t1
+    li a1, 200000001
     call apply1
-    li t1, 2000000001
-    mv a1, t1
+    li a1, 2000000001
     call apply1
     call print_int
     mv t0, a0
@@ -1010,14 +994,11 @@
     li a1, 3
     call alloc_closure
     call wrap
-    li t1, 3
-    mv a1, t1
+    li a1, 3
     call apply1
-    li t1, 21
-    mv a1, t1
+    li a1, 21
     call apply1
-    li t1, 201
-    mv a1, t1
+    li a1, 201
     call apply1
     mv t0, a0
     sd t0, -144(s0)
@@ -1277,13 +1258,11 @@
     addi s0, sp, 128
     li a0, 5120
     call rt_init
-    li t0, 21
-    mv a0, t0
+    li a0, 21
     call f
     mv t0, a0
     sd t0, -8(s0)
-    li t0, 41
-    mv a0, t0
+    li a0, 41
     call f
     mv t0, a0
     sd t0, -16(s0)

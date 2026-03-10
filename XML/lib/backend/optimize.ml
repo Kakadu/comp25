@@ -155,6 +155,15 @@ let rec elim_inverse_mv = function
   | [] -> []
 ;;
 
+let rec elim_li_mv_before_call = function
+  | (Li (ld, lii), _) :: (Mv (md, m1), _) :: ((Call _, _) as ci) :: rest
+    when equal_reg ld m1 ->
+    let li = Li (md, lii), "" in
+    elim_li_mv_before_call (li :: ci :: rest)
+  | x :: rest -> x :: elim_li_mv_before_call rest
+  | [] -> []
+;;
+
 let peephole code : (instr * string) Queue.t =
   let code = Queue.to_list code in
   let optimized = elim_sd_ld_same_reg code in
@@ -163,6 +172,7 @@ let peephole code : (instr * string) Queue.t =
   let optimized = fold_constants optimized in
   let optimized = elim_inverse_mv optimized in
   let optimized = fold_branch optimized in
+  let optimized = elim_li_mv_before_call optimized in
   Queue.of_list optimized
 ;;
 
