@@ -6,14 +6,16 @@ open Format
 open Base
 open Machine
 open Target
+open Optimize
 
 module Emission = struct
   let code : (instr * string) Queue.t = Queue.create ()
   let emit ?(comm = "") push_instr = push_instr (fun i -> Queue.enqueue code (i, comm))
 
   let flush_queue ppf =
-    while not (Queue.is_empty code) do
-      let i, comm = Queue.dequeue_exn code in
+    let optimized = optimize code in
+    while not (Queue.is_empty optimized) do
+      let i, comm = Queue.dequeue_exn optimized in
       (match i with
        | Label _ -> fprintf ppf "%a" pp_instr i
        | _ -> fprintf ppf "  %a" pp_instr i);

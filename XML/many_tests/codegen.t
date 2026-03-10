@@ -16,8 +16,6 @@
     li t1, 1
     xor t2, t0, t1
     seqz t0, t2
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     beq t0, zero, else_0
     li t0, 3
     j endif_1
@@ -48,8 +46,6 @@
     mul t0, t2, t3
     add t0, t0, t0
     addi t0, t0, 1
-    sd t0, -32(s0)
-    ld t0, -32(s0)
   endif_1:
     sd t0, -40(s0)
     ld a0, -40(s0)
@@ -71,8 +67,6 @@
     addi sp, sp, 8
     call fac
     mv t0, a0
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
@@ -110,8 +104,6 @@
     li t1, 3
     slt t2, t1, t0
     seqz t0, t2
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     beq t0, zero, else_0
     mv t0, a0
     j endif_1
@@ -158,8 +150,6 @@
     ld t1, -40(s0)
     add t0, t0, t1
     addi t0, t0, -1
-    sd t0, -48(s0)
-    ld t0, -48(s0)
   endif_1:
     sd t0, -56(s0)
     ld a0, -56(s0)
@@ -181,8 +171,6 @@
     addi sp, sp, 8
     call fib
     mv t0, a0
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
@@ -224,8 +212,6 @@
     mv t1, a0
     xor t2, t0, t1
     snez t0, t2
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     beq t0, zero, else_0
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -240,8 +226,6 @@
     addi sp, sp, 8
     ld a0, 0(sp)
     addi sp, sp, 8
-    sd t0, -16(s0)
-    ld t0, -16(s0)
     j endif_1
   else_0:
     addi sp, sp, -8
@@ -257,8 +241,6 @@
     addi sp, sp, 8
     ld a0, 0(sp)
     addi sp, sp, 8
-    sd t0, -16(s0)
-    ld t0, -16(s0)
   endif_1:
     sd t0, -24(s0)
     ld a0, -24(s0)
@@ -277,15 +259,11 @@
     li t1, 3
     xor t2, t0, t1
     seqz t0, t2
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     beq t0, zero, else_2
     li t0, 1
     li t1, 3
     xor t2, t0, t1
     seqz t0, t2
-    sd t0, -16(s0)
-    ld t0, -16(s0)
     j endif_3
   else_2:
     li t0, 85
@@ -295,41 +273,27 @@
     addi sp, sp, 8
     call print_int
     mv t0, a0
-    sd t0, -16(s0)
-    ld t0, -16(s0)
     sd t0, -24(s0)
     li t0, 3
     li t1, 3
     xor t2, t0, t1
     seqz t0, t2
-    sd t0, -32(s0)
-    ld t0, -32(s0)
   endif_3:
-    sd t0, -40(s0)
-    ld t0, -40(s0)
     beq t0, zero, else_4
     li t0, 1
     j endif_5
   else_4:
     li t0, 3
   endif_5:
-    sd t0, -48(s0)
-    ld t0, -48(s0)
     li t1, 3
     xor t2, t0, t1
     seqz t0, t2
-    sd t0, -56(s0)
-    ld t0, -56(s0)
     beq t0, zero, else_6
     li t0, 1
     j endif_7
   else_6:
     li t0, 3
   endif_7:
-    sd t0, -64(s0)
-    ld t0, -64(s0)
-    sd t0, -72(s0)
-    ld t0, -72(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
@@ -413,8 +377,6 @@
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
@@ -500,8 +462,6 @@
     li t1, 3
     xor t2, t0, t1
     seqz t0, t2
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     beq t0, zero, else_0
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -517,8 +477,6 @@
     addi sp, sp, 8
     ld a0, 0(sp)
     addi sp, sp, 8
-    sd t0, -16(s0)
-    ld t0, -16(s0)
     j endif_1
   else_0:
     mv t0, a0
@@ -599,8 +557,6 @@
     addi sp, sp, 8
     ld a0, 0(sp)
     addi sp, sp, 8
-    sd t0, -48(s0)
-    ld t0, -48(s0)
   endif_1:
     sd t0, -56(s0)
     ld a0, -56(s0)
@@ -628,8 +584,6 @@
     call apply1
     mv t0, a0
     addi sp, sp, 8
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     la a0, id
     li a1, 1
     call alloc_closure
@@ -638,8 +592,6 @@
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -16(s0)
-    ld t0, -16(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
@@ -833,8 +785,6 @@
     mv t0, a0
     li t1, 5
     slt t0, t0, t1
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     beq t0, zero, else_0
     addi sp, sp, -8
     sd a0, 0(sp)
@@ -850,8 +800,6 @@
     addi sp, sp, 8
     ld a0, 0(sp)
     addi sp, sp, 8
-    sd t0, -16(s0)
-    ld t0, -16(s0)
     j endif_1
   else_0:
     mv t0, a0
@@ -950,8 +898,6 @@
     addi sp, sp, 8
     ld a0, 0(sp)
     addi sp, sp, 8
-    sd t0, -56(s0)
-    ld t0, -56(s0)
   endif_1:
     sd t0, -64(s0)
     ld a0, -64(s0)
@@ -979,8 +925,6 @@
     call apply1
     mv t0, a0
     addi sp, sp, 8
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     la a0, id
     li a1, 1
     call alloc_closure
@@ -989,16 +933,12 @@
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -16(s0)
-    ld t0, -16(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
     addi sp, sp, 8
     call print_int
     mv t0, a0
-    sd t0, -24(s0)
-    ld t0, -24(s0)
     sd t0, -32(s0)
     li a0, 1
     addi sp, s0, 16
@@ -1027,8 +967,6 @@
     li t1, 3
     xor t2, t0, t1
     seqz t0, t2
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     beq t0, zero, else_0
     mv t0, a0
     j endif_1
@@ -1067,8 +1005,6 @@
     addi sp, sp, 8
     ld a2, 0(sp)
     addi sp, sp, 8
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     sd t0, -16(s0)
     addi sp, sp, -8
     sd a2, 0(sp)
@@ -1085,8 +1021,6 @@
     addi sp, sp, 8
     ld a2, 0(sp)
     addi sp, sp, 8
-    sd t0, -24(s0)
-    ld t0, -24(s0)
     sd t0, -32(s0)
     addi sp, sp, -8
     sd a2, 0(sp)
@@ -1101,8 +1035,6 @@
     addi sp, sp, 8
     ld a2, 0(sp)
     addi sp, sp, 8
-    sd t0, -40(s0)
-    ld t0, -40(s0)
     sd t0, -48(s0)
     li a0, 1
     addi sp, s0, 16
@@ -1118,43 +1050,27 @@
     mv t1, a1
     add t0, t0, t1
     addi t0, t0, -1
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     mv t1, a2
     add t0, t0, t1
     addi t0, t0, -1
-    sd t0, -16(s0)
-    ld t0, -16(s0)
     mv t1, a3
     add t0, t0, t1
     addi t0, t0, -1
-    sd t0, -24(s0)
-    ld t0, -24(s0)
     mv t1, a4
     add t0, t0, t1
     addi t0, t0, -1
-    sd t0, -32(s0)
-    ld t0, -32(s0)
     mv t1, a5
     add t0, t0, t1
     addi t0, t0, -1
-    sd t0, -40(s0)
-    ld t0, -40(s0)
     mv t1, a6
     add t0, t0, t1
     addi t0, t0, -1
-    sd t0, -48(s0)
-    ld t0, -48(s0)
     mv t1, a7
     add t0, t0, t1
     addi t0, t0, -1
-    sd t0, -56(s0)
-    ld t0, -56(s0)
     ld t1, 16(s0)
     add t0, t0, t1
     addi t0, t0, -1
-    sd t0, -64(s0)
-    ld t0, -64(s0)
     ld t1, 24(s0)
     add t0, t0, t1
     addi t0, t0, -1
@@ -1181,80 +1097,56 @@
     addi sp, sp, 8
     call wrap
     mv t0, a0
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     li t1, 3
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -16(s0)
-    ld t0, -16(s0)
     li t1, 21
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -24(s0)
-    ld t0, -24(s0)
     li t1, 201
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -32(s0)
-    ld t0, -32(s0)
     li t1, 2001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -40(s0)
-    ld t0, -40(s0)
     li t1, 20001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -48(s0)
-    ld t0, -48(s0)
     li t1, 200001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -56(s0)
-    ld t0, -56(s0)
     li t1, 2000001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -64(s0)
-    ld t0, -64(s0)
     li t1, 20000001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -72(s0)
-    ld t0, -72(s0)
     li t1, 200000001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -80(s0)
-    ld t0, -80(s0)
     li t1, 2000000001
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -88(s0)
-    ld t0, -88(s0)
-    sd t0, -96(s0)
-    ld t0, -96(s0)
     addi sp, sp, -8
     sd t0, 0(sp)
     ld a0, 0(sp)
@@ -1272,29 +1164,21 @@
     addi sp, sp, 8
     call wrap
     mv t0, a0
-    sd t0, -112(s0)
-    ld t0, -112(s0)
     li t1, 3
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -120(s0)
-    ld t0, -120(s0)
     li t1, 21
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -128(s0)
-    ld t0, -128(s0)
     li t1, 201
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -136(s0)
-    ld t0, -136(s0)
     sd t0, -144(s0)
     li a0, 1
     addi sp, s0, 16
@@ -1433,8 +1317,6 @@
     li t1, 1
     xor t2, t0, t1
     seqz t0, t2
-    sd t0, -8(s0)
-    ld t0, -8(s0)
     beq t0, zero, else_0
     mv t0, a1
     j endif_1
@@ -1505,8 +1387,6 @@
     addi sp, sp, 8
     ld a0, 0(sp)
     addi sp, sp, 8
-    sd t0, -40(s0)
-    ld t0, -40(s0)
   endif_1:
     sd t0, -48(s0)
     ld a0, -48(s0)
@@ -1537,31 +1417,21 @@
     call apply1
     mv t0, a0
     addi sp, sp, 8
-    sd t0, -16(s0)
-    ld t0, -16(s0)
     li t1, 1
     mv a0, t0
     mv a1, t1
     call apply1
     mv t0, a0
-    sd t0, -24(s0)
-    ld t0, -24(s0)
-    sd t0, -32(s0)
-    ld t0, -32(s0)
     sd t0, -40(s0)
     ld a0, -40(s0)
     li a1, 0
     call field
     mv t0, a0
-    sd t0, -48(s0)
-    ld t0, -48(s0)
     sd t0, -56(s0)
     ld a0, -40(s0)
     li a1, 1
     call field
     mv t0, a0
-    sd t0, -64(s0)
-    ld t0, -64(s0)
     sd t0, -72(s0)
     call print_gc_status
     mv t0, a0

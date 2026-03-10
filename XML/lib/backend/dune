@@ -1,7 +1,7 @@
 (library
  (name backend)
  (public_name XML.Backend)
- (modules codegen codegen_llvm emission machine target)
+ (modules codegen codegen_llvm emission machine target optimize)
  (libraries
   angstrom
   base

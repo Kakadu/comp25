@@ -17,6 +17,7 @@ val pp_reg : Format.formatter -> reg -> unit
 type offset = reg * int
 
 val gen_offset : offset QCheck.Gen.t
+val equal_offset : offset -> offset -> bool
 
 type instr =
   | Addi of reg * reg * int (* ADD immediate *)
