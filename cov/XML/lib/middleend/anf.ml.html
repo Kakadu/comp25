@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>anf.ml &mdash; Coverage report</title>
-    <meta name="description" content="71.25% coverage in lib/middleend/anf.ml">
+    <meta name="description" content="75.00% coverage in lib/middleend/anf.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,7 +15,7 @@
           <span class="dirname">lib/middleend/</span>anf.ml
         </a>
       </h1>
-      <h2>71.25%</h2>
+      <h2>75.00%</h2>
     </div>
     <div id="navbar">
       <span class="unvisited" style="top:3.82%"></span>
@@ -30,24 +30,19 @@
       <span class="unvisited" style="top:12.15%"></span>
       <span class="unvisited" style="top:13.89%"></span>
       <span class="unvisited" style="top:19.44%"></span>
-      <span class="unvisited" style="top:20.14%"></span>
       <span class="unvisited" style="top:21.18%"></span>
       <span class="unvisited" style="top:21.88%"></span>
       <span class="unvisited" style="top:22.22%"></span>
       <span class="unvisited" style="top:22.57%"></span>
-      <span class="unvisited" style="top:22.92%"></span>
       <span class="unvisited" style="top:23.26%"></span>
       <span class="unvisited" style="top:23.96%"></span>
       <span class="unvisited" style="top:24.65%"></span>
-      <span class="unvisited" style="top:26.39%"></span>
-      <span class="unvisited" style="top:26.74%"></span>
       <span class="unvisited" style="top:29.51%"></span>
       <span class="unvisited" style="top:49.31%"></span>
       <span class="unvisited" style="bottom:42.36%"></span>
       <span class="unvisited" style="bottom:42.01%"></span>
       <span class="unvisited" style="bottom:32.99%"></span>
       <span class="unvisited" style="bottom:30.21%"></span>
-      <span class="unvisited" style="bottom:26.39%"></span>
       <span class="unvisited" style="bottom:10.76%"></span>
       <span class="unvisited" style="bottom:8.33%"></span>
       <span class="unvisited" style="bottom:7.99%"></span>
@@ -113,7 +108,7 @@
 <a id="L55"></a><span > </span>
 <a id="L56"></a><span class="unvisited"> </span>
 <a id="L57"></a><span class="visited"> </span>
-<a id="L58"></a><span class="unvisited"> </span>
+<a id="L58"></a><span class="visited"> </span>
 <a id="L59"></a><span > </span>
 <a id="L60"></a><span > </span>
 <a id="L61"></a><span class="unvisited"> </span>
@@ -121,7 +116,7 @@
 <a id="L63"></a><span class="unvisited"> </span>
 <a id="L64"></a><span class="unvisited"> </span>
 <a id="L65"></a><span class="unvisited"> </span>
-<a id="L66"></a><span class="unvisited"> </span>
+<a id="L66"></a><span class="visited"> </span>
 <a id="L67"></a><span class="unvisited"> </span>
 <a id="L68"></a><span > </span>
 <a id="L69"></a><span class="unvisited"> </span>
@@ -131,8 +126,8 @@
 <a id="L73"></a><span > </span>
 <a id="L74"></a><span > </span>
 <a id="L75"></a><span class="visited"> </span>
-<a id="L76"></a><span class="unvisited"> </span>
-<a id="L77"></a><span class="unvisited"> </span>
+<a id="L76"></a><span class="visited"> </span>
+<a id="L77"></a><span class="visited"> </span>
 <a id="L78"></a><span > </span>
 <a id="L79"></a><span > </span>
 <a id="L80"></a><span > </span>
@@ -267,7 +262,7 @@
 <a id="L209"></a><span class="visited"> </span>
 <a id="L210"></a><span class="visited"> </span>
 <a id="L211"></a><span > </span>
-<a id="L212"></a><span class="unvisited"> </span>
+<a id="L212"></a><span class="visited"> </span>
 <a id="L213"></a><span > </span>
 <a id="L214"></a><span > </span>
 <a id="L215"></a><span > </span>
@@ -693,8 +688,8 @@ type 'a r = ('a, anf_error) result
 
 let ( let* ) = Result.bind
 let ( let+ ) x f = <span data-count="0">R</span>esult.map f x
-let ok x = <span data-count="5351">O</span>k x
-let err e = <span data-count="0">E</span>rror e
+let ok x = <span data-count="5511">O</span>k x
+let err e = <span data-count="1">E</span>rror e
 
 let pp_anf_error = function
   | <span data-count="0">`</span>Only_simple_var_params -&gt;
@@ -702,7 +697,7 @@ let pp_anf_error = function
   | <span data-count="0">`</span>Func_no_params -&gt; "Function with no parameters found"
   | <span data-count="0">`</span>Let_and_not_supported -&gt; "let ... and ... is not supported in ANF yet"
   | <span data-count="0">`</span>Unsupported_let_pattern s -&gt; "Unsupported pattern in let-binding: " ^ s
-  | <span data-count="0">`</span>Unsupported_expr_in_normaliser -&gt; "unsupported expression in ANF normaliser"
+  | <span data-count="1">`</span>Unsupported_expr_in_normaliser -&gt; "unsupported expression in ANF normaliser"
   | <span data-count="0">`</span>Mutual_rec_not_supported -&gt;
     "Mutually recursive let ... and ... bindings are not supported yet."
   | <span data-count="0">`</span>Unsupported_toplevel_let -&gt;
@@ -711,35 +706,35 @@ let pp_anf_error = function
 ;;
 
 let normalise_const = function
-  | <span data-count="567">C</span>onst_integer e -&gt; Imm_num e
-  | <span data-count="0">C</span>onst_char e -&gt; Imm_ident (String.mak<span data-count="0">e</span> 1 e)
-  | <span data-count="0">C</span>onst_string e -&gt; Imm_ident e
+  | <span data-count="588">C</span>onst_integer e -&gt; Imm_num e
+  | <span data-count="1">C</span>onst_char e -&gt; Imm_ident (String.mak<span data-count="1">e</span> 1 e)
+  | <span data-count="1">C</span>onst_string e -&gt; Imm_ident e
 ;;
 
 (* FIX: Do not flatten tuples in arguments. Treat tuple as a single value. *)
-let flatten_arg_expr e = <span data-count="586">[</span> e ]
+let flatten_arg_expr e = <span data-count="593">[</span> e ]
 
 let pat_vars = function
-  | <span data-count="338">P</span>attern.Pat_var p -&gt; ok [ p ]
+  | <span data-count="342">P</span>attern.Pat_var p -&gt; ok [ p ]
   | <span data-count="0">_</span> -&gt; err `Only_simple_var_params
 ;;
 
 let rec collect_params_and_body expr acc =
-  <span data-count="345">m</span>atch expr with
-  | <span data-count="173">E</span>xp_fun ((first_pat, rest_pats), body) -&gt;
-    let* v1 = pat_var<span data-count="173">s</span> first_pat in
-    <span data-count="173">l</span>et* vrest =
+  <span data-count="353">m</span>atch expr with
+  | <span data-count="177">E</span>xp_fun ((first_pat, rest_pats), body) -&gt;
+    let* v1 = pat_var<span data-count="177">s</span> first_pat in
+    <span data-count="177">l</span>et* vrest =
       let rec go acc = function
-        | <span data-count="173">[</span>] -&gt; ok (List.re<span data-count="173">v</span> acc)
+        | <span data-count="177">[</span>] -&gt; ok (List.re<span data-count="177">v</span> acc)
         | <span data-count="165">p</span> :: tl -&gt;
           let* vs = pat_var<span data-count="165">s</span> p in
           <span data-count="165">g</span>o (List.rev_appen<span data-count="165">d</span> vs acc) tl
       in
-      g<span data-count="173">o</span> [] rest_pats
+      g<span data-count="177">o</span> [] rest_pats
     in
-    <span data-count="173">l</span>et* res = collect_params_and_bod<span data-count="173">y</span> body (acc @ v1 @ vrest) in
-    <span data-count="173">o</span>k res
-  | <span data-count="172">_</span> -&gt; ok (acc, expr)
+    <span data-count="177">l</span>et* res = collect_params_and_bod<span data-count="177">y</span> body (acc @ v1 @ vrest) in
+    <span data-count="177">o</span>k res
+  | <span data-count="176">_</span> -&gt; ok (acc, expr)
 ;;
 
 type nstate = { next : int }
@@ -747,7 +742,7 @@ type nstate = { next : int }
 let initial_state = { next = 0 }
 
 let fresh (st : nstate) : ident * nstate =
-  <span data-count="1397">l</span>et name = "t_" ^ string_of_in<span data-count="1397">t</span> st.next in
+  <span data-count="1425">l</span>et name = "t_" ^ string_of_in<span data-count="1425">t</span> st.next in
   name, { next = st.next + 1 }
 ;;
 
@@ -755,8 +750,8 @@ let fresh (st : nstate) : ident * nstate =
 let rec bind_pat (pat : Pattern.t) (source_imm : im_expr) (body : anf_expr) (st : nstate)
   : (anf_expr * nstate) r
   =
-  <span data-count="375">m</span>atch pat with
-  | <span data-count="237">P</span>attern.Pat_var x -&gt; ok (Anf_let (Nonrecursive, x, Comp_imm source_imm, body), st)
+  <span data-count="378">m</span>atch pat with
+  | <span data-count="240">P</span>attern.Pat_var x -&gt; ok (Anf_let (Nonrecursive, x, Comp_imm source_imm, body), st)
   | <span data-count="80">P</span>attern.Pat_any | <span data-count="5">P</span>attern.Pat_construct ("()", None) -&gt; ok (body, st)
   | <span data-count="53">P</span>attern.Pat_tuple (p1, p2, ps) -&gt;
     let pats = p1 :: p2 :: ps in
@@ -784,84 +779,84 @@ let rec bind_pat (pat : Pattern.t) (source_imm : im_expr) (body : anf_expr) (st 
 let rec norm_comp expr (k : comp_expr -&gt; nstate -&gt; (anf_expr * nstate) r) (st : nstate)
   : (anf_expr * nstate) r
   =
-  <span data-count="3038">m</span>atch expr with
-  | <span data-count="1069">E</span>xp_ident e -&gt; k (Comp_imm (Imm_ident e)) st
-  | <span data-count="567">E</span>xp_constant c -&gt; k (Comp_imm (normalise_cons<span data-count="567">t</span> c)) st
-  | <span data-count="64">E</span>xp_tuple (expr1, expr2, rest_list) -&gt;
+  <span data-count="3115">m</span>atch expr with
+  | <span data-count="1092">E</span>xp_ident e -&gt; k (Comp_imm (Imm_ident e)) st
+  | <span data-count="590">E</span>xp_constant c -&gt; k (Comp_imm (normalise_cons<span data-count="590">t</span> c)) st
+  | <span data-count="69">E</span>xp_tuple (expr1, expr2, rest_list) -&gt;
     let all_exprs = expr1 :: expr2 :: rest_list in
-    norm_list_to_imm all_exprs (fun imm_list st -&gt; <span data-count="64">k</span> (Comp_alloc imm_list) st) st
-  | <span data-count="264">E</span>xp_apply (Exp_ident op, Exp_tuple (expr1, expr2, []))
-    when List.me<span data-count="264">m</span> op [ "+"; "-"; "*"; "="; "&lt;"; "&gt;"; "&lt;="; "&gt;="; "&lt;&gt;" ] -&gt;
-    <span data-count="264">n</span>orm_to_imm
+    norm_list_to_imm all_exprs (fun imm_list st -&gt; <span data-count="69">k</span> (Comp_alloc imm_list) st) st
+  | <span data-count="272">E</span>xp_apply (Exp_ident op, Exp_tuple (expr1, expr2, []))
+    when List.me<span data-count="272">m</span> op [ "+"; "-"; "*"; "="; "&lt;"; "&gt;"; "&lt;="; "&gt;="; "&lt;&gt;" ] -&gt;
+    <span data-count="272">n</span>orm_to_imm
       expr1
       (fun v1 -&gt;
-         <span data-count="264">n</span>orm_to_imm expr2 (fun v2 -&gt;
+         <span data-count="272">n</span>orm_to_imm expr2 (fun v2 -&gt;
            fun st -&gt;
-           <span data-count="264">l</span>et ce =
+           <span data-count="272">l</span>et ce =
              match v1, v2 with
-             | <span data-count="23">I</span>mm_num n1, Imm_num n2 -&gt;
+             | <span data-count="24">I</span>mm_num n1, Imm_num n2 -&gt;
                (match op with
-                | <span data-count="1">"</span>+" -&gt; Comp_imm (Imm_num (n1 + n2))
+                | <span data-count="2">"</span>+" -&gt; Comp_imm (Imm_num (n1 + n2))
                 | <span data-count="0">"</span>-" -&gt; Comp_imm (Imm_num (n1 - n2))
                 | <span data-count="0">"</span>*" -&gt; Comp_imm (Imm_num (n1 * n2))
                 | <span data-count="22">_</span> -&gt; Comp_binop (op, v1, v2))
-             | <span data-count="241">_</span> -&gt; Comp_binop (op, v1, v2)
+             | <span data-count="248">_</span> -&gt; Comp_binop (op, v1, v2)
            in
            k ce st))
       st
-  | <span data-count="586">E</span>xp_apply (func_expr, arg_expr) -&gt;
+  | <span data-count="593">E</span>xp_apply (func_expr, arg_expr) -&gt;
     norm_to_imm
       func_expr
       (fun func_imm -&gt;
-         <span data-count="586">l</span>et flat_args = flatten_arg_expr arg_expr in
-         <span data-count="586">n</span>orm_list_to_imm flat_args (fun args_imms st -&gt;
-           <span data-count="586">k</span> (Comp_app (func_imm, args_imms)) st))
+         <span data-count="593">l</span>et flat_args = flatten_arg_expr arg_expr in
+         <span data-count="593">n</span>orm_list_to_imm flat_args (fun args_imms st -&gt;
+           <span data-count="593">k</span> (Comp_app (func_imm, args_imms)) st))
       st
-  | <span data-count="79">E</span>xp_if (cond, then_, Some else_) -&gt;
+  | <span data-count="82">E</span>xp_if (cond, then_, Some else_) -&gt;
     norm_to_imm
       cond
       (fun cond_imm -&gt;
          fun st -&gt;
-         <span data-count="79">l</span>et* then_anf, st1 = norm_bod<span data-count="79">y</span> then_ st in
-         <span data-count="79">l</span>et* else_anf, st2 = norm_bod<span data-count="79">y</span> else_ st1 in
-         <span data-count="79">k</span> (Comp_branch (cond_imm, then_anf, else_anf)) st2)
+         <span data-count="82">l</span>et* then_anf, st1 = norm_bod<span data-count="82">y</span> then_ st in
+         <span data-count="82">l</span>et* else_anf, st2 = norm_bod<span data-count="82">y</span> else_ st1 in
+         <span data-count="82">k</span> (Comp_branch (cond_imm, then_anf, else_anf)) st2)
       st
-  | <span data-count="172">E</span>xp_fun _ -&gt;
-    let* params, body = collect_params_and_bod<span data-count="172">y</span> expr [] in
-    <span data-count="172">(</span>match params with
+  | <span data-count="176">E</span>xp_fun _ -&gt;
+    let* params, body = collect_params_and_bod<span data-count="176">y</span> expr [] in
+    <span data-count="176">(</span>match params with
      | <span data-count="0">[</span>] -&gt; err `Func_no_params
-     | <span data-count="172">_</span> -&gt;
-       let* body_anf, st' = norm_bod<span data-count="172">y</span> body st in
-       <span data-count="172">k</span> (Comp_func (params, body_anf)) st')
-  | <span data-count="237">E</span>xp_let (rec_flag, (first_binding, other_bindings), body) -&gt;
+     | <span data-count="176">_</span> -&gt;
+       let* body_anf, st' = norm_bod<span data-count="176">y</span> body st in
+       <span data-count="176">k</span> (Comp_func (params, body_anf)) st')
+  | <span data-count="240">E</span>xp_let (rec_flag, (first_binding, other_bindings), body) -&gt;
     let* () =
       match other_bindings with
-      | <span data-count="237">[</span>] -&gt; o<span data-count="237">k</span> ()
+      | <span data-count="240">[</span>] -&gt; o<span data-count="240">k</span> ()
       | <span data-count="0">_</span> -&gt; er<span data-count="0">r</span> `Let_and_not_supported
     in
-    <span data-count="237">l</span>et { pat; expr = vb_expr } = first_binding in
+    <span data-count="240">l</span>et { pat; expr = vb_expr } = first_binding in
     norm_comp
       vb_expr
       (fun ce st -&gt;
-         <span data-count="237">l</span>et scrutinee, st1 = fresh st in
-         <span data-count="237">l</span>et* body_anf, st2 = norm_com<span data-count="237">p</span> body k st1 in
-         <span data-count="237">l</span>et* match_anf, st3 = bind_pa<span data-count="237">t</span> pat (Imm_ident scrutinee) body_anf st2 in
-         <span data-count="237">o</span>k (Anf_let (rec_flag, scrutinee, ce, match_anf), st3))
+         <span data-count="240">l</span>et scrutinee, st1 = fresh st in
+         <span data-count="240">l</span>et* body_anf, st2 = norm_com<span data-count="240">p</span> body k st1 in
+         <span data-count="240">l</span>et* match_anf, st3 = bind_pa<span data-count="240">t</span> pat (Imm_ident scrutinee) body_anf st2 in
+         <span data-count="240">o</span>k (Anf_let (rec_flag, scrutinee, ce, match_anf), st3))
       st
-  | <span data-count="0">_</span> -&gt; err `Unsupported_expr_in_normaliser
+  | <span data-count="1">_</span> -&gt; err `Unsupported_expr_in_normaliser
 
 and norm_to_imm expr (k : im_expr -&gt; nstate -&gt; (anf_expr * nstate) r) (st : nstate)
   : (anf_expr * nstate) r
   =
-  <span data-count="2564">n</span>orm_comp
+  <span data-count="2635">n</span>orm_comp
     expr
     (fun ce st' -&gt;
-       <span data-count="2564">m</span>atch ce with
-       | <span data-count="1542">C</span>omp_imm imm -&gt; k imm st'
-       | <span data-count="1022">_</span> -&gt;
+       <span data-count="2634">m</span>atch ce with
+       | <span data-count="1587">C</span>omp_imm imm -&gt; k imm st'
+       | <span data-count="1047">_</span> -&gt;
          let tmp, st1 = fresh st' in
-         <span data-count="1022">l</span>et* body, st2 = <span data-count="1022">k</span> (Imm_ident tmp) st1 in
-         <span data-count="1022">o</span>k (Anf_let (Nonrecursive, tmp, ce, body), st2))
+         <span data-count="1047">l</span>et* body, st2 = <span data-count="1047">k</span> (Imm_ident tmp) st1 in
+         <span data-count="1047">o</span>k (Anf_let (Nonrecursive, tmp, ce, body), st2))
     st
 
 and norm_list_to_imm
@@ -870,54 +865,54 @@ and norm_list_to_imm
       (st : nstate)
   : (anf_expr * nstate) r
   =
-  <span data-count="1398">m</span>atch expr_list with
-  | <span data-count="650">[</span>] -&gt; k [] st
-  | <span data-count="748">h</span>d :: tl -&gt;
+  <span data-count="1428">m</span>atch expr_list with
+  | <span data-count="662">[</span>] -&gt; k [] st
+  | <span data-count="766">h</span>d :: tl -&gt;
     norm_to_imm
       hd
       (fun imm st1 -&gt;
-         <span data-count="748">l</span>et* res = norm_list_to_im<span data-count="748">m</span> tl (fun imms st2 -&gt; <span data-count="748">k</span> (imm :: imms) st2) st1 in
-         <span data-count="748">o</span>k res)
+         <span data-count="766">l</span>et* res = norm_list_to_im<span data-count="766">m</span> tl (fun imms st2 -&gt; <span data-count="766">k</span> (imm :: imms) st2) st1 in
+         <span data-count="766">o</span>k res)
       st
 
 and norm_body expr (st : nstate) : (anf_expr * nstate) r =
-  <span data-count="623">n</span>orm_to_imm expr (fun imm st -&gt; <span data-count="623">o</span>k (Anf_comp_expr (Comp_imm imm), st)) st
+  <span data-count="650">n</span>orm_to_imm expr (fun imm st -&gt; <span data-count="649">o</span>k (Anf_comp_expr (Comp_imm imm), st)) st
 ;;
 
 let norm_item (item : structure_item) (st : nstate) : (astructure_item * nstate) r =
-  <span data-count="293">m</span>atch item with
-  | <span data-count="6">S</span>tr_eval expr -&gt;
-    let* body_anf, st' = norm_bod<span data-count="6">y</span> expr st in
-    <span data-count="6">o</span>k (Anf_str_eval body_anf, st')
-  | <span data-count="287">S</span>tr_value (rec_flag, (first_binding, other_bindings)) -&gt;
+  <span data-count="310">m</span>atch item with
+  | <span data-count="22">S</span>tr_eval expr -&gt;
+    let* body_anf, st' = norm_bod<span data-count="22">y</span> expr st in
+    <span data-count="21">o</span>k (Anf_str_eval body_anf, st')
+  | <span data-count="288">S</span>tr_value (rec_flag, (first_binding, other_bindings)) -&gt;
     let* () =
       match other_bindings with
-      | <span data-count="287">[</span>] -&gt; o<span data-count="287">k</span> ()
+      | <span data-count="288">[</span>] -&gt; o<span data-count="288">k</span> ()
       | <span data-count="0">_</span> -&gt; er<span data-count="0">r</span> `Mutual_rec_not_supported
     in
-    <span data-count="287">l</span>et { pat; expr } = first_binding in
+    <span data-count="288">l</span>et { pat; expr } = first_binding in
     (match pat with
-     | <span data-count="287">P</span>attern.Pat_var name -&gt;
-       let* body_anf, st' = norm_bod<span data-count="287">y</span> expr st in
-       <span data-count="287">o</span>k (Anf_str_value (rec_flag, name, body_anf), st')
+     | <span data-count="288">P</span>attern.Pat_var name -&gt;
+       let* body_anf, st' = norm_bod<span data-count="288">y</span> expr st in
+       <span data-count="288">o</span>k (Anf_str_value (rec_flag, name, body_anf), st')
      | <span data-count="0">_</span> -&gt; err `Unsupported_toplevel_let)
   | <span data-count="0">_</span> -&gt; err `Unsupported_toplevel_item
 ;;
 
 let anf_program_res (program : structure_item list) : (aprogram, anf_error) result =
-  <span data-count="121">l</span>et step (st, acc) item =
-    <span data-count="293">l</span>et* it, st' = norm_ite<span data-count="293">m</span> item st in
-    <span data-count="293">o</span>k (st', it :: acc)
+  <span data-count="138">l</span>et step (st, acc) item =
+    <span data-count="310">l</span>et* it, st' = norm_ite<span data-count="310">m</span> item st in
+    <span data-count="309">o</span>k (st', it :: acc)
   in
   let* _, rev_items =
-    List.fold_lef<span data-count="121">t</span>
+    List.fold_lef<span data-count="138">t</span>
       (fun acc item -&gt;
-         <span data-count="293">l</span>et* st, xs = acc in
-         <span data-count="293">s</span>tep (st, xs) item)
-      (o<span data-count="121">k</span> (initial_state, []))
+         <span data-count="310">l</span>et* st, xs = acc in
+         <span data-count="310">s</span>tep (st, xs) item)
+      (o<span data-count="138">k</span> (initial_state, []))
       program
   in
-  <span data-count="121">o</span>k (List.re<span data-count="121">v</span> rev_items)
+  <span data-count="137">o</span>k (List.re<span data-count="137">v</span> rev_items)
 ;;
 
 let anf_program (program : structure_item list) : aprogram =

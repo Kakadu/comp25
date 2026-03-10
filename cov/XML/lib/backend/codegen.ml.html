@@ -1135,22 +1135,22 @@ module ArityMap = struct
 
   type t = int M.t
 
-  let empty () : t = <span data-count="40">M</span>.empty
-  let bind (t : t) (x : ident) (arity : int) : t = <span data-count="369">M</span>.add x arity t
+  let empty () : t = <span data-count="42">M</span>.empty
+  let bind (t : t) (x : ident) (arity : int) : t = <span data-count="385">M</span>.add x arity t
   let find (t : t) (x : ident) : int option = <span data-count="80">M</span>.find_opt x t
 end
 
 let initial_arity_map =
   let arity_map = ArityMap.empty () in
-  <span data-count="40">l</span>et arity_map = ArityMap.bind arity_map "print_int" 1 in
-  <span data-count="40">l</span>et arity_map = ArityMap.bind arity_map "alloc_block" 1 in
-  <span data-count="40">l</span>et arity_map = ArityMap.bind arity_map "alloc_closure" 2 in
-  <span data-count="40">l</span>et arity_map = ArityMap.bind arity_map "apply1" 2 in
-  <span data-count="40">l</span>et arity_map = ArityMap.bind arity_map "print_gc_status" 0 in
-  <span data-count="40">l</span>et arity_map = ArityMap.bind arity_map "collect" 0 in
-  <span data-count="40">l</span>et arity_map = ArityMap.bind arity_map "create_tuple" 1 in
-  <span data-count="40">l</span>et arity_map = ArityMap.bind arity_map "field" 2 in
-  <span data-count="40">a</span>rity_map
+  <span data-count="42">l</span>et arity_map = ArityMap.bind arity_map "print_int" 1 in
+  <span data-count="42">l</span>et arity_map = ArityMap.bind arity_map "alloc_block" 1 in
+  <span data-count="42">l</span>et arity_map = ArityMap.bind arity_map "alloc_closure" 2 in
+  <span data-count="42">l</span>et arity_map = ArityMap.bind arity_map "apply1" 2 in
+  <span data-count="42">l</span>et arity_map = ArityMap.bind arity_map "print_gc_status" 0 in
+  <span data-count="42">l</span>et arity_map = ArityMap.bind arity_map "collect" 0 in
+  <span data-count="42">l</span>et arity_map = ArityMap.bind arity_map "create_tuple" 1 in
+  <span data-count="42">l</span>et arity_map = ArityMap.bind arity_map "field" 2 in
+  <span data-count="42">a</span>rity_map
 ;;
 
 type cg_state =

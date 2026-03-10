@@ -216,7 +216,7 @@ open Machine
 open Target
 
 module Emission = struct
-  let code : (instr * string) Queue.t = Queue.creat<span data-count="40">e</span> ()
+  let code : (instr * string) Queue.t = Queue.creat<span data-count="42">e</span> ()
   let emit ?(comm = <span data-count="2669">"</span>") push_instr = <span data-count="2669">p</span>ush_instr (fun i -&gt; <span data-count="2669">Q</span>ueue.enqueue code (i, comm))
 
   let flush_queue ppf =

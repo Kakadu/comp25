@@ -1284,7 +1284,7 @@ let%expect_test "num" =
       call void @rt_init(i64 5120)
       call void @collect()
       ret i64 0
-    } |}<span data-count="7">]</span>
+    } |}<span data-count="11">]</span>
 
 let%expect_test "comp binop" =
   <span data-count="1">c</span>odegen_prog_str {| 1 + 2 |};
@@ -1318,7 +1318,7 @@ let%expect_test "comp binop" =
       call void @rt_init(i64 5120)
       call void @collect()
       ret i64 0
-    } |}<span data-count="7">]</span>
+    } |}<span data-count="11">]</span>
 
 let%expect_test "print_int 5" =
   <span data-count="1">c</span>odegen_prog_str {| print_int 5 |};
@@ -1356,7 +1356,7 @@ let%expect_test "print_int 5" =
       %t_01 = load i64, ptr %t_0, align 8
       call void @collect()
       ret i64 0
-    } |}<span data-count="7">]</span>
+    } |}<span data-count="11">]</span>
 
 let%expect_test "if 1 then 1 else 2 " =
   <span data-count="1">c</span>odegen_prog_str {| if 1 then 1 else 2 |};
@@ -1403,7 +1403,7 @@ let%expect_test "if 1 then 1 else 2 " =
       %t_01 = load i64, ptr %t_0, align 8
       call void @collect()
       ret i64 0
-    } |}<span data-count="7">]</span>
+    } |}<span data-count="11">]</span>
 
 let%expect_test "tuple" =
   <span data-count="1">c</span>odegen_prog_str {| (1, 2, 3, 4) |};
@@ -1451,7 +1451,7 @@ let%expect_test "tuple" =
       %t_04 = load i64, ptr %t_0, align 8
       call void @collect()
       ret i64 0
-    } |}<span data-count="7">]</span>
+    } |}<span data-count="11">]</span>
 
 let%expect_test "load" =
   <span data-count="1">c</span>odegen_prog_str {| let a, b = (1, 2) in a, b |};
@@ -1520,7 +1520,7 @@ let%expect_test "load" =
       %t_114 = load i64, ptr %t_1, align 8
       call void @collect()
       ret i64 0
-    } |}<span data-count="7">]</span>
+    } |}<span data-count="11">]</span>
 
 let%expect_test "new function " =
   <span data-count="1">c</span>odegen_prog_str {| let a = fun x -&gt; x |};
@@ -1562,7 +1562,7 @@ let%expect_test "new function " =
       call void @rt_init(i64 5120)
       call void @collect()
       ret i64 0
-    } |}<span data-count="7">]</span>
+    } |}<span data-count="11">]</span>
 
 let%expect_test "call function " =
   <span data-count="1">c</span>odegen_prog_str {|
@@ -1614,7 +1614,7 @@ let%expect_test "call function " =
       store i64 %t_11, ptr %main, align 8
       call void @collect()
       ret i64 0
-    } |}<span data-count="7">]</span>
+    } |}<span data-count="11">]</span>
 
 
 let%expect_test "partial " =
@@ -1670,7 +1670,7 @@ let%expect_test "partial " =
       store i64 %t_11, ptr %main, align 8
       call void @collect()
       ret i64 0
-    } |}<span data-count="7">]</span>
+    } |}<span data-count="11">]</span>
 
 
 let%expect_test "user main" =
@@ -1727,7 +1727,7 @@ let%expect_test "user main" =
       store i64 %t_22, ptr %a, align 8
       call void @collect()
       ret i64 0
-    } |}<span data-count="7">]</span>
+    } |}<span data-count="11">]</span>
 
 
 let%expect_test "use reserved name" =
@@ -1841,7 +1841,7 @@ let%expect_test "use reserved name" =
       store i64 %t_1011, ptr %c, align 8
       call void @collect()
       ret i64 0
-    } |}<span data-count="7">]</span>
+    } |}<span data-count="11">]</span>
 </code></pre>
       </div>
     </div>
