@@ -78,19 +78,19 @@
 open Middleend.Anf
 
 let gen_program ~enable_gc ppf (program : anf_program) : (unit, string) Result.t =
-  <span data-count="31">l</span>et temp_ll_path = Filename.temp_file "eml_llvm" ".ll" in
-  <span data-count="31">l</span>et remove_temp_file_if_exists () =
-    <span data-count="31">i</span>f Sys.file_exists temp_ll_path then <span data-count="31">S</span>ys.remove temp_ll_path
+  <span data-count="32">l</span>et temp_ll_path = Filename.temp_file "eml_llvm" ".ll" in
+  <span data-count="32">l</span>et remove_temp_file_if_exists () =
+    <span data-count="32">i</span>f Sys.file_exists temp_ll_path then <span data-count="32">S</span>ys.remove temp_ll_path
   in
   match Generator.gen_program ~output_file:temp_ll_path ~enable_gc program with
   | <span data-count="0">E</span>rror err -&gt;
     remove_temp_file_if_exists ();
     <span data-count="0">E</span>rror err
-  | <span data-count="31">O</span>k () -&gt;
+  | <span data-count="32">O</span>k () -&gt;
     let content = In_channel.with_open_text temp_ll_path In_channel.input_all in
-    <span data-count="31">r</span>emove_temp_file_if_exists ();
-    <span data-count="31">F</span>ormat.fprintf ppf "%s" content;
-    <span data-count="31">O</span>k ()
+    <span data-count="32">r</span>emove_temp_file_if_exists ();
+    <span data-count="32">F</span>ormat.fprintf ppf "%s" content;
+    <span data-count="32">O</span>k ()
 ;;
 </code></pre>
       </div>

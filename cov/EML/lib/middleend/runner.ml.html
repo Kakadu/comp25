@@ -155,24 +155,24 @@ let pp_error ppf = function
 let run (program : program) (env : Inferencer.TypeEnv.t)
   : (anf_program * Inferencer.TypeEnv.t, error) Result.t
   =
-  <span data-count="47">l</span>et ( &gt;&gt;= ) = Result.bind in
+  <span data-count="49">l</span>et ( &gt;&gt;= ) = Result.bind in
   let env' =
-    match Inferencer.ResultMonad.run (infer_structur<span data-count="47">e</span> env program) with
+    match Inferencer.ResultMonad.run (infer_structur<span data-count="49">e</span> env program) with
     | <span data-count="0">E</span>rror (Inferencer.OccursCheck _) -&gt; Ok env
     | <span data-count="0">E</span>rror e -&gt; Error (Infer e)
-    | <span data-count="47">O</span>k (_subst, env'') -&gt; Ok env''
+    | <span data-count="49">O</span>k (_subst, env'') -&gt; Ok env''
   in
   env'
   &gt;&gt;= fun env'' -&gt;
-  <span data-count="47">c</span>losure_conversion_result program
-  |&gt; <span data-count="47">R</span>esult.map_erro<span data-count="47">r</span> (fun e -&gt; <span data-count="0">C</span>losure e)
+  <span data-count="49">c</span>losure_conversion_result program
+  |&gt; <span data-count="49">R</span>esult.map_erro<span data-count="49">r</span> (fun e -&gt; <span data-count="0">C</span>losure e)
   &gt;&gt;= fun cc_ast -&gt;
-  <span data-count="47">l</span>ambda_lifting_result cc_ast
-  |&gt; <span data-count="47">R</span>esult.map_erro<span data-count="47">r</span> (fun e -&gt; <span data-count="0">L</span>ifting e)
+  <span data-count="49">l</span>ambda_lifting_result cc_ast
+  |&gt; <span data-count="49">R</span>esult.map_erro<span data-count="49">r</span> (fun e -&gt; <span data-count="0">L</span>ifting e)
   &gt;&gt;= fun ll_ast -&gt;
-  <span data-count="47">a</span>nf_program ll_ast
-  |&gt; <span data-count="47">R</span>esult.map_erro<span data-count="47">r</span> (fun e -&gt; <span data-count="0">A</span>nf e)
-  &gt;&gt;= fun anf_ast -&gt; <span data-count="47">O</span>k (anf_ast, env'')
+  <span data-count="49">a</span>nf_program ll_ast
+  |&gt; <span data-count="49">R</span>esult.map_erro<span data-count="49">r</span> (fun e -&gt; <span data-count="0">A</span>nf e)
+  &gt;&gt;= fun anf_ast -&gt; <span data-count="49">O</span>k (anf_ast, env'')
 ;;
 </code></pre>
       </div>

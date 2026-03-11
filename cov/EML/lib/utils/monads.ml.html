@@ -90,17 +90,17 @@ open Base
 module ANFMonad = struct
   type 'a t = int -&gt; int * ('a, string) Result.t
 
-  let return x = fun counter -&gt; <span data-count="3171">c</span>ounter, Ok x
+  let return x = fun counter -&gt; <span data-count="3219">c</span>ounter, Ok x
 
   let ( &gt;&gt;= ) m f =
     fun counter -&gt;
-    <span data-count="4003">m</span>atch m counter with
-    | <span data-count="4003">c</span>ounter', Ok a -&gt; f a counter'
+    <span data-count="4065">m</span>atch m counter with
+    | <span data-count="4065">c</span>ounter', Ok a -&gt; f a counter'
     | <span data-count="0">c</span>ounter', Error e -&gt; counter', Error e
   ;;
 
-  let fresh : string t = fun counter -&gt; <span data-count="911">c</span>ounter + 1, Ok ("anf_t" ^ Int.to_strin<span data-count="911">g</span> counter)
-  let run m = <span data-count="79">m</span> 0 |&gt; <span data-count="79">s</span>nd
+  let fresh : string t = fun counter -&gt; <span data-count="927">c</span>ounter + 1, Ok ("anf_t" ^ Int.to_strin<span data-count="927">g</span> counter)
+  let run m = <span data-count="81">m</span> 0 |&gt; <span data-count="81">s</span>nd
   let fail msg = fun counter -&gt; <span data-count="0">c</span>ounter, Error msg
 
   module Syntax = struct

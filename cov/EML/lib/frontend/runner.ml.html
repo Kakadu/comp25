@@ -86,9 +86,9 @@ let pp_error ppf = function
 let parse (text : string) : (program, string) Result.t = <span data-count="0">P</span>arser.parse text
 
 let run (text : string) : (program, error) Result.t =
-  <span data-count="44">m</span>atch Parser.parse text with
+  <span data-count="46">m</span>atch Parser.parse text with
   | <span data-count="0">E</span>rror s -&gt; Error (Parse s)
-  | <span data-count="44">O</span>k ast -&gt; Ok ast
+  | <span data-count="46">O</span>k ast -&gt; Ok ast
 ;;
 </code></pre>
       </div>
