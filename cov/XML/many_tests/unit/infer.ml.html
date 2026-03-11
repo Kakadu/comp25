@@ -978,7 +978,7 @@ let infer_prog_str ?(env = <span data-count="5">e</span>nv_with_things) str =
 let show_etyp env exp =
   <span data-count="0">m</span>atch infer_exp env exp with
   | <span data-count="0">O</span>k (_, ty) -&gt;
-  Base.print_endline (Common.Ast.TypeExpr.sho<span data-count="0">w</span> ty)
+  Stdio.print_endline (Common.Ast.TypeExpr.sho<span data-count="0">w</span> ty)
   | <span data-count="0">E</span>rror err -&gt; pprint_err Format.std_formatter err
 
 let type_bool = Type_construct ("bool", [])
