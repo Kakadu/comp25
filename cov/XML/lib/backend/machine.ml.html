@@ -531,22 +531,22 @@
 [@@deriving eq]
 
 let gen_reg =
-  QCheck.Gen.oneof_weighte<span data-count="43">d</span>
-    [ 1, QCheck.Gen.ma<span data-count="43">p</span> (fun gen0 -&gt; <span data-count="139">A</span> gen0) QCheck.Gen.(0 -<span data-count="43">-</span> 7)
-    ; 1, QCheck.Gen.ma<span data-count="43">p</span> (fun gen0 -&gt; <span data-count="140">T</span> gen0) QCheck.Gen.(0 -<span data-count="43">-</span> 6)
-    ; 1, QCheck.Gen.ma<span data-count="43">p</span> (fun gen0 -&gt; <span data-count="125">S</span> gen0) QCheck.Gen.(0 -<span data-count="43">-</span> 11)
-    ; 1, QCheck.Gen.pur<span data-count="43">e</span> RA
-    ; 1, QCheck.Gen.pur<span data-count="43">e</span> SP
-    ; 1, QCheck.Gen.pur<span data-count="43">e</span> Zero
+  QCheck.Gen.oneof_weighte<span data-count="45">d</span>
+    [ 1, QCheck.Gen.ma<span data-count="45">p</span> (fun gen0 -&gt; <span data-count="139">A</span> gen0) QCheck.Gen.(0 -<span data-count="45">-</span> 7)
+    ; 1, QCheck.Gen.ma<span data-count="45">p</span> (fun gen0 -&gt; <span data-count="140">T</span> gen0) QCheck.Gen.(0 -<span data-count="45">-</span> 6)
+    ; 1, QCheck.Gen.ma<span data-count="45">p</span> (fun gen0 -&gt; <span data-count="125">S</span> gen0) QCheck.Gen.(0 -<span data-count="45">-</span> 11)
+    ; 1, QCheck.Gen.pur<span data-count="45">e</span> RA
+    ; 1, QCheck.Gen.pur<span data-count="45">e</span> SP
+    ; 1, QCheck.Gen.pur<span data-count="45">e</span> Zero
     ]
 ;;
 
 <span data-count="0">t</span>ype offset = reg * (int[@gen QCheck.Gen.nat_small]) [@@deriving eq]
 
 let gen_offset =
-  QCheck.Gen.ma<span data-count="43">p</span>
+  QCheck.Gen.ma<span data-count="45">p</span>
     (fun (gen0, gen1) -&gt; <span data-count="38">g</span>en0, gen1)
-    (QCheck.Gen.pai<span data-count="43">r</span> gen_reg QCheck.Gen.nat_small)
+    (QCheck.Gen.pai<span data-count="45">r</span> gen_reg QCheck.Gen.nat_small)
 ;;
 
 let pp_reg ppf =
@@ -561,8 +561,8 @@ let pp_reg ppf =
 ;;
 
 let pp_offset ppf (reg, off) = <span data-count="1164">F</span>ormat.fprintf ppf "%d(%a)" off pp_reg reg
-let gen_label = QCheck.Gen.retur<span data-count="43">n</span> "label"
-let gen_comm = QCheck.Gen.retur<span data-count="43">n</span> "comment"
+let gen_label = QCheck.Gen.retur<span data-count="45">n</span> "label"
+let gen_comm = QCheck.Gen.retur<span data-count="45">n</span> "comment"
 
 <span data-count="0">t</span>ype instr =
   <span data-count="0">|</span> Addi of reg * reg * (int[@gen QCheck.Gen.nat_small]<span data-count="0">)</span> (* ADD immediate *)
@@ -595,93 +595,93 @@ let gen_comm = QCheck.Gen.retur<span data-count="43">n</span> "comment"
 [@@deriving eq]
 
 let gen_instr =
-  QCheck.Gen.oneof_weighte<span data-count="43">d</span>
+  QCheck.Gen.oneof_weighte<span data-count="45">d</span>
     [ ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="10">A</span>ddi (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="18">A</span>dd (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg gen_reg) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="24">S</span>ub (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg gen_reg) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="19">M</span>ul (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg gen_reg) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="19">S</span>lt (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg gen_reg) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="16">S</span>eqz (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="43">r</span> gen_reg gen_reg) )
+          (QCheck.Gen.pai<span data-count="45">r</span> gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="19">S</span>nez (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="43">r</span> gen_reg gen_reg) )
+          (QCheck.Gen.pai<span data-count="45">r</span> gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="19">X</span>or (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg gen_reg) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="19">X</span>ori (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="22">B</span>eq (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg gen_label) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg gen_label) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="22">B</span>lt (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg gen_label) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg gen_label) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="20">B</span>le (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg gen_label) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg gen_label) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="24">L</span>la (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="43">r</span> gen_reg gen_label) )
+          (QCheck.Gen.pai<span data-count="45">r</span> gen_reg gen_label) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="25">L</span>i (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="43">r</span> gen_reg QCheck.Gen.nat_small) )
+          (QCheck.Gen.pai<span data-count="45">r</span> gen_reg QCheck.Gen.nat_small) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="19">L</span>d (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="43">r</span> gen_reg gen_offset) )
+          (QCheck.Gen.pai<span data-count="45">r</span> gen_reg gen_offset) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="19">S</span>d (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="43">r</span> gen_reg gen_offset) )
+          (QCheck.Gen.pai<span data-count="45">r</span> gen_reg gen_offset) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="34">M</span>v (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="43">r</span> gen_reg gen_reg) )
-    ; 1, QCheck.Gen.ma<span data-count="43">p</span> (fun gen0 -&gt; <span data-count="25">C</span>omment gen0) gen_comm
-    ; 1, QCheck.Gen.ma<span data-count="43">p</span> (fun gen0 -&gt; <span data-count="19">L</span>abel gen0) gen_label
-    ; 1, QCheck.Gen.ma<span data-count="43">p</span> (fun gen0 -&gt; <span data-count="20">C</span>all gen0) gen_label
-    ; 1, QCheck.Gen.ma<span data-count="43">p</span> (fun gen0 -&gt; <span data-count="26">J</span> gen0) gen_label
-    ; 1, QCheck.Gen.pur<span data-count="43">e</span> Ecall
-    ; 1, QCheck.Gen.pur<span data-count="43">e</span> Ret
+          (QCheck.Gen.pai<span data-count="45">r</span> gen_reg gen_reg) )
+    ; 1, QCheck.Gen.ma<span data-count="45">p</span> (fun gen0 -&gt; <span data-count="25">C</span>omment gen0) gen_comm
+    ; 1, QCheck.Gen.ma<span data-count="45">p</span> (fun gen0 -&gt; <span data-count="19">L</span>abel gen0) gen_label
+    ; 1, QCheck.Gen.ma<span data-count="45">p</span> (fun gen0 -&gt; <span data-count="20">C</span>all gen0) gen_label
+    ; 1, QCheck.Gen.ma<span data-count="45">p</span> (fun gen0 -&gt; <span data-count="26">J</span> gen0) gen_label
+    ; 1, QCheck.Gen.pur<span data-count="45">e</span> Ecall
+    ; 1, QCheck.Gen.pur<span data-count="45">e</span> Ret
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="15">L</span>a (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="43">r</span> gen_reg gen_label) )
+          (QCheck.Gen.pai<span data-count="45">r</span> gen_reg gen_label) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="14">S</span>lli (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="43">p</span>
+      , QCheck.Gen.ma<span data-count="45">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="14">S</span>rai (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="43">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
+          (QCheck.Gen.tripl<span data-count="45">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
     ]
 ;;
 

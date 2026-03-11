@@ -993,123 +993,123 @@ let env = env_with_things
 
 let%expect_test "char" =
   <span data-count="1">i</span>nfer_exp_str {| 'a' |};
-  <span data-count="1">[</span>%expect{| char |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| char |}<span data-count="15">]</span>
 
 
 let%expect_test "int" =
   <span data-count="1">i</span>nfer_exp_str {| 1 |};
-  <span data-count="1">[</span>%expect{| int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| int |}<span data-count="15">]</span>
 
 
 let%expect_test "str" =
   <span data-count="1">i</span>nfer_exp_str {| "Kakadu" |};
-  <span data-count="1">[</span>%expect{| string |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| string |}<span data-count="15">]</span>
 
 
 let%expect_test "id in env" =
   <span data-count="1">i</span>nfer_exp_str {| m |} ~env:[("m", Type_var {contents = Unbound ("a", 0)})];
-  <span data-count="1">[</span>%expect{| 'a |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| 'a |}<span data-count="15">]</span>
 
 
 let%expect_test "id not in env" =
   <span data-count="1">i</span>nfer_exp_str {| m |};
- <span data-count="1">[</span>%expect{| Unbound variable m |}<span data-count="11">]</span>;;
+ <span data-count="1">[</span>%expect{| Unbound variable m |}<span data-count="15">]</span>;;
 
 
 let%expect_test "tuple 2" =
   <span data-count="1">i</span>nfer_exp_str {| (1, 2) |};
-  <span data-count="1">[</span>%expect{| int * int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| int * int |}<span data-count="15">]</span>
 
 
 let%expect_test "tuple 3" =
   <span data-count="1">i</span>nfer_exp_str {| (1, 2, 3) |};
-  <span data-count="1">[</span>%expect{| int * int * int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| int * int * int |}<span data-count="15">]</span>
 
 
   let%expect_test "tuple 4" =
   <span data-count="1">i</span>nfer_exp_str {| (1, 2, 3, 4) |};
-  <span data-count="1">[</span>%expect{| int * int * int * int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| int * int * int * int |}<span data-count="15">]</span>
 
 
 let%expect_test "tuples in tuple" =
   <span data-count="1">i</span>nfer_exp_str {| ((1, 2), (3, 4)) |};
-  <span data-count="1">[</span>%expect{| (int * int) * (int * int) |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| (int * int) * (int * int) |}<span data-count="15">]</span>
 
 
  let%expect_test "construct none" =
   <span data-count="1">i</span>nfer_exp_str {| None |} ~env;
- <span data-count="1">[</span>%expect {| 'a option |}<span data-count="11">]</span>
+ <span data-count="1">[</span>%expect {| 'a option |}<span data-count="15">]</span>
 
 
 let%expect_test "construct some" =
   <span data-count="1">i</span>nfer_exp_str {| Some 1 |} ~env;
- <span data-count="1">[</span>%expect {| int option |}<span data-count="11">]</span>
+ <span data-count="1">[</span>%expect {| int option |}<span data-count="15">]</span>
 
 
 let%expect_test "if (string) " =
   <span data-count="1">i</span>nfer_exp_str {| if "trololo" then 1 |};
-  <span data-count="1">[</span>%expect {| Cannot unify different constructors: string and bool |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect {| Cannot unify different constructors: string and bool |}<span data-count="15">]</span>
 
 
 let%expect_test "if (bool) then (not unit)" =
   <span data-count="1">l</span>et env = ["cond", type_bool] in
   infer_exp_str {| if cond then 1 |} ~env;
-  <span data-count="1">[</span>%expect{| Cannot unify different constructors: int and unit |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify different constructors: int and unit |}<span data-count="15">]</span>
 
 
 let%expect_test "if (bool) then (unit)" =
   <span data-count="1">l</span>et env = ["cond", type_bool; "bodyvar", type_unit] in
   infer_exp_str {| if cond then bodyvar |} ~env;
-  <span data-count="1">[</span>%expect{| unit |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| unit |}<span data-count="15">]</span>
 
 
 let%expect_test "if (bool) then 'a else 'a" =
   <span data-count="1">l</span>et env = ["cond", type_bool; "x", Type_var {contents = Unbound ("a", 0)}; "y", Type_var {contents = Unbound ("a", 0)}] in
   infer_exp_str  {| if cond then x else y |}  ~env;
-  <span data-count="1">[</span>%expect{| 'a |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| 'a |}<span data-count="15">]</span>
 
 
 let%expect_test "if (bool) then 'a else 'b" =
   <span data-count="1">l</span>et env = ["cond", type_bool; "x", Type_var {contents = Unbound ("a", 0)}; "y", Type_var {contents = Unbound ("b", 0)}] in
   infer_exp_str  {| if cond then x else y |}  ~env;
-  <span data-count="1">[</span>%expect{| 'b |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| 'b |}<span data-count="15">]</span>
 
 
 let%expect_test "apply int -&gt; int to int" =
   <span data-count="1">l</span>et env = ["f", Type_arrow (type_int, type_int); "x", type_int] in
   infer_exp_str  {| f x |} ~env;
-  <span data-count="1">[</span>%expect{| int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| int |}<span data-count="15">]</span>
 
 
 let%expect_test "apply int -&gt; int to string" =
   <span data-count="1">l</span>et env = ["f", Type_arrow (type_int, type_int); "x", type_string] in
   infer_exp_str {| f x |} ~env;
-  <span data-count="1">[</span>%expect{| Cannot unify different constructors: int and string |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify different constructors: int and string |}<span data-count="15">]</span>
 
 
 let%expect_test "apply 'a -&gt; 'a to 'b" =
   <span data-count="1">l</span>et env = ["f", Type_arrow (Type_var {contents = Unbound ("s", 0)}, Type_var {contents = Unbound ("s", 0)}); "x", Type_var {contents = Unbound ("t", 0)}] in
   infer_exp_str {| f x |} ~env ~rst: false;
-  <span data-count="1">[</span>%expect{| 'b |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| 'b |}<span data-count="15">]</span>
 
 
   (* not sure if this is right *)
 let%expect_test "apply 'a to 'a (different vars)" =
   <span data-count="1">l</span>et env = ["f", Type_var {contents = Unbound ("t", 0)}; "x", Type_var {contents = Unbound ("t", 0)}] in
   infer_exp_str {| f x |} ~env ~rst: false;
-  <span data-count="1">[</span>%expect {| 'c |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect {| 'c |}<span data-count="15">]</span>
 
 
 let%expect_test "apply 'a to 'a (same var)" =
   <span data-count="1">l</span>et env = ["x", Type_var {contents = Unbound ("t", 0)}] in
   infer_exp_str {| x x |} ~env ~rst: false;
-  <span data-count="1">[</span>%expect{| Occurs check |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Occurs check |}<span data-count="15">]</span>
 
 
 let%expect_test "apply 'a to 'b" =
   <span data-count="1">l</span>et env = ["f", Type_var {contents = Unbound ("s", 0)}; "x", Type_var {contents = Unbound ("t", 0)}] in
   infer_exp_str {| f x |} ~env ~rst: false;
-  <span data-count="1">[</span>%expect{| 'e |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| 'e |}<span data-count="15">]</span>
 
 
 (************************** Patterns **************************)
@@ -1117,101 +1117,101 @@ let%expect_test "apply 'a to 'b" =
 let%expect_test "id in env" =
   <span data-count="1">l</span>et env = ["m", (Type_var {contents = Unbound ("c", 0)})] in
   infer_pat_str {| m |} ~env;
-  <span data-count="1">[</span>%expect {| 'a |}<span data-count="11">]</span>;;
+  <span data-count="1">[</span>%expect {| 'a |}<span data-count="15">]</span>;;
 
 
 let%expect_test "id not in env" =
   <span data-count="1">i</span>nfer_pat_str {| m |};
-  <span data-count="1">[</span>%expect {| 'a |}<span data-count="11">]</span>;;
+  <span data-count="1">[</span>%expect {| 'a |}<span data-count="15">]</span>;;
 
 
 let%expect_test "any" =
   <span data-count="1">i</span>nfer_pat_str {| _ |};
-  <span data-count="1">[</span>%expect {| 'a |}<span data-count="11">]</span>;;
+  <span data-count="1">[</span>%expect {| 'a |}<span data-count="15">]</span>;;
 
 
 let%expect_test "char" =
   <span data-count="1">i</span>nfer_pat_str {| 'a' |};
-  <span data-count="1">[</span>%expect {| char |}<span data-count="11">]</span>;;
+  <span data-count="1">[</span>%expect {| char |}<span data-count="15">]</span>;;
 
 
 let%expect_test "int" =
   <span data-count="1">i</span>nfer_pat_str {| 1 |};
-  <span data-count="1">[</span>%expect {| int |}<span data-count="11">]</span>;;
+  <span data-count="1">[</span>%expect {| int |}<span data-count="15">]</span>;;
 
 
 let%expect_test "str" =
   <span data-count="1">i</span>nfer_pat_str {| "kakadu" |};
-  <span data-count="1">[</span>%expect {| string |}<span data-count="11">]</span>;;
+  <span data-count="1">[</span>%expect {| string |}<span data-count="15">]</span>;;
 
 
 let%expect_test "tuple 2" =
   <span data-count="1">i</span>nfer_pat_str {| (1, 2) |};
-  <span data-count="1">[</span>%expect {| int * int |}<span data-count="11">]</span>;;
+  <span data-count="1">[</span>%expect {| int * int |}<span data-count="15">]</span>;;
 
 
 let%expect_test "tuple 3" =
   <span data-count="1">i</span>nfer_pat_str {| (1, 2, 3) |};
-  <span data-count="1">[</span>%expect {| int * int * int |}<span data-count="11">]</span>;;
+  <span data-count="1">[</span>%expect {| int * int * int |}<span data-count="15">]</span>;;
 
 
 let%expect_test "tuple 4" =
   <span data-count="1">i</span>nfer_pat_str {| (1, 2, 3, 4) |};
-   <span data-count="1">[</span>%expect {| int * int * int * int |}<span data-count="11">]</span>;;
+   <span data-count="1">[</span>%expect {| int * int * int * int |}<span data-count="15">]</span>;;
 
 
 let%expect_test "tuples in tuple" =
   <span data-count="1">i</span>nfer_pat_str {| ((1, 2), (3, 4)) |};
-   <span data-count="1">[</span>%expect {| (int * int) * (int * int) |}<span data-count="11">]</span>;;
+   <span data-count="1">[</span>%expect {| (int * int) * (int * int) |}<span data-count="15">]</span>;;
 
 
 let%expect_test "construct none" =
   <span data-count="1">i</span>nfer_pat_str {| None |} ~env;
-  <span data-count="1">[</span>%expect {| 'a option |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect {| 'a option |}<span data-count="15">]</span>
 
 
  let%expect_test "construct some" =
   <span data-count="1">i</span>nfer_pat_str {| Some 1 |} ~env;
- <span data-count="1">[</span>%expect{| int option |}<span data-count="11">]</span>
+ <span data-count="1">[</span>%expect{| int option |}<span data-count="15">]</span>
 
 
 (************************** Funs **************************)
 
 let%expect_test "fun 'a -&gt; 'a (new var)" =
   <span data-count="1">i</span>nfer_exp_str {| fun x -&gt; x |};
-  <span data-count="1">[</span>%expect {| 'a -&gt; 'a |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect {| 'a -&gt; 'a |}<span data-count="15">]</span>
 
 
 let%expect_test "fun 'a -&gt; 'a (shadow)" =
   <span data-count="1">l</span>et env = ["x", Type_var {contents = Unbound ("s", 0)}] in
   infer_exp_str {| fun x -&gt; x |} ~env;
-  <span data-count="1">[</span>%expect {| 'a -&gt; 'a |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect {| 'a -&gt; 'a |}<span data-count="15">]</span>
 
 
 let%expect_test "fun 'a -&gt; 'b (not in env)" =
   <span data-count="1">i</span>nfer_exp_str {| fun x -&gt; y |};
-  <span data-count="1">[</span>%expect{| Unbound variable y |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Unbound variable y |}<span data-count="15">]</span>
 
 
 let%expect_test "fun 'a -&gt; 'b (in env)" =
   <span data-count="1">l</span>et env = ["y", Type_var {contents = Unbound ("s", 0)}] in
   infer_exp_str {| fun x -&gt; y |} ~env;
-  <span data-count="1">[</span>%expect{| 'a -&gt; 's |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| 'a -&gt; 's |}<span data-count="15">]</span>
 
 
 let%expect_test {| fun x -&gt; fun y -&gt; x y |} =
   <span data-count="1">i</span>nfer_exp_str {| fun x -&gt; fun y -&gt; x y |};
- <span data-count="1">[</span>%expect{| ('b -&gt; 'c) -&gt; 'b -&gt; 'c |}<span data-count="11">]</span>
+ <span data-count="1">[</span>%expect{| ('b -&gt; 'c) -&gt; 'b -&gt; 'c |}<span data-count="15">]</span>
 
 
 let%expect_test {| fun x y -&gt; x y |} =
   <span data-count="1">i</span>nfer_exp_str {| fun x y -&gt; x y |};
-  <span data-count="1">[</span>%expect{| ('b -&gt; 'c) -&gt; 'b -&gt; 'c |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| ('b -&gt; 'c) -&gt; 'b -&gt; 'c |}<span data-count="15">]</span>
 
 
 let%expect_test {| (fun f a b -&gt; f a, f b) (fun x -&gt; x) 1 "mystr" |}  =
   <span data-count="1">i</span>nfer_exp_str {| (fun f a b -&gt; f a, f b) (fun x -&gt; x) 1 "mystr" |};
-  <span data-count="1">[</span>%expect{| Cannot unify different constructors: int and string |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify different constructors: int and string |}<span data-count="15">]</span>
 
 
 (************************** Match, function **************************)
@@ -1220,133 +1220,133 @@ let%expect_test "correct match" =
   <span data-count="1">l</span>et env = [ "a", Type_construct("option", [Type_var {contents = Unbound  ("a", 0)}])] @ env in
   infer_exp_str {| match a with | Some x -&gt; 1 | None -&gt; 2 |} ~env;
   <span data-count="1">[</span>%expect {|
-    int |}<span data-count="11">]</span>
+    int |}<span data-count="15">]</span>
 
 
 let%expect_test "use match pattern in body" =
   <span data-count="1">l</span>et env = [ "a", Type_construct("option", [Type_var {contents = Unbound ("a", 0)}])] @ env in
   infer_exp_str {| match a with | Some x -&gt; x | None -&gt; 2 |} ~env;
   <span data-count="1">[</span>%expect {|
-    int |}<span data-count="11">]</span>
+    int |}<span data-count="15">]</span>
 
 
 let%expect_test "match different constructors" =
   <span data-count="1">l</span>et env = [ "a", Type_construct("option", [Type_var {contents = Unbound ("a", 0)}])] @ env in
   infer_exp_str {| match a with | Some x -&gt; 1 | [] -&gt; 2 |} ~env;
-  <span data-count="1">[</span>%expect{| Cannot unify different constructors: list and option |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify different constructors: list and option |}<span data-count="15">]</span>
 
 
 let%expect_test "match option with list constructors" =
   <span data-count="1">l</span>et env = [ "a", Type_construct("option", [Type_var {contents = Unbound ("a", 0)}])] @ env in
   infer_exp_str {| match a with | x :: tl -&gt; 1 | [] -&gt; 2 |} ~env;
-  <span data-count="1">[</span>%expect{| Cannot unify different constructors: list and option |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify different constructors: list and option |}<span data-count="15">]</span>
 
 
 let%expect_test "match different types of expr 1" =
   <span data-count="1">l</span>et env = [ "a", Type_construct("option", [Type_var {contents = Unbound ("a", 0)}])] @ env in
   infer_exp_str {| match a with | Some x -&gt; 'a' | None -&gt; 1234 |} ~env;
-  <span data-count="1">[</span>%expect{| Cannot unify different constructors: char and int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify different constructors: char and int |}<span data-count="15">]</span>
 
 
 let%expect_test "match different types of expr 2" =
   <span data-count="1">l</span>et env = [ "b", Type_construct("list", [Type_var {contents = Unbound ("a", 0)}])] @ env in
   infer_exp_str {| match b with | x :: y :: tl -&gt; 'a' | x :: tl -&gt; 'b' | _ -&gt; 1234 |} ~env;
-  <span data-count="1">[</span>%expect{| Cannot unify different constructors: char and int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify different constructors: char and int |}<span data-count="15">]</span>
 
 
 let%expect_test "correct function" =
   <span data-count="1">i</span>nfer_exp_str {| function | Some x -&gt; 1 | None -&gt; 2 |} ~env;
   <span data-count="1">[</span>%expect {|
-    'd option -&gt; int |}<span data-count="11">]</span>
+    'd option -&gt; int |}<span data-count="15">]</span>
 
 
 let%expect_test "use function pattern in body" =
   <span data-count="1">i</span>nfer_exp_str {| function | Some x -&gt; x | None -&gt; 2 |} ~env;
   <span data-count="1">[</span>%expect {|
-    int option -&gt; int |}<span data-count="11">]</span>
+    int option -&gt; int |}<span data-count="15">]</span>
 
 
 let%expect_test "function different constructors" =
   <span data-count="1">i</span>nfer_exp_str {| function | Some x -&gt; 1 | [] -&gt; 2 |} ~env;
-  <span data-count="1">[</span>%expect{| Cannot unify different constructors: list and option |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify different constructors: list and option |}<span data-count="15">]</span>
 
 
 let%expect_test "function different types of expr 1" =
   <span data-count="1">i</span>nfer_exp_str {| function | Some x -&gt; 'a' | None -&gt; 1234 |} ~env;
-  <span data-count="1">[</span>%expect{| Cannot unify different constructors: char and int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify different constructors: char and int |}<span data-count="15">]</span>
 
 
 let%expect_test "function different types of expr 2" =
   <span data-count="1">i</span>nfer_exp_str {| function | x :: y :: tl -&gt; 'a' | x :: tl -&gt; 'b' | _ -&gt; 1234 |} ~env;
-  <span data-count="1">[</span>%expect{| Cannot unify different constructors: char and int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify different constructors: char and int |}<span data-count="15">]</span>
 
 
 (************************** Let in **************************)
 
 let%expect_test {| let 1 = 1 in 2 |}  =
   <span data-count="1">i</span>nfer_exp_str {| let 1 = 1 in 2 |};
-  <span data-count="1">[</span>%expect{| int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| int |}<span data-count="15">]</span>
 
 
 let%expect_test {| let a = 1 in 2 |} =
   <span data-count="1">i</span>nfer_exp_str {| let a = 1 in 2 |};
-  <span data-count="1">[</span>%expect{| int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| int |}<span data-count="15">]</span>
 
 
 let%expect_test {| let a = 1 in a |} =
 <span data-count="1">i</span>nfer_exp_str {| let a = 1 in a |};
-  <span data-count="1">[</span>%expect{| int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| int |}<span data-count="15">]</span>
 
 
 let%expect_test {| let a = 1 in "str" |} =
   <span data-count="1">i</span>nfer_exp_str {| let a = 1 in "str" |};
-  <span data-count="1">[</span>%expect{| string |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| string |}<span data-count="15">]</span>
 
 
 let%expect_test "let poly" =
   <span data-count="1">i</span>nfer_exp_str {| let a = fun x -&gt; x in a |};
-  <span data-count="1">[</span>%expect {| 'c -&gt; 'c |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect {| 'c -&gt; 'c |}<span data-count="15">]</span>
 
 
 let%expect_test "let poly 2" =
   <span data-count="1">i</span>nfer_exp_str {| let a = fun x -&gt; x in (a 1, a "str") |};
-  <span data-count="1">[</span>%expect{| int * string |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| int * string |}<span data-count="15">]</span>
 
 
 let%expect_test "poly in env" =
   <span data-count="1">l</span>et env = ["=", Type_arrow (Quant_type_var "a", Type_arrow(Quant_type_var "a", type_bool))] in
   infer_exp_str {| let a = 1 in 1 = 1, "str" = "str" |} ~env;
-  <span data-count="1">[</span>%expect{| bool * bool |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| bool * bool |}<span data-count="15">]</span>
 
 
 let%expect_test {| let a, b = 1, 2 in a |} =
   <span data-count="1">i</span>nfer_exp_str  {| let a, b = 1, 2 in a |} ;
-  <span data-count="1">[</span>%expect{| int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| int |}<span data-count="15">]</span>
 
 
 let%expect_test {| let a, b, c = 1, 2 in a |} =
   <span data-count="1">i</span>nfer_exp_str  {| let a, b, c = 1, 2 in a |} ;
-  <span data-count="1">[</span>%expect{| Cannot unify tuples of different sizes |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify tuples of different sizes |}<span data-count="15">]</span>
 
 
 let%expect_test {| let a, b = 1, 2, 3 in a |} =
   <span data-count="1">i</span>nfer_exp_str {| let a, b = 1, 2, 3 in a |};
-  <span data-count="1">[</span>%expect{| Cannot unify tuples of different sizes |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect{| Cannot unify tuples of different sizes |}<span data-count="15">]</span>
 
 
 let%expect_test "let and" =
   <span data-count="1">i</span>nfer_exp_str {| let a = 1 and b = "punk" in b |};
-  <span data-count="1">[</span>%expect {| string |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect {| string |}<span data-count="15">]</span>
 
 
 let%expect_test "factorial" =
   <span data-count="1">i</span>nfer_exp_str {| let rec fac n = if n = 1 then 1 else n * fac (n-1) in fac 4 |} ~env;
-  <span data-count="1">[</span>%expect {| int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect {| int |}<span data-count="15">]</span>
 
 
 let%expect_test "fibonacci" =
   <span data-count="1">i</span>nfer_exp_str {| let rec fib n = if n &lt;= 1 then 1 else (fib (n-1)) + (fib (n-2)) in fib 4 |} ~env;
-  <span data-count="1">[</span>%expect {| int |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect {| int |}<span data-count="15">]</span>
 
 
 let%expect_test "mutual recursion" =
@@ -1357,7 +1357,7 @@ let%expect_test "mutual recursion" =
   and is_even n = not (is_odd n)
     in is_odd 5
   |};
-  <span data-count="1">[</span>%expect {| bool |}<span data-count="11">]</span>
+  <span data-count="1">[</span>%expect {| bool |}<span data-count="15">]</span>
 
 
 let%expect_test "shadow with itself" =
@@ -1366,7 +1366,7 @@ let%expect_test "shadow with itself" =
   let test3 a b c =
     let a = print_int a in 0
   |};
-<span data-count="1">[</span>%expect{| val test3 : int -&gt; 'a -&gt; 'b -&gt; int |}<span data-count="11">]</span>;;
+<span data-count="1">[</span>%expect{| val test3 : int -&gt; 'a -&gt; 'b -&gt; int |}<span data-count="15">]</span>;;
 
 
 let%expect_test "shadow" =
@@ -1376,7 +1376,7 @@ let%expect_test "shadow" =
     let x = "string"
   |};
 <span data-count="1">[</span>%expect {|
-  val x : string |}<span data-count="11">]</span>
+  val x : string |}<span data-count="15">]</span>
 
 
 let%expect_test "shadow with itself 2" =
@@ -1386,17 +1386,17 @@ let%expect_test "shadow with itself 2" =
     let x = x
   |};
 <span data-count="1">[</span>%expect {|
-  val x : int |}<span data-count="11">]</span>
+  val x : int |}<span data-count="15">]</span>
 
 
 let%expect_test "weird let rec" =
   <span data-count="1">i</span>nfer_prog_str {| let rec x = x |};
-<span data-count="1">[</span>%expect{| This kind of expression is not allowed as right-hand side of `let rec' |}<span data-count="11">]</span>
+<span data-count="1">[</span>%expect{| This kind of expression is not allowed as right-hand side of `let rec' |}<span data-count="15">]</span>
 
 
 let%expect_test "too polymorphic1" =
   <span data-count="1">i</span>nfer_prog_str {| let map f p = let (a,b) = p in (f a, f b) |};
-<span data-count="1">[</span>%expect {| val map : ('a -&gt; 'b) -&gt; 'a * 'a -&gt; 'b * 'b |}<span data-count="11">]</span>
+<span data-count="1">[</span>%expect {| val map : ('a -&gt; 'b) -&gt; 'a * 'a -&gt; 'b * 'b |}<span data-count="15">]</span>
 </code></pre>
       </div>
     </div>

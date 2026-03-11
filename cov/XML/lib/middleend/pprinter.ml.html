@@ -215,31 +215,31 @@ open Common.Ast
 open Anf
 
 let pp_list ~sep pp ppf xs =
-  <span data-count="30">l</span>et pp_sep ppf () = <span data-count="34">F</span>ormat.fprintf ppf "%s@ " sep in
+  <span data-count="51">l</span>et pp_sep ppf () = <span data-count="56">F</span>ormat.fprintf ppf "%s@ " sep in
   Format.pp_print_list ~pp_sep pp ppf xs
 ;;
 
 let pp_rec_flag ppf = function
   | <span data-count="7">E</span>xpression.Recursive -&gt; fprintf ppf "let rec"
-  | <span data-count="205">E</span>xpression.Nonrecursive -&gt; fprintf ppf "let"
+  | <span data-count="287">E</span>xpression.Nonrecursive -&gt; fprintf ppf "let"
 ;;
 
 let pp_immediate ppf = function
-  | <span data-count="82">I</span>mm_num n -&gt; fprintf ppf "%d" n
-  | <span data-count="297">I</span>mm_ident id -&gt; fprintf ppf "%s" id
+  | <span data-count="90">I</span>mm_num n -&gt; fprintf ppf "%d" n
+  | <span data-count="420">I</span>mm_ident id -&gt; fprintf ppf "%s" id
 ;;
 
 let pp_app ppf (f, args) =
-  <span data-count="71">f</span>printf ppf "%a%t" pp_immediate f (fun ppf -&gt;
-    <span data-count="71">L</span>ist.iter (fun a -&gt; <span data-count="71">f</span>printf ppf " %a" pp_immediate a) args)
+  <span data-count="101">f</span>printf ppf "%a%t" pp_immediate f (fun ppf -&gt;
+    <span data-count="101">L</span>ist.iter (fun a -&gt; <span data-count="102">f</span>printf ppf " %a" pp_immediate a) args)
 ;;
 
 let rec pp_anf_expr_impl ~parens ppf (e : anf_expr) =
-  <span data-count="273">l</span>et pp_comp ppf = function
-    | <span data-count="107">C</span>omp_imm imm -&gt; pp_immediate ppf imm
-    | <span data-count="44">C</span>omp_binop (op, a, b) -&gt; fprintf ppf "(%a %s %a)" pp_immediate a op pp_immediate b
-    | <span data-count="71">C</span>omp_app (f, args) -&gt; pp_app ppf (f, args)
-    | <span data-count="13">C</span>omp_branch (c, t, e) -&gt;
+  <span data-count="377">l</span>et pp_comp ppf = function
+    | <span data-count="146">C</span>omp_imm imm -&gt; pp_immediate ppf imm
+    | <span data-count="52">C</span>omp_binop (op, a, b) -&gt; fprintf ppf "(%a %s %a)" pp_immediate a op pp_immediate b
+    | <span data-count="101">C</span>omp_app (f, args) -&gt; pp_app ppf (f, args)
+    | <span data-count="15">C</span>omp_branch (c, t, e) -&gt;
       fprintf
         ppf
         "@[&lt;hov 2&gt;if %a then %a else %a@]"
@@ -249,23 +249,23 @@ let rec pp_anf_expr_impl ~parens ppf (e : anf_expr) =
         t
         (pp_anf_expr_impl ~parens:false)
         e
-    | <span data-count="20">C</span>omp_func (params, body) -&gt;
+    | <span data-count="37">C</span>omp_func (params, body) -&gt;
       fprintf
         ppf
         "@[&lt;hov 2&gt;fun %a -&gt; %a@]"
-        (pp_lis<span data-count="20">t</span> ~sep:"" pp_print_string)
+        (pp_lis<span data-count="37">t</span> ~sep:"" pp_print_string)
         params
         (pp_anf_expr_impl ~parens:false)
         body
     | <span data-count="0">C</span>omp_tuple items -&gt; fprintf ppf "(%a)" (pp_lis<span data-count="0">t</span> ~sep:", " pp_immediate) items
-    | <span data-count="10">C</span>omp_alloc items -&gt; fprintf ppf "alloc(%a)" (pp_lis<span data-count="10">t</span> ~sep:", " pp_immediate) items
-    | <span data-count="8">C</span>omp_load (addr, off) -&gt; fprintf ppf "%a[%d]" pp_immediate addr off
+    | <span data-count="14">C</span>omp_alloc items -&gt; fprintf ppf "alloc(%a)" (pp_lis<span data-count="14">t</span> ~sep:", " pp_immediate) items
+    | <span data-count="12">C</span>omp_load (addr, off) -&gt; fprintf ppf "%a[%d]" pp_immediate addr off
   in
   if parens then <span data-count="0">f</span>print<span data-count="0">f</span> ppf "(";
-  <span data-count="273">(</span>match e with
-   | <span data-count="88">A</span>nf_comp_expr c -&gt; pp_com<span data-count="88">p</span> ppf c
-   | <span data-count="185">A</span>nf_let (rf, x, c, body) -&gt;
-     fprint<span data-count="185">f</span>
+  <span data-count="377">(</span>match e with
+   | <span data-count="129">A</span>nf_comp_expr c -&gt; pp_com<span data-count="129">p</span> ppf c
+   | <span data-count="248">A</span>nf_let (rf, x, c, body) -&gt;
+     fprint<span data-count="248">f</span>
        ppf
        "@[&lt;hov 2&gt;%a %s = %a@ in %a@]"
        pp_rec_flag
@@ -278,21 +278,21 @@ let rec pp_anf_expr_impl ~parens ppf (e : anf_expr) =
   if parens then <span data-count="0">f</span>printf ppf ")"
 ;;
 
-let print_anf_expr ppf e = <span data-count="42">p</span>p_anf_expr_impl ~parens:false ppf e
+let print_anf_expr ppf e = <span data-count="62">p</span>p_anf_expr_impl ~parens:false ppf e
 
 let print_anf_structure_item ppf = function
-  | <span data-count="15">A</span>nf_str_eval e -&gt; fprintf ppf "@[&lt;hov 2&gt;%a@];;" print_anf_expr e
-  | <span data-count="27">A</span>nf_str_value (rf, name, e) -&gt;
+  | <span data-count="16">A</span>nf_str_eval e -&gt; fprintf ppf "@[&lt;hov 2&gt;%a@];;" print_anf_expr e
+  | <span data-count="46">A</span>nf_str_value (rf, name, e) -&gt;
     fprintf ppf "@[&lt;hov 2&gt;%a %s = %a@];;" pp_rec_flag rf name print_anf_expr e
 ;;
 
 let print_anf_program ppf (prog : aprogram) =
-  <span data-count="26">p</span>p_print_list
-    ~pp_sep:(fun ppf () -&gt; <span data-count="16">f</span>printf ppf "@,@,")
+  <span data-count="34">p</span>p_print_list
+    ~pp_sep:(fun ppf () -&gt; <span data-count="28">f</span>printf ppf "@,@,")
     print_anf_structure_item
     ppf
     prog;
-  <span data-count="26">p</span>p_print_newline ppf ()
+  <span data-count="34">p</span>p_print_newline ppf ()
 ;;
 </code></pre>
       </div>
