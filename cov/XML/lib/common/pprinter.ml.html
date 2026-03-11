@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>pprinter.ml &mdash; Coverage report</title>
-    <meta name="description" content="59.68% coverage in lib/common/pprinter.ml">
+    <meta name="description" content="61.26% coverage in lib/common/pprinter.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,7 +15,7 @@
           <span class="dirname">lib/common/</span>pprinter.ml
         </a>
       </h1>
-      <h2>59.68%</h2>
+      <h2>61.26%</h2>
     </div>
     <div id="navbar">
       <span class="unvisited" style="top:3.25%"></span>
@@ -31,8 +31,6 @@
       <span class="some-visited" style="top:7.00%"></span>
       <span class="some-visited" style="top:7.25%"></span>
       <span class="unvisited" style="top:7.50%"></span>
-      <span class="unvisited" style="top:9.25%"></span>
-      <span class="unvisited" style="top:9.50%"></span>
       <span class="unvisited" style="top:14.00%"></span>
       <span class="unvisited" style="top:14.25%"></span>
       <span class="unvisited" style="top:14.75%"></span>
@@ -54,8 +52,6 @@
       <span class="unvisited" style="top:44.00%"></span>
       <span class="unvisited" style="top:44.50%"></span>
       <span class="unvisited" style="top:47.00%"></span>
-      <span class="unvisited" style="top:47.25%"></span>
-      <span class="unvisited" style="top:47.75%"></span>
       <span class="unvisited" style="top:48.00%"></span>
       <span class="unvisited" style="top:49.00%"></span>
       <span class="unvisited" style="top:49.50%"></span>
@@ -147,8 +143,8 @@
 <a id="L34"></a><span class="visited"> </span>
 <a id="L35"></a><span > </span>
 <a id="L36"></a><span class="visited"> </span>
-<a id="L37"></a><span class="unvisited"> </span>
-<a id="L38"></a><span class="unvisited"> </span>
+<a id="L37"></a><span class="visited"> </span>
+<a id="L38"></a><span class="visited"> </span>
 <a id="L39"></a><span > </span>
 <a id="L40"></a><span > </span>
 <a id="L41"></a><span > </span>
@@ -299,9 +295,9 @@
 <a id="L186"></a><span class="visited"> </span>
 <a id="L187"></a><span > </span>
 <a id="L188"></a><span class="unvisited"> </span>
-<a id="L189"></a><span class="unvisited"> </span>
+<a id="L189"></a><span class="visited"> </span>
 <a id="L190"></a><span class="visited"> </span>
-<a id="L191"></a><span class="unvisited"> </span>
+<a id="L191"></a><span class="visited"> </span>
 <a id="L192"></a><span class="unvisited"> </span>
 <a id="L193"></a><span > </span>
 <a id="L194"></a><span > </span>
@@ -949,11 +945,11 @@ let get_op_pr id =
 ;;
 
 let pprint_constant fmt =
-  <span data-count="32">l</span>et open Constant in
+  <span data-count="40">l</span>et open Constant in
   function
-  | <span data-count="32">C</span>onst_integer n -&gt; fprintf fmt "%d" n
-  | <span data-count="0">C</span>onst_char c -&gt; fprintf fmt "'%c'" c
-  | <span data-count="0">C</span>onst_string s -&gt; fprintf fmt "%S" s
+  | <span data-count="35">C</span>onst_integer n -&gt; fprintf fmt "%d" n
+  | <span data-count="1">C</span>onst_char c -&gt; fprintf fmt "'%c'" c
+  | <span data-count="4">C</span>onst_string s -&gt; fprintf fmt "%S" s
 ;;
 
 let rearr_typvars typ =
@@ -1101,12 +1097,12 @@ let pprint_env env names =
 ;;
 
 let rec pprint_pattern fmt =
-  <span data-count="76">l</span>et open Pattern in
+  <span data-count="86">l</span>et open Pattern in
   function
   | <span data-count="0">P</span>at_constraint (p, tye) -&gt; fprintf fmt "(%a : %a)" pprint_pattern p pprint_type tye
-  | <span data-count="0">P</span>at_any -&gt; fprintf fmt "_"
-  | <span data-count="75">P</span>at_var id -&gt; fprintf fmt "%s" id
-  | <span data-count="0">P</span>at_constant c -&gt; pprint_constant fmt c
+  | <span data-count="2">P</span>at_any -&gt; fprintf fmt "_"
+  | <span data-count="82">P</span>at_var id -&gt; fprintf fmt "%s" id
+  | <span data-count="1">P</span>at_constant c -&gt; pprint_constant fmt c
   | <span data-count="0">P</span>at_tuple (p1, p2, pl) -&gt;
     fprintf
       fmt
@@ -1122,17 +1118,17 @@ let rec pprint_pattern fmt =
 ;;
 
 let pprint_rec fmt =
-  <span data-count="29">l</span>et open Expression in
+  <span data-count="30">l</span>et open Expression in
   function
-  | <span data-count="26">N</span>onrecursive -&gt; fprintf fmt ""
+  | <span data-count="27">N</span>onrecursive -&gt; fprintf fmt ""
   | <span data-count="3">R</span>ecursive -&gt; fprintf fmt "rec "
 ;;
 
 let rec pprint_expression fmt n =
-  <span data-count="277">l</span>et open Expression in
+  <span data-count="287">l</span>et open Expression in
   function
-  | <span data-count="120">E</span>xp_ident id -&gt; fprintf fmt "%s" id
-  | <span data-count="32">E</span>xp_constant ct -&gt; pprint_constant fmt ct
+  | <span data-count="123">E</span>xp_ident id -&gt; fprintf fmt "%s" id
+  | <span data-count="39">E</span>xp_constant ct -&gt; pprint_constant fmt ct
   | <span data-count="1">E</span>xp_tuple (ex1, ex2, exl) -&gt;
     fprintf
       fmt
@@ -1241,13 +1237,13 @@ let rec pprint_expression fmt n =
     fprintf fmt "(%s (%a))" id (fun fmt -&gt; <span data-count="0">p</span>print_expression fmt (n + 1)) exp
 
 and pprint_value_binding fmt n vb =
-  <span data-count="29">l</span>et open Expression in
+  <span data-count="39">l</span>et open Expression in
   fprintf
     fmt
     "%a = %a"
     pprint_pattern
     vb.pat
-    (fun fmt -&gt; <span data-count="29">p</span>print_expression fmt (n + 1))
+    (fun fmt -&gt; <span data-count="39">p</span>print_expression fmt (n + 1))
     vb.expr
 
 and pprint_case fmt n case =
@@ -1270,18 +1266,18 @@ and pprint_function_with_cases fmt (cs, csl, n) =
 ;;
 
 let pprint_structure_item fmt n =
-  <span data-count="8">l</span>et open Structure in
+  <span data-count="9">l</span>et open Structure in
   function
   | <span data-count="1">S</span>tr_eval exp -&gt; fprintf fmt "%a ;;\n" (fun fmt -&gt; <span data-count="1">p</span>print_expression fmt n) exp
-  | <span data-count="15">S</span>tr_value (rec_flag, (vbind1, vbindl)) -&gt;
+  | <span data-count="16">S</span>tr_value (rec_flag, (vbind1, vbindl)) -&gt;
     let bindings_str =
       match vbind1 :: vbindl with
       | <span data-count="0">[</span>] -&gt; ""
-      | <span data-count="15">_</span> -&gt;
-        String.conca<span data-count="15">t</span>
+      | <span data-count="16">_</span> -&gt;
+        String.conca<span data-count="16">t</span>
           ~sep:" and\n  "
-          (List.ma<span data-count="15">p</span> (vbind1 :: vbindl) ~f:(fun vb -&gt;
-             <span data-count="15">a</span>sprintf "%a" (fun fmt -&gt; <span data-count="15">p</span>print_value_binding fmt n) vb))
+          (List.ma<span data-count="16">p</span> (vbind1 :: vbindl) ~f:(fun vb -&gt;
+             <span data-count="25">a</span>sprintf "%a" (fun fmt -&gt; <span data-count="25">p</span>print_value_binding fmt n) vb))
     in
     fprintf fmt "let %a%s;;\n\n" pprint_rec rec_flag bindings_str
   | <span data-count="0">S</span>tr_adt (tparam, id, (constr1, constrl)) -&gt;
@@ -1309,7 +1305,7 @@ let pprint_structure_item fmt n =
     fprintf fmt "type %s%s =\n%s\n;;\n\n" tparam_ident_str id var_t_str
 ;;
 
-let pprint_program fmt = <span data-count="8">L</span>ist.iter ~f:(pprint_structure_ite<span data-count="8">m</span> fmt 0)
+let pprint_program fmt = <span data-count="9">L</span>ist.iter ~f:(pprint_structure_ite<span data-count="9">m</span> fmt 0)
 
 let pp printer parser str =
   <span data-count="0">m</span>atch parse_string ~consume:Angstrom.Consume.All parser str with
