@@ -115,11 +115,11 @@ SPDX-License-Identifier: LGPL-3.0-or-later
   Inferencer error: Left-hand side error: Only variables are allowed on the left-hand side of let rec.
 
   $ make infer additional_tests/custom_op_via_op.ml
-  val ** : int -> int -> int
-  val +++ : int -> int -> int
+  val **: int -> int -> int
+  val +++: int -> int -> int
   val main: int
 
   $ make infer additional_tests/custom_op_pipe.ml
-  val ~> : t0 -> (t0 -> t1) -> t1
-  val succ: int -> int
   val main: int
+  val succ: int -> int
+  val ~>: t0 -> (t0 -> t2) -> t2

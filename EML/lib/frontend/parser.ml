@@ -82,6 +82,44 @@ let is_operator_char_infix = function
   | '|' | ':' | _ -> false
 ;;
 
+let is_custom_power_op op =
+  String.length op >= 2 && String.equal (String.sub op ~pos:0 ~len:2) "**"
+;;
+
+let first_char op = String.get op 0
+
+let is_custom_mul_op op =
+  not (is_custom_power_op op)
+  &&
+  match first_char op with
+  | '*' | '/' | '%' -> true
+  | _ -> false
+;;
+
+let is_custom_add_op op =
+  match first_char op with
+  | '+' | '-' -> true
+  | _ -> false
+;;
+
+let is_custom_concat_op op =
+  match first_char op with
+  | '@' | '^' -> true
+  | _ -> false
+;;
+
+let is_custom_cmp_op op =
+  match first_char op with
+  | '=' | '<' | '>' | '|' | '&' | '$' -> true
+  | _ -> false
+;;
+
+let is_custom_lowest_op op =
+  match first_char op with
+  | '!' | '?' | '~' | '.' -> true
+  | _ -> false
+;;
+
 let white_space = take_while Char.is_whitespace
 let token s = white_space *> string s
 let token1 s = white_space *> s
@@ -303,6 +341,14 @@ let parse_expr_bin_oper parse_bin_op tkn =
   token tkn *> return (fun e1 e2 -> ExpBinOper (parse_bin_op, e1, e2))
 ;;
 
+let parse_right_associative expr oper =
+  let rec parse () =
+    expr >>= fun left ->
+    (oper >>= fun combine -> parse () >>| fun right -> combine left right) <|> return left
+  in
+  parse ()
+;;
+
 let multiply = parse_expr_bin_oper Multiply "*"
 let division = parse_expr_bin_oper Division "/"
 let plus = parse_expr_bin_oper Plus "+"
@@ -322,17 +368,14 @@ let compare =
 let and_op = parse_expr_bin_oper And "&&"
 let or_op = parse_expr_bin_oper Or "||"
 
-let parse_custom_infix =
-  white_space *> take_while1 is_operator_char_infix
-  >>| fun op -> fun e1 e2 -> ExpBinOper (Custom op, e1, e2)
-;;
-
-let parse_custom_infix_except except =
+let parse_custom_infix_when pred =
   white_space *> take_while1 is_operator_char_infix
   >>= fun op ->
-  if List.mem except op ~equal:String.equal
+  if Option.is_some (builtin_op_of_string op)
   then fail "builtin"
-  else return (fun e1 e2 -> ExpBinOper (Custom op, e1, e2))
+  else if pred op
+  then return (fun e1 e2 -> ExpBinOper (Custom op, e1, e2))
+  else fail "custom_op_mismatch"
 ;;
 
 let parse_expr_ident = parse_ident >>| fun x -> ExpIdent x
@@ -534,32 +577,34 @@ let parse_top_expr parse_expr =
     ]
 ;;
 
-let lower_than_ops1 = [ "+"; "-"; ">="; "<="; "<>"; "="; ">"; "<"; "&&"; "||" ]
-let lower_than_ops2 = [ ">="; "<="; "<>"; "="; ">"; "<"; "&&"; "||" ]
-let lower_than_cmp = [ "&&"; "||" ]
 
 let parse_exp_apply e right =
   let app = parse_expr_apply e right in
   let app = parse_expr_unar_oper app <|> app in
+  let power = parse_right_associative app (parse_custom_infix_when is_custom_power_op) in
   let ops1 =
     parse_left_associative
-      app
-      (parse_custom_infix_except lower_than_ops1 <|> multiply <|> division)
-      app
+      power
+      (parse_custom_infix_when is_custom_mul_op <|> multiply <|> division)
+      power
   in
   let ops2 =
     parse_left_associative
       ops1
-      (parse_custom_infix_except lower_than_ops2 <|> plus <|> minus)
+      (parse_custom_infix_when is_custom_add_op <|> plus <|> minus)
       ops1
+  in
+  let concat =
+    parse_right_associative ops2 (parse_custom_infix_when is_custom_concat_op)
   in
   let cmp =
     parse_left_associative
-      ops2
-      (parse_custom_infix_except lower_than_cmp <|> compare)
-      ops2
+      concat
+      (parse_custom_infix_when is_custom_cmp_op <|> parse_custom_infix_when is_custom_lowest_op <|> compare)
+      concat
   in
-  parse_left_associative cmp (parse_custom_infix <|> and_op <|> or_op) cmp
+  let bool_and = parse_right_associative cmp and_op in
+  parse_right_associative bool_and or_op
 ;;
 
 let parse_expr =

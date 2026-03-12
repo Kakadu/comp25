@@ -26,6 +26,7 @@
   (file ../bin/EML.exe)
   (file Makefile)
   (file ../lib/runtime/rv64_runtime.a)
+  (source_tree additional_tests)
   (source_tree gc_tests)
   (source_tree many_tests)))
 
