@@ -305,7 +305,6 @@ let%expect_test "anf_roundtrip_types_partial" =
   [%expect {| OK: types preserved after ANF round-trip |}]
 ;;
 
-
 let%expect_test "custom_infix_operator_lowers_to_app" =
   parse_and_anf "let ( =^.^= ) x y = (x * 10) + y";
   [%expect

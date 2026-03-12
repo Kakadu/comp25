@@ -22,17 +22,14 @@ let names_of_pattern p =
 
 let names_of_bind (pat, _) = names_of_pattern pat
 
-let rec resolve_expr scope e =
-  match e with
+let rec resolve_expr scope = function
   | ExpBinOper (Custom op, e1, e2) ->
     let e1' = resolve_expr scope e1 in
     let e2' = resolve_expr scope e2 in
-    (match List.mem scope op ~equal:String.equal with
-     | true -> ExpBinOper (Custom op, e1', e2')
-     | false ->
-       (match builtin_op_of_string op with
-        | Some b -> ExpBinOper (b, e1', e2')
-        | None -> ExpBinOper (Custom op, e1', e2')))
+    (match List.mem scope op ~equal:String.equal, builtin_op_of_string op with
+     | true, _ -> ExpBinOper (Custom op, e1', e2')
+     | false, Some b -> ExpBinOper (b, e1', e2')
+     | false, None -> ExpBinOper (Custom op, e1', e2'))
   | ExpIdent x -> ExpIdent x
   | ExpConst c -> ExpConst c
   | ExpBranch (c, t, o) ->

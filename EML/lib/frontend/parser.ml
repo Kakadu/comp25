@@ -89,7 +89,7 @@ let is_custom_power_op op =
 let first_char op = String.get op 0
 
 let is_custom_mul_op op =
-  not (is_custom_power_op op)
+  (not (is_custom_power_op op))
   &&
   match first_char op with
   | '*' | '/' | '%' -> true
@@ -343,8 +343,9 @@ let parse_expr_bin_oper parse_bin_op tkn =
 
 let parse_right_associative expr oper =
   let rec parse () =
-    expr >>= fun left ->
-    (oper >>= fun combine -> parse () >>| fun right -> combine left right) <|> return left
+    expr
+    >>= fun left ->
+    oper >>= (fun combine -> parse () >>| fun right -> combine left right) <|> return left
   in
   parse ()
 ;;
@@ -577,7 +578,6 @@ let parse_top_expr parse_expr =
     ]
 ;;
 
-
 let parse_exp_apply e right =
   let app = parse_expr_apply e right in
   let app = parse_expr_unar_oper app <|> app in
@@ -600,7 +600,9 @@ let parse_exp_apply e right =
   let cmp =
     parse_left_associative
       concat
-      (parse_custom_infix_when is_custom_cmp_op <|> parse_custom_infix_when is_custom_lowest_op <|> compare)
+      (parse_custom_infix_when is_custom_cmp_op
+       <|> parse_custom_infix_when is_custom_lowest_op
+       <|> compare)
       concat
   in
   let bool_and = parse_right_associative cmp and_op in

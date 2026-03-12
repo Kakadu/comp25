@@ -284,7 +284,7 @@ module TypeEnv = struct
 
   let apply subst env = Map.map env ~f:(Scheme.apply subst)
   let find = Map.find
-  let keys t = Map.keys t
+  let keys = Map.keys
 
   let initial_env =
     let open Base.Map in
@@ -481,7 +481,7 @@ let get_binop_arg_res env op =
       , Substitution.apply subst arg_ty2
       , Substitution.apply subst res_ty
       , subst )
-  | op ->
+  | _ ->
     let* ty1, ty2, ty_res = infer_binop_type op in
     return (ty1, ty2, ty_res, Substitution.empty)
 ;;

@@ -232,7 +232,6 @@ let%expect_test "test_unit" =
  |}]
 ;;
 
-
 let%expect_test "custom_infix_operator" =
   parse_test {| let ( ** ) x y = x * y in 2 ** 3 |};
   [%expect

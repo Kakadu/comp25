@@ -248,12 +248,11 @@ let same_memory_key (base1, offset1) (base2, offset2) =
   equal_reg base1 base2 && offset1 = offset2
 ;;
 
-let rec find_cached_load key = function
-  | [] -> None
-  | (cached_key, cached_register) :: rest ->
-    if same_memory_key cached_key key
-    then Some cached_register
-    else find_cached_load key rest
+let find_cached_load key cache =
+  List.find_map
+    (fun (cached_key, cached_register) ->
+       if same_memory_key cached_key key then Some cached_register else None)
+    cache
 ;;
 
 let remove_cached_key key cache =
@@ -326,13 +325,15 @@ let can_prove_store_dead ~allow_drop_at_block_end slot following_instructions =
   let rec walk = function
     | [] -> allow_drop_at_block_end
     | instruction :: rest ->
-      if reads_slot slot instruction
-      then false
-      else if stores_slot slot instruction
-      then true
-      else if writes_slot_base slot instruction
-      then false
-      else walk rest
+      (match
+         ( reads_slot slot instruction
+         , stores_slot slot instruction
+         , writes_slot_base slot instruction )
+       with
+       | true, _, _ -> false
+       | _, true, _ -> true
+       | _, _, true -> false
+       | _ -> walk rest)
   in
   walk following_instructions
 ;;
@@ -340,10 +341,10 @@ let can_prove_store_dead ~allow_drop_at_block_end slot following_instructions =
 let eliminate_dead_stores_in_block ~allow_drop_at_block_end block =
   let rec loop changed acc = function
     | [] -> List.rev acc, changed
-    | (Sd (_, slot) as store_instruction) :: rest ->
-      if can_prove_store_dead ~allow_drop_at_block_end slot rest
-      then loop true acc rest
-      else loop changed (store_instruction :: acc) rest
+    | Sd (_, slot) :: rest when can_prove_store_dead ~allow_drop_at_block_end slot rest ->
+      loop true acc rest
+    | (Sd (_, _) as store_instruction) :: rest ->
+      loop changed (store_instruction :: acc) rest
     | instruction :: rest -> loop changed (instruction :: acc) rest
   in
   loop false [] block
@@ -389,20 +390,20 @@ let find_redundant_restore_store loaded_register loaded_slot following_instructi
   in
   let rec search prefix = function
     | [] -> List.rev_append prefix [], false
+    | instruction :: rest
+      when is_barrier instruction || writes_slot_base loaded_slot instruction ->
+      List.rev_append prefix (instruction :: rest), false
+    | Sd (stored_register, store_slot) :: rest
+      when same_memory_key loaded_slot store_slot
+           && equal_reg stored_register loaded_register ->
+      List.rev_append prefix rest, true
+    | Sd (stored_register, store_slot) :: rest when same_memory_key loaded_slot store_slot
+      -> List.rev_append prefix (Sd (stored_register, store_slot) :: rest), false
     | instruction :: rest ->
-      if is_barrier instruction || writes_slot_base loaded_slot instruction
-      then List.rev_append prefix (instruction :: rest), false
-      else (
-        match instruction with
-        | Sd (stored_register, store_slot) when same_memory_key loaded_slot store_slot ->
-          if equal_reg stored_register loaded_register
-          then List.rev_append prefix rest, true
-          else List.rev_append prefix (instruction :: rest), false
-        | _ ->
-          (match write_reg instruction with
-           | Some written_register when equal_reg written_register loaded_register ->
-             List.rev_append prefix (instruction :: rest), false
-           | _ -> search (instruction :: prefix) rest))
+      (match write_reg instruction with
+       | Some written_register when equal_reg written_register loaded_register ->
+         List.rev_append prefix (instruction :: rest), false
+       | _ -> search (instruction :: prefix) rest)
   in
   search [] following_instructions
 ;;
