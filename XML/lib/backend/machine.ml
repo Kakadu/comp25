@@ -56,6 +56,7 @@ type instr =
   | Xor of reg * reg * reg (* XOR *)
   | Xori of reg * reg * (int[@gen QCheck.Gen.nat_small]) (* XOR immediate *)
   | Beq of reg * reg * (string[@gen gen_label]) (* BEQ: branch if equal *)
+  | Bne of reg * reg * (string[@gen gen_label]) (* BNE: branch if not equal *)
   | Blt of reg * reg * (string[@gen gen_label]) (* BLT: branch if less than *)
   | Ble of reg * reg * (string[@gen gen_label]) (* BLE: branch if less or equal *)
   | Lla of reg * (string[@gen gen_label]) (* LLA: load address *)
