@@ -108,6 +108,22 @@ let builtin_op_of_string = function
   | _ -> None
 ;;
 
+let builtin_op_to_string = function
+  | Multiply -> "*"
+  | Division -> "/"
+  | Plus -> "+"
+  | Minus -> "-"
+  | GreatestEqual -> ">="
+  | LowestEqual -> "<="
+  | NotEqual -> "<>"
+  | Equal -> "="
+  | GreaterThan -> ">"
+  | LowerThan -> "<"
+  | And -> "&&"
+  | Or -> "||"
+  | Custom s -> s
+;;
+
 let rec pp_ty fmt = function
   | TyPrim x -> fprintf fmt "%s" x
   | TyVar x -> fprintf fmt "%s" x

@@ -78,7 +78,13 @@ let rec resolve_expr scope = function
       , (fst c, resolve_expr scope' (snd c))
       , List.map cases ~f:(fun (p, e') -> p, resolve_expr scope' e') )
   | ExpConstruct (c, o) -> ExpConstruct (c, Option.map o ~f:(resolve_expr scope))
-  | ExpBinOper (b, e1, e2) -> ExpBinOper (b, resolve_expr scope e1, resolve_expr scope e2)
+  | ExpBinOper (b, e1, e2) ->
+    let left_resolved = resolve_expr scope e1 in
+    let right_resolved = resolve_expr scope e2 in
+    let builtin_op_name = builtin_op_to_string b in
+    if List.mem scope builtin_op_name ~equal:String.equal
+    then ExpBinOper (Custom builtin_op_name, left_resolved, right_resolved)
+    else ExpBinOper (b, left_resolved, right_resolved)
 ;;
 
 let resolve_structure scope = function
