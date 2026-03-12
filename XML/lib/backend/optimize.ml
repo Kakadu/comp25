@@ -104,13 +104,14 @@ let reg_used_in_instr reg instr =
   | Mul (_, r1, r2)
   | Slt (_, r1, r2)
   | Xor (_, r1, r2)
+  | Sd (r1, (r2, _))
+  | Ld (r1, (r2, _))
     when equal_reg reg r1 || equal_reg reg r2 -> true
   | Seqz (_, r1)
   | Snez (_, r1)
   | Beq (_, r1, _)
   | Addi (_, r1, _)
   | Xori (_, r1, _)
-  | Sd (r1, _)
   | Mv (_, r1)
   | Slli (_, r1, _)
   | Srai (_, r1, _)
@@ -155,12 +156,57 @@ let rec elim_inverse_mv = function
   | [] -> []
 ;;
 
-let rec elim_li_mv_before_call = function
+let rec elim_load_mv_before_call = function
   | (Li (ld, lii), _) :: (Mv (md, m1), _) :: ((Call _, _) as ci) :: rest
     when equal_reg ld m1 ->
     let li = Li (md, lii), "" in
-    elim_li_mv_before_call (li :: ci :: rest)
-  | x :: rest -> x :: elim_li_mv_before_call rest
+    elim_load_mv_before_call (li :: ci :: rest)
+  | (Ld (ld, off), _) :: (Mv (md, m1), _) :: ((Call _, _) as ci) :: rest
+    when equal_reg ld m1 ->
+    let li = Ld (md, off), "" in
+    elim_load_mv_before_call (li :: ci :: rest)
+  | x :: rest -> x :: elim_load_mv_before_call rest
+  | [] -> []
+;;
+
+let rec fold_mv_smth = function
+  | (Mv (md, mv1), _) :: (Sd (sd, off), _) :: rest when equal_reg md sd ->
+    let i = Sd (mv1, off), "" in
+    fold_mv_smth (i :: rest)
+  | (Mv (md, mv1), _) :: (Addi (ad, a1, aimm), _) :: rest when equal_reg md a1 ->
+    let i = Addi (ad, mv1, aimm), "" in
+    fold_mv_smth (i :: rest)
+  | x :: rest -> x :: fold_mv_smth rest
+  | [] -> []
+;;
+
+let rec fold_addi_sp = function
+  (* todo: long addi sd chains *)
+  | (Addi (SP, SP, aimm1), _)
+    :: (Sd (sd1, (SP, _)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: ((Sd (_, (SP, si2)), _) as sdi2)
+    :: rest ->
+    let addi = Addi (SP, SP, aimm1 + aimm2), "" in
+    let sdi1 = Sd (sd1, (SP, si2 - aimm2)), "" in
+    fold_addi_sp (addi :: sdi1 :: sdi2 :: rest)
+  | (Addi (SP, SP, aimm1), _)
+    :: (Ld (ld, (SP, limm)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: rest ->
+    let li = Ld (ld, (SP, aimm1 - limm)), "" in
+    let addi = Addi (SP, SP, aimm1 + aimm2), "" in
+    fold_addi_sp (li :: addi :: rest)
+  | ((Ld (_, (SP, _)), _) as ldi1)
+    :: (Addi (SP, SP, aimm1), _)
+    :: (Ld (ld2, (SP, li2)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: rest ->
+    let ldi2 = Ld (ld2, (SP, aimm1 - li2)), "" in
+    let addi = Addi (SP, SP, aimm1 + aimm2), "" in
+    fold_addi_sp (ldi1 :: ldi2 :: addi :: rest)
+  (* | Sd :: Addi :: Sd :: rest ->  *)
+  | x :: rest -> x :: fold_addi_sp rest
   | [] -> []
 ;;
 
@@ -172,7 +218,9 @@ let peephole code : (instr * string) Queue.t =
   let optimized = fold_constants optimized in
   let optimized = elim_inverse_mv optimized in
   let optimized = fold_branch optimized in
-  let optimized = elim_li_mv_before_call optimized in
+  let optimized = elim_load_mv_before_call optimized in
+  let optimized = fold_mv_smth optimized in
+  let optimized = fold_addi_sp optimized in
   Queue.of_list optimized
 ;;
 
