@@ -294,9 +294,9 @@ module Default_naming : NAMING = struct
   let init = 0
 
   let fresh_blocks n =
-    <span data-count="87">l</span>et then_name = "then_" ^ Int.to_strin<span data-count="87">g</span> n in
-    let else_name = "else_" ^ Int.to_strin<span data-count="87">g</span> n in
-    let merge_name = "merge_" ^ Int.to_strin<span data-count="87">g</span> n in
+    <span data-count="89">l</span>et then_name = "then_" ^ Int.to_strin<span data-count="89">g</span> n in
+    let else_name = "else_" ^ Int.to_strin<span data-count="89">g</span> n in
+    let merge_name = "merge_" ^ Int.to_strin<span data-count="89">g</span> n in
     (then_name, else_name, merge_name), n + 1
   ;;
 end
@@ -315,51 +315,51 @@ module Make (N : NAMING) = struct
 
   type 'a t = state -&gt; ('a * state, string) Result.t
 
-  let return x state = <span data-count="6207">O</span>k (x, state)
+  let return x state = <span data-count="6643">O</span>k (x, state)
 
   let bind m f state =
-    <span data-count="9407">m</span>atch m state with
-    | <span data-count="9407">O</span>k (x, state') -&gt; f x state'
+    <span data-count="10083">m</span>atch m state with
+    | <span data-count="10083">O</span>k (x, state') -&gt; f x state'
     | <span data-count="0">E</span>rror err -&gt; Error err
   ;;
 
   let ( let* ) = bind
-  let get state = <span data-count="1269">O</span>k (state, state)
-  let put state _ = <span data-count="742">O</span>k ((), state)
+  let get state = <span data-count="1370">O</span>k (state, state)
+  let put state _ = <span data-count="807">O</span>k ((), state)
 
   let modify f state =
-    <span data-count="447">m</span>atch get state with
-    | <span data-count="447">O</span>k (current_state, _) -&gt; put (<span data-count="447">f</span> current_state) state
+    <span data-count="486">m</span>atch get state with
+    | <span data-count="486">O</span>k (current_state, _) -&gt; put (<span data-count="486">f</span> current_state) state
     | <span data-count="0">E</span>rror err -&gt; Error err
   ;;
 
   let fail err = fun _ -&gt; <span data-count="0">E</span>rror err
-  let map_find_opt (map : (string, 'a, _) Base.Map.t) key = <span data-count="147">B</span>ase.Map.find map key
-  let find_value_opt name state = <span data-count="638">O</span>k (Base.Map.fin<span data-count="638">d</span> state.value_env name, state)
-  let find_type_opt name state = <span data-count="274">O</span>k (Base.Map.fin<span data-count="274">d</span> state.type_env name, state)
+  let map_find_opt (map : (string, 'a, _) Base.Map.t) key = <span data-count="160">B</span>ase.Map.find map key
+  let find_value_opt name state = <span data-count="681">O</span>k (Base.Map.fin<span data-count="681">d</span> state.value_env name, state)
+  let find_type_opt name state = <span data-count="295">O</span>k (Base.Map.fin<span data-count="295">d</span> state.type_env name, state)
 
   let resolve_key state name =
-    <span data-count="159">m</span>atch state.resolve with
+    <span data-count="175">m</span>atch state.resolve with
     | <span data-count="0">N</span>one -&gt; name
-    | <span data-count="159">S</span>ome resolver -&gt;
+    | <span data-count="175">S</span>ome resolver -&gt;
       (match resolver state.current_func_index name with
-       | <span data-count="120">S</span>ome (asm_name, _) -&gt; asm_name
-       | <span data-count="39">N</span>one -&gt; name)
+       | <span data-count="134">S</span>ome (asm_name, _) -&gt; asm_name
+       | <span data-count="41">N</span>one -&gt; name)
   ;;
 
   let resolved_find_value_opt name state =
-    <span data-count="109">l</span>et resolved_key = resolve_key state name in
-    <span data-count="109">O</span>k (Base.Map.fin<span data-count="109">d</span> state.value_env resolved_key, state)
+    <span data-count="118">l</span>et resolved_key = resolve_key state name in
+    <span data-count="118">O</span>k (Base.Map.fin<span data-count="118">d</span> state.value_env resolved_key, state)
   ;;
 
   let resolved_find_type_opt name state =
-    <span data-count="50">l</span>et resolved_key = resolve_key state name in
-    <span data-count="50">O</span>k (Base.Map.fin<span data-count="50">d</span> state.type_env resolved_key, state)
+    <span data-count="57">l</span>et resolved_key = resolve_key state name in
+    <span data-count="57">O</span>k (Base.Map.fin<span data-count="57">d</span> state.type_env resolved_key, state)
   ;;
 
   let set_value name value =
-    <span data-count="447">m</span>odify (fun state -&gt;
-      <span data-count="447">{</span> state with value_env = Base.Map.se<span data-count="447">t</span> state.value_env ~key:name ~data:value })
+    <span data-count="486">m</span>odify (fun state -&gt;
+      <span data-count="486">{</span> state with value_env = Base.Map.se<span data-count="486">t</span> state.value_env ~key:name ~data:value })
   ;;
 
   let set_type name lltype =
@@ -371,7 +371,7 @@ module Make (N : NAMING) = struct
     <span data-count="0">m</span>odify (fun state -&gt; <span data-count="0">{</span> state with value_env = Base.Map.remov<span data-count="0">e</span> state.value_env name })
   ;;
 
-  let get_gc_allocas state = <span data-count="669">O</span>k (state.gc_allocas, state)
+  let get_gc_allocas state = <span data-count="714">O</span>k (state.gc_allocas, state)
 
   let set_gc_allocas allocas_map =
     <span data-count="0">m</span>odify (fun state -&gt; <span data-count="0">{</span> state with gc_allocas = allocas_map })
@@ -385,12 +385,12 @@ module Make (N : NAMING) = struct
 
   let fresh_blocks =
     let* state = get in
-    <span data-count="87">l</span>et triple, next = N.fresh_blocks state.naming_state in
-    <span data-count="87">l</span>et* () = pu<span data-count="87">t</span> { state with naming_state = next } in
-    <span data-count="87">r</span>eturn triple
+    <span data-count="89">l</span>et triple, next = N.fresh_blocks state.naming_state in
+    <span data-count="89">l</span>et* () = pu<span data-count="89">t</span> { state with naming_state = next } in
+    <span data-count="89">r</span>eturn triple
   ;;
 
-  let run m = <span data-count="104">m</span>
+  let run m = <span data-count="116">m</span>
 end
 
 include Make (Default_naming)

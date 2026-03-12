@@ -329,7 +329,7 @@ let%expect_test "nonrecursive_multiple_lets" =
     {|
     let lifted_0 = fun x y -&gt; (x + y);;
     let foo = fun x -&gt; let bar = lifted_0
-    and baz = 2 in (bar x 2 + baz);; |}<span data-count="17">]</span>
+    and baz = 2 in (bar x 2 + baz);; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "nonrecursive_multiple_functions" =
@@ -346,7 +346,7 @@ let%expect_test "nonrecursive_multiple_functions" =
     let lifted_0 = fun y -&gt; y;;
     let lifted_1 = fun x c -&gt; (x + c);;
     let foo = fun x -&gt; let bar = lifted_0
-    and baz = lifted_1 in (bar 2 + baz x 5);; |}<span data-count="17">]</span>
+    and baz = lifted_1 in (bar 2 + baz x 5);; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "mutual_recursion_in_let_rec_and" =
@@ -367,7 +367,7 @@ let%expect_test "mutual_recursion_in_let_rec_and" =
     let lifted_3 = fun limit n -&gt; if (n &gt; limit) then false else lifted_0 limit ((n - 1));;
     let rec lifted_0 = lifted_2
     and lifted_1 = lifted_3;;
-    let foo = let limit = 10 in lifted_0 limit 13;; |}<span data-count="17">]</span>
+    let foo = let limit = 10 in lifted_0 limit 13;; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "recursive_local_bindings_use_renamed_functions" =
@@ -385,7 +385,7 @@ let%expect_test "recursive_local_bindings_use_renamed_functions" =
     let lifted_3 = fun x c -&gt; (c + lifted_0 x 5);;
     let rec lifted_0 = lifted_2
     and lifted_1 = lifted_3;;
-    let foo = fun x -&gt; (lifted_0 x 5 + lifted_1 x 6);; |}<span data-count="17">]</span>
+    let foo = fun x -&gt; (lifted_0 x 5 + lifted_1 x 6);; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "sequence_with_local_lambda" =
@@ -399,7 +399,7 @@ let%expect_test "sequence_with_local_lambda" =
   <span data-count="1">[</span>%expect
     {|
     let lifted_0 = fun x y -&gt; (x + y);;
-    let g = fun x -&gt; let () = print_int x in let h = lifted_0 in h x 10;; |}<span data-count="17">]</span>
+    let g = fun x -&gt; let () = print_int x in let h = lifted_0 in h x 10;; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "tuple_pattern_lambda_lifting" =
@@ -413,7 +413,7 @@ let%expect_test "tuple_pattern_lambda_lifting" =
   <span data-count="1">[</span>%expect
     {|
     let lifted_0 = fun a b (x, y) -&gt; (((a + b) + x) + y);;
-    let pair_sum = fun a b -&gt; let f = lifted_0 in f a b ((1, 2));; |}<span data-count="17">]</span>
+    let pair_sum = fun a b -&gt; let f = lifted_0 in f a b ((1, 2));; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "match_with_option_and_inline_lambdas" =
@@ -429,7 +429,7 @@ let%expect_test "match_with_option_and_inline_lambdas" =
     {|
     let lifted_0 = fun y z -&gt; (y - z);;
     let lifted_1 = fun z -&gt; (z + 1);;
-    let f = fun x -&gt; match x with | Some (y) -&gt; lifted_0 y | None -&gt; lifted_1;; |}<span data-count="17">]</span>
+    let f = fun x -&gt; match x with | Some (y) -&gt; lifted_0 y | None -&gt; lifted_1;; |}<span data-count="19">]</span>
 ;;
 </code></pre>
       </div>

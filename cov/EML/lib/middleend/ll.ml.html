@@ -927,7 +927,7 @@ module Default_naming : NAMING = struct
   let init = 0
 
   let fresh n =
-    <span data-count="57">l</span>et s = "lifted_" ^ Int.to_strin<span data-count="57">g</span> n in
+    <span data-count="59">l</span>et s = "lifted_" ^ Int.to_strin<span data-count="59">g</span> n in
     s, n + 1
   ;;
 end
@@ -938,11 +938,11 @@ type lift_result =
   }
 
 let names_in_pattern p =
-  <span data-count="258">l</span>et rec collect = function
+  <span data-count="274">l</span>et rec collect = function
     | <span data-count="30">P</span>atAny -&gt; []
-    | <span data-count="216">P</span>atVariable s -&gt; [ s ]
+    | <span data-count="222">P</span>atVariable s -&gt; [ s ]
     | <span data-count="0">P</span>atConst _ -&gt; []
-    | <span data-count="51">P</span>atConstruct (_, None) -&gt; []
+    | <span data-count="61">P</span>atConstruct (_, None) -&gt; []
     | <span data-count="7">P</span>atConstruct (_, Some q) -&gt; collect q
     | <span data-count="0">P</span>atType (q, _) -&gt; collect q
     | <span data-count="23">P</span>atTuple (p1, p2, rest) -&gt; List.concat_map collect (p1 :: p2 :: rest)
@@ -1001,45 +1001,45 @@ let pp_error ppf = function
 module Make (N : NAMING) = struct
   type 'a t = N.t -&gt; ('a * N.t, error) Result.t
 
-  let return (x : 'a) : 'a t = <span data-count="2532">f</span>un st -&gt; <span data-count="2532">O</span>k (x, st)
+  let return (x : 'a) : 'a t = <span data-count="2776">f</span>un st -&gt; <span data-count="2776">O</span>k (x, st)
   let fail (e : error) : _ t = <span data-count="0">f</span>un _ -&gt; <span data-count="0">E</span>rror e
 
   let bind (m : 'a t) (f : 'a -&gt; 'b t) : 'b t =
-    <span data-count="1758">f</span>un st -&gt;
-    <span data-count="1758">m</span>atch m st with
-    | <span data-count="1758">O</span>k (x, st') -&gt; f x st'
+    <span data-count="1954">f</span>un st -&gt;
+    <span data-count="1954">m</span>atch m st with
+    | <span data-count="1954">O</span>k (x, st') -&gt; f x st'
     | <span data-count="0">E</span>rror e -&gt; Error e
   ;;
 
   let ( let* ) = bind
 
   let take_names k : string list t =
-    <span data-count="55">f</span>un st -&gt;
-    <span data-count="55">l</span>et rec loop acc st' i =
-      <span data-count="112">i</span>f i &lt;= 0
-      then <span data-count="55">O</span>k (List.re<span data-count="55">v</span> acc, st')
-      else <span data-count="57">(</span>
+    <span data-count="57">f</span>un st -&gt;
+    <span data-count="57">l</span>et rec loop acc st' i =
+      <span data-count="116">i</span>f i &lt;= 0
+      then <span data-count="57">O</span>k (List.re<span data-count="57">v</span> acc, st')
+      else <span data-count="59">(</span>
         let name, st'' = N.fresh st' in
-        <span data-count="57">l</span>oop (name :: acc) st'' (i - 1))
+        <span data-count="59">l</span>oop (name :: acc) st'' (i - 1))
     in
     loop [] st k
   ;;
 
   let map2 (m1 : 'a t) (m2 : 'b t) (f : 'a -&gt; 'b -&gt; 'c) : 'c t =
-    <span data-count="785">f</span>un st -&gt;
-    <span data-count="785">m</span>atch m1 st with
+    <span data-count="825">f</span>un st -&gt;
+    <span data-count="825">m</span>atch m1 st with
     | <span data-count="0">E</span>rror e -&gt; Error e
-    | <span data-count="785">O</span>k (x1, st1) -&gt;
+    | <span data-count="825">O</span>k (x1, st1) -&gt;
       (match m2 st1 with
        | <span data-count="0">E</span>rror e -&gt; Error e
-       | <span data-count="785">O</span>k (x2, st2) -&gt; Ok (<span data-count="785">f</span> x1 x2, st2))
+       | <span data-count="825">O</span>k (x2, st2) -&gt; Ok (<span data-count="825">f</span> x1 x2, st2))
   ;;
 
   let pair (m1 : lift_result t) (m2 : lift_result t) (f : expr -&gt; expr -&gt; expr)
     : lift_result t
     =
-    <span data-count="705">m</span>ap2 m1 m2 (fun r1 r2 -&gt;
-      <span data-count="705">{</span> structures = r1.structures @ r2.structures; expr = <span data-count="705">f</span> r1.expr r2.expr })
+    <span data-count="745">m</span>ap2 m1 m2 (fun r1 r2 -&gt;
+      <span data-count="745">{</span> structures = r1.structures @ r2.structures; expr = <span data-count="745">f</span> r1.expr r2.expr })
   ;;
 
   let triple
@@ -1081,46 +1081,46 @@ module Make (N : NAMING) = struct
   let initial_renames = Map.empty
 
   let without_bindings renames names =
-    <span data-count="202">L</span>ist.fold_left (fun m k -&gt; <span data-count="212">M</span>ap.remove k m) renames names
+    <span data-count="216">L</span>ist.fold_left (fun m k -&gt; <span data-count="218">M</span>ap.remove k m) renames names
   ;;
 
-  let inner (ctx : context) = <span data-count="2204">{</span> ctx with at_toplevel = false }
+  let inner (ctx : context) = <span data-count="2334">{</span> ctx with at_toplevel = false }
 
   let fold_binds (ctx : context) binds (f : context -&gt; pattern -&gt; expr -&gt; lift_result t)
     : (structure list * (pattern * expr) list) t
     =
-    <span data-count="283">L</span>ist.fold_left
+    <span data-count="317">L</span>ist.fold_left
       (fun acc (p, e) -&gt;
-         <span data-count="152">l</span>et* rev_structures, rev_binds = acc in
-         <span data-count="152">l</span>et* res = <span data-count="152">f</span> ctx p e in
-         <span data-count="152">r</span>eturn (res.structures :: rev_structures, (p, res.expr) :: rev_binds))
-      (retur<span data-count="283">n</span> ([], []))
+         <span data-count="174">l</span>et* rev_structures, rev_binds = acc in
+         <span data-count="174">l</span>et* res = <span data-count="174">f</span> ctx p e in
+         <span data-count="174">r</span>eturn (res.structures :: rev_structures, (p, res.expr) :: rev_binds))
+      (retur<span data-count="317">n</span> ([], []))
       binds
-    |&gt; <span data-count="283">f</span>un m -&gt;
-    <span data-count="283">l</span>et* rev_structures, rev_binds = m in
-    <span data-count="283">r</span>eturn (List.conca<span data-count="283">t</span> (List.re<span data-count="283">v</span> rev_structures), List.re<span data-count="283">v</span> rev_binds)
+    |&gt; <span data-count="317">f</span>un m -&gt;
+    <span data-count="317">l</span>et* rev_structures, rev_binds = m in
+    <span data-count="317">r</span>eturn (List.conca<span data-count="317">t</span> (List.re<span data-count="317">v</span> rev_structures), List.re<span data-count="317">v</span> rev_binds)
   ;;
 
   let rec lift_expr (ctx : context) (e : expr) : lift_result t =
-    <span data-count="2213">m</span>atch e with
-    | <span data-count="763">E</span>xpIdent name -&gt;
+    <span data-count="2353">m</span>atch e with
+    | <span data-count="801">E</span>xpIdent name -&gt;
       let name' =
         try Map.fin<span data-count="6">d</span> name ctx.renames with
-        | <span data-count="757">N</span>ot_found -&gt; name
+        | <span data-count="795">N</span>ot_found -&gt; name
       in
       return { structures = []; expr = ExpIdent name' }
-    | (<span data-count="331">E</span>xpConst _ | <span data-count="35">E</span>xpConstruct (_, None)) as e -&gt; return { structures = []; expr = e }
-    | <span data-count="135">E</span>xpLet (NonRec, (pat, exp), more, body) -&gt;
-      let* res_rhs = lift_exp<span data-count="135">r</span> (inne<span data-count="135">r</span> ctx) exp in
-      <span data-count="135">l</span>et* extra_structures, rest_binds = lift_bind<span data-count="135">s</span> (inne<span data-count="135">r</span> ctx) more in
-      <span data-count="135">l</span>et all_defs =
-        names_in_patter<span data-count="135">n</span> pat @ List.concat_ma<span data-count="135">p</span> (fun (p, _) -&gt; <span data-count="2">n</span>ames_in_pattern p) more
+    | (<span data-count="367">E</span>xpConst _ | <span data-count="35">E</span>xpConstruct (_, None)) as e -&gt; return { structures = []; expr = e }
+    | <span data-count="147">E</span>xpLet (NonRec, (pat, exp), more, body) -&gt;
+      let* res_rhs = lift_exp<span data-count="147">r</span> (inne<span data-count="147">r</span> ctx) exp in
+      <span data-count="147">l</span>et* extra_structures, rest_binds = lift_bind<span data-count="147">s</span> (inne<span data-count="147">r</span> ctx) more in
+      <span data-count="147">l</span>et all_defs =
+        names_in_patter<span data-count="147">n</span> pat @ List.concat_ma<span data-count="147">p</span> (fun (p, _) -&gt; <span data-count="2">n</span>ames_in_pattern p) more
       in
       let body_ctx =
-        { (inne<span data-count="135">r</span> ctx) with renames = without_binding<span data-count="135">s</span> ctx.renames all_defs }
+        { (inne<span data-count="147">r</span> ctx) with renames = without_binding<span data-count="147">s</span> ctx.renames all_defs }
       in
-      let* res_body = lift_exp<span data-count="135">r</span> body_ctx body in
-      <span data-count="135">r</span>eturn
+      let* res_body = lift_exp<span data-count="147">r</span> body_ctx body in
+      <span data-count="147">r</span>eturn
         { structures = res_rhs.structures @ extra_structures @ res_body.structures
         ; expr = ExpLet (NonRec, (pat, res_rhs.expr), rest_binds, res_body.expr)
         }
@@ -1161,26 +1161,26 @@ module Make (N : NAMING) = struct
             @ [ SValue (Rec, first_bind, rest_binds) ]
             @ res_body.structures
         }
-    | <span data-count="144">E</span>xpLambda (pat, pats, body) when ctx.at_toplevel -&gt;
-      <span data-count="91">l</span>et* res = lift_exp<span data-count="91">r</span> (inne<span data-count="91">r</span> ctx) body in
-      <span data-count="91">r</span>eturn { res with expr = ExpLambda (pat, pats, res.expr) }
-    | <span data-count="53">E</span>xpLambda (pat, pats, body) -&gt;
-      let* names = take_name<span data-count="53">s</span> 1 in
-      <span data-count="53">l</span>et name = List.hd names in
-      <span data-count="53">l</span>et args = pat :: pats in
+    | <span data-count="158">E</span>xpLambda (pat, pats, body) when ctx.at_toplevel -&gt;
+      <span data-count="103">l</span>et* res = lift_exp<span data-count="103">r</span> (inne<span data-count="103">r</span> ctx) body in
+      <span data-count="103">r</span>eturn { res with expr = ExpLambda (pat, pats, res.expr) }
+    | <span data-count="55">E</span>xpLambda (pat, pats, body) -&gt;
+      let* names = take_name<span data-count="55">s</span> 1 in
+      <span data-count="55">l</span>et name = List.hd names in
+      <span data-count="55">l</span>et args = pat :: pats in
       let bound = List.concat_map names_in_pattern args in
-      <span data-count="53">l</span>et* res =
-        lift_exp<span data-count="53">r</span> { (inne<span data-count="53">r</span> ctx) with renames = without_binding<span data-count="53">s</span> ctx.renames bound } body
+      <span data-count="55">l</span>et* res =
+        lift_exp<span data-count="55">r</span> { (inne<span data-count="55">r</span> ctx) with renames = without_binding<span data-count="55">s</span> ctx.renames bound } body
       in
-      <span data-count="53">l</span>et value_def =
+      <span data-count="55">l</span>et value_def =
         SValue (NonRec, (PatVariable name, ExpLambda (pat, pats, res.expr)), [])
       in
       return { structures = res.structures @ [ value_def ]; expr = ExpIdent name }
-    | <span data-count="505">E</span>xpApply (e1, e2) -&gt;
+    | <span data-count="517">E</span>xpApply (e1, e2) -&gt;
       pair
-        (lift_exp<span data-count="505">r</span> (inne<span data-count="505">r</span> ctx) e1)
-        (lift_exp<span data-count="505">r</span> (inne<span data-count="505">r</span> ctx) e2)
-        (fun e1' e2' -&gt; <span data-count="505">E</span>xpApply (e1', e2'))
+        (lift_exp<span data-count="517">r</span> (inne<span data-count="517">r</span> ctx) e1)
+        (lift_exp<span data-count="517">r</span> (inne<span data-count="517">r</span> ctx) e2)
+        (fun e1' e2' -&gt; <span data-count="517">E</span>xpApply (e1', e2'))
     | <span data-count="0">E</span>xpFunction ((pat, exp), cases) when ctx.at_toplevel -&gt;
       <span data-count="0">l</span>et ctx_rhs =
         { (inne<span data-count="0">r</span> ctx) with renames = without_binding<span data-count="0">s</span> ctx.renames (names_in_patter<span data-count="0">n</span> pat) }
@@ -1241,11 +1241,11 @@ module Make (N : NAMING) = struct
     | <span data-count="4">E</span>xpTypeAnnotation (e, typ) -&gt;
       let* res = lift_exp<span data-count="4">r</span> (inne<span data-count="4">r</span> ctx) e in
       <span data-count="4">r</span>eturn { res with expr = ExpTypeAnnotation (res.expr, typ) }
-    | <span data-count="200">E</span>xpBinOper (op, e1, e2) -&gt;
+    | <span data-count="228">E</span>xpBinOper (op, e1, e2) -&gt;
       pair
-        (lift_exp<span data-count="200">r</span> (inne<span data-count="200">r</span> ctx) e1)
-        (lift_exp<span data-count="200">r</span> (inne<span data-count="200">r</span> ctx) e2)
-        (fun e1' e2' -&gt; <span data-count="200">E</span>xpBinOper (op, e1', e2'))
+        (lift_exp<span data-count="228">r</span> (inne<span data-count="228">r</span> ctx) e1)
+        (lift_exp<span data-count="228">r</span> (inne<span data-count="228">r</span> ctx) e2)
+        (fun e1' e2' -&gt; <span data-count="228">E</span>xpBinOper (op, e1', e2'))
     | <span data-count="4">E</span>xpUnarOper (op, e) -&gt;
       let* res = lift_exp<span data-count="4">r</span> (inne<span data-count="4">r</span> ctx) e in
       <span data-count="4">r</span>eturn { res with expr = ExpUnarOper (op, res.expr) }
@@ -1266,7 +1266,7 @@ module Make (N : NAMING) = struct
       <span data-count="0">r</span>eturn { res with expr = ExpOption (Some res.expr) }
 
   and lift_binds (ctx : context) binds : (structure list * (pattern * expr) list) t =
-    <span data-count="276">f</span>old_binds ctx binds (fun ctx _ e -&gt; <span data-count="145">l</span>ift_expr ctx e)
+    <span data-count="310">f</span>old_binds ctx binds (fun ctx _ e -&gt; <span data-count="167">l</span>ift_expr ctx e)
 
   and lift_binds_with_pattern_scope (ctx : context) binds
     : (structure list * (pattern * expr) list) t
@@ -1283,29 +1283,29 @@ module Make (N : NAMING) = struct
       let toplevel = { renames = initial_renames; at_toplevel = true } in
       let* res = lift_exp<span data-count="0">r</span> toplevel e in
       <span data-count="0">r</span>eturn (res.structures @ [ SEval res.expr ])
-    | <span data-count="141">S</span>Value (is_rec, bind, more) -&gt;
+    | <span data-count="163">S</span>Value (is_rec, bind, more) -&gt;
       let toplevel = { renames = initial_renames; at_toplevel = true } in
-      let* inner_structures, lifted_binds = lift_bind<span data-count="141">s</span> toplevel (bind :: more) in
-      <span data-count="141">(</span>match lifted_binds with
-       | <span data-count="141">f</span>irst :: rest -&gt; return (inner_structures @ [ SValue (is_rec, first, rest) ])
+      let* inner_structures, lifted_binds = lift_bind<span data-count="163">s</span> toplevel (bind :: more) in
+      <span data-count="163">(</span>match lifted_binds with
+       | <span data-count="163">f</span>irst :: rest -&gt; return (inner_structures @ [ SValue (is_rec, first, rest) ])
        | <span data-count="0">[</span>] -&gt; fail SValueEmptyBinding)
   ;;
 
   let run_program (program : program) (naming_init : N.t)
     : (structure list * N.t, error) Result.t
     =
-    <span data-count="56">l</span>et m =
+    <span data-count="66">l</span>et m =
       List.fold_left
         (fun acc item -&gt;
-           <span data-count="141">l</span>et* rev_structure_lists = acc in
-           <span data-count="141">l</span>et* struct_structures = lift_structur<span data-count="141">e</span> item in
-           <span data-count="141">r</span>eturn (struct_structures :: rev_structure_lists))
-        (retur<span data-count="56">n</span> [])
+           <span data-count="163">l</span>et* rev_structure_lists = acc in
+           <span data-count="163">l</span>et* struct_structures = lift_structur<span data-count="163">e</span> item in
+           <span data-count="163">r</span>eturn (struct_structures :: rev_structure_lists))
+        (retur<span data-count="66">n</span> [])
         program
     in
-    <span data-count="56">m</span>atch m naming_init with
-    | <span data-count="56">O</span>k (rev_structure_lists, st_final) -&gt;
-      Ok (List.conca<span data-count="56">t</span> (List.re<span data-count="56">v</span> rev_structure_lists), st_final)
+    <span data-count="66">m</span>atch m naming_init with
+    | <span data-count="66">O</span>k (rev_structure_lists, st_final) -&gt;
+      Ok (List.conca<span data-count="66">t</span> (List.re<span data-count="66">v</span> rev_structure_lists), st_final)
     | <span data-count="0">E</span>rror e -&gt; Error e
   ;;
 end
@@ -1315,8 +1315,8 @@ module Transform = Make (Default_naming)
 let lambda_lifting_result (program : Frontend.Ast.program)
   : (structure list, error) Result.t
   =
-  <span data-count="56">m</span>atch Transform.run_program program Default_naming.init with
-  | <span data-count="56">O</span>k (lst, _) -&gt; Ok lst
+  <span data-count="66">m</span>atch Transform.run_program program Default_naming.init with
+  | <span data-count="66">O</span>k (lst, _) -&gt; Ok lst
   | <span data-count="0">E</span>rror e -&gt; Error e
 ;;
 </code></pre>

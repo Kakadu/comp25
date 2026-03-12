@@ -277,15 +277,15 @@ let compare_eq_ne dst left_reg right_reg ~is_eq =
 ;;
 
 let bin_op dst op left_reg right_reg : (instr list, string) result =
-  <span data-count="129">m</span>atch op with
-  | <span data-count="65">"</span>+" -&gt; Ok (ad<span data-count="65">d</span> dst left_reg right_reg @ add_tag_item<span data-count="65">s</span> dst (-1))
-  | <span data-count="20">"</span>-" -&gt; Ok (su<span data-count="20">b</span> dst left_reg right_reg @ add_tag_item<span data-count="20">s</span> dst 1)
-  | <span data-count="18">"</span>*" -&gt;
+  <span data-count="135">m</span>atch op with
+  | <span data-count="68">"</span>+" -&gt; Ok (ad<span data-count="68">d</span> dst left_reg right_reg @ add_tag_item<span data-count="68">s</span> dst (-1))
+  | <span data-count="22">"</span>-" -&gt; Ok (su<span data-count="22">b</span> dst left_reg right_reg @ add_tag_item<span data-count="22">s</span> dst 1)
+  | <span data-count="19">"</span>*" -&gt;
     Ok
-      (srl<span data-count="18">i</span> left_reg left_reg 1
-       @ add<span data-count="18">i</span> right_reg right_reg (-1)
-       @ mu<span data-count="18">l</span> dst left_reg right_reg
-       @ add_tag_item<span data-count="18">s</span> dst 1)
+      (srl<span data-count="19">i</span> left_reg left_reg 1
+       @ add<span data-count="19">i</span> right_reg right_reg (-1)
+       @ mu<span data-count="19">l</span> dst left_reg right_reg
+       @ add_tag_item<span data-count="19">s</span> dst 1)
   | <span data-count="2">"</span>/" -&gt;
     Ok
       (srl<span data-count="2">i</span> left_reg left_reg 1
@@ -305,26 +305,26 @@ let bin_op dst op left_reg right_reg : (instr list, string) result =
 let bin_oper_to_string = Utils.Pretty_printer.string_of_bin_op
 
 let vars_in_caller_saved_regs environment =
-  <span data-count="243">B</span>ase.Map.to_alist environment
-  |&gt; <span data-count="243">L</span>ist.filter_map (fun (variable_name, variable_location) -&gt;
-    <span data-count="1219">m</span>atch variable_location with
+  <span data-count="257">B</span>ase.Map.to_alist environment
+  |&gt; <span data-count="257">L</span>ist.filter_map (fun (variable_name, variable_location) -&gt;
+    <span data-count="1234">m</span>atch variable_location with
     | <span data-count="0">L</span>oc_reg register when is_caller_save<span data-count="0">d</span> register -&gt; <span data-count="0">S</span>ome (variable_name, register)
-    | <span data-count="1219">_</span> -&gt; None)
+    | <span data-count="1234">_</span> -&gt; None)
 ;;
 
 let indices_of_args_to_spill generation_state immediate_arguments =
-  <span data-count="243">l</span>et argument_overwrites_result_register = function
-    | <span data-count="151">I</span>mmediateConst _ -&gt; false
-    | <span data-count="224">I</span>mmediateVar function_name -&gt; Base.Map.mem generation_state.arity_map function_name
+  <span data-count="257">l</span>et argument_overwrites_result_register = function
+    | <span data-count="162">I</span>mmediateConst _ -&gt; false
+    | <span data-count="235">I</span>mmediateVar function_name -&gt; Base.Map.mem generation_state.arity_map function_name
   in
   Base.List.foldi
     immediate_arguments
     ~init:[]
     ~f:(fun argument_index spilled_indices immediate_argument -&gt;
-      <span data-count="375">i</span>f argument_overwrites_result_register immediate_argument
-      then <span data-count="26">a</span>rgument_index :: spilled_indices
-      else <span data-count="349">s</span>pilled_indices)
-  |&gt; <span data-count="243">L</span>ist.rev
+      <span data-count="397">i</span>f argument_overwrites_result_register immediate_argument
+      then <span data-count="27">a</span>rgument_index :: spilled_indices
+      else <span data-count="370">s</span>pilled_indices)
+  |&gt; <span data-count="257">L</span>ist.rev
 ;;
 
 type call_style =
@@ -347,17 +347,17 @@ type call_style =
 
 let classify_call ~argument_count ~callee_arity_opt ~function_name ~arguments : call_style
   =
-  <span data-count="225">m</span>atch callee_arity_opt with
+  <span data-count="239">m</span>atch callee_arity_opt with
   | <span data-count="27">S</span>ome 0 when argument_count = 1 -&gt; <span data-count="27">N</span>ullary function_name
-  | <span data-count="133">S</span>ome arity when argument_count &gt; arity -&gt;
+  | <span data-count="145">S</span>ome arity when argument_count &gt; arity -&gt;
     <span data-count="8">C</span>urryChain
       { function_name
       ; arity
       ; initial_arguments = Base.List.tak<span data-count="8">e</span> arguments arity
       ; remaining_arguments = Base.List.dro<span data-count="8">p</span> arguments arity
       }
-  | <span data-count="125">S</span>ome arity when argument_count = arity -&gt; <span data-count="102">D</span>irect { function_name; arguments }
-  | <span data-count="88">_</span> -&gt; ViaApplyNargs { function_name; argument_count; arguments }
+  | <span data-count="137">S</span>ome arity when argument_count = arity -&gt; <span data-count="114">D</span>irect { function_name; arguments }
+  | <span data-count="90">_</span> -&gt; ViaApplyNargs { function_name; argument_count; arguments }
 ;;
 </code></pre>
       </div>

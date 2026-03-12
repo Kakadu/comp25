@@ -156,11 +156,11 @@ let predefined_runtime_funcs : runtime_func_sig list =
 ;;
 
 let runtime_primitive_arities : (string * int) list =
-  List.ma<span data-count="79">p</span> (fun { name; args; _ } -&gt; <span data-count="1106">n</span>ame, List.lengt<span data-count="1106">h</span> args) predefined_runtime_funcs
+  List.ma<span data-count="95">p</span> (fun { name; args; _ } -&gt; <span data-count="1330">n</span>ame, List.lengt<span data-count="1330">h</span> args) predefined_runtime_funcs
 ;;
 
 let is_reserved (name : string) : bool =
-  <span data-count="214">L</span>ist.exists (fun { name = n; _ } -&gt; <span data-count="2976">S</span>tring.equal n name) predefined_runtime_funcs
+  <span data-count="238">L</span>ist.exists (fun { name = n; _ } -&gt; <span data-count="3312">S</span>tring.equal n name) predefined_runtime_funcs
 ;;
 </code></pre>
       </div>

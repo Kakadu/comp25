@@ -791,18 +791,18 @@ module VarSet = Set.Make (String)
 module EnvMap = Map.Make (String)
 
 let union_map_list f list =
-  <span data-count="1117">L</span>ist.fold_left (fun acc x -&gt; <span data-count="1531">V</span>arSet.union acc (<span data-count="1531">f</span> x)) VarSet.empty list
+  <span data-count="1213">L</span>ist.fold_left (fun acc x -&gt; <span data-count="1641">V</span>arSet.union acc (<span data-count="1641">f</span> x)) VarSet.empty list
 ;;
 
-let var_set_of_list lst = <span data-count="79">L</span>ist.fold_left (fun s x -&gt; <span data-count="1106">V</span>arSet.add x s) VarSet.empty lst
+let var_set_of_list lst = <span data-count="95">L</span>ist.fold_left (fun s x -&gt; <span data-count="1330">V</span>arSet.add x s) VarSet.empty lst
 
 let vars_in_pattern p =
-  <span data-count="1012">l</span>et rec walk = function
+  <span data-count="1110">l</span>et rec walk = function
     | <span data-count="60">P</span>atAny -&gt; VarSet.empty
-    | <span data-count="919">P</span>atVariable x -&gt; VarSet.singleton x
+    | <span data-count="997">P</span>atVariable x -&gt; VarSet.singleton x
     | <span data-count="0">P</span>atConst _ -&gt; VarSet.empty
     | <span data-count="40">P</span>atTuple (p1, p2, rest) -&gt; union_map_list walk (p1 :: p2 :: rest)
-    | <span data-count="105">P</span>atConstruct (_, None) -&gt; VarSet.empty
+    | <span data-count="125">P</span>atConstruct (_, None) -&gt; VarSet.empty
     | <span data-count="7">P</span>atConstruct (_, Some q) -&gt; walk q
     | <span data-count="0">P</span>atType (q, _) -&gt; walk q
     | <span data-count="2">P</span>atUnit | <span data-count="0">P</span>atList _ | <span data-count="0">P</span>atOption _ -&gt; VarSet.empty
@@ -811,24 +811,24 @@ let vars_in_pattern p =
 ;;
 
 let rec collect_free_vars = function
-  | <span data-count="1125">E</span>xpIdent v -&gt; VarSet.singleton v
-  | <span data-count="483">E</span>xpConst _ -&gt; VarSet.empty
-  | <span data-count="145">E</span>xpLet (flag, (pat, exp), binds, body) -&gt;
+  | <span data-count="1179">E</span>xpIdent v -&gt; VarSet.singleton v
+  | <span data-count="541">E</span>xpConst _ -&gt; VarSet.empty
+  | <span data-count="157">E</span>xpLet (flag, (pat, exp), binds, body) -&gt;
     let all_binds = (pat, exp) :: binds in
-    let bound_vars = union_map_list (fun (p, _) -&gt; <span data-count="148">v</span>ars_in_pattern p) all_binds in
-    <span data-count="145">l</span>et free_vars_in_rhs =
+    let bound_vars = union_map_list (fun (p, _) -&gt; <span data-count="160">v</span>ars_in_pattern p) all_binds in
+    <span data-count="157">l</span>et free_vars_in_rhs =
       match flag with
       | <span data-count="2">R</span>ec -&gt;
         union_map_lis<span data-count="2">t</span>
           (fun (_, e) -&gt; <span data-count="4">V</span>arSet.diff (collect_free_var<span data-count="4">s</span> e) bound_vars)
           all_binds
-      | <span data-count="143">N</span>onRec -&gt; union_map_lis<span data-count="143">t</span> (fun (_, e) -&gt; <span data-count="144">c</span>ollect_free_vars e) all_binds
+      | <span data-count="155">N</span>onRec -&gt; union_map_lis<span data-count="155">t</span> (fun (_, e) -&gt; <span data-count="156">c</span>ollect_free_vars e) all_binds
     in
-    VarSet.union free_vars_in_rhs (VarSet.dif<span data-count="145">f</span> (collect_free_var<span data-count="145">s</span> body) bound_vars)
-  | <span data-count="228">E</span>xpLambda (pat, pats, exp) -&gt;
+    VarSet.union free_vars_in_rhs (VarSet.dif<span data-count="157">f</span> (collect_free_var<span data-count="157">s</span> body) bound_vars)
+  | <span data-count="244">E</span>xpLambda (pat, pats, exp) -&gt;
     let bound_vars = union_map_list vars_in_pattern (pat :: pats) in
-    <span data-count="228">V</span>arSet.diff (collect_free_var<span data-count="228">s</span> exp) bound_vars
-  | <span data-count="712">E</span>xpApply (e1, e2) -&gt; VarSet.union (collect_free_var<span data-count="712">s</span> e1) (collect_free_var<span data-count="712">s</span> e2)
+    <span data-count="244">V</span>arSet.diff (collect_free_var<span data-count="244">s</span> exp) bound_vars
+  | <span data-count="734">E</span>xpApply (e1, e2) -&gt; VarSet.union (collect_free_var<span data-count="734">s</span> e1) (collect_free_var<span data-count="734">s</span> e2)
   | <span data-count="0">E</span>xpFunction ((pat, exp), cases) -&gt;
     let one (p, e) = <span data-count="0">V</span>arSet.diff (collect_free_var<span data-count="0">s</span> e) (vars_in_patter<span data-count="0">n</span> p) in
     union_map_list one ((pat, exp) :: cases)
@@ -849,7 +849,7 @@ let rec collect_free_vars = function
   | <span data-count="60">E</span>xpConstruct (_, None) -&gt; VarSet.empty
   | <span data-count="20">E</span>xpConstruct (_, Some e) -&gt; collect_free_vars e
   | <span data-count="6">E</span>xpTypeAnnotation (e, _) -&gt; collect_free_vars e
-  | <span data-count="292">E</span>xpBinOper (_, e1, e2) -&gt; VarSet.union (collect_free_var<span data-count="292">s</span> e1) (collect_free_var<span data-count="292">s</span> e2)
+  | <span data-count="336">E</span>xpBinOper (_, e1, e2) -&gt; VarSet.union (collect_free_var<span data-count="336">s</span> e1) (collect_free_var<span data-count="336">s</span> e2)
   | <span data-count="4">E</span>xpUnarOper (_, e) -&gt; collect_free_vars e
   | <span data-count="0">E</span>xpList es -&gt; union_map_list collect_free_vars es
   | <span data-count="0">E</span>xpOption e_opt -&gt;
@@ -864,7 +864,7 @@ type context =
   }
 
 let with_globals ctx g = <span data-count="36">{</span> ctx with globals = g }
-let with_env ctx e = <span data-count="284">{</span> ctx with env = e }
+let with_env ctx e = <span data-count="318">{</span> ctx with env = e }
 
 type error = LambdaWithoutParameters
 
@@ -874,30 +874,30 @@ let pp_error ppf = function
 
 type 'a t = context -&gt; ('a, error) Result.t
 
-let return (value : 'a) : 'a t = <span data-count="3034">f</span>un _ -&gt; <span data-count="3034">O</span>k value
+let return (value : 'a) : 'a t = <span data-count="3264">f</span>un _ -&gt; <span data-count="3264">O</span>k value
 let fail (error : error) : 'a t = <span data-count="0">f</span>un _ -&gt; <span data-count="0">E</span>rror error
 
 let bind (computation : 'a t) (next : 'a -&gt; 'b t) : 'b t =
-  <span data-count="3667">f</span>un ctx -&gt;
-  <span data-count="3667">m</span>atch computation ctx with
-  | <span data-count="3667">O</span>k a -&gt; next a ctx
+  <span data-count="3913">f</span>un ctx -&gt;
+  <span data-count="3913">m</span>atch computation ctx with
+  | <span data-count="3913">O</span>k a -&gt; next a ctx
   | <span data-count="0">E</span>rror e -&gt; Error e
 ;;
 
-let ask = fun ctx -&gt; <span data-count="1066">O</span>k ctx
-let local f m = fun ctx -&gt; <span data-count="140">m</span> (<span data-count="140">f</span> ctx)
-let run ctx m = <span data-count="433">m</span> ctx
+let ask = fun ctx -&gt; <span data-count="1138">O</span>k ctx
+let local f m = fun ctx -&gt; <span data-count="152">m</span> (<span data-count="152">f</span> ctx)
+let run ctx m = <span data-count="489">m</span> ctx
 let ( let* ) = bind
 
 let of_result = function
-  | <span data-count="289">O</span>k x -&gt; return x
+  | <span data-count="323">O</span>k x -&gt; return x
   | <span data-count="0">E</span>rror e -&gt; fail e
 ;;
 
 let extend_capture_env env pat captured_set =
-  <span data-count="110">l</span>et rec add_captures_for_pat acc = function
+  <span data-count="124">l</span>et rec add_captures_for_pat acc = function
     | <span data-count="0">P</span>atAny | <span data-count="0">P</span>atConst _ | <span data-count="0">P</span>atConstruct (_, None) -&gt; acc
-    | <span data-count="110">P</span>atVariable name -&gt; EnvMap.add name captured_set acc
+    | <span data-count="124">P</span>atVariable name -&gt; EnvMap.add name captured_set acc
     | <span data-count="0">P</span>atTuple (p1, p2, rest) -&gt;
       let acc = add_captures_for_pat acc p1 in
       <span data-count="0">l</span>et acc = add_captures_for_pat acc p2 in
@@ -909,13 +909,13 @@ let extend_capture_env env pat captured_set =
 ;;
 
 let rec build_closure ~apply param_list body_ast captured_ids =
-  <span data-count="154">l</span>et* body_ast' = convert_exp<span data-count="154">r</span> body_ast in
-  <span data-count="154">l</span>et make_lam first rest = <span data-count="154">E</span>xpLambda (first, rest, body_ast') in
+  <span data-count="168">l</span>et* body_ast' = convert_exp<span data-count="168">r</span> body_ast in
+  <span data-count="168">l</span>et make_lam first rest = <span data-count="168">E</span>xpLambda (first, rest, body_ast') in
   match param_list with
   | <span data-count="0">[</span>] -&gt; fail LambdaWithoutParameters
-  | <span data-count="154">f</span>irst :: rest_params -&gt;
+  | <span data-count="168">f</span>irst :: rest_params -&gt;
     if VarSet.is_empty captured_ids
-    then <span data-count="125">r</span>eturn (make_la<span data-count="125">m</span> first rest_params)
+    then <span data-count="139">r</span>eturn (make_la<span data-count="139">m</span> first rest_params)
     else <span data-count="29">(</span>
       let captured_list = VarSet.elements captured_ids in
       <span data-count="29">l</span>et all_params =
@@ -928,9 +928,9 @@ let rec build_closure ~apply param_list body_ast captured_ids =
          else <span data-count="12">l</span>am))
 
 and convert_expr = function
-  | <span data-count="738">E</span>xpIdent id -&gt;
+  | <span data-count="776">E</span>xpIdent id -&gt;
     let* current_ctx = ask in
-    <span data-count="738">r</span>eturn
+    <span data-count="776">r</span>eturn
       (try
          let env_fvs = EnvMap.find id current_ctx.env in
          <span data-count="63">L</span>ist.fold_lef<span data-count="63">t</span>
@@ -938,21 +938,21 @@ and convert_expr = function
            (ExpIdent id)
            (VarSet.element<span data-count="63">s</span> env_fvs)
        with
-       | <span data-count="675">N</span>ot_found -&gt; ExpIdent id)
-  | <span data-count="332">E</span>xpConst c -&gt; return (ExpConst c)
-  | <span data-count="140">E</span>xpLet (flag, (pat, exp), more, body) -&gt;
-    let* (pat', exp'), rest_binds, body_ctx = convert_let_binding<span data-count="140">s</span> flag (pat, exp) more in
-    <span data-count="140">l</span>et* body' = loca<span data-count="140">l</span> (fun _ -&gt; <span data-count="140">b</span>ody_ctx) (convert_exp<span data-count="140">r</span> body) in
-    <span data-count="140">r</span>eturn (ExpLet (flag, (pat', exp'), rest_binds, body'))
+       | <span data-count="713">N</span>ot_found -&gt; ExpIdent id)
+  | <span data-count="368">E</span>xpConst c -&gt; return (ExpConst c)
+  | <span data-count="152">E</span>xpLet (flag, (pat, exp), more, body) -&gt;
+    let* (pat', exp'), rest_binds, body_ctx = convert_let_binding<span data-count="152">s</span> flag (pat, exp) more in
+    <span data-count="152">l</span>et* body' = loca<span data-count="152">l</span> (fun _ -&gt; <span data-count="152">b</span>ody_ctx) (convert_exp<span data-count="152">r</span> body) in
+    <span data-count="152">r</span>eturn (ExpLet (flag, (pat', exp'), rest_binds, body'))
   | <span data-count="44">E</span>xpLambda (pat, pats, body) as lam -&gt;
     let* current_ctx = ask in
     <span data-count="44">l</span>et param_list = pat :: pats in
     let captured = VarSet.diff (collect_free_var<span data-count="44">s</span> lam) current_ctx.globals in
     <span data-count="44">b</span>uild_closure ~apply:true param_list body captured
-  | <span data-count="469">E</span>xpApply (f, arg) -&gt;
-    let* f' = convert_exp<span data-count="469">r</span> f in
-    <span data-count="469">l</span>et* arg' = convert_exp<span data-count="469">r</span> arg in
-    <span data-count="469">r</span>eturn (ExpApply (f', arg'))
+  | <span data-count="481">E</span>xpApply (f, arg) -&gt;
+    let* f' = convert_exp<span data-count="481">r</span> f in
+    <span data-count="481">l</span>et* arg' = convert_exp<span data-count="481">r</span> arg in
+    <span data-count="481">r</span>eturn (ExpApply (f', arg'))
   | <span data-count="0">E</span>xpFunction ((pat, exp), cases) -&gt;
     let* first_exp = convert_exp<span data-count="0">r</span> exp in
     <span data-count="0">l</span>et* rest_cases =
@@ -1009,10 +1009,10 @@ and convert_expr = function
   | <span data-count="5">E</span>xpTypeAnnotation (e, typ) -&gt;
     let* e' = convert_exp<span data-count="5">r</span> e in
     <span data-count="5">r</span>eturn (ExpTypeAnnotation (e', typ))
-  | <span data-count="204">E</span>xpBinOper (op, e1, e2) -&gt;
-    let* e1' = convert_exp<span data-count="204">r</span> e1 in
-    <span data-count="204">l</span>et* e2' = convert_exp<span data-count="204">r</span> e2 in
-    <span data-count="204">r</span>eturn (ExpBinOper (op, e1', e2'))
+  | <span data-count="232">E</span>xpBinOper (op, e1, e2) -&gt;
+    let* e1' = convert_exp<span data-count="232">r</span> e1 in
+    <span data-count="232">l</span>et* e2' = convert_exp<span data-count="232">r</span> e2 in
+    <span data-count="232">r</span>eturn (ExpBinOper (op, e1', e2'))
   | <span data-count="4">E</span>xpUnarOper (op, e) -&gt;
     let* e' = convert_exp<span data-count="4">r</span> e in
     <span data-count="4">r</span>eturn (ExpUnarOper (op, e'))
@@ -1035,10 +1035,10 @@ and convert_expr = function
        <span data-count="0">r</span>eturn (ExpOption (Some e')))
 
 and convert_let_bindings rec_flag (pat, exp) rest_binds =
-  <span data-count="284">l</span>et* current_ctx = ask in
-  <span data-count="284">l</span>et bind_group = (pat, exp) :: rest_binds in
-  let bound_ids = union_map_list (fun (p, _) -&gt; <span data-count="289">v</span>ars_in_pattern p) bind_group in
-  <span data-count="284">m</span>atch rec_flag with
+  <span data-count="318">l</span>et* current_ctx = ask in
+  <span data-count="318">l</span>et bind_group = (pat, exp) :: rest_binds in
+  let bound_ids = union_map_list (fun (p, _) -&gt; <span data-count="323">v</span>ars_in_pattern p) bind_group in
+  <span data-count="318">m</span>atch rec_flag with
   | <span data-count="36">R</span>ec -&gt;
     let globals' = VarSet.union current_ctx.globals bound_ids in
     <span data-count="36">l</span>et group_captured =
@@ -1066,30 +1066,30 @@ and convert_let_bindings rec_flag (pat, exp) rest_binds =
     in
     let* transformed_binds = loo<span data-count="36">p</span> [] bind_group in
     <span data-count="36">r</span>eturn (List.h<span data-count="36">d</span> transformed_binds, List.t<span data-count="36">l</span> transformed_binds, rec_group_ctx)
-  | <span data-count="248">N</span>onRec -&gt;
+  | <span data-count="282">N</span>onRec -&gt;
     let rec loop env_acc rev_binds = function
-      | <span data-count="248">[</span>] -&gt;
+      | <span data-count="282">[</span>] -&gt;
         let transformed_binds = List.rev rev_binds in
-        <span data-count="248">r</span>eturn
-          ( List.h<span data-count="248">d</span> transformed_binds
-          , List.t<span data-count="248">l</span> transformed_binds
-          , with_en<span data-count="248">v</span> current_ctx env_acc )
-      | <span data-count="249">(</span>p, e) :: rest -&gt;
-        let captured = VarSet.diff (collect_free_var<span data-count="249">s</span> e) current_ctx.globals in
-        <span data-count="249">l</span>et ctx_with_env = { current_ctx with env = env_acc } in
+        <span data-count="282">r</span>eturn
+          ( List.h<span data-count="282">d</span> transformed_binds
+          , List.t<span data-count="282">l</span> transformed_binds
+          , with_en<span data-count="282">v</span> current_ctx env_acc )
+      | <span data-count="283">(</span>p, e) :: rest -&gt;
+        let captured = VarSet.diff (collect_free_var<span data-count="283">s</span> e) current_ctx.globals in
+        <span data-count="283">l</span>et ctx_with_env = { current_ctx with env = env_acc } in
         let res =
           match e with
-          | <span data-count="70">E</span>xpLambda (lam_pat, lam_pats, body) -&gt;
-            ru<span data-count="70">n</span>
+          | <span data-count="84">E</span>xpLambda (lam_pat, lam_pats, body) -&gt;
+            ru<span data-count="84">n</span>
               ctx_with_env
-              (build_closur<span data-count="70">e</span> ~apply:false (lam_pat :: lam_pats) body captured)
-          | <span data-count="179">_</span> -&gt; ru<span data-count="179">n</span> ctx_with_env (convert_exp<span data-count="179">r</span> e)
+              (build_closur<span data-count="84">e</span> ~apply:false (lam_pat :: lam_pats) body captured)
+          | <span data-count="199">_</span> -&gt; ru<span data-count="199">n</span> ctx_with_env (convert_exp<span data-count="199">r</span> e)
         in
-        let* e' = of_resul<span data-count="249">t</span> res in
-        <span data-count="249">l</span>et env_next =
+        let* e' = of_resul<span data-count="283">t</span> res in
+        <span data-count="283">l</span>et env_next =
           match e with
-          | <span data-count="70">E</span>xpLambda _ -&gt; extend_capture_en<span data-count="70">v</span> env_acc p captured
-          | <span data-count="179">_</span> -&gt; env_acc
+          | <span data-count="84">E</span>xpLambda _ -&gt; extend_capture_en<span data-count="84">v</span> env_acc p captured
+          | <span data-count="199">_</span> -&gt; env_acc
         in
         loop env_next ((p, e') :: rev_binds) rest
     in
@@ -1101,20 +1101,20 @@ let convert_item = function
     let* e' = convert_exp<span data-count="0">r</span> expr in
     <span data-count="0">l</span>et* current_ctx = ask in
     <span data-count="0">r</span>eturn (current_ctx.globals, SEval e')
-  | <span data-count="144">S</span>Value (rec_flag, (pat, expr), and_binds) -&gt;
+  | <span data-count="166">S</span>Value (rec_flag, (pat, expr), and_binds) -&gt;
     let* (pat', expr'), rest_binds, after_binds_ctx =
-      convert_let_binding<span data-count="144">s</span> rec_flag (pat, expr) and_binds
+      convert_let_binding<span data-count="166">s</span> rec_flag (pat, expr) and_binds
     in
-    <span data-count="144">l</span>et bound_ids =
-      union_map_list (fun (p, _) -&gt; <span data-count="146">v</span>ars_in_pattern p) ((pat, expr) :: and_binds)
+    <span data-count="166">l</span>et bound_ids =
+      union_map_list (fun (p, _) -&gt; <span data-count="168">v</span>ars_in_pattern p) ((pat, expr) :: and_binds)
     in
-    <span data-count="144">r</span>eturn
-      ( VarSet.unio<span data-count="144">n</span> after_binds_ctx.globals bound_ids
+    <span data-count="166">r</span>eturn
+      ( VarSet.unio<span data-count="166">n</span> after_binds_ctx.globals bound_ids
       , SValue (rec_flag, (pat', expr'), rest_binds) )
 ;;
 
 let builtin_globals =
-  var_set_of_lis<span data-count="79">t</span> (List.ma<span data-count="79">p</span> (fun f -&gt; <span data-count="1106">f</span>.name) predefined_runtime_funcs)
+  var_set_of_lis<span data-count="95">t</span> (List.ma<span data-count="95">p</span> (fun f -&gt; <span data-count="1330">f</span>.name) predefined_runtime_funcs)
 ;;
 
 let initial_context = { globals = builtin_globals; env = EnvMap.empty }
@@ -1122,11 +1122,11 @@ let initial_context = { globals = builtin_globals; env = EnvMap.empty }
 let closure_conversion_result (program : Frontend.Ast.program)
   : (structure list, error) Result.t
   =
-  <span data-count="59">l</span>et rec convert_items rev_acc item_ctx = function
-    | <span data-count="59">[</span>] -&gt; Ok (List.re<span data-count="59">v</span> rev_acc)
-    | <span data-count="144">i</span>tem :: tail -&gt;
-      (match run item_ctx (convert_ite<span data-count="144">m</span> item) with
-       | <span data-count="144">O</span>k (globals', item') -&gt;
+  <span data-count="69">l</span>et rec convert_items rev_acc item_ctx = function
+    | <span data-count="69">[</span>] -&gt; Ok (List.re<span data-count="69">v</span> rev_acc)
+    | <span data-count="166">i</span>tem :: tail -&gt;
+      (match run item_ctx (convert_ite<span data-count="166">m</span> item) with
+       | <span data-count="166">O</span>k (globals', item') -&gt;
          convert_items (item' :: rev_acc) { globals = globals'; env = EnvMap.empty } tail
        | <span data-count="0">E</span>rror e -&gt; Error e)
   in

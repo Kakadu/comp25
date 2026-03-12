@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>parser_tests.ml &mdash; Coverage report</title>
-    <meta name="description" content="97.50% coverage in tests/parser_tests.ml">
+    <meta name="description" content="97.83% coverage in tests/parser_tests.ml">
     <link rel="stylesheet" href="../coverage.css"/>
     <script src="../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,10 +15,10 @@
           <span class="dirname">tests/</span>parser_tests.ml
         </a>
       </h1>
-      <h2>97.50%</h2>
+      <h2>97.83%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:4.72%"></span>
+      <span class="unvisited" style="top:4.09%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -256,6 +256,42 @@
 <a id="L231"></a><span > </span>
 <a id="L232"></a><span class="visited"> </span>
 <a id="L233"></a><span > </span>
+<a id="L234"></a><span > </span>
+<a id="L235"></a><span > </span>
+<a id="L236"></a><span class="visited"> </span>
+<a id="L237"></a><span class="visited"> </span>
+<a id="L238"></a><span > </span>
+<a id="L239"></a><span > </span>
+<a id="L240"></a><span > </span>
+<a id="L241"></a><span > </span>
+<a id="L242"></a><span > </span>
+<a id="L243"></a><span > </span>
+<a id="L244"></a><span > </span>
+<a id="L245"></a><span > </span>
+<a id="L246"></a><span > </span>
+<a id="L247"></a><span > </span>
+<a id="L248"></a><span > </span>
+<a id="L249"></a><span class="visited"> </span>
+<a id="L250"></a><span > </span>
+<a id="L251"></a><span > </span>
+<a id="L252"></a><span > </span>
+<a id="L253"></a><span class="visited"> </span>
+<a id="L254"></a><span class="visited"> </span>
+<a id="L255"></a><span > </span>
+<a id="L256"></a><span > </span>
+<a id="L257"></a><span > </span>
+<a id="L258"></a><span > </span>
+<a id="L259"></a><span > </span>
+<a id="L260"></a><span > </span>
+<a id="L261"></a><span > </span>
+<a id="L262"></a><span > </span>
+<a id="L263"></a><span > </span>
+<a id="L264"></a><span > </span>
+<a id="L265"></a><span > </span>
+<a id="L266"></a><span > </span>
+<a id="L267"></a><span > </span>
+<a id="L268"></a><span class="visited"> </span>
+<a id="L269"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -493,6 +529,42 @@
 <a href="#L231">231</a>
 <a href="#L232">232</a>
 <a href="#L233">233</a>
+<a href="#L234">234</a>
+<a href="#L235">235</a>
+<a href="#L236">236</a>
+<a href="#L237">237</a>
+<a href="#L238">238</a>
+<a href="#L239">239</a>
+<a href="#L240">240</a>
+<a href="#L241">241</a>
+<a href="#L242">242</a>
+<a href="#L243">243</a>
+<a href="#L244">244</a>
+<a href="#L245">245</a>
+<a href="#L246">246</a>
+<a href="#L247">247</a>
+<a href="#L248">248</a>
+<a href="#L249">249</a>
+<a href="#L250">250</a>
+<a href="#L251">251</a>
+<a href="#L252">252</a>
+<a href="#L253">253</a>
+<a href="#L254">254</a>
+<a href="#L255">255</a>
+<a href="#L256">256</a>
+<a href="#L257">257</a>
+<a href="#L258">258</a>
+<a href="#L259">259</a>
+<a href="#L260">260</a>
+<a href="#L261">261</a>
+<a href="#L262">262</a>
+<a href="#L263">263</a>
+<a href="#L264">264</a>
+<a href="#L265">265</a>
+<a href="#L266">266</a>
+<a href="#L267">267</a>
+<a href="#L268">268</a>
+<a href="#L269">269</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2025-2026, Victoria Ostrovskaya &amp; Danil Usoltsev *)
 
@@ -502,8 +574,8 @@ open EML_lib.Frontend.Parser
 open EML_lib.Frontend.Ast
 
 let parse_test input =
-  <span data-count="12">m</span>atch parse input with
-  | <span data-count="12">O</span>k ast -&gt; Printf.printf "%s\n" (show_progra<span data-count="12">m</span> ast)
+  <span data-count="14">m</span>atch parse input with
+  | <span data-count="14">O</span>k ast -&gt; Printf.printf "%s\n" (show_progra<span data-count="14">m</span> ast)
   | <span data-count="0">E</span>rror fail -&gt; Printf.printf "Ошибка: %s\n" fail
 ;;
 
@@ -547,7 +619,7 @@ let main = fac 4 |};
             (ExpApply ((ExpIdent "fac"), (ExpConst (ConstInt 4))))),
            []))
         ]
-|}<span data-count="17">]</span>
+|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "factorial" =
@@ -570,7 +642,7 @@ let%expect_test "factorial" =
           ))),
       []))
     ]
-|}<span data-count="17">]</span>
+|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "fibonacci" =
@@ -597,7 +669,7 @@ let%expect_test "fibonacci" =
           ))),
       []))
     ]
-|}<span data-count="17">]</span>
+|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "lambda_test" =
@@ -612,7 +684,7 @@ let%expect_test "lambda_test" =
           ))),
       []))
     ]
-|}<span data-count="17">]</span>
+|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_tuple" =
@@ -626,7 +698,7 @@ let%expect_test "test_tuple" =
              [(ExpConst (ConstBool true))]))),
          [], (ExpIdent "x"))))
     ]
-|}<span data-count="17">]</span>
+|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_list" =
@@ -650,7 +722,7 @@ let%expect_test "test_list" =
              ))),
          []))
        ]
-|}<span data-count="17">]</span>
+|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_one_element_in_tuple" =
@@ -658,7 +730,7 @@ let%expect_test "test_one_element_in_tuple" =
   <span data-count="1">[</span>%expect
     {|
      [(SValue (NonRec, ((PatVariable "x"), (ExpConst (ConstInt 666))), []))]
-|}<span data-count="17">]</span>
+|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_sum_two_args" =
@@ -671,7 +743,7 @@ let%expect_test "test_sum_two_args" =
         (ExpBinOper (Plus, (ExpIdent "x"), (ExpIdent "y")))))),
     []))
   ]
-|}<span data-count="17">]</span>
+|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_annotate_type_1" =
@@ -685,7 +757,7 @@ let%expect_test "test_annotate_type_1" =
         (ExpBinOper (Plus, (ExpIdent "x"), (ExpIdent "y")))))),
     []))
   ]
-|}<span data-count="17">]</span>
+|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_annotate_type_2" =
@@ -697,7 +769,7 @@ let%expect_test "test_annotate_type_2" =
      (ExpConstruct ("[]", None))),
     []))
   ]
-|}<span data-count="17">]</span>
+|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_minus" =
@@ -713,7 +785,7 @@ let%expect_test "test_minus" =
           (ExpUnarOper (Negative, (ExpConst (ConstInt 1)))))),
        (ExpConst (ConstInt 3)))))
   ]
- |}<span data-count="17">]</span>
+ |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_unit" =
@@ -725,7 +797,43 @@ let%expect_test "test_unit" =
      (ExpApply ((ExpIdent "print_int"), (ExpConst (ConstInt 5))))),
     []))
   ]
- |}<span data-count="17">]</span>
+ |}<span data-count="19">]</span>
+;;
+
+let%expect_test "custom_infix_operator" =
+  <span data-count="1">p</span>arse_test {| let ( ** ) x y = x * y in 2 ** 3 |};
+  <span data-count="1">[</span>%expect
+    {|
+[(SEval
+    (ExpLet (NonRec,
+       ((PatVariable "**"),
+        (ExpLambda ((PatVariable "x"), [(PatVariable "y")],
+           (ExpBinOper (Multiply, (ExpIdent "x"), (ExpIdent "y")))))),
+       [],
+       (ExpBinOper ((Custom "**"), (ExpConst (ConstInt 2)),
+          (ExpConst (ConstInt 3))))
+       )))
+  ]
+ |}<span data-count="19">]</span>
+;;
+
+let%expect_test "custom_power_operator_is_right_associative" =
+  <span data-count="1">p</span>arse_test {| let ( ** ) x y = x * y in 2 ** 3 ** 4 |};
+  <span data-count="1">[</span>%expect
+    {|
+[(SEval
+    (ExpLet (NonRec,
+       ((PatVariable "**"),
+        (ExpLambda ((PatVariable "x"), [(PatVariable "y")],
+           (ExpBinOper (Multiply, (ExpIdent "x"), (ExpIdent "y")))))),
+       [],
+       (ExpBinOper ((Custom "**"), (ExpConst (ConstInt 2)),
+          (ExpBinOper ((Custom "**"), (ExpConst (ConstInt 3)),
+             (ExpConst (ConstInt 4))))
+          ))
+       )))
+  ]
+|}<span data-count="19">]</span>
 ;;
 </code></pre>
       </div>

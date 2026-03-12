@@ -309,46 +309,46 @@ module Llvm_backend = struct
     | IntToPtr of llvalue * lltype * string
 
   let emit builder = function
-    | <span data-count="98">A</span>dd (left, right, name) -&gt; Some (build_ad<span data-count="98">d</span> left right name builder)
-    | <span data-count="204">S</span>ub (left, right, name) -&gt; Some (build_su<span data-count="204">b</span> left right name builder)
-    | <span data-count="86">M</span>ul (left, right, name) -&gt; Some (build_mu<span data-count="86">l</span> left right name builder)
-    | <span data-count="186">S</span>div (left, right, name) -&gt; Some (build_sdi<span data-count="186">v</span> left right name builder)
+    | <span data-count="107">A</span>dd (left, right, name) -&gt; Some (build_ad<span data-count="107">d</span> left right name builder)
+    | <span data-count="218">S</span>ub (left, right, name) -&gt; Some (build_su<span data-count="218">b</span> left right name builder)
+    | <span data-count="93">M</span>ul (left, right, name) -&gt; Some (build_mu<span data-count="93">l</span> left right name builder)
+    | <span data-count="198">S</span>div (left, right, name) -&gt; Some (build_sdi<span data-count="198">v</span> left right name builder)
     | <span data-count="4">N</span>eg (operand, name) -&gt; Some (build_ne<span data-count="4">g</span> operand name builder)
     | <span data-count="52">I</span>cmp (cond, left, right, name) -&gt; Some (build_icm<span data-count="52">p</span> cond left right name builder)
     | <span data-count="0">A</span>nd (left, right, name) -&gt; Some (build_an<span data-count="0">d</span> left right name builder)
     | <span data-count="0">O</span>r (left, right, name) -&gt; Some (build_o<span data-count="0">r</span> left right name builder)
     | <span data-count="1">N</span>ot (operand, name) -&gt; Some (build_no<span data-count="1">t</span> operand name builder)
     | <span data-count="0">L</span>oad (load_ty, ptr_value, name) -&gt; Some (build_loa<span data-count="0">d</span> load_ty ptr_value name builder)
-    | <span data-count="133">S</span>tore (value, ptr_value) -&gt;
+    | <span data-count="136">S</span>tore (value, ptr_value) -&gt;
       let (_ : Llvm.llvalue) = build_store value ptr_value builder in
-      <span data-count="133">N</span>one
+      <span data-count="136">N</span>one
     | <span data-count="0">A</span>lloca (alloca_ty, name) -&gt; Some (build_alloc<span data-count="0">a</span> alloca_ty name builder)
-    | <span data-count="273">C</span>all (ft, callee, args, name) -&gt; Some (build_cal<span data-count="273">l</span> ft callee args name builder)
+    | <span data-count="290">C</span>all (ft, callee, args, name) -&gt; Some (build_cal<span data-count="290">l</span> ft callee args name builder)
     | <span data-count="0">R</span>et None -&gt;
       let (_ : Llvm.llvalue) = build_ret_void builder in
       <span data-count="0">N</span>one
-    | <span data-count="104">R</span>et (Some ret_value) -&gt;
+    | <span data-count="116">R</span>et (Some ret_value) -&gt;
       let (_ : Llvm.llvalue) = build_ret ret_value builder in
-      <span data-count="104">N</span>one
-    | <span data-count="227">B</span>r block -&gt;
+      <span data-count="116">N</span>one
+    | <span data-count="232">B</span>r block -&gt;
       let (_ : Llvm.llvalue) = build_br block builder in
-      <span data-count="227">N</span>one
+      <span data-count="232">N</span>one
     | <span data-count="27">C</span>ondBr (cond, then_bb, else_bb) -&gt;
       let (_ : Llvm.llvalue) = build_cond_br cond then_bb else_bb builder in
       <span data-count="27">N</span>one
-    | <span data-count="140">P</span>hi (incoming, name) -&gt; Some (build_ph<span data-count="140">i</span> incoming name builder)
-    | <span data-count="47">B</span>itcast (operand, dest_ty, name) -&gt;
-      Some (build_bitcas<span data-count="47">t</span> operand dest_ty name builder)
-    | <span data-count="251">P</span>trToInt (operand, dest_ty, name) -&gt;
-      Some (build_ptrtoin<span data-count="251">t</span> operand dest_ty name builder)
-    | <span data-count="348">I</span>ntToPtr (operand, dest_ty, name) -&gt;
-      Some (build_inttopt<span data-count="348">r</span> operand dest_ty name builder)
+    | <span data-count="143">P</span>hi (incoming, name) -&gt; Some (build_ph<span data-count="143">i</span> incoming name builder)
+    | <span data-count="49">B</span>itcast (operand, dest_ty, name) -&gt;
+      Some (build_bitcas<span data-count="49">t</span> operand dest_ty name builder)
+    | <span data-count="268">P</span>trToInt (operand, dest_ty, name) -&gt;
+      Some (build_ptrtoin<span data-count="268">t</span> operand dest_ty name builder)
+    | <span data-count="388">I</span>ntToPtr (operand, dest_ty, name) -&gt;
+      Some (build_inttopt<span data-count="388">r</span> operand dest_ty name builder)
   ;;
 
-  let add builder left right name = <span data-count="98">e</span>mit builder (Add (left, right, name))
-  let sub builder left right name = <span data-count="204">e</span>mit builder (Sub (left, right, name))
-  let mul builder left right name = <span data-count="86">e</span>mit builder (Mul (left, right, name))
-  let sdiv builder left right name = <span data-count="186">e</span>mit builder (Sdiv (left, right, name))
+  let add builder left right name = <span data-count="107">e</span>mit builder (Add (left, right, name))
+  let sub builder left right name = <span data-count="218">e</span>mit builder (Sub (left, right, name))
+  let mul builder left right name = <span data-count="93">e</span>mit builder (Mul (left, right, name))
+  let sdiv builder left right name = <span data-count="198">e</span>mit builder (Sdiv (left, right, name))
   let neg builder operand name = <span data-count="4">e</span>mit builder (Neg (operand, name))
   let icmp builder cond left right name = <span data-count="52">e</span>mit builder (Icmp (cond, left, right, name))
   let and_ builder left right name = <span data-count="0">e</span>mit builder (And (left, right, name))
@@ -356,24 +356,24 @@ module Llvm_backend = struct
   let not builder operand name = <span data-count="1">e</span>mit builder (Not (operand, name))
   let load builder load_ty ptr_value name = <span data-count="0">e</span>mit builder (Load (load_ty, ptr_value, name))
   let alloca builder alloca_ty name = <span data-count="0">e</span>mit builder (Alloca (alloca_ty, name))
-  let call builder ft callee args name = <span data-count="234">e</span>mit builder (Call (ft, callee, args, name))
-  let phi builder incoming name = <span data-count="140">e</span>mit builder (Phi (incoming, name))
+  let call builder ft callee args name = <span data-count="246">e</span>mit builder (Call (ft, callee, args, name))
+  let phi builder incoming name = <span data-count="143">e</span>mit builder (Phi (incoming, name))
 
   let bitcast builder operand dest_ty name =
-    <span data-count="47">e</span>mit builder (Bitcast (operand, dest_ty, name))
+    <span data-count="49">e</span>mit builder (Bitcast (operand, dest_ty, name))
   ;;
 
   let ptrtoint builder operand dest_ty name =
-    <span data-count="251">e</span>mit builder (PtrToInt (operand, dest_ty, name))
+    <span data-count="268">e</span>mit builder (PtrToInt (operand, dest_ty, name))
   ;;
 
   let inttoptr builder operand dest_ty name =
-    <span data-count="348">e</span>mit builder (IntToPtr (operand, dest_ty, name))
+    <span data-count="388">e</span>mit builder (IntToPtr (operand, dest_ty, name))
   ;;
 
   let store builder value ptr_value =
-    <span data-count="133">l</span>et (_ : Llvm.llvalue option) = emit builder (Store (value, ptr_value)) in
-    <span data-count="133">(</span>)
+    <span data-count="136">l</span>et (_ : Llvm.llvalue option) = emit builder (Store (value, ptr_value)) in
+    <span data-count="136">(</span>)
   ;;
 
   let ret_void builder =

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>inferencer_tests.ml &mdash; Coverage report</title>
-    <meta name="description" content="98.61% coverage in tests/inferencer_tests.ml">
+    <meta name="description" content="98.72% coverage in tests/inferencer_tests.ml">
     <link rel="stylesheet" href="../coverage.css"/>
     <script src="../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,11 +15,11 @@
           <span class="dirname">tests/</span>inferencer_tests.ml
         </a>
       </h1>
-      <h2>98.61%</h2>
+      <h2>98.72%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:4.75%"></span>
-      <span class="unvisited" style="top:6.11%"></span>
+      <span class="unvisited" style="top:4.32%"></span>
+      <span class="unvisited" style="top:5.56%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -466,6 +466,50 @@
 <a id="L440"></a><span class="visited"> </span>
 <a id="L441"></a><span class="visited"> </span>
 <a id="L442"></a><span > </span>
+<a id="L443"></a><span > </span>
+<a id="L444"></a><span > </span>
+<a id="L445"></a><span class="visited"> </span>
+<a id="L446"></a><span > </span>
+<a id="L447"></a><span > </span>
+<a id="L448"></a><span class="visited"> </span>
+<a id="L449"></a><span > </span>
+<a id="L450"></a><span > </span>
+<a id="L451"></a><span class="visited"> </span>
+<a id="L452"></a><span > </span>
+<a id="L453"></a><span > </span>
+<a id="L454"></a><span > </span>
+<a id="L455"></a><span class="visited"> </span>
+<a id="L456"></a><span > </span>
+<a id="L457"></a><span > </span>
+<a id="L458"></a><span class="visited"> </span>
+<a id="L459"></a><span > </span>
+<a id="L460"></a><span > </span>
+<a id="L461"></a><span class="visited"> </span>
+<a id="L462"></a><span > </span>
+<a id="L463"></a><span > </span>
+<a id="L464"></a><span > </span>
+<a id="L465"></a><span class="visited"> </span>
+<a id="L466"></a><span > </span>
+<a id="L467"></a><span > </span>
+<a id="L468"></a><span class="visited"> </span>
+<a id="L469"></a><span > </span>
+<a id="L470"></a><span > </span>
+<a id="L471"></a><span class="visited"> </span>
+<a id="L472"></a><span > </span>
+<a id="L473"></a><span > </span>
+<a id="L474"></a><span > </span>
+<a id="L475"></a><span class="visited"> </span>
+<a id="L476"></a><span > </span>
+<a id="L477"></a><span > </span>
+<a id="L478"></a><span > </span>
+<a id="L479"></a><span > </span>
+<a id="L480"></a><span class="visited"> </span>
+<a id="L481"></a><span > </span>
+<a id="L482"></a><span > </span>
+<a id="L483"></a><span > </span>
+<a id="L484"></a><span > </span>
+<a id="L485"></a><span class="visited"> </span>
+<a id="L486"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -912,6 +956,50 @@
 <a href="#L440">440</a>
 <a href="#L441">441</a>
 <a href="#L442">442</a>
+<a href="#L443">443</a>
+<a href="#L444">444</a>
+<a href="#L445">445</a>
+<a href="#L446">446</a>
+<a href="#L447">447</a>
+<a href="#L448">448</a>
+<a href="#L449">449</a>
+<a href="#L450">450</a>
+<a href="#L451">451</a>
+<a href="#L452">452</a>
+<a href="#L453">453</a>
+<a href="#L454">454</a>
+<a href="#L455">455</a>
+<a href="#L456">456</a>
+<a href="#L457">457</a>
+<a href="#L458">458</a>
+<a href="#L459">459</a>
+<a href="#L460">460</a>
+<a href="#L461">461</a>
+<a href="#L462">462</a>
+<a href="#L463">463</a>
+<a href="#L464">464</a>
+<a href="#L465">465</a>
+<a href="#L466">466</a>
+<a href="#L467">467</a>
+<a href="#L468">468</a>
+<a href="#L469">469</a>
+<a href="#L470">470</a>
+<a href="#L471">471</a>
+<a href="#L472">472</a>
+<a href="#L473">473</a>
+<a href="#L474">474</a>
+<a href="#L475">475</a>
+<a href="#L476">476</a>
+<a href="#L477">477</a>
+<a href="#L478">478</a>
+<a href="#L479">479</a>
+<a href="#L480">480</a>
+<a href="#L481">481</a>
+<a href="#L482">482</a>
+<a href="#L483">483</a>
+<a href="#L484">484</a>
+<a href="#L485">485</a>
+<a href="#L486">486</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2025-2026, Victoria Ostrovskaya &amp; Danil Usoltsev *)
 
@@ -922,16 +1010,16 @@ open EML_lib.Frontend.Ast
 open EML_lib.Frontend.Parser
 
 let pretty_printer_parse_and_infer s =
-  <span data-count="36">m</span>atch parse s with
-  | <span data-count="36">O</span>k parsed -&gt;
+  <span data-count="40">m</span>atch parse s with
+  | <span data-count="40">O</span>k parsed -&gt;
     (match run_infer parsed with
-     | <span data-count="26">O</span>k env -&gt;
+     | <span data-count="30">O</span>k env -&gt;
        let filtered_env =
          Base.Map.filter_keys env ~f:(fun key -&gt;
-           <span data-count="143">n</span>ot (List.me<span data-count="143">m</span> key [ "print_int"; "print_endline"; "print_bool" ]))
+           <span data-count="165">n</span>ot (List.me<span data-count="165">m</span> key [ "print_int"; "print_endline"; "print_bool" ]))
        in
-       <span data-count="26">B</span>ase.Map.iteri filtered_env ~f:(fun ~key ~data:(Scheme.Scheme (_, ty)) -&gt;
-         <span data-count="65">F</span>ormat.printf "val %s: %a\n" key pp_ty ty)
+       <span data-count="30">B</span>ase.Map.iteri filtered_env ~f:(fun ~key ~data:(Scheme.Scheme (_, ty)) -&gt;
+         <span data-count="75">F</span>ormat.printf "val %s: %a\n" key pp_ty ty)
      | <span data-count="10">E</span>rror e -&gt; Format.printf "Infer error. %a\n" pp_error e)
   | <span data-count="0">E</span>rror e -&gt; Format.printf "Parsing error. %s\n" e
 ;;
@@ -955,7 +1043,7 @@ let main = fac 4 |};
   <span data-count="1">[</span>%expect
     {|
     val fac: int -&gt; int
-    val main: int|}<span data-count="17">]</span>
+    val main: int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_primitives_and_data" =
@@ -976,7 +1064,7 @@ let g = None
     val d: (int * bool * char)
     val e: int list
     val f: int option
-    val g: t1 option|}<span data-count="17">]</span>
+    val g: t1 option|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_match_and_recursion" =
@@ -990,7 +1078,7 @@ let main = len [1;2;3] |};
   <span data-count="1">[</span>%expect
     {|
     val len: int list -&gt; int
-    val main: int|}<span data-count="17">]</span>
+    val main: int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_mutual_recursion" =
@@ -1005,7 +1093,7 @@ let main = even 4 |};
     {|
     val even: int -&gt; bool
     val main: bool
-    val odd: int -&gt; bool|}<span data-count="17">]</span>
+    val odd: int -&gt; bool|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_annotations" =
@@ -1015,13 +1103,13 @@ let main = id 10 |};
   <span data-count="1">[</span>%expect
     {|
     val id: int -&gt; int
-    val main: int|}<span data-count="17">]</span>
+    val main: int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_rec_rhs_error" =
   <span data-count="1">p</span>retty_printer_parse_and_infer {| let rec x = 1 |};
   <span data-count="1">[</span>%expect
-    {|Infer error. Right-hand side error: Right-hand side of let rec must be a lambda expression.|}<span data-count="17">]</span>
+    {|Infer error. Right-hand side error: Right-hand side of let rec must be a lambda expression.|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_list_constructors_and_match" =
@@ -1037,7 +1125,7 @@ let main = head_or_zero x |};
     {|
     val head_or_zero: int list -&gt; int
     val main: int
-    val x: int list|}<span data-count="17">]</span>
+    val x: int list|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_pattern_option_and_list" =
@@ -1045,39 +1133,39 @@ let%expect_test "test_pattern_option_and_list" =
     {| let f = function
   | Some (h::tl) -&gt; h
 |};
-  <span data-count="1">[</span>%expect {|val f: t2 list option -&gt; t2|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|val f: t2 list option -&gt; t2|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_annotation_mismatch_error" =
   <span data-count="1">p</span>retty_printer_parse_and_infer {| let x = (1 : bool) |};
-  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: int and bool.|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: int and bool.|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_unexpected_function_error_branch" =
   <span data-count="1">p</span>retty_printer_parse_and_infer {| let x = not 1 |};
-  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: int and bool.|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: int and bool.|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_if_without_else_returns_unit_branch" =
   <span data-count="1">p</span>retty_printer_parse_and_infer {| let x = if true then 1 |};
-  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: int and unit.|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: int and unit.|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_unbound_var" =
   <span data-count="1">p</span>retty_printer_parse_and_infer "let f = x";
-  <span data-count="1">[</span>%expect {|Infer error. Unbound variable 'x'.|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|Infer error. Unbound variable 'x'.|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_annotate" =
   <span data-count="1">p</span>retty_printer_parse_and_infer "let sum = fun (x : int) (y : int) -&gt; x + y";
-  <span data-count="1">[</span>%expect {|val sum: int -&gt; int -&gt; int|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|val sum: int -&gt; int -&gt; int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_annotate_fac" =
   <span data-count="1">p</span>retty_printer_parse_and_infer
     "let rec fac = fun (n : int) (acc : int) -&gt; if n &lt; 2 then acc else fac (n-1) (acc * \
      n);;";
-  <span data-count="1">[</span>%expect {|val fac: int -&gt; int -&gt; int|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|val fac: int -&gt; int -&gt; int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_program_1" =
@@ -1089,7 +1177,7 @@ let%expect_test "test_program_1" =
     {|
     val div: int -&gt; int -&gt; int
     val res: int -&gt; int -&gt; int -&gt; int
-    val sum: int -&gt; int -&gt; int|}<span data-count="17">]</span>
+    val sum: int -&gt; int -&gt; int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_program_2" =
@@ -1099,23 +1187,23 @@ let%expect_test "test_program_2" =
   <span data-count="1">[</span>%expect
     {|
     val result: int
-    val square: int -&gt; int|}<span data-count="17">]</span>
+    val square: int -&gt; int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_annotate_error" =
   <span data-count="1">p</span>retty_printer_parse_and_infer "let sum (x : int) (y : string) = x + y";
-  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: string and int.|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: string and int.|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_unification_types" =
   <span data-count="1">p</span>retty_printer_parse_and_infer "fun x -&gt; x + true";
-  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: bool and int.|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: bool and int.|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_option_type_error" =
   <span data-count="1">p</span>retty_printer_parse_and_infer
     "let f x = Some (x + 1) in let g y = Some (y &amp;&amp; true) in f = g";
-  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: bool and int.|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|Infer error. Failed to unify types: bool and int.|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_polymorphic_identity" =
@@ -1127,7 +1215,7 @@ let b = id true |};
     {|
     val a: int
     val b: bool
-    val id: t0 -&gt; t0|}<span data-count="17">]</span>
+    val id: t0 -&gt; t0|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_polymorphic_tuple_use" =
@@ -1137,7 +1225,7 @@ let pair = (id 1, id true) |};
   <span data-count="1">[</span>%expect
     {|
     val id: t0 -&gt; t0
-    val pair: (int * bool)|}<span data-count="17">]</span>
+    val pair: (int * bool)|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_higher_order_function" =
@@ -1149,7 +1237,7 @@ let main = apply inc 10 |};
     {|
     val apply: (t1 -&gt; t2) -&gt; t1 -&gt; t2
     val inc: int -&gt; int
-    val main: int|}<span data-count="17">]</span>
+    val main: int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_lambda_returning_lambda" =
@@ -1159,7 +1247,7 @@ let f = add 5 |};
   <span data-count="1">[</span>%expect
     {|
     val add: int -&gt; int -&gt; int
-    val f: int -&gt; int|}<span data-count="17">]</span>
+    val f: int -&gt; int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_partial_application" =
@@ -1171,7 +1259,7 @@ let main = inc 10 |};
     {|
     val add: int -&gt; int -&gt; int
     val inc: int -&gt; int
-    val main: int|}<span data-count="17">]</span>
+    val main: int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_tuple_pattern" =
@@ -1181,7 +1269,7 @@ let main = sum_pair (3, 4) |};
   <span data-count="1">[</span>%expect
     {|
     val main: int
-    val sum_pair: (int * int) -&gt; int|}<span data-count="17">]</span>
+    val sum_pair: (int * int) -&gt; int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_nested_let_scope" =
@@ -1195,7 +1283,7 @@ let main = f 5 |};
     {|
     val f: int -&gt; int
     val main: int
-    val x: int|}<span data-count="17">]</span>
+    val x: int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_function_composition" =
@@ -1209,13 +1297,13 @@ let main = compose inc double 10 |};
     val compose: (t3 -&gt; t4) -&gt; (t2 -&gt; t3) -&gt; t2 -&gt; t4
     val double: int -&gt; int
     val inc: int -&gt; int
-    val main: int|}<span data-count="17">]</span>
+    val main: int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_occurs_check_error" =
   <span data-count="1">p</span>retty_printer_parse_and_infer {| fun x -&gt; x x |};
   <span data-count="1">[</span>%expect
-    {|Infer error. Occurs check failed. Type variable 't0' occurs inside t0 -&gt; t1.|}<span data-count="17">]</span>
+    {|Infer error. Occurs check failed. Type variable 't0' occurs inside t0 -&gt; t1.|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_list_polymorphism" =
@@ -1227,7 +1315,7 @@ let b = singleton true |};
     {|
     val a: int list
     val b: bool list
-    val singleton: t0 -&gt; t0 list|}<span data-count="17">]</span>
+    val singleton: t0 -&gt; t0 list|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_nonrec_tuple_pattern_binding" =
@@ -1238,7 +1326,7 @@ let main = x |};
     {|
     val main: int
     val x: int
-    val y: bool|}<span data-count="17">]</span>
+    val y: bool|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_match_option_none_some" =
@@ -1251,7 +1339,7 @@ let main = unwrap_or_zero None |};
   <span data-count="1">[</span>%expect
     {|
     val main: int
-    val unwrap_or_zero: int option -&gt; int|}<span data-count="17">]</span>
+    val unwrap_or_zero: int option -&gt; int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_match_list_literal_pattern" =
@@ -1264,7 +1352,7 @@ let main = sum2 [1; 2] |};
   <span data-count="1">[</span>%expect
     {|
     val main: int
-    val sum2: int list -&gt; int|}<span data-count="17">]</span>
+    val sum2: int list -&gt; int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_lambda_wildcard_and_unit_pattern" =
@@ -1276,13 +1364,13 @@ let main = run () |};
     {|
     val ignore_first: t0 -&gt; t1 -&gt; t1
     val main: int
-    val run: unit -&gt; int|}<span data-count="17">]</span>
+    val run: unit -&gt; int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_rec_lhs_not_variable_error" =
   <span data-count="1">p</span>retty_printer_parse_and_infer {| let rec Some x = Some 1 |};
   <span data-count="1">[</span>%expect
-    {|Infer error. Left-hand side error: Only variables are allowed on the left-hand side of let rec.|}<span data-count="17">]</span>
+    {|Infer error. Left-hand side error: Only variables are allowed on the left-hand side of let rec.|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_expr_let_rec_in" =
@@ -1292,7 +1380,7 @@ let%expect_test "test_expr_let_rec_in" =
   fact 4 |};
   <span data-count="1">[</span>%expect
     {|
-    val main: int|}<span data-count="17">]</span>
+    val main: int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_expr_let_rec_and_in" =
@@ -1302,7 +1390,7 @@ let%expect_test "test_expr_let_rec_and_in" =
        , (PatVariable "f", ExpLambda (PatVariable "x", [], ExpIdent "x"))
        , [ PatVariable "g", ExpLambda (PatVariable "y", [], ExpIdent "y") ]
        , ExpApply (ExpIdent "g", ExpConst (ConstInt 1)) ));
-  <span data-count="1">[</span>%expect {|int|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|int|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_string_const_and_const_pattern" =
@@ -1315,45 +1403,89 @@ let main = is_hi "hello" |};
   <span data-count="1">[</span>%expect
     {|
     val is_hi: string -&gt; bool
-    val main: bool|}<span data-count="17">]</span>
+    val main: bool|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_ast_exp_list_empty" =
   <span data-count="1">p</span>retty_printer_infer_simple_expression (ExpList []);
-  <span data-count="1">[</span>%expect {|t0 list|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|t0 list|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_ast_exp_list_non_empty" =
   <span data-count="1">p</span>retty_printer_infer_simple_expression
     (ExpList [ ExpConst (ConstInt 1); ExpConst (ConstInt 2) ]);
-  <span data-count="1">[</span>%expect {|int list|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|int list|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_ast_exp_option_none" =
   <span data-count="1">p</span>retty_printer_infer_simple_expression (ExpOption None);
-  <span data-count="1">[</span>%expect {|t0 option|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|t0 option|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_ast_exp_option_some" =
   <span data-count="1">p</span>retty_printer_infer_simple_expression (ExpOption (Some (ExpConst (ConstInt 1))));
-  <span data-count="1">[</span>%expect {|int option|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|int option|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_ast_pattern_option_lambda" =
   <span data-count="1">p</span>retty_printer_infer_simple_expression
     (ExpLambda (PatOption (Some (PatVariable "x")), [], ExpIdent "x"));
-  <span data-count="1">[</span>%expect {|t0 option -&gt; t0|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|t0 option -&gt; t0|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_ast_pattern_list_lambda" =
   <span data-count="1">p</span>retty_printer_infer_simple_expression
     (ExpLambda (PatList [ PatVariable "x"; PatVariable "y" ], [], ExpIdent "x"));
-  <span data-count="1">[</span>%expect {|t1 list -&gt; t1|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|t1 list -&gt; t1|}<span data-count="19">]</span>
 ;;
 
 let%expect_test "test_ast_pattern_unit_lambda" =
   <span data-count="1">p</span>retty_printer_infer_simple_expression (ExpLambda (PatUnit, [], ExpConst (ConstInt 1)));
-  <span data-count="1">[</span>%expect {|unit -&gt; int|}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {|unit -&gt; int|}<span data-count="19">]</span>
+;;
+
+let%expect_test "custom_infix_operator" =
+  <span data-count="1">p</span>retty_printer_parse_and_infer
+    {| let ( ** ) x y = x * y
+let main = 2 ** 3 |};
+  <span data-count="1">[</span>%expect
+    {|
+    val **: int -&gt; int -&gt; int
+    val main: int|}<span data-count="19">]</span>
+;;
+
+let%expect_test "custom_infix_bind_like" =
+  <span data-count="1">p</span>retty_printer_parse_and_infer
+    {| let ( &gt;&gt;= ) n _ = if n &lt;= 1 then 1 else n * (n - 1)
+let main = 3 &gt;&gt;= 0 |};
+  <span data-count="1">[</span>%expect
+    {|
+    val &gt;&gt;=: int -&gt; t1 -&gt; int
+    val main: int|}<span data-count="19">]</span>
+;;
+
+let%expect_test "custom_infix_power" =
+  <span data-count="1">p</span>retty_printer_parse_and_infer
+    {| let rec ( ^^ ) x n = if n &lt;= 0 then 1 else x * (x ^^ (n - 1))
+let main = 2 ^^ 10 |};
+  <span data-count="1">[</span>%expect
+    {|
+    val ^^: int -&gt; int -&gt; int
+    val main: int|}<span data-count="19">]</span>
+;;
+
+let%expect_test "custom_infix_compose" =
+  <span data-count="1">p</span>retty_printer_parse_and_infer
+    {| let ( @@ ) f g = fun x -&gt; f (g x)
+let succ x = x + 1
+let double x = x * 2
+let main = (succ @@ double) 10 |};
+  <span data-count="1">[</span>%expect
+    {|
+    val @@: (t3 -&gt; t4) -&gt; (t2 -&gt; t3) -&gt; t2 -&gt; t4
+    val double: int -&gt; int
+    val main: int
+    val succ: int -&gt; int|}<span data-count="19">]</span>
 ;;
 </code></pre>
       </div>

@@ -360,7 +360,7 @@ let%expect_test "captured_lambda_in_nonrec_let" =
     add
   ;;
   |};
-  <span data-count="1">[</span>%expect {| let mk_adder = fun a -&gt; let add = fun a b -&gt; (a + b) in add a;; |}<span data-count="17">]</span>
+  <span data-count="1">[</span>%expect {| let mk_adder = fun a -&gt; let add = fun a b -&gt; (a + b) in add a;; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "top_level_nonrec_and_group" =
@@ -375,7 +375,7 @@ let%expect_test "top_level_nonrec_and_group" =
   <span data-count="1">[</span>%expect
     {|
     let f = fun x -&gt; let id = fun y -&gt; y
-    and addk = fun x z -&gt; (x + z) in (id 3 + addk x 4);; |}<span data-count="17">]</span>
+    and addk = fun x z -&gt; (x + z) in (id 3 + addk x 4);; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "recursive_and_with_external_capture" =
@@ -390,7 +390,7 @@ let%expect_test "recursive_and_with_external_capture" =
   <span data-count="1">[</span>%expect
     {|
     let solve = fun bound -&gt; let rec go = fun bound n -&gt; if (n &lt;= bound) then true else stop bound ((n - 1))
-    and stop = fun bound n -&gt; if (n &gt; bound) then false else go bound ((n - 1)) in go bound 20;; |}<span data-count="17">]</span>
+    and stop = fun bound n -&gt; if (n &gt; bound) then false else go bound ((n - 1)) in go bound 20;; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "recursive_local_function_value_capture" =
@@ -405,7 +405,7 @@ let%expect_test "recursive_local_function_value_capture" =
   <span data-count="1">[</span>%expect
     {|
     let run = fun x -&gt; let rec plus = fun x y -&gt; (x + y)
-    and call = fun x c -&gt; (c + plus x 7) in (plus x 1 + call x 2);; |}<span data-count="17">]</span>
+    and call = fun x c -&gt; (c + plus x 7) in (plus x 1 + call x 2);; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "nested_levels_of_captures" =
@@ -423,7 +423,7 @@ let%expect_test "nested_levels_of_captures" =
   ;;
   |};
   <span data-count="1">[</span>%expect
-    {| let outer = fun x -&gt; let middle = fun x y -&gt; let inner = fun x y z -&gt; let deepest = fun x y z w -&gt; (((x + y) + z) + w) in deepest x y z 1 in inner x y 2 in middle x 3;; |}<span data-count="17">]</span>
+    {| let outer = fun x -&gt; let middle = fun x y -&gt; let inner = fun x y z -&gt; let deepest = fun x y z w -&gt; (((x + y) + z) + w) in deepest x y z 1 in inner x y 2 in middle x 3;; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "if_with_lambda_in_both_branches" =
@@ -433,7 +433,7 @@ let%expect_test "if_with_lambda_in_both_branches" =
     if flag then (fun v -&gt; base + v) else (fun v -&gt; alt + v)
   |};
   <span data-count="1">[</span>%expect
-    {| let choose = fun flag base alt -&gt; if flag then (fun base v -&gt; (base + v)) base else (fun alt v -&gt; (alt + v)) alt;; |}<span data-count="17">]</span>
+    {| let choose = fun flag base alt -&gt; if flag then (fun base v -&gt; (base + v)) base else (fun alt v -&gt; (alt + v)) alt;; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "match_with_option_lambda_capture" =
@@ -446,7 +446,7 @@ let%expect_test "match_with_option_lambda_capture" =
   ;;
   |};
   <span data-count="1">[</span>%expect
-    {| let mapper = fun x -&gt; match x with | Some (y) -&gt; (fun y z -&gt; (y + z)) y | None -&gt; fun z -&gt; z;; |}<span data-count="17">]</span>
+    {| let mapper = fun x -&gt; match x with | Some (y) -&gt; (fun y z -&gt; (y + z)) y | None -&gt; fun z -&gt; z;; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "sequence_and_tuple_pattern_capture" =
@@ -459,7 +459,7 @@ let%expect_test "sequence_and_tuple_pattern_capture" =
   ;;
   |};
   <span data-count="1">[</span>%expect
-    {| let consume = fun a b -&gt; let () = print_int a in let use_pair = fun a b (x, y) -&gt; (((a + b) + x) + y) in use_pair a b ((3, 4));; |}<span data-count="17">]</span>
+    {| let consume = fun a b -&gt; let () = print_int a in let use_pair = fun a b (x, y) -&gt; (((a + b) + x) + y) in use_pair a b ((3, 4));; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "list_and_option_expressions" =
@@ -471,7 +471,7 @@ let%expect_test "list_and_option_expressions" =
   ;;
   |};
   <span data-count="1">[</span>%expect
-    {| let build = fun seed -&gt; let f = fun seed x -&gt; Some ((seed + x)) in f seed 1::f seed 2::[];; |}<span data-count="17">]</span>
+    {| let build = fun seed -&gt; let f = fun seed x -&gt; Some ((seed + x)) in f seed 1::f seed 2::[];; |}<span data-count="19">]</span>
 ;;
 
 let%expect_test "type_annotation_inside_capture" =
@@ -483,7 +483,7 @@ let%expect_test "type_annotation_inside_capture" =
   ;;
   |};
   <span data-count="1">[</span>%expect
-    {| let annotated = fun base -&gt; let g = fun base x -&gt; ((base + x) : int) in g base 5;; |}<span data-count="17">]</span>
+    {| let annotated = fun base -&gt; let g = fun base x -&gt; ((base + x) : int) in g base 5;; |}<span data-count="19">]</span>
 ;;
 </code></pre>
       </div>
