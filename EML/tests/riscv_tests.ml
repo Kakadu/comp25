@@ -35,7 +35,7 @@ x:
   addi sp, sp, -16
   sd ra, 8(sp)
   sd fp, 0(sp)
-  addi fp, sp, 0
+  mv fp, sp
   li t0, 11
   li a0, 1
   sub a0, a0, t0
@@ -50,7 +50,7 @@ main:
   addi sp, sp, -16
   sd ra, 8(sp)
   sd fp, 0(sp)
-  addi fp, sp, 0
+  mv fp, sp
   li a0, 1
   addi sp, fp, 16
   ld ra, 8(fp)
@@ -71,7 +71,7 @@ x:
   addi sp, sp, -16
   sd ra, 8(sp)
   sd fp, 0(sp)
-  addi fp, sp, 0
+  mv fp, sp
   li t0, 3
   xori a0, t0, 3
   addi sp, fp, 16
@@ -85,7 +85,7 @@ main:
   addi sp, sp, -16
   sd ra, 8(sp)
   sd fp, 0(sp)
-  addi fp, sp, 0
+  mv fp, sp
   li a0, 1
   addi sp, fp, 16
   ld ra, 8(fp)
@@ -106,7 +106,7 @@ main:
   addi sp, sp, -16
   sd ra, 8(sp)
   sd fp, 0(sp)
-  addi fp, sp, 0
+  mv fp, sp
   li a0, 1
   addi sp, fp, 16
   ld ra, 8(fp)
@@ -127,7 +127,7 @@ main:
   addi sp, sp, -16
   sd ra, 8(sp)
   sd fp, 0(sp)
-  addi fp, sp, 0
+  mv fp, sp
   li t0, 15
   li t1, 17
   srli t0, t0, 1
@@ -157,11 +157,9 @@ double:
   addi sp, sp, -16
   sd ra, 8(sp)
   sd fp, 0(sp)
-  addi fp, sp, 0
+  mv fp, sp
   sd a0, -8(fp)
-  ld t0, -8(fp)
-  ld t1, -8(fp)
-  add a0, t0, t1
+  add a0, a0, a0
   addi a0, a0, -1
   addi sp, fp, 16
   ld ra, 8(fp)
@@ -202,13 +200,13 @@ abs:
   sd fp, 16(sp)
   addi fp, sp, 16
   sd a0, -8(fp)
-  ld t0, -8(fp)
+  mv t0, a0
   li t1, 1
   slt a0, t0, t1
   add a0, a0, a0
   addi a0, a0, 1
   sd a0, -16(fp)
-  ld t0, -16(fp)
+  mv t0, a0
   li t1, 1
   beq t0, t1, else_0
   ld t0, -8(fp)
@@ -256,12 +254,10 @@ sq:
   addi sp, sp, -16
   sd ra, 8(sp)
   sd fp, 0(sp)
-  addi fp, sp, 0
+  mv fp, sp
   sd a0, -8(fp)
-  ld t0, -8(fp)
-  ld t1, -8(fp)
-  srli t0, t0, 1
-  addi t1, t1, -1
+  srli t0, a0, 1
+  addi t1, a0, -1
   mul a0, t0, t1
   addi a0, a0, 1
   addi sp, fp, 16
@@ -278,15 +274,13 @@ sum_of_squares:
   addi fp, sp, 384
   sd a0, -8(fp)
   sd a1, -16(fp)
-  ld a0, -8(fp)
   call sq
   sd a0, -24(fp)
   ld a0, -16(fp)
   call sq
   sd a0, -32(fp)
   ld t0, -24(fp)
-  ld t1, -32(fp)
-  add a0, t0, t1
+  add a0, t0, a0
   addi a0, a0, -1
   addi sp, fp, 16
   ld ra, 8(fp)
@@ -328,13 +322,13 @@ fib:
   sd fp, 416(sp)
   addi fp, sp, 416
   sd a0, -8(fp)
-  ld t0, -8(fp)
+  mv t0, a0
   li t1, 5
   slt a0, t0, t1
   add a0, a0, a0
   addi a0, a0, 1
   sd a0, -16(fp)
-  ld t0, -16(fp)
+  mv t0, a0
   li t1, 1
   beq t0, t1, else_0
   li a0, 3
@@ -345,7 +339,6 @@ else_0:
   sub a0, t0, t1
   addi a0, a0, 1
   sd a0, -24(fp)
-  ld a0, -24(fp)
   call fib
   sd a0, -32(fp)
   ld t0, -8(fp)
@@ -353,12 +346,10 @@ else_0:
   sub a0, t0, t1
   addi a0, a0, 1
   sd a0, -40(fp)
-  ld a0, -40(fp)
   call fib
   sd a0, -48(fp)
   ld t0, -32(fp)
-  ld t1, -48(fp)
-  add a0, t0, t1
+  add a0, t0, a0
   addi a0, a0, -1
 end_0:
   addi sp, fp, 16
@@ -398,11 +389,10 @@ is_positive:
   addi sp, sp, -16
   sd ra, 8(sp)
   sd fp, 0(sp)
-  addi fp, sp, 0
+  mv fp, sp
   sd a0, -8(fp)
-  ld t0, -8(fp)
   li t1, 1
-  slt a0, t1, t0
+  slt a0, t1, a0
   add a0, a0, a0
   addi a0, a0, 1
   addi sp, fp, 16
@@ -446,17 +436,13 @@ mul3:
   sd a0, -8(fp)
   sd a1, -16(fp)
   sd a2, -24(fp)
-  ld t0, -8(fp)
-  ld t1, -16(fp)
-  srli t0, t0, 1
-  addi t1, t1, -1
+  srli t0, a0, 1
+  addi t1, a1, -1
   mul a0, t0, t1
   addi a0, a0, 1
   sd a0, -32(fp)
-  ld t0, -32(fp)
-  ld t1, -24(fp)
-  srli t0, t0, 1
-  addi t1, t1, -1
+  srli t0, a0, 1
+  addi t1, a2, -1
   mul a0, t0, t1
   addi a0, a0, 1
   addi sp, fp, 16
@@ -506,15 +492,14 @@ let%expect_test "test1" =
         addi fp, sp, 384
         sd a0, -8(fp)
         li t0, 1
-        ld t1, -8(fp)
+        mv t1, a0
         xor a0, t0, t1
         snez a0, a0
         add a0, a0, a0
         addi a0, a0, 1
         sd a0, -16(fp)
-        ld t0, -16(fp)
         li t1, 1
-        beq t0, t1, else_0
+        beq a0, t1, else_0
         li a0, 1
         call print_int
         j end_0
@@ -536,7 +521,7 @@ let%expect_test "test1" =
         addi fp, sp, 424
         li t0, 1
         li t1, 1
-        beq t0, t1, else_1
+        j else_1
         li a0, 1
         j end_1
       else_1:
@@ -546,25 +531,22 @@ let%expect_test "test1" =
         li a0, 3
       end_1:
         sd a0, -16(fp)
-        ld t0, -16(fp)
         li t1, 1
-        beq t0, t1, else_2
+        beq a0, t1, else_2
         li a0, 1
         j end_2
       else_2:
         li a0, 3
       end_2:
         sd a0, -24(fp)
-        ld t0, -24(fp)
         li t1, 1
-        beq t0, t1, else_3
+        beq a0, t1, else_3
         li a0, 1
         j end_3
       else_3:
         li a0, 3
       end_3:
         sd a0, -32(fp)
-        ld a0, -32(fp)
         call large
         addi sp, fp, 16
         ld ra, 8(fp)
@@ -603,34 +585,22 @@ let%expect_test "codegen closure fn with 10 arg" =
       sd a4, -40(fp)
       sd a5, -48(fp)
       sd a6, -56(fp)
-      ld t0, -8(fp)
-      ld t1, -16(fp)
-      add a0, t0, t1
+      add a0, a0, a1
       addi a0, a0, -1
       sd a0, -64(fp)
-      ld t0, -64(fp)
-      ld t1, -24(fp)
-      add a0, t0, t1
+      add a0, a0, a2
       addi a0, a0, -1
       sd a0, -72(fp)
-      ld t0, -72(fp)
-      ld t1, -32(fp)
-      add a0, t0, t1
+      add a0, a0, a3
       addi a0, a0, -1
       sd a0, -80(fp)
-      ld t0, -80(fp)
-      ld t1, -40(fp)
-      add a0, t0, t1
+      add a0, a0, a4
       addi a0, a0, -1
       sd a0, -88(fp)
-      ld t0, -88(fp)
-      ld t1, -48(fp)
-      add a0, t0, t1
+      add a0, a0, a5
       addi a0, a0, -1
       sd a0, -96(fp)
-      ld t0, -96(fp)
-      ld t1, -56(fp)
-      add a0, t0, t1
+      add a0, a0, a6
       addi a0, a0, -1
       addi sp, fp, 16
       ld ra, 8(fp)
@@ -661,7 +631,6 @@ let%expect_test "codegen closure fn with 10 arg" =
       call eml_applyN
       addi sp, sp, 32
       sd a0, -8(fp)
-      ld a0, -8(fp)
       li a1, 2
       addi sp, sp, -16
       li t0, 3
@@ -672,7 +641,6 @@ let%expect_test "codegen closure fn with 10 arg" =
       call eml_applyN
       addi sp, sp, 16
       sd a0, -16(fp)
-      ld a0, -16(fp)
       li a1, 2
       addi sp, sp, -16
       li t0, 3
@@ -683,7 +651,6 @@ let%expect_test "codegen closure fn with 10 arg" =
       call eml_applyN
       addi sp, sp, 16
       sd a0, -24(fp)
-      ld a0, -24(fp)
       call print_int
       addi sp, fp, 16
       ld ra, 8(fp)

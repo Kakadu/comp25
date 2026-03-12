@@ -39,6 +39,7 @@ module Riscv_backend = struct
     | Xor of reg * reg * reg (* xor двух регистров: rd = rs1 ^ rs2 *)
     | Mul of reg * reg * reg (* умножение: rd = rs1 * rs2 *)
     | Div of reg * reg * reg (* целочисленное деление: rd = rs1 / rs2 *)
+    | Slli of reg * reg * int (* логический сдвиг влево на константу: rd = rs << imm *)
     | Srli of reg * reg * int (* логический сдвиг вправо на константу: rd = rs >>> imm *)
 
   let pp_reg ppf = function
@@ -59,6 +60,7 @@ module Riscv_backend = struct
     | Sub (rd, rs1, rs2) -> fprintf ppf "sub %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
     | Mul (rd, rs1, rs2) -> fprintf ppf "mul %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
     | Div (rd, rs1, rs2) -> fprintf ppf "div %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+    | Slli (rd, rs1, imm) -> fprintf ppf "slli %a, %a, %d" pp_reg rd pp_reg rs1 imm
     | Srli (rd, rs1, imm) -> fprintf ppf "srli %a, %a, %d" pp_reg rd pp_reg rs1 imm
     | Xori (rd, rs1, imm) -> fprintf ppf "xori %a, %a, %d" pp_reg rd pp_reg rs1 imm
     | Xor (rd, rs1, rs2) -> fprintf ppf "xor %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
@@ -113,6 +115,7 @@ module Riscv_backend = struct
   let xor rd rs1 rs2 = [ Xor (rd, rs1, rs2) ]
   let mul rd rs1 rs2 = [ Mul (rd, rs1, rs2) ]
   let div rd rs1 rs2 = [ Div (rd, rs1, rs2) ]
+  let slli rd rs imm = [ Slli (rd, rs, imm) ]
   let srli rd rs imm = [ Srli (rd, rs, imm) ]
   let add_tag_items dst delta = [ Addi (dst, dst, delta) ]
   let arg_regs = [ a0; a1; a2; a3; a4; a5; a6; a7 ]

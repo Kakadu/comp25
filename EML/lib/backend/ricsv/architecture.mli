@@ -35,6 +35,7 @@ module Riscv_backend : sig
     | Xor of reg * reg * reg
     | Mul of reg * reg * reg
     | Div of reg * reg * reg
+    | Slli of reg * reg * int
     | Srli of reg * reg * int
 
   val pp_reg : Format.formatter -> reg -> unit
@@ -76,6 +77,7 @@ module Riscv_backend : sig
   val xor : reg -> reg -> reg -> instr list
   val mul : reg -> reg -> reg -> instr list
   val div : reg -> reg -> reg -> instr list
+  val slli : reg -> reg -> int -> instr list
   val srli : reg -> reg -> int -> instr list
   val add_tag_items : reg -> int -> instr list
   val arg_regs : reg list

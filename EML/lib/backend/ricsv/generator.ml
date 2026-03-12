@@ -457,7 +457,8 @@ let flush_instr_buffer ppf =
   let* state = get in
   let instruction_buffer = state.instr_buffer in
   let* () = put { state with instr_buffer = [] } in
-  let () = List.iter (fun item -> format_item ppf item) (List.rev instruction_buffer) in
+  let optimized_instructions = Peephole.optimize (List.rev instruction_buffer) in
+  let () = List.iter (fun item -> format_item ppf item) optimized_instructions in
   return ()
 ;;
 
