@@ -84,6 +84,9 @@ SPDX-License-Identifier: LGPL-3.0-or-later
   $ make compile_riscv additional_tests/custom_op_cat.ml
   34
 
+  $ make compile_riscv additional_tests/custom_op_right_assoc_diff.ml
+  8
+
   $ make compile_llvm additional_tests/custom_op_via_op.ml
   13
 

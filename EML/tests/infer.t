@@ -119,6 +119,10 @@ SPDX-License-Identifier: LGPL-3.0-or-later
   val +++: int -> int -> int
   val main: int
 
+  $ make infer additional_tests/custom_op_right_assoc_diff.ml
+  val **: int -> int -> int
+  val main: int
+
   $ make infer additional_tests/custom_op_pipe.ml
   val main: int
   val succ: int -> int
