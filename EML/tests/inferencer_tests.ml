@@ -440,3 +440,47 @@ let%expect_test "test_ast_pattern_unit_lambda" =
   pretty_printer_infer_simple_expression (ExpLambda (PatUnit, [], ExpConst (ConstInt 1)));
   [%expect {|unit -> int|}]
 ;;
+
+let%expect_test "custom_infix_operator" =
+  pretty_printer_parse_and_infer
+    {| let ( ** ) x y = x * y
+let main = 2 ** 3 |};
+  [%expect
+    {|
+    val **: int -> int -> int
+    val main: int|}]
+;;
+
+let%expect_test "custom_infix_bind_like" =
+  pretty_printer_parse_and_infer
+    {| let ( >>= ) n _ = if n <= 1 then 1 else n * (n - 1)
+let main = 3 >>= 0 |};
+  [%expect
+    {|
+    val >>=: int -> t1 -> int
+    val main: int|}]
+;;
+
+let%expect_test "custom_infix_power" =
+  pretty_printer_parse_and_infer
+    {| let rec ( ^^ ) x n = if n <= 0 then 1 else x * (x ^^ (n - 1))
+let main = 2 ^^ 10 |};
+  [%expect
+    {|
+    val ^^: int -> int -> int
+    val main: int|}]
+;;
+
+let%expect_test "custom_infix_compose" =
+  pretty_printer_parse_and_infer
+    {| let ( @@ ) f g = fun x -> f (g x)
+let succ x = x + 1
+let double x = x * 2
+let main = (succ @@ double) 10 |};
+  [%expect
+    {|
+    val @@: (t3 -> t4) -> (t2 -> t3) -> t2 -> t4
+    val double: int -> int
+    val main: int
+    val succ: int -> int|}]
+;;

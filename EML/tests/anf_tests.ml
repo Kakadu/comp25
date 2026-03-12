@@ -304,3 +304,27 @@ let%expect_test "anf_roundtrip_types_partial" =
    | Error e -> Printf.printf "FAIL: %s\n" e);
   [%expect {| OK: types preserved after ANF round-trip |}]
 ;;
+
+
+let%expect_test "custom_infix_operator_lowers_to_app" =
+  parse_and_anf "let ( =^.^= ) x y = (x * 10) + y";
+  [%expect
+    {|
+[(AnfValue (NonRec,
+    ("=^.^=", 2,
+     (AnfExpr
+        (ComplexLambda ([(PatVariable "x")],
+           (AnfExpr
+              (ComplexLambda ([(PatVariable "y")],
+                 (AnfLet (NonRec, "anf_t0",
+                    (ComplexBinOper (Multiply, (ImmediateVar "x"),
+                       (ImmediateConst (ConstInt 10)))),
+                    (AnfExpr
+                       (ComplexBinOper (Plus, (ImmediateVar "anf_t0"),
+                          (ImmediateVar "y"))))
+                    ))
+                 )))
+           )))),
+    []))
+  ]|}]
+;;
