@@ -12,8 +12,8 @@ module Emission = struct
   let code : (instr * string) Queue.t = Queue.create ()
   let emit ?(comm = "") push_instr = push_instr (fun i -> Queue.enqueue code (i, comm))
 
-  let flush_queue ppf =
-    let optimized = optimize code in
+  let flush_queue ~opt_peephole ppf =
+    let optimized = if opt_peephole then optimize code else code in
     while not (Queue.is_empty optimized) do
       let i, comm = Queue.dequeue_exn optimized in
       (match i with

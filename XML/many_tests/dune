@@ -15,7 +15,17 @@
  (inline_tests))
 
 (cram
- (applies_to codegen codegen_llvm anf cc ll gc gc_llvm llvm_tweaks infer)
+ (applies_to
+  codegen
+  codegen_llvm
+  anf
+  cc
+  ll
+  gc
+  gc_llvm
+  llvm_tweaks
+  infer
+  unoptimized_codegen)
  (deps
   ../bin/XML.exe
   ../bin/XML_llvm.exe

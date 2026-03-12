@@ -20,19 +20,20 @@ type options =
   ; mutable gc_stats : bool
   ; mutable check_types : bool
   ; mutable show_types : bool
+  ; mutable optimize_peephole : bool
   }
 
 (* ------------------------------- *)
 (*     Compiler Entry Points       *)
 (* ------------------------------- *)
 
-let to_asm ~gc_stats ast : string =
+let to_asm ~opt_peephole ~gc_stats ast : string =
   let cc_program = Middleend.Cc.cc_program ast in
   let anf_ast = Middleend.Anf.anf_program cc_program in
   let ll_anf = Middleend.Ll.lambda_lift_program anf_ast in
   let buf = Buffer.create 1024 in
   let ppf = formatter_of_buffer buf in
-  Backend.Codegen.gen_program_with_gc_stats ~gc_stats ppf ll_anf;
+  Backend.Codegen.gen_program_with_gc_stats ~opt_peephole ~gc_stats ppf ll_anf;
   pp_print_flush ppf ();
   Buffer.contents buf
 ;;
@@ -69,7 +70,9 @@ let compile_and_write options source_code =
   then (
     Middleend.Pprinter.print_anf_program std_formatter anf_after_ll;
     exit 0);
-  let asm_code = to_asm ~gc_stats:options.gc_stats ast in
+  let asm_code =
+    to_asm ~opt_peephole:options.optimize_peephole ~gc_stats:options.gc_stats ast
+  in
   match options.output_file_name with
   | Some out_file ->
     (try
@@ -122,6 +125,7 @@ let () =
     ; gc_stats = false
     ; check_types = true
     ; show_types = false
+    ; optimize_peephole = true
     }
   in
   let usage_msg =
@@ -158,6 +162,9 @@ let () =
     ; ( "-typedtree"
       , Arg.Unit (fun () -> options.show_types <- true)
       , "         Show all names with their types and exit" )
+    ; ( "-no-opt-peep"
+      , Arg.Unit (fun () -> options.optimize_peephole <- false)
+      , "         Do not run peephole optimizer before code emission" )
     ]
   in
   let handle_anon_arg filename =

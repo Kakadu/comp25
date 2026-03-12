@@ -5,10 +5,11 @@
 open Format
 
 (* gens program on riscv asm from the ast *)
-val gen_program : formatter -> Middleend.Anf.aprogram -> unit
+val gen_program : formatter -> Middleend.Anf.aprogram -> opt_peephole:bool -> unit
 
 val gen_program_with_gc_stats
-  :  gc_stats:bool
+  :  opt_peephole:bool
+  -> gc_stats:bool
   -> formatter
   -> Middleend.Anf.aprogram
   -> unit

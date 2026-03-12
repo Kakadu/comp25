@@ -430,7 +430,7 @@ let prefill_arities (arity_map0 : ArityMap.t) (program : aprogram) : ArityMap.t 
     program
 ;;
 
-let gen_program_res_with_gc ~gc_stats ppf (program : aprogram) : unit r =
+let gen_program_res_with_gc ~opt_peephole ~gc_stats ppf (program : aprogram) : unit r =
   let has_main =
     List.exists
       (function
@@ -482,12 +482,12 @@ let gen_program_res_with_gc ~gc_stats ppf (program : aprogram) : unit r =
       drain st''
   in
   let* _st_final = drain st1 in
-  flush_queue ppf;
+  flush_queue ~opt_peephole ppf;
   ok ()
 ;;
 
-let gen_program_with_gc_stats ~gc_stats ppf (program : aprogram) =
-  match gen_program_res_with_gc ~gc_stats ppf program with
+let gen_program_with_gc_stats ~opt_peephole ~gc_stats ppf (program : aprogram) =
+  match gen_program_res_with_gc ~opt_peephole ~gc_stats ppf program with
   | Ok () -> ()
   | Error (`Unbound_identifier x) ->
     invalid_arg ("Unbound identifier during codegen: " ^ x)
@@ -506,6 +506,6 @@ let gen_program_with_gc_stats ~gc_stats ppf (program : aprogram) =
   | Error `Tuple_not_impl -> invalid_arg "Tuple values are not yet implemented"
 ;;
 
-let gen_program ppf (program : aprogram) =
-  gen_program_with_gc_stats ~gc_stats:false ppf program
+let gen_program ppf (program : aprogram) ~opt_peephole =
+  gen_program_with_gc_stats ~opt_peephole ~gc_stats:false ppf program
 ;;

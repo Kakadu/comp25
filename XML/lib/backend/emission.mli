@@ -5,7 +5,7 @@
 module Emission : sig
   val code : (Machine.instr * string) Base.Queue.t
   val emit : ?comm:string -> ((Machine.instr -> unit) -> 'a) -> 'a
-  val flush_queue : Format.formatter -> unit
+  val flush_queue : opt_peephole:bool -> Format.formatter -> unit
   val emit_tagged_binop : string -> Machine.reg -> Machine.reg -> Machine.reg -> unit
   val emit_prologue : string -> int -> unit
   val emit_epilogue : int -> unit
