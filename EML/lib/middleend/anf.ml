@@ -141,6 +141,10 @@ let rec anf (expr : expr) (k : immediate -> anf_expr t) : anf_expr t =
   | ExpIdent x -> k (ImmediateVar x)
   | ExpUnarOper (op, expr) ->
     anf expr (fun imm -> bind_complex_expr (ComplexUnarOper (op, imm)) k)
+  | ExpBinOper (Custom op_name, exp1, exp2) ->
+    anf exp1 (fun imm1 ->
+      anf exp2 (fun imm2 ->
+        bind_complex_expr (ComplexApp (ImmediateVar op_name, imm1, [ imm2 ])) k))
   | ExpBinOper (op, exp1, exp2) ->
     anf exp1 (fun imm1 ->
       anf exp2 (fun imm2 -> bind_complex_expr (ComplexBinOper (op, imm1, imm2)) k))

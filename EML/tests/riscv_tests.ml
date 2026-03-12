@@ -5,12 +5,16 @@
 open EML_lib
 open Frontend.Parser
 open Middleend.Anf
+open Middleend.Inferencer
+open Middleend.Resolve_builtins
 
 let compile src : string =
   match parse src with
   | Error e -> "Parse error: " ^ e
   | Ok ast ->
-    (match anf_program ast with
+    let scope = TypeEnv.keys TypeEnv.initial_env in
+    let ast' = resolve_program ast scope in
+    (match anf_program ast' with
      | Error e -> "ANF error: " ^ e
      | Ok anf ->
        let buf = Buffer.create 1024 in

@@ -40,6 +40,48 @@ let is_digit = function
   | _ -> false
 ;;
 
+let is_operator_char = function
+  | '!'
+  | '$'
+  | '%'
+  | '&'
+  | '*'
+  | '+'
+  | '-'
+  | '.'
+  | '/'
+  | ':'
+  | '<'
+  | '='
+  | '>'
+  | '?'
+  | '@'
+  | '^'
+  | '|'
+  | '~' -> true
+  | _ -> false
+;;
+
+let is_operator_char_infix = function
+  | '!'
+  | '$'
+  | '%'
+  | '&'
+  | '*'
+  | '+'
+  | '-'
+  | '.'
+  | '/'
+  | '<'
+  | '='
+  | '>'
+  | '?'
+  | '@'
+  | '^'
+  | '~' -> true
+  | '|' | ':' | _ -> false
+;;
+
 let white_space = take_while Char.is_whitespace
 let token s = white_space *> string s
 let token1 s = white_space *> s
@@ -120,10 +162,7 @@ let parse_ident =
     >>= fun s -> if is_keyword s then fail "It is not identifier" else return s
   in
   let parse_op_ident =
-    white_space
-    *> char '('
-    *> white_space
-    *> choice (List.map Ast.bin_op_list ~f:(fun opr -> token opr *> return opr))
+    white_space *> char '(' *> white_space *> take_while1 is_operator_char
     <* white_space
     <* char ')'
   in
@@ -255,8 +294,8 @@ let parse_pattern =
     parse_pattern_tuple lst <|> lst)
 ;;
 
-let parse_left_associative expr oper =
-  let rec go acc = lift2 (fun f x -> f acc x) oper expr >>= go <|> return acc in
+let parse_left_associative expr oper right_expr =
+  let rec go acc = lift2 (fun f x -> f acc x) oper right_expr >>= go <|> return acc in
   expr >>= go
 ;;
 
@@ -282,6 +321,20 @@ let compare =
 
 let and_op = parse_expr_bin_oper And "&&"
 let or_op = parse_expr_bin_oper Or "||"
+
+let parse_custom_infix =
+  white_space *> take_while1 is_operator_char_infix
+  >>| fun op -> fun e1 e2 -> ExpBinOper (Custom op, e1, e2)
+;;
+
+let parse_custom_infix_except except =
+  white_space *> take_while1 is_operator_char_infix
+  >>= fun op ->
+  if List.mem except op ~equal:String.equal
+  then fail "builtin"
+  else return (fun e1 e2 -> ExpBinOper (Custom op, e1, e2))
+;;
+
 let parse_expr_ident = parse_ident >>| fun x -> ExpIdent x
 let parse_expr_const = parse_const >>| fun c -> ExpConst c
 
@@ -309,8 +362,8 @@ let parse_expr_list parse_expr =
     (fun (fst_exp, snd_exp, exp_list) -> ExpTuple (fst_exp, snd_exp, exp_list))
 ;;
 
-let parse_expr_apply e =
-  parse_left_associative e (return (fun e1 e2 -> ExpApply (e1, e2)))
+let parse_expr_apply e right =
+  parse_left_associative e (return (fun e1 e2 -> ExpApply (e1, e2))) right
 ;;
 
 let parse_expr_lambda parse_expr =
@@ -370,6 +423,7 @@ let parse_expr_sequence parse_expr =
   parse_left_associative
     parse_expr
     (token ";" *> return (fun exp1 exp2 -> ExpLet (NonRec, (PatUnit, exp1), [], exp2)))
+    parse_expr
 ;;
 
 let parse_expr_construct parse_expr =
@@ -480,13 +534,32 @@ let parse_top_expr parse_expr =
     ]
 ;;
 
-let parse_exp_apply e =
-  let app = parse_expr_apply e in
+let lower_than_ops1 = [ "+"; "-"; ">="; "<="; "<>"; "="; ">"; "<"; "&&"; "||" ]
+let lower_than_ops2 = [ ">="; "<="; "<>"; "="; ">"; "<"; "&&"; "||" ]
+let lower_than_cmp = [ "&&"; "||" ]
+
+let parse_exp_apply e right =
+  let app = parse_expr_apply e right in
   let app = parse_expr_unar_oper app <|> app in
-  let ops1 = parse_left_associative app (multiply <|> division) in
-  let ops2 = parse_left_associative ops1 (plus <|> minus) in
-  let cmp = parse_left_associative ops2 compare in
-  parse_left_associative cmp (and_op <|> or_op)
+  let ops1 =
+    parse_left_associative
+      app
+      (parse_custom_infix_except lower_than_ops1 <|> multiply <|> division)
+      app
+  in
+  let ops2 =
+    parse_left_associative
+      ops1
+      (parse_custom_infix_except lower_than_ops2 <|> plus <|> minus)
+      ops1
+  in
+  let cmp =
+    parse_left_associative
+      ops2
+      (parse_custom_infix_except lower_than_cmp <|> compare)
+      ops2
+  in
+  parse_left_associative cmp (parse_custom_infix <|> and_op <|> or_op) cmp
 ;;
 
 let parse_expr =
@@ -502,7 +575,7 @@ let parse_expr =
         ; parse_parens expr
         ]
     in
-    let func = parse_exp_apply term <|> term in
+    let func = parse_exp_apply term term <|> term in
     let lst = parse_expr_list func <|> func in
     let tuple = parse_expr_tuple lst <|> lst in
     let seq = parse_expr_sequence tuple <|> tuple in

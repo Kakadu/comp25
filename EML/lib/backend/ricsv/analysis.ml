@@ -171,12 +171,58 @@ let analyze (program : anf_program) =
         | AnfEval _ -> None)
       program
   in
+  let is_valid_linker_ident name =
+    String.length name > 0
+    && String.for_all
+         (fun c ->
+            (c >= 'a' && c <= 'z')
+            || (c >= 'A' && c <= 'Z')
+            || (c >= '0' && c <= '9')
+            || Char.equal c '_')
+         name
+  in
+  let mangle_operator_for_linker name =
+    "op_"
+    ^ Base.String.concat_map name ~f:(function
+      | '*' -> "_star"
+      | '+' -> "_plus"
+      | '-' -> "_minus"
+      | '/' -> "_slash"
+      | '=' -> "_eq"
+      | '<' -> "_lt"
+      | '>' -> "_gt"
+      | '!' -> "_bang"
+      | '&' -> "_amp"
+      | '|' -> "_bar"
+      | '^' -> "_hat"
+      | '@' -> "_at"
+      | '~' -> "_tilde"
+      | '?' -> "_q"
+      | '.' -> "_dot"
+      | ':' -> "_colon"
+      | '%' -> "_percent"
+      | '$' -> "_dollar"
+      | c
+        when (c >= 'a' && c <= 'z')
+             || (c >= 'A' && c <= 'Z')
+             || (c >= '0' && c <= '9')
+             || Char.equal c '_' -> String.make 1 c
+      | c -> "_u" ^ Int.to_string (Char.code c))
+  in
   let mangle_reserved name =
     if is_reserved name
     then "eml_" ^ name
     else if String.equal name "_start"
     then "eml_start"
     else name
+  in
+  let asm_name_for_func func_name =
+    let base =
+      if is_valid_linker_ident func_name
+      then func_name
+      else mangle_operator_for_linker func_name
+    in
+    mangle_reserved base
   in
   let functions, _ =
     List.fold_left
@@ -189,7 +235,7 @@ let analyze (program : anf_program) =
         , slots_count
         , max_stack_args
         , max_create_tuple_array_bytes ) ->
-         let base_asm_name = mangle_reserved func_name in
+         let base_asm_name = asm_name_for_func func_name in
          let duplicate_index =
            Base.Map.find generated_name_counts func_name |> Option.value ~default:0
          in

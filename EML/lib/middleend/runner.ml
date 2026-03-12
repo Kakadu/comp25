@@ -5,6 +5,7 @@
 open Format
 open Frontend.Ast
 open Inferencer
+open Resolve_builtins
 open Cc
 open Ll
 open Anf
@@ -34,7 +35,9 @@ let run (program : program) (env : Inferencer.TypeEnv.t)
   in
   env'
   >>= fun env'' ->
-  closure_conversion_result program
+  let initial_scope = Inferencer.TypeEnv.keys env in
+  let program' = resolve_program program initial_scope in
+  closure_conversion_result program'
   |> Result.map_error (fun e -> Closure e)
   >>= fun cc_ast ->
   lambda_lifting_result cc_ast

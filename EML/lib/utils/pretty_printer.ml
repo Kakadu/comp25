@@ -17,6 +17,7 @@ let string_of_bin_op = function
   | LowerThan -> "<"
   | Equal -> "="
   | NotEqual -> "<>"
+  | Custom s -> s
 ;;
 
 let string_of_unary_op = function

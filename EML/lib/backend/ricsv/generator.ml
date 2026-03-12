@@ -420,6 +420,8 @@ and gen_cexpr dst = function
   | ComplexImmediate imm -> gen_imm dst imm
   | ComplexUnarOper (Negative, op) -> gen_neg dst op
   | ComplexUnarOper (Not, op) -> gen_not dst op
+  | ComplexBinOper (Custom _, _, _) ->
+    fail "Custom operator must be compiled to application"
   | ComplexBinOper (op, left, right) -> gen_binop dst op left right
   | ComplexBranch (cond, then_e, else_e) -> gen_branch dst cond then_e else_e
   | ComplexField (tuple_imm, idx) -> gen_field dst tuple_imm idx

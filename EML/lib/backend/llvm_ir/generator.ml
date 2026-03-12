@@ -293,6 +293,7 @@ let gen_binop_native op left_v right_v =
     let* r = untag_bool_val right_v in
     let* v = with_optional_value (or_ builder l r "or") in
     tag_bool_result v
+  | Custom _ -> fail "Custom operator must be compiled to application"
 ;;
 
 let gen_unop_native op tagged_val =

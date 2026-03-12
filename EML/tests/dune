@@ -13,6 +13,8 @@
  (deps
   (file ../bin/EML.exe)
   (file Makefile)
+  (file additional_tests/mangling_test.ml)
+  (file additional_tests/custom_op_cat.ml)
   (file ../lib/runtime/rv64_runtime.a)
   (source_tree additional_tests)
   (source_tree gc_tests)
@@ -44,8 +46,6 @@
   (file ../lib/runtime/rv64_runtime.a)
   (source_tree gc_tests)
   (source_tree many_tests)))
-
-;; LLVM tests require clang to be installed (e.g. apt-get install clang).
 
 (cram
  (applies_to llvm)

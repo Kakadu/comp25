@@ -7,11 +7,15 @@ open EML_lib.Middleend.Anf
 open EML_lib.Middleend.Anf_pp
 open EML_lib.Middleend.Runner
 open EML_lib.Middleend.Inferencer
+open EML_lib.Middleend.Resolve_builtins
+
+let initial_scope = TypeEnv.keys TypeEnv.initial_env
 
 let parse_and_anf input =
   match parse input with
   | Ok ast ->
-    (match anf_program ast with
+    let ast' = resolve_program ast initial_scope in
+    (match anf_program ast' with
      | Ok anf_ast -> Printf.printf "%s\n" (show_anf_program anf_ast)
      | Error e -> Printf.printf "ANF error: %s\n" e)
   | Error e -> Printf.printf "Parsing error: %s\n" e
@@ -20,7 +24,8 @@ let parse_and_anf input =
 let parse_and_anf_pp input =
   match parse input with
   | Ok ast ->
-    (match anf_program ast with
+    let ast' = resolve_program ast initial_scope in
+    (match anf_program ast' with
      | Ok anf_ast -> Printf.printf "%s\n" (anf_to_string anf_ast)
      | Error e -> Printf.printf "ANF error: %s\n" e)
   | Error e -> Printf.printf "Parsing error: %s\n" e

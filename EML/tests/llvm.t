@@ -78,3 +78,6 @@ SPDX-License-Identifier: LGPL-3.0-or-later
 
   $ make compile_llvm additional_tests/mangling_test.ml
   24
+
+  $ make compile_llvm additional_tests/custom_op_cat.ml
+  34

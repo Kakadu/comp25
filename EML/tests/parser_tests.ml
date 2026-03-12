@@ -27,20 +27,20 @@ let main = fac 4 |};
           ((PatVariable "fac"),
            (ExpLambda ((PatVariable "n"), [],
               (ExpBranch (
-                 (ExpBinOper (LowestEqual, (ExpIdent "n"), (ExpConst (ConstInt 1))
-                    )),
+                 (ExpBinOper ((Custom "<="), (ExpIdent "n"),
+                    (ExpConst (ConstInt 1)))),
                  (ExpConst (ConstInt 1)),
                  (Some (ExpLet (NonRec,
                           ((PatVariable "n1"),
-                           (ExpBinOper (Minus, (ExpIdent "n"),
+                           (ExpBinOper ((Custom "-"), (ExpIdent "n"),
                               (ExpConst (ConstInt 1))))),
                           [],
                           (ExpLet (NonRec,
                              ((PatVariable "m"),
                               (ExpApply ((ExpIdent "fac"), (ExpIdent "n1")))),
                              [],
-                             (ExpBinOper (Multiply, (ExpIdent "n"), (ExpIdent "m")
-                                ))
+                             (ExpBinOper ((Custom "*"), (ExpIdent "n"),
+                                (ExpIdent "m")))
                              ))
                           )))
                  ))
@@ -62,11 +62,12 @@ let%expect_test "factorial" =
       ((PatVariable "factorial"),
        (ExpLambda ((PatVariable "n"), [],
           (ExpBranch (
-             (ExpBinOper (LowerThan, (ExpIdent "n"), (ExpConst (ConstInt 2)))),
+             (ExpBinOper ((Custom "<"), (ExpIdent "n"), (ExpConst (ConstInt 2))
+                )),
              (ExpConst (ConstInt 1)),
-             (Some (ExpBinOper (Multiply, (ExpIdent "n"),
+             (Some (ExpBinOper ((Custom "*"), (ExpIdent "n"),
                       (ExpApply ((ExpIdent "factorial"),
-                         (ExpBinOper (Minus, (ExpIdent "n"),
+                         (ExpBinOper ((Custom "-"), (ExpIdent "n"),
                             (ExpConst (ConstInt 1))))
                          ))
                       )))
@@ -85,15 +86,16 @@ let%expect_test "fibonacci" =
       ((PatVariable "fibo"),
        (ExpLambda ((PatVariable "n"), [],
           (ExpBranch (
-             (ExpBinOper (LowerThan, (ExpIdent "n"), (ExpConst (ConstInt 2)))),
+             (ExpBinOper ((Custom "<"), (ExpIdent "n"), (ExpConst (ConstInt 2))
+                )),
              (ExpConst (ConstInt 1)),
-             (Some (ExpBinOper (Plus,
+             (Some (ExpBinOper ((Custom "+"),
                       (ExpApply ((ExpIdent "fibo"),
-                         (ExpBinOper (Minus, (ExpIdent "n"),
+                         (ExpBinOper ((Custom "-"), (ExpIdent "n"),
                             (ExpConst (ConstInt 1))))
                          )),
                       (ExpApply ((ExpIdent "fibo"),
-                         (ExpBinOper (Minus, (ExpIdent "n"),
+                         (ExpBinOper ((Custom "-"), (ExpIdent "n"),
                             (ExpConst (ConstInt 2))))
                          ))
                       )))
@@ -112,7 +114,7 @@ let%expect_test "lambda_test" =
       ((PatVariable "add"),
        (ExpLambda ((PatVariable "x"), [],
           (ExpLambda ((PatVariable "y"), [],
-             (ExpBinOper (Plus, (ExpIdent "x"), (ExpIdent "y")))))
+             (ExpBinOper ((Custom "+"), (ExpIdent "x"), (ExpIdent "y")))))
           ))),
       []))
     ]
@@ -172,7 +174,7 @@ let%expect_test "test_sum_two_args" =
 [(SValue (NonRec,
     ((PatVariable "sum"),
      (ExpLambda ((PatVariable "x"), [(PatVariable "y")],
-        (ExpBinOper (Plus, (ExpIdent "x"), (ExpIdent "y")))))),
+        (ExpBinOper ((Custom "+"), (ExpIdent "x"), (ExpIdent "y")))))),
     []))
   ]
 |}]
@@ -186,7 +188,7 @@ let%expect_test "test_annotate_type_1" =
     ((PatVariable "sum"),
      (ExpLambda ((PatType ((PatVariable "x"), (TyPrim "int"))),
         [(PatType ((PatVariable "y"), (TyPrim "int")))],
-        (ExpBinOper (Plus, (ExpIdent "x"), (ExpIdent "y")))))),
+        (ExpBinOper ((Custom "+"), (ExpIdent "x"), (ExpIdent "y")))))),
     []))
   ]
 |}]
@@ -209,9 +211,9 @@ let%expect_test "test_minus" =
   [%expect
     {|
 [(SEval
-    (ExpBinOper (Minus,
-       (ExpBinOper (Minus,
-          (ExpBinOper (Minus,
+    (ExpBinOper ((Custom "-"),
+       (ExpBinOper ((Custom "-"),
+          (ExpBinOper ((Custom "-"),
              (ExpUnarOper (Negative, (ExpConst (ConstInt 1)))),
              (ExpConst (ConstInt 2)))),
           (ExpUnarOper (Negative, (ExpConst (ConstInt 1)))))),

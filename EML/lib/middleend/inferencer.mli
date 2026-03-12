@@ -55,6 +55,7 @@ module TypeEnv : sig
   val free_vars : t -> VarSet.t
   val apply : Substitution.t -> t -> t
   val find : t -> ident -> Scheme.t option
+  val keys : t -> ident list
   val initial_env : t
   val env_with_gc : t
 end

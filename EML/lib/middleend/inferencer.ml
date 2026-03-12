@@ -4,9 +4,6 @@
 
 (* Template: https://gitlab.com/Kakadu/fp2020course-materials/-/tree/master/code/miniml?ref_type=heads*)
 
-(* Inference state is purely immutable: no Hashtbl, no [ref] or [mutable]. We use
-   [Map] (tree-like) for [var_levels] and thread state through the monad. *)
-
 open Base
 open Frontend.Ast
 open Stdlib.Format
@@ -287,6 +284,7 @@ module TypeEnv = struct
 
   let apply subst env = Map.map env ~f:(Scheme.apply subst)
   let find = Map.find
+  let keys t = Map.keys t
 
   let initial_env =
     let open Base.Map in
@@ -459,6 +457,33 @@ let infer_binop_type = function
     fresh_var >>| fun fresh_ty -> fresh_ty, fresh_ty, TyPrim "bool"
   | Plus | Minus | Multiply | Division -> return (TyPrim "int", TyPrim "int", TyPrim "int")
   | And | Or -> return (TyPrim "bool", TyPrim "bool", TyPrim "bool")
+  | Custom _ -> fail (NoVariable "infer_binop_type: Custom handled in infer_expr")
+;;
+
+(* Returns (arg_ty1, arg_ty2, res_ty, subst_op). For Custom the caller must ensure op_name is in env. *)
+let get_binop_arg_res env op =
+  match op with
+  | Custom op_name ->
+    let* op_scheme =
+      match TypeEnv.find env op_name with
+      | Some s -> return s
+      | None -> fail (NoVariable op_name)
+    in
+    let* op_ty = instantiate op_scheme in
+    let* arg_ty1 = fresh_var in
+    let* arg_ty2 = fresh_var in
+    let* res_ty = fresh_var in
+    let* subst =
+      Substitution.unify op_ty (TyArrow (arg_ty1, TyArrow (arg_ty2, res_ty)))
+    in
+    return
+      ( Substitution.apply subst arg_ty1
+      , Substitution.apply subst arg_ty2
+      , Substitution.apply subst res_ty
+      , subst )
+  | op ->
+    let* ty1, ty2, ty_res = infer_binop_type op in
+    return (ty1, ty2, ty_res, Substitution.empty)
 ;;
 
 let rec infer_expr env = function
@@ -488,11 +513,26 @@ let rec infer_expr env = function
   | ExpBinOper (op, expr1, expr2) ->
     let* subst1, ty = infer_expr env expr1 in
     let* subst2, ty' = infer_expr (TypeEnv.apply subst1 env) expr2 in
-    let* ty1_op, ty2_op, ty_res = infer_binop_type op in
-    let* subst3 = Substitution.unify (Substitution.apply subst2 ty) ty1_op in
-    let* subst4 = Substitution.unify (Substitution.apply subst3 ty') ty2_op in
-    let* subst = Substitution.compose_all [ subst1; subst2; subst3; subst4 ] in
-    return (subst, Substitution.apply subst ty_res)
+    let* arg_ty1, arg_ty2, res_ty, subst_op =
+      match op with
+      | Custom op_name when Option.is_none (TypeEnv.find env op_name) ->
+        (match builtin_op_of_string op_name with
+         | Some builtin_op -> get_binop_arg_res env builtin_op
+         | None -> fail (NoVariable op_name))
+      | _ -> get_binop_arg_res env op
+    in
+    let* subst3 =
+      Substitution.unify
+        (Substitution.apply subst2 ty)
+        (Substitution.apply subst_op arg_ty1)
+    in
+    let* subst4 =
+      Substitution.unify
+        (Substitution.apply subst3 ty')
+        (Substitution.apply subst3 arg_ty2)
+    in
+    let* subst = Substitution.compose_all [ subst1; subst2; subst_op; subst3; subst4 ] in
+    return (subst, Substitution.apply subst res_ty)
   | ExpBranch (cond, then_expr, else_expr) ->
     let* subst1, ty1 = infer_expr env cond in
     let* subst2, ty2 = infer_expr (TypeEnv.apply subst1 env) then_expr in
@@ -550,14 +590,14 @@ let rec infer_expr env = function
        (match tys with
         | [] -> fail (SeveralBounds "inferred empty list type")
         | ty :: _ -> return (total_subst, TyList ty)))
-  | ExpLet (NonRec, (PatVariable x, expr1), _, expr2) ->
+  | ExpLet (NonRec, (PatVariable x, expr1), [], expr2) ->
     let* () = enter_level in
     let* subst1, ty1 = infer_expr env expr1 in
     let* () = leave_level in
     let env2 = TypeEnv.apply subst1 env in
     let* ty_gen = generalize env2 ty1 in
-    let env3 = TypeEnv.extend env x ty_gen in
-    let* subst2, ty2 = infer_expr (TypeEnv.apply subst1 env3) expr2 in
+    let env3 = TypeEnv.extend env2 x ty_gen in
+    let* subst2, ty2 = infer_expr env3 expr2 in
     let* total_subst = Substitution.compose subst1 subst2 in
     return (total_subst, ty2)
   | ExpLet (NonRec, (pattern, expr1), bindings, expr2) ->

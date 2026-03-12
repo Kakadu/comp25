@@ -24,6 +24,7 @@ type bin_oper =
   | LowerThan (* [<] *)
   | Equal (* [=] *)
   | NotEqual (* [<>] *)
+  | Custom of string (* user-defined: ( ** ), ( @@ ), etc. *)
 [@@deriving show { with_path = false }]
 
 type unar_oper =
@@ -89,6 +90,23 @@ type structure =
 type program = structure list [@@deriving show { with_path = false }]
 
 let bin_op_list = [ "*"; "/"; "+"; "-"; "^"; ">="; "<="; "<>"; "="; ">"; "<"; "&&"; "||" ]
+let builtin_op_list = [ "*"; "/"; "+"; "-"; ">="; "<="; "<>"; "="; ">"; "<"; "&&"; "||" ]
+
+let builtin_op_of_string = function
+  | "*" -> Some Multiply
+  | "/" -> Some Division
+  | "+" -> Some Plus
+  | "-" -> Some Minus
+  | ">=" -> Some GreatestEqual
+  | "<=" -> Some LowestEqual
+  | "<>" -> Some NotEqual
+  | "=" -> Some Equal
+  | ">" -> Some GreaterThan
+  | "<" -> Some LowerThan
+  | "&&" -> Some And
+  | "||" -> Some Or
+  | _ -> None
+;;
 
 let rec pp_ty fmt = function
   | TyPrim x -> fprintf fmt "%s" x
