@@ -281,8 +281,8 @@ open Base
 open Frontend.Ast
 
 let names_of_pattern p =
-  <span data-count="721">l</span>et rec go = function
-    | <span data-count="662">P</span>atVariable x -&gt; [ x ]
+  <span data-count="749">l</span>et rec go = function
+    | <span data-count="690">P</span>atVariable x -&gt; [ x ]
     | <span data-count="30">P</span>atAny | <span data-count="0">P</span>atConst _ | <span data-count="0">P</span>atUnit -&gt; []
     | <span data-count="0">P</span>atType (q, _) -&gt; go q
     | <span data-count="24">P</span>atTuple (a, b, rest) -&gt; g<span data-count="24">o</span> a @ g<span data-count="24">o</span> b @ List.concat_ma<span data-count="24">p</span> rest ~f:go
@@ -305,8 +305,8 @@ let rec resolve_expr scope = function
      | <span data-count="14">t</span>rue, _ -&gt; ExpBinOper (Custom op, e1', e2')
      | <span data-count="0">f</span>alse, Some b -&gt; ExpBinOper (b, e1', e2')
      | <span data-count="0">f</span>alse, None -&gt; ExpBinOper (Custom op, e1', e2'))
-  | <span data-count="851">E</span>xpIdent x -&gt; ExpIdent x
-  | <span data-count="446">E</span>xpConst c -&gt; ExpConst c
+  | <span data-count="875">E</span>xpIdent x -&gt; ExpIdent x
+  | <span data-count="466">E</span>xpConst c -&gt; ExpConst c
   | <span data-count="54">E</span>xpBranch (c, t, o) -&gt;
     ExpBranch
       (resolve_exp<span data-count="54">r</span> scope c, resolve_exp<span data-count="54">r</span> scope t, Option.ma<span data-count="54">p</span> o ~f:(resolve_exp<span data-count="54">r</span> scope))
@@ -315,28 +315,28 @@ let rec resolve_expr scope = function
     ExpTuple
       (resolve_exp<span data-count="29">r</span> scope a, resolve_exp<span data-count="29">r</span> scope b, List.ma<span data-count="29">p</span> rest ~f:(resolve_exp<span data-count="29">r</span> scope))
   | <span data-count="0">E</span>xpList es -&gt; ExpList (List.ma<span data-count="0">p</span> es ~f:(resolve_exp<span data-count="0">r</span> scope))
-  | <span data-count="176">E</span>xpLambda (pat, pats, body) -&gt;
+  | <span data-count="182">E</span>xpLambda (pat, pats, body) -&gt;
     let scope' =
-      scope @ names_of_patter<span data-count="176">n</span> pat @ List.concat_ma<span data-count="176">p</span> pats ~f:names_of_pattern
+      scope @ names_of_patter<span data-count="182">n</span> pat @ List.concat_ma<span data-count="182">p</span> pats ~f:names_of_pattern
     in
-    ExpLambda (pat, pats, resolve_exp<span data-count="176">r</span> scope' body)
+    ExpLambda (pat, pats, resolve_exp<span data-count="182">r</span> scope' body)
   | <span data-count="4">E</span>xpTypeAnnotation (e', ty) -&gt; ExpTypeAnnotation (resolve_exp<span data-count="4">r</span> scope e', ty)
-  | <span data-count="151">E</span>xpLet (rec_flag, (pat, e1), binds, body) -&gt;
+  | <span data-count="161">E</span>xpLet (rec_flag, (pat, e1), binds, body) -&gt;
     let names =
-      names_of_patter<span data-count="151">n</span> pat @ List.concat_ma<span data-count="151">p</span> binds ~f:(fun (p, _) -&gt; <span data-count="0">n</span>ames_of_pattern p)
+      names_of_patter<span data-count="161">n</span> pat @ List.concat_ma<span data-count="161">p</span> binds ~f:(fun (p, _) -&gt; <span data-count="0">n</span>ames_of_pattern p)
     in
     let scope' = scope @ names in
     let scope_rhs =
       match rec_flag with
       | <span data-count="0">R</span>ec -&gt; scope'
-      | <span data-count="151">N</span>onRec -&gt; scope
+      | <span data-count="161">N</span>onRec -&gt; scope
     in
     ExpLet
       ( rec_flag
-      , (pat, resolve_exp<span data-count="151">r</span> scope_rhs e1)
-      , List.ma<span data-count="151">p</span> binds ~f:(fun (p, e') -&gt; <span data-count="0">p</span>, resolve_exp<span data-count="0">r</span> scope_rhs e')
-      , resolve_exp<span data-count="151">r</span> scope' body )
-  | <span data-count="535">E</span>xpApply (f, a) -&gt; ExpApply (resolve_exp<span data-count="535">r</span> scope f, resolve_exp<span data-count="535">r</span> scope a)
+      , (pat, resolve_exp<span data-count="161">r</span> scope_rhs e1)
+      , List.ma<span data-count="161">p</span> binds ~f:(fun (p, e') -&gt; <span data-count="0">p</span>, resolve_exp<span data-count="0">r</span> scope_rhs e')
+      , resolve_exp<span data-count="161">r</span> scope' body )
+  | <span data-count="541">E</span>xpApply (f, a) -&gt; ExpApply (resolve_exp<span data-count="541">r</span> scope f, resolve_exp<span data-count="541">r</span> scope a)
   | <span data-count="0">E</span>xpOption None -&gt; ExpOption None
   | <span data-count="0">E</span>xpOption (Some e') -&gt; ExpOption (Some (resolve_exp<span data-count="0">r</span> scope e'))
   | <span data-count="0">E</span>xpFunction (c, cases) -&gt;
@@ -353,39 +353,39 @@ let rec resolve_expr scope = function
       , (fs<span data-count="8">t</span> c, resolve_exp<span data-count="8">r</span> scope' (sn<span data-count="8">d</span> c))
       , List.ma<span data-count="8">p</span> cases ~f:(fun (p, e') -&gt; <span data-count="8">p</span>, resolve_exp<span data-count="8">r</span> scope' e') )
   | <span data-count="51">E</span>xpConstruct (c, o) -&gt; ExpConstruct (c, Option.ma<span data-count="51">p</span> o ~f:(resolve_exp<span data-count="51">r</span> scope))
-  | <span data-count="249">E</span>xpBinOper (b, e1, e2) -&gt;
+  | <span data-count="265">E</span>xpBinOper (b, e1, e2) -&gt;
     let left_resolved = resolve_expr scope e1 in
-    <span data-count="249">l</span>et right_resolved = resolve_expr scope e2 in
-    <span data-count="249">l</span>et builtin_op_name = builtin_op_to_string b in
-    <span data-count="249">i</span>f List.mem scope builtin_op_name ~equal:String.equal
+    <span data-count="265">l</span>et right_resolved = resolve_expr scope e2 in
+    <span data-count="265">l</span>et builtin_op_name = builtin_op_to_string b in
+    <span data-count="265">i</span>f List.mem scope builtin_op_name ~equal:String.equal
     then <span data-count="2">E</span>xpBinOper (Custom builtin_op_name, left_resolved, right_resolved)
-    else <span data-count="247">E</span>xpBinOper (b, left_resolved, right_resolved)
+    else <span data-count="263">E</span>xpBinOper (b, left_resolved, right_resolved)
 ;;
 
 let resolve_structure scope = function
   | <span data-count="0">S</span>Eval e -&gt; SEval (resolve_exp<span data-count="0">r</span> scope e), scope
-  | <span data-count="213">S</span>Value (rec_flag, (pat, e1), binds) -&gt;
+  | <span data-count="225">S</span>Value (rec_flag, (pat, e1), binds) -&gt;
     let names =
-      names_of_patter<span data-count="213">n</span> pat @ List.concat_ma<span data-count="213">p</span> binds ~f:(fun (p, _) -&gt; <span data-count="2">n</span>ames_of_pattern p)
+      names_of_patter<span data-count="225">n</span> pat @ List.concat_ma<span data-count="225">p</span> binds ~f:(fun (p, _) -&gt; <span data-count="2">n</span>ames_of_pattern p)
     in
     let scope' = scope @ names in
     let scope_rhs =
       match rec_flag with
       | <span data-count="40">R</span>ec -&gt; scope'
-      | <span data-count="173">N</span>onRec -&gt; scope
+      | <span data-count="185">N</span>onRec -&gt; scope
     in
     let e1' = resolve_expr scope_rhs e1 in
-    <span data-count="213">l</span>et binds' = List.map binds ~f:(fun (p, e') -&gt; <span data-count="2">p</span>, resolve_exp<span data-count="2">r</span> scope_rhs e') in
-    <span data-count="213">S</span>Value (rec_flag, (pat, e1'), binds'), scope'
+    <span data-count="225">l</span>et binds' = List.map binds ~f:(fun (p, e') -&gt; <span data-count="2">p</span>, resolve_exp<span data-count="2">r</span> scope_rhs e') in
+    <span data-count="225">S</span>Value (rec_flag, (pat, e1'), binds'), scope'
 ;;
 
 let resolve_program (program : program) (initial_scope : string list) : program =
-  <span data-count="96">l</span>et _, rev_resolved =
+  <span data-count="102">l</span>et _, rev_resolved =
     List.fold_left program ~init:(initial_scope, []) ~f:(fun (scope, acc) s -&gt;
-      <span data-count="213">l</span>et s', scope' = resolve_structure scope s in
-      <span data-count="213">s</span>cope', s' :: acc)
+      <span data-count="225">l</span>et s', scope' = resolve_structure scope s in
+      <span data-count="225">s</span>cope', s' :: acc)
   in
-  <span data-count="96">L</span>ist.rev rev_resolved
+  <span data-count="102">L</span>ist.rev rev_resolved
 ;;
 </code></pre>
       </div>

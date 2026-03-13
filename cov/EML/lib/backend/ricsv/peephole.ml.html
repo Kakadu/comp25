@@ -971,52 +971,52 @@
 open Architecture
 open Riscv_backend
 
-let is_small_addi_imm imm = <span data-count="40">i</span>mm &gt;= -2048 &amp;&amp; <span data-count="34">i</span>mm &lt;= 2047
+let is_small_addi_imm imm = <span data-count="48">i</span>mm &gt;= -2048 &amp;&amp; <span data-count="42">i</span>mm &lt;= 2047
 
 let write_reg = function
-  | <span data-count="13523">A</span>ddi (rd, _, _)
-  | <span data-count="6758">L</span>d (rd, _)
-  | <span data-count="8525">M</span>v (rd, _)
-  | <span data-count="6224">L</span>i (rd, _)
-  | <span data-count="5899">A</span>dd (rd, _, _)
+  | <span data-count="14076">A</span>ddi (rd, _, _)
+  | <span data-count="6938">L</span>d (rd, _)
+  | <span data-count="8596">M</span>v (rd, _)
+  | <span data-count="6316">L</span>i (rd, _)
+  | <span data-count="5966">A</span>dd (rd, _, _)
   | <span data-count="371">S</span>ub (rd, _, _)
   | <span data-count="509">L</span>a (rd, _)
-  | <span data-count="202">S</span>lt (rd, _, _)
+  | <span data-count="226">S</span>lt (rd, _, _)
   | <span data-count="182">S</span>eqz (rd, _)
   | <span data-count="18">S</span>nez (rd, _)
   | <span data-count="80">X</span>ori (rd, _, _)
   | <span data-count="208">X</span>or (rd, _, _)
-  | <span data-count="389">M</span>ul (rd, _, _)
+  | <span data-count="410">M</span>ul (rd, _, _)
   | <span data-count="33">D</span>iv (rd, _, _)
   | <span data-count="9">S</span>lli (rd, _, _)
-  | <span data-count="497">S</span>rli (rd, _, _) -&gt; Some rd
-  | <span data-count="13600">S</span>d _ | <span data-count="1539">C</span>all _ | <span data-count="347">R</span>et | <span data-count="153">B</span>eq _ | <span data-count="145">J</span> _ | <span data-count="617">L</span>abel _ -&gt; None
+  | <span data-count="518">S</span>rli (rd, _, _) -&gt; Some rd
+  | <span data-count="13844">S</span>d _ | <span data-count="1545">C</span>all _ | <span data-count="363">R</span>et | <span data-count="153">B</span>eq _ | <span data-count="145">J</span> _ | <span data-count="633">L</span>abel _ -&gt; None
 ;;
 
 let reads_reg instruction reg =
-  <span data-count="5198">l</span>et same register = <span data-count="5527">e</span>qual_reg register reg in
+  <span data-count="5312">l</span>et same register = <span data-count="5645">e</span>qual_reg register reg in
   match instruction with
-  | <span data-count="1641">A</span>ddi (_, rs, _)
-  | <span data-count="782">M</span>v (_, rs)
+  | <span data-count="1704">A</span>ddi (_, rs, _)
+  | <span data-count="786">M</span>v (_, rs)
   | <span data-count="34">S</span>eqz (_, rs)
   | <span data-count="7">S</span>nez (_, rs)
   | <span data-count="20">X</span>ori (_, rs, _)
-  | <span data-count="42">S</span>rli (_, rs, _)
+  | <span data-count="46">S</span>rli (_, rs, _)
   | <span data-count="0">S</span>lli (_, rs, _) -&gt; same rs
-  | <span data-count="637">S</span>d (rs, (base, _)) -&gt; sam<span data-count="637">e</span> r<span data-count="63">s</span> || same base
-  | <span data-count="354">L</span>d (_, (base, _)) -&gt; same base
-  | <span data-count="801">A</span>dd (_, rs1, rs2)
+  | <span data-count="647">S</span>d (rs, (base, _)) -&gt; sam<span data-count="647">e</span> r<span data-count="63">s</span> || same base
+  | <span data-count="366">L</span>d (_, (base, _)) -&gt; same base
+  | <span data-count="809">A</span>dd (_, rs1, rs2)
   | <span data-count="33">S</span>ub (_, rs1, rs2)
-  | <span data-count="20">S</span>lt (_, rs1, rs2)
+  | <span data-count="22">S</span>lt (_, rs1, rs2)
   | <span data-count="11">X</span>or (_, rs1, rs2)
   | <span data-count="7">M</span>ul (_, rs1, rs2)
-  | <span data-count="0">D</span>iv (_, rs1, rs2) -&gt; sam<span data-count="872">e</span> rs<span data-count="372">1</span> || same rs2
+  | <span data-count="0">D</span>iv (_, rs1, rs2) -&gt; sam<span data-count="882">e</span> rs<span data-count="377">1</span> || same rs2
   | <span data-count="61">B</span>eq (rs1, rs2, _) -&gt; sam<span data-count="61">e</span> rs<span data-count="58">1</span> || same rs2
-  | <span data-count="306">L</span>i _ | <span data-count="291">C</span>all _ | <span data-count="76">R</span>et | <span data-count="26">J</span> _ | <span data-count="35">L</span>abel _ | <span data-count="14">L</span>a _ -&gt; false
+  | <span data-count="311">L</span>i _ | <span data-count="291">C</span>all _ | <span data-count="82">R</span>et | <span data-count="26">J</span> _ | <span data-count="35">L</span>abel _ | <span data-count="14">L</span>a _ -&gt; false
 ;;
 
 let reg_used_later reg instructions =
-  <span data-count="476">L</span>ist.exists (fun instruction -&gt; <span data-count="2865">r</span>eads_reg instruction reg) instructions
+  <span data-count="488">L</span>ist.exists (fun instruction -&gt; <span data-count="2934">r</span>eads_reg instruction reg) instructions
 ;;
 
 let is_power_of_two positive_value =
@@ -1031,18 +1031,18 @@ let log2_power_of_two n =
 ;;
 
 let replace_reg from_register to_register instruction =
-  <span data-count="105">l</span>et replace register =
-    <span data-count="178">i</span>f equal_reg register from_register then <span data-count="105">t</span>o_register else <span data-count="73">r</span>egister
+  <span data-count="111">l</span>et replace register =
+    <span data-count="186">i</span>f equal_reg register from_register then <span data-count="111">t</span>o_register else <span data-count="75">r</span>egister
   in
   match instruction with
-  | <span data-count="54">A</span>dd (rd, rs1, rs2) -&gt; Add (rd, replac<span data-count="54">e</span> rs1, replac<span data-count="54">e</span> rs2)
+  | <span data-count="55">A</span>dd (rd, rs1, rs2) -&gt; Add (rd, replac<span data-count="55">e</span> rs1, replac<span data-count="55">e</span> rs2)
   | <span data-count="6">S</span>ub (rd, rs1, rs2) -&gt; Sub (rd, replac<span data-count="6">e</span> rs1, replac<span data-count="6">e</span> rs2)
   | <span data-count="0">M</span>ul (rd, rs1, rs2) -&gt; Mul (rd, replac<span data-count="0">e</span> rs1, replac<span data-count="0">e</span> rs2)
   | <span data-count="0">D</span>iv (rd, rs1, rs2) -&gt; Div (rd, replac<span data-count="0">e</span> rs1, replac<span data-count="0">e</span> rs2)
   | <span data-count="1">X</span>or (rd, rs1, rs2) -&gt; Xor (rd, replac<span data-count="1">e</span> rs1, replac<span data-count="1">e</span> rs2)
-  | <span data-count="2">S</span>lt (rd, rs1, rs2) -&gt; Slt (rd, replac<span data-count="2">e</span> rs1, replac<span data-count="2">e</span> rs2)
+  | <span data-count="3">S</span>lt (rd, rs1, rs2) -&gt; Slt (rd, replac<span data-count="3">e</span> rs1, replac<span data-count="3">e</span> rs2)
   | <span data-count="5">B</span>eq (rs1, rs2, label) -&gt; Beq (replac<span data-count="5">e</span> rs1, replac<span data-count="5">e</span> rs2, label)
-  | <span data-count="19">A</span>ddi (rd, rs, imm) -&gt; Addi (rd, replac<span data-count="19">e</span> rs, imm)
+  | <span data-count="23">A</span>ddi (rd, rs, imm) -&gt; Addi (rd, replac<span data-count="23">e</span> rs, imm)
   | <span data-count="0">X</span>ori (rd, rs, imm) -&gt; Xori (rd, replac<span data-count="0">e</span> rs, imm)
   | <span data-count="13">S</span>rli (rd, rs, imm) -&gt; Srli (rd, replac<span data-count="13">e</span> rs, imm)
   | <span data-count="0">S</span>lli (rd, rs, imm) -&gt; Slli (rd, replac<span data-count="0">e</span> rs, imm)
@@ -1053,7 +1053,7 @@ let replace_reg from_register to_register instruction =
 ;;
 
 let simplify_single = function
-  | <span data-count="646">M</span>v (rd, rs) when equal_re<span data-count="646">g</span> rd rs -&gt; <span data-count="1">N</span>one
+  | <span data-count="652">M</span>v (rd, rs) when equal_re<span data-count="652">g</span> rd rs -&gt; <span data-count="1">N</span>one
   | <span data-count="52">A</span>ddi (rd, rs, 0) when equal_re<span data-count="52">g</span> rd rs -&gt; <span data-count="1">N</span>one
   | <span data-count="51">A</span>ddi (rd, rs, 0) -&gt; Some (Mv (rd, rs))
   | <span data-count="0">X</span>ori (rd, rs, 0) when equal_re<span data-count="0">g</span> rd rs -&gt; <span data-count="0">N</span>one
@@ -1064,26 +1064,26 @@ let simplify_single = function
   | <span data-count="0">A</span>dd (rd, Zero, rs) -&gt; Some (Mv (rd, rs))
   | <span data-count="0">S</span>ub (rd, rs, Zero) when equal_re<span data-count="0">g</span> rd rs -&gt; <span data-count="0">N</span>one
   | <span data-count="0">S</span>ub (rd, rs, Zero) -&gt; Some (Mv (rd, rs))
-  | <span data-count="10463">i</span>nstruction -&gt; Some instruction
+  | <span data-count="10722">i</span>nstruction -&gt; Some instruction
 ;;
 
 let simplify_pair first second rest =
-  <span data-count="10440">m</span>atch first, second with
-  | <span data-count="680">M</span>v (target_register, source_register), next_instruction
-    when reads_re<span data-count="680">g</span> next_instruction target_register -&gt;
-    <span data-count="262">l</span>et safe_to_drop_mv =
+  <span data-count="10701">m</span>atch first, second with
+  | <span data-count="691">M</span>v (target_register, source_register), next_instruction
+    when reads_re<span data-count="691">g</span> next_instruction target_register -&gt;
+    <span data-count="272">l</span>et safe_to_drop_mv =
       match write_reg next_instruction with
-      | <span data-count="183">S</span>ome written_register when equal_re<span data-count="183">g</span> written_register target_register -&gt; <span data-count="0">t</span>rue
-      | <span data-count="262">_</span> -&gt; not (reg_used_late<span data-count="262">r</span> target_register rest)
+      | <span data-count="193">S</span>ome written_register when equal_re<span data-count="193">g</span> written_register target_register -&gt; <span data-count="0">t</span>rue
+      | <span data-count="272">_</span> -&gt; not (reg_used_late<span data-count="272">r</span> target_register rest)
     in
     if safe_to_drop_mv
-    then <span data-count="35">S</span>ome [ replace_re<span data-count="35">g</span> target_register source_register next_instruction ]
-    else <span data-count="227">N</span>one
-  | <span data-count="27">(</span> Li (constant_register, constant_value)
+    then <span data-count="40">S</span>ome [ replace_re<span data-count="40">g</span> target_register source_register next_instruction ]
+    else <span data-count="232">N</span>one
+  | <span data-count="31">(</span> Li (constant_register, constant_value)
     , Add (destination_register, left_register, right_register) )
-    when is_small_addi_im<span data-count="27">m</span> constant_value -&gt;
-    <span data-count="9">i</span>f equal_reg right_register constant_register
-    then <span data-count="9">S</span>ome [ Addi (destination_register, left_register, constant_value) ]
+    when is_small_addi_im<span data-count="31">m</span> constant_value -&gt;
+    <span data-count="13">i</span>f equal_reg right_register constant_register
+    then <span data-count="13">S</span>ome [ Addi (destination_register, left_register, constant_value) ]
     else <span data-count="0">i</span>f equal_reg left_register constant_register
     then <span data-count="0">S</span>ome [ Addi (destination_register, right_register, constant_value) ]
     else <span data-count="0">N</span>one
@@ -1097,57 +1097,57 @@ let simplify_pair first second rest =
     then <span data-count="0">S</span>ome [ Slli (destination_register, right_register, shift_amount) ]
     else <span data-count="0">N</span>one
   | <span data-count="70">J</span> l1, Label l2 when String.equa<span data-count="70">l</span> l1 l2 -&gt; <span data-count="1">S</span>ome []
-  | <span data-count="777">S</span>d (_, (base1, offset1)), Sd (rs2, (base2, offset2))
-    when equal_re<span data-count="777">g</span> base1 base2 &amp;&amp; <span data-count="777">o</span>ffset1 = offset2 -&gt; <span data-count="0">S</span>ome [ Sd (rs2, (base2, offset2)) ]
-  | <span data-count="561">S</span>d (stored_reg, (base1, offset1)), Ld (loaded_reg, (base2, offset2))
-    when equal_re<span data-count="561">g</span> base1 base2 &amp;&amp; <span data-count="510">o</span>ffset1 = offset2 -&gt;
-    <span data-count="215">i</span>f equal_reg stored_reg loaded_reg
+  | <span data-count="793">S</span>d (_, (base1, offset1)), Sd (rs2, (base2, offset2))
+    when equal_re<span data-count="793">g</span> base1 base2 &amp;&amp; <span data-count="793">o</span>ffset1 = offset2 -&gt; <span data-count="0">S</span>ome [ Sd (rs2, (base2, offset2)) ]
+  | <span data-count="569">S</span>d (stored_reg, (base1, offset1)), Ld (loaded_reg, (base2, offset2))
+    when equal_re<span data-count="569">g</span> base1 base2 &amp;&amp; <span data-count="518">o</span>ffset1 = offset2 -&gt;
+    <span data-count="220">i</span>f equal_reg stored_reg loaded_reg
     then <span data-count="106">S</span>ome [ first ]
-    else <span data-count="109">S</span>ome [ first; Mv (loaded_reg, stored_reg) ]
-  | <span data-count="419">L</span>d (rd1, (base1, offset1)), Ld (rd2, (base2, offset2))
-    when equal_re<span data-count="419">g</span> base1 base2 &amp;&amp; <span data-count="419">o</span>ffset1 = offset2 -&gt;
+    else <span data-count="114">S</span>ome [ first; Mv (loaded_reg, stored_reg) ]
+  | <span data-count="436">L</span>d (rd1, (base1, offset1)), Ld (rd2, (base2, offset2))
+    when equal_re<span data-count="436">g</span> base1 base2 &amp;&amp; <span data-count="436">o</span>ffset1 = offset2 -&gt;
     <span data-count="1">i</span>f equal_reg rd1 rd2 then <span data-count="0">S</span>ome [ first ] else <span data-count="1">S</span>ome [ first; Mv (rd2, rd1) ]
-  | <span data-count="176">A</span>ddi (rd1, rs1, imm1), Addi (rd2, rs2, imm2)
-    when equal_re<span data-count="176">g</span> rd1 rs1 &amp;&amp; <span data-count="148">e</span>qual_re<span data-count="148">g</span> rd2 rs2 &amp;&amp; <span data-count="13">e</span>qual_re<span data-count="13">g</span> rd1 rd2 -&gt;
-    <span data-count="13">l</span>et merged = imm1 + imm2 in
+  | <span data-count="194">A</span>ddi (rd1, rs1, imm1), Addi (rd2, rs2, imm2)
+    when equal_re<span data-count="194">g</span> rd1 rs1 &amp;&amp; <span data-count="163">e</span>qual_re<span data-count="163">g</span> rd2 rs2 &amp;&amp; <span data-count="17">e</span>qual_re<span data-count="17">g</span> rd1 rd2 -&gt;
+    <span data-count="17">l</span>et merged = imm1 + imm2 in
     if is_small_addi_imm merged
-    then <span data-count="7">i</span>f merged = 0 then <span data-count="0">S</span>ome [] else <span data-count="7">S</span>ome [ Addi (rd1, rs1, merged) ]
+    then <span data-count="11">i</span>f merged = 0 then <span data-count="0">S</span>ome [] else <span data-count="11">S</span>ome [ Addi (rd1, rs1, merged) ]
     else <span data-count="6">N</span>one
-  | <span data-count="9937">_</span> -&gt;
-    (match write_re<span data-count="9937">g</span> first, write_re<span data-count="9937">g</span> second with
-     | <span data-count="3201">S</span>ome written_first, Some written_second
-       when equal_re<span data-count="3201">g</span> written_first written_second &amp;&amp; <span data-count="636">n</span>ot (reads_re<span data-count="636">g</span> second written_first)
+  | <span data-count="10175">_</span> -&gt;
+    (match write_re<span data-count="10175">g</span> first, write_re<span data-count="10175">g</span> second with
+     | <span data-count="3290">S</span>ome written_first, Some written_second
+       when equal_re<span data-count="3290">g</span> written_first written_second &amp;&amp; <span data-count="656">n</span>ot (reads_re<span data-count="656">g</span> second written_first)
        -&gt; <span data-count="19">S</span>ome [ second ]
-     | <span data-count="9918">_</span> -&gt; None)
+     | <span data-count="10156">_</span> -&gt; None)
 ;;
 
 let simplify_triple first second third rest =
-  <span data-count="10147">m</span>atch first, second, third with
+  <span data-count="10393">m</span>atch first, second, third with
   | <span data-count="2">L</span>i (left_register, left_const), Li (right_register, right_const), Beq (rs1, rs2, label)
     when equal_re<span data-count="2">g</span> rs1 left_register &amp;&amp; <span data-count="2">e</span>qual_re<span data-count="2">g</span> rs2 right_register -&gt;
     <span data-count="2">i</span>f left_const = right_const
     then
       <span data-count="2">S</span>ome [ Li (left_register, left_const); Li (right_register, right_const); J label ]
     else <span data-count="0">S</span>ome [ Li (left_register, left_const); Li (right_register, right_const) ]
-  | <span data-count="747">M</span>v (target_register, source_register), middle_instruction, next_instruction
-    when reads_re<span data-count="747">g</span> next_instruction target_register
-         &amp;&amp; <span data-count="270">(</span>not (reads_re<span data-count="270">g</span> middle_instruction target_register))
+  | <span data-count="759">M</span>v (target_register, source_register), middle_instruction, next_instruction
+    when reads_re<span data-count="759">g</span> next_instruction target_register
+         &amp;&amp; <span data-count="272">(</span>not (reads_re<span data-count="272">g</span> middle_instruction target_register))
          &amp;&amp;
-         <span data-count="240">m</span>atch write_reg middle_instruction with
-         | <span data-count="240">S</span>ome written_register -&gt; not (equal_re<span data-count="240">g</span> written_register target_register)
+         <span data-count="242">m</span>atch write_reg middle_instruction with
+         | <span data-count="242">S</span>ome written_register -&gt; not (equal_re<span data-count="242">g</span> written_register target_register)
          | <span data-count="0">N</span>one -&gt; true -&gt;
-    <span data-count="240">l</span>et safe_to_drop_mv =
+    <span data-count="242">l</span>et safe_to_drop_mv =
       match write_reg next_instruction with
-      | <span data-count="207">S</span>ome written_register when equal_re<span data-count="207">g</span> written_register target_register -&gt; <span data-count="26">t</span>rue
-      | <span data-count="214">_</span> -&gt; not (reg_used_late<span data-count="214">r</span> target_register rest)
+      | <span data-count="209">S</span>ome written_register when equal_re<span data-count="209">g</span> written_register target_register -&gt; <span data-count="26">t</span>rue
+      | <span data-count="216">_</span> -&gt; not (reg_used_late<span data-count="216">r</span> target_register rest)
     in
     if safe_to_drop_mv
     then
-      <span data-count="70">S</span>ome
+      <span data-count="71">S</span>ome
         [ middle_instruction
-        ; replace_re<span data-count="70">g</span> target_register source_register next_instruction
+        ; replace_re<span data-count="71">g</span> target_register source_register next_instruction
         ]
-    else <span data-count="170">N</span>one
+    else <span data-count="171">N</span>one
   | <span data-count="0">M</span>v (first_target, first_source), Mv (second_target, second_source), Add (dst, rs1, rs2)
     when equal_re<span data-count="0">g</span> first_source second_source
          &amp;&amp; <span data-count="0">e</span>qual_re<span data-count="0">g</span> rs1 first_target
@@ -1172,98 +1172,98 @@ let simplify_triple first second third rest =
     when equal_re<span data-count="0">g</span> first_source second_source
          &amp;&amp; <span data-count="0">e</span>qual_re<span data-count="0">g</span> rs1 first_target
          &amp;&amp; <span data-count="0">e</span>qual_re<span data-count="0">g</span> rs2 second_target -&gt; <span data-count="0">S</span>ome [ Slt (dst, first_source, first_source) ]
-  | <span data-count="9905">_</span> -&gt; None
+  | <span data-count="10149">_</span> -&gt; None
 ;;
 
 let one_pass instructions =
-  <span data-count="375">l</span>et rec loop changed acc = function
-    | <span data-count="10147">f</span>irst :: second :: third :: rest -&gt;
+  <span data-count="391">l</span>et rec loop changed acc = function
+    | <span data-count="10393">f</span>irst :: second :: third :: rest -&gt;
       (match simplify_triple first second third rest with
-       | <span data-count="72">S</span>ome rewritten -&gt;
+       | <span data-count="73">S</span>ome rewritten -&gt;
          let rewritten_reversed = List.rev_append rewritten acc in
-         <span data-count="72">l</span>oop true rewritten_reversed rest
-       | <span data-count="10075">N</span>one -&gt;
+         <span data-count="73">l</span>oop true rewritten_reversed rest
+       | <span data-count="10320">N</span>one -&gt;
          (match simplify_pair first second (third :: rest) with
-          | <span data-count="282">S</span>ome rewritten -&gt;
+          | <span data-count="300">S</span>ome rewritten -&gt;
             let rewritten_reversed = List.rev_append rewritten acc in
-            <span data-count="282">l</span>oop true rewritten_reversed (third :: rest)
-          | <span data-count="9793">N</span>one -&gt;
+            <span data-count="300">l</span>oop true rewritten_reversed (third :: rest)
+          | <span data-count="10020">N</span>one -&gt;
             (match simplify_single first with
              | <span data-count="0">N</span>one -&gt; loop true acc (second :: third :: rest)
-             | <span data-count="9793">S</span>ome simplified -&gt;
+             | <span data-count="10020">S</span>ome simplified -&gt;
                loop changed (simplified :: acc) (second :: third :: rest))))
-    | <span data-count="365">f</span>irst :: second :: rest -&gt;
+    | <span data-count="381">f</span>irst :: second :: rest -&gt;
       (match simplify_pair first second rest with
        | <span data-count="7">S</span>ome rewritten -&gt;
          let rewritten_reversed = List.rev_append rewritten acc in
          <span data-count="7">l</span>oop true rewritten_reversed rest
-       | <span data-count="358">N</span>one -&gt;
+       | <span data-count="374">N</span>one -&gt;
          (match simplify_single first with
           | <span data-count="1">N</span>one -&gt; loop true acc (second :: rest)
-          | <span data-count="357">S</span>ome simplified -&gt; loop changed (simplified :: acc) (second :: rest)))
-    | <span data-count="365">[</span> last ] -&gt;
+          | <span data-count="373">S</span>ome simplified -&gt; loop changed (simplified :: acc) (second :: rest)))
+    | <span data-count="381">[</span> last ] -&gt;
       (match simplify_single last with
        | <span data-count="1">N</span>one -&gt; List.re<span data-count="1">v</span> acc, true
-       | <span data-count="364">S</span>ome simplified -&gt; List.re<span data-count="364">v</span> (simplified :: acc), changed)
+       | <span data-count="380">S</span>ome simplified -&gt; List.re<span data-count="380">v</span> (simplified :: acc), changed)
     | <span data-count="10">[</span>] -&gt; List.re<span data-count="10">v</span> acc, changed
   in
   loop false [] instructions
 ;;
 
 let same_memory_key (base1, offset1) (base2, offset2) =
-  <span data-count="8148">e</span>qual_re<span data-count="8148">g</span> base1 base2 &amp;&amp; <span data-count="6014">o</span>ffset1 = offset2
+  <span data-count="8235">e</span>qual_re<span data-count="8235">g</span> base1 base2 &amp;&amp; <span data-count="6063">o</span>ffset1 = offset2
 ;;
 
 let find_cached_load key cache =
-  <span data-count="1415">L</span>ist.find_map
+  <span data-count="1453">L</span>ist.find_map
     (fun (cached_key, cached_register) -&gt;
-       <span data-count="2426">i</span>f same_memory_key cached_key key then <span data-count="109">S</span>ome cached_register else <span data-count="2317">N</span>one)
+       <span data-count="2461">i</span>f same_memory_key cached_key key then <span data-count="112">S</span>ome cached_register else <span data-count="2349">N</span>one)
     cache
 ;;
 
 let remove_cached_key key cache =
-  <span data-count="2849">L</span>ist.filter (fun (cached_key, _) -&gt; <span data-count="4961">n</span>ot (same_memory_ke<span data-count="4961">y</span> cached_key key)) cache
+  <span data-count="2916">L</span>ist.filter (fun (cached_key, _) -&gt; <span data-count="5013">n</span>ot (same_memory_ke<span data-count="5013">y</span> cached_key key)) cache
 ;;
 
 let invalidate_register register cache =
-  <span data-count="6437">L</span>ist.filter
+  <span data-count="6618">L</span>ist.filter
     (fun ((base, _), cached_register) -&gt;
-       <span data-count="15635">n</span>ot (equal_re<span data-count="15635">g</span> cached_register registe<span data-count="1721">r</span> || equal_re<span data-count="13914">g</span> base registe<span data-count="884">r</span>))
+       <span data-count="15890">n</span>ot (equal_re<span data-count="15890">g</span> cached_register registe<span data-count="1773">r</span> || equal_re<span data-count="14117">g</span> base registe<span data-count="917">r</span>))
     cache
 ;;
 
 let track_load_cache instructions =
-  <span data-count="375">l</span>et rec loop changed cache acc = function
-    | <span data-count="375">[</span>] -&gt; List.re<span data-count="375">v</span> acc, changed
-    | <span data-count="11058">i</span>nstruction :: rest -&gt;
+  <span data-count="391">l</span>et rec loop changed cache acc = function
+    | <span data-count="391">[</span>] -&gt; List.re<span data-count="391">v</span> acc, changed
+    | <span data-count="11342">i</span>nstruction :: rest -&gt;
       (match instruction with
-       | <span data-count="1415">L</span>d (destination_register, key) -&gt;
+       | <span data-count="1453">L</span>d (destination_register, key) -&gt;
          (match find_cached_load key cache with
-          | <span data-count="109">S</span>ome cached_register when equal_re<span data-count="109">g</span> cached_register destination_register -&gt;
-            <span data-count="11">l</span>oop true cache acc rest
-          | <span data-count="98">S</span>ome cached_register -&gt;
+          | <span data-count="112">S</span>ome cached_register when equal_re<span data-count="112">g</span> cached_register destination_register -&gt;
+            <span data-count="12">l</span>oop true cache acc rest
+          | <span data-count="100">S</span>ome cached_register -&gt;
             let cache_without_destination =
               invalidate_register destination_register cache
             in
-            <span data-count="98">l</span>et next_cache = (key, destination_register) :: cache_without_destination in
+            <span data-count="100">l</span>et next_cache = (key, destination_register) :: cache_without_destination in
             loop true next_cache (Mv (destination_register, cached_register) :: acc) rest
-          | <span data-count="1306">N</span>one -&gt;
+          | <span data-count="1341">N</span>one -&gt;
             let cache_without_destination =
               invalidate_register destination_register cache
             in
-            <span data-count="1306">l</span>et next_cache = (key, destination_register) :: cache_without_destination in
+            <span data-count="1341">l</span>et next_cache = (key, destination_register) :: cache_without_destination in
             loop changed next_cache (instruction :: acc) rest)
-       | <span data-count="2849">S</span>d (stored_register, key) -&gt;
+       | <span data-count="2916">S</span>d (stored_register, key) -&gt;
          let next_cache =
            remove_cached_key key cache
-           |&gt; <span data-count="2849">f</span>un cache_without_key -&gt; <span data-count="2849">(</span>key, stored_register) :: cache_without_key
+           |&gt; <span data-count="2916">f</span>un cache_without_key -&gt; <span data-count="2916">(</span>key, stored_register) :: cache_without_key
          in
-         <span data-count="2849">l</span>oop changed next_cache (instruction :: acc) rest
-       | <span data-count="794">C</span>all _ | <span data-count="348">R</span>et | <span data-count="65">B</span>eq _ | <span data-count="75">J</span> _ | <span data-count="479">L</span>abel _ -&gt; loop changed [] (instruction :: acc) rest
-       | <span data-count="5033">_</span> -&gt;
+         <span data-count="2916">l</span>oop changed next_cache (instruction :: acc) rest
+       | <span data-count="797">C</span>all _ | <span data-count="364">R</span>et | <span data-count="65">B</span>eq _ | <span data-count="75">J</span> _ | <span data-count="495">L</span>abel _ -&gt; loop changed [] (instruction :: acc) rest
+       | <span data-count="5177">_</span> -&gt;
          let next_cache =
            match write_reg instruction with
-           | <span data-count="5033">S</span>ome written_register -&gt; invalidate_registe<span data-count="5033">r</span> written_register cache
+           | <span data-count="5177">S</span>ome written_register -&gt; invalidate_registe<span data-count="5177">r</span> written_register cache
            | <span data-count="0">N</span>one -&gt; cache
          in
          loop changed next_cache (instruction :: acc) rest)
@@ -1272,77 +1272,77 @@ let track_load_cache instructions =
 ;;
 
 let reads_slot (slot_base, slot_offset) = function
-  | <span data-count="3046">L</span>d (_, (base, offset)) -&gt; equal_re<span data-count="3046">g</span> base slot_base &amp;&amp; <span data-count="2902">o</span>ffset = slot_offset
-  | <span data-count="27160">_</span> -&gt; false
+  | <span data-count="3125">L</span>d (_, (base, offset)) -&gt; equal_re<span data-count="3125">g</span> base slot_base &amp;&amp; <span data-count="2975">o</span>ffset = slot_offset
+  | <span data-count="27707">_</span> -&gt; false
 ;;
 
 let stores_slot (slot_base, slot_offset) = function
-  | <span data-count="7379">S</span>d (_, (base, offset)) -&gt; equal_re<span data-count="7379">g</span> base slot_base &amp;&amp; <span data-count="5017">o</span>ffset = slot_offset
-  | <span data-count="22827">_</span> -&gt; false
+  | <span data-count="7496">S</span>d (_, (base, offset)) -&gt; equal_re<span data-count="7496">g</span> base slot_base &amp;&amp; <span data-count="5064">o</span>ffset = slot_offset
+  | <span data-count="23336">_</span> -&gt; false
 ;;
 
 let writes_slot_base (slot_base, _) instruction =
-  <span data-count="32381">m</span>atch write_reg instruction with
-  | <span data-count="24620">S</span>ome written_register -&gt; equal_reg written_register slot_base
-  | <span data-count="7761">N</span>one -&gt; false
+  <span data-count="33042">m</span>atch write_reg instruction with
+  | <span data-count="25164">S</span>ome written_register -&gt; equal_reg written_register slot_base
+  | <span data-count="7878">N</span>one -&gt; false
 ;;
 
 let can_prove_store_dead ~allow_drop_at_block_end slot following_instructions =
-  <span data-count="2846">l</span>et rec walk = function
-    | <span data-count="1622">[</span>] -&gt; allow_drop_at_block_end
-    | <span data-count="30206">i</span>nstruction :: rest -&gt;
+  <span data-count="2913">l</span>et rec walk = function
+    | <span data-count="1628">[</span>] -&gt; allow_drop_at_block_end
+    | <span data-count="30832">i</span>nstruction :: rest -&gt;
       (match
-         ( reads_slo<span data-count="30206">t</span> slot instruction
-         , stores_slo<span data-count="30206">t</span> slot instruction
-         , writes_slot_bas<span data-count="30206">e</span> slot instruction )
+         ( reads_slo<span data-count="30832">t</span> slot instruction
+         , stores_slo<span data-count="30832">t</span> slot instruction
+         , writes_slot_bas<span data-count="30832">e</span> slot instruction )
        with
-       | <span data-count="108">t</span>rue, _, _ -&gt; false
+       | <span data-count="111">t</span>rue, _, _ -&gt; false
        | <span data-count="1">_</span>, true, _ -&gt; true
-       | <span data-count="1115">_</span>, _, true -&gt; false
-       | <span data-count="28982">_</span> -&gt; walk rest)
+       | <span data-count="1173">_</span>, _, true -&gt; false
+       | <span data-count="29547">_</span> -&gt; walk rest)
   in
   walk following_instructions
 ;;
 
 let eliminate_dead_stores_in_block ~allow_drop_at_block_end block =
-  <span data-count="1786">l</span>et rec loop changed acc = function
-    | <span data-count="1786">[</span>] -&gt; List.re<span data-count="1786">v</span> acc, changed
-    | <span data-count="2846">S</span>d (_, slot) :: rest when can_prove_store_dea<span data-count="2846">d</span> ~allow_drop_at_block_end slot rest -&gt;
+  <span data-count="1821">l</span>et rec loop changed acc = function
+    | <span data-count="1821">[</span>] -&gt; List.re<span data-count="1821">v</span> acc, changed
+    | <span data-count="2913">S</span>d (_, slot) :: rest when can_prove_store_dea<span data-count="2913">d</span> ~allow_drop_at_block_end slot rest -&gt;
       <span data-count="3">l</span>oop true acc rest
-    | <span data-count="2843">(</span>Sd (_, _) as store_instruction) :: rest -&gt;
+    | <span data-count="2910">(</span>Sd (_, _) as store_instruction) :: rest -&gt;
       loop changed (store_instruction :: acc) rest
-    | <span data-count="6437">i</span>nstruction :: rest -&gt; loop changed (instruction :: acc) rest
+    | <span data-count="6618">i</span>nstruction :: rest -&gt; loop changed (instruction :: acc) rest
   in
   loop false [] block
 ;;
 
 let eliminate_local_dead_stores instructions =
-  <span data-count="375">l</span>et is_barrier = function
-    | <span data-count="794">C</span>all _ | <span data-count="348">R</span>et | <span data-count="65">B</span>eq _ | <span data-count="75">J</span> _ | <span data-count="479">L</span>abel _ -&gt; true
-    | <span data-count="9283">_</span> -&gt; false
+  <span data-count="391">l</span>et is_barrier = function
+    | <span data-count="797">C</span>all _ | <span data-count="364">R</span>et | <span data-count="65">B</span>eq _ | <span data-count="75">J</span> _ | <span data-count="495">L</span>abel _ -&gt; true
+    | <span data-count="9531">_</span> -&gt; false
   in
   let rec split_non_barrier acc = function
-    | <span data-count="11044">i</span>nstruction :: rest when not (is_barrie<span data-count="11044">r</span> instruction) -&gt;
-      <span data-count="9283">s</span>plit_non_barrier (instruction :: acc) rest
-    | <span data-count="1786">r</span>emaining -&gt; List.re<span data-count="1786">v</span> acc, remaining
+    | <span data-count="11327">i</span>nstruction :: rest when not (is_barrie<span data-count="11327">r</span> instruction) -&gt;
+      <span data-count="9531">s</span>plit_non_barrier (instruction :: acc) rest
+    | <span data-count="1821">r</span>emaining -&gt; List.re<span data-count="1821">v</span> acc, remaining
   in
   let rec process changed acc = function
-    | <span data-count="350">[</span>] -&gt; List.re<span data-count="350">v</span> acc, changed
-    | <span data-count="1786">i</span>nstructions -&gt;
+    | <span data-count="366">[</span>] -&gt; List.re<span data-count="366">v</span> acc, changed
+    | <span data-count="1821">i</span>nstructions -&gt;
       let block, remaining = split_non_barrier [] instructions in
-      <span data-count="1786">l</span>et allow_drop_at_block_end =
+      <span data-count="1821">l</span>et allow_drop_at_block_end =
         match remaining with
-        | <span data-count="348">R</span>et :: _ -&gt; true
-        | <span data-count="1438">_</span> -&gt; false
+        | <span data-count="364">R</span>et :: _ -&gt; true
+        | <span data-count="1457">_</span> -&gt; false
       in
       let optimized_block, block_changed =
         eliminate_dead_stores_in_block ~allow_drop_at_block_end block
       in
-      <span data-count="1786">(</span>match remaining with
-       | <span data-count="1761">b</span>arrier :: tail -&gt;
+      <span data-count="1821">(</span>match remaining with
+       | <span data-count="1796">b</span>arrier :: tail -&gt;
          process
            (change<span data-count="0">d</span> || block_change<span data-count="2">d</span>)
-           (barrier :: List.rev_appen<span data-count="1761">d</span> optimized_block acc)
+           (barrier :: List.rev_appen<span data-count="1796">d</span> optimized_block acc)
            tail
        | <span data-count="25">[</span>] -&gt; List.re<span data-count="25">v</span> (List.rev_appen<span data-count="25">d</span> optimized_block acc), change<span data-count="0">d</span> || block_change<span data-count="0">d</span>)
   in
@@ -1350,56 +1350,56 @@ let eliminate_local_dead_stores instructions =
 ;;
 
 let find_redundant_restore_store loaded_register loaded_slot following_instructions =
-  <span data-count="1306">l</span>et is_barrier = function
-    | <span data-count="418">C</span>all _ | <span data-count="341">R</span>et | <span data-count="0">B</span>eq _ | <span data-count="14">J</span> _ | <span data-count="11">L</span>abel _ -&gt; true
-    | <span data-count="2175">_</span> -&gt; false
+  <span data-count="1341">l</span>et is_barrier = function
+    | <span data-count="418">C</span>all _ | <span data-count="357">R</span>et | <span data-count="0">B</span>eq _ | <span data-count="14">J</span> _ | <span data-count="11">L</span>abel _ -&gt; true
+    | <span data-count="2210">_</span> -&gt; false
   in
   let rec search prefix = function
     | <span data-count="4">[</span>] -&gt; List.rev_appen<span data-count="4">d</span> prefix [], false
-    | <span data-count="2959">i</span>nstruction :: rest
-      when is_barrie<span data-count="2959">r</span> instructio<span data-count="784">n</span> || writes_slot_bas<span data-count="2175">e</span> loaded_slot instructio<span data-count="372">n</span> -&gt;
-      <span data-count="1156">L</span>ist.rev_appen<span data-count="1156">d</span> prefix (instruction :: rest), false
+    | <span data-count="3010">i</span>nstruction :: rest
+      when is_barrie<span data-count="3010">r</span> instructio<span data-count="800">n</span> || writes_slot_bas<span data-count="2210">e</span> loaded_slot instructio<span data-count="391">n</span> -&gt;
+      <span data-count="1191">L</span>ist.rev_appen<span data-count="1191">d</span> prefix (instruction :: rest), false
     | <span data-count="382">S</span>d (stored_register, store_slot) :: rest
       when same_memory_ke<span data-count="382">y</span> loaded_slot store_slot
            &amp;&amp; <span data-count="5">e</span>qual_re<span data-count="5">g</span> stored_register loaded_register -&gt;
       <span data-count="3">L</span>ist.rev_appen<span data-count="3">d</span> prefix rest, true
     | <span data-count="379">S</span>d (stored_register, store_slot) :: rest when same_memory_ke<span data-count="379">y</span> loaded_slot store_slot
       -&gt; <span data-count="2">L</span>ist.rev_appen<span data-count="2">d</span> prefix (Sd (stored_register, store_slot) :: rest), false
-    | <span data-count="1798">i</span>nstruction :: rest -&gt;
+    | <span data-count="1814">i</span>nstruction :: rest -&gt;
       (match write_reg instruction with
-       | <span data-count="1421">S</span>ome written_register when equal_re<span data-count="1421">g</span> written_register loaded_register -&gt;
+       | <span data-count="1437">S</span>ome written_register when equal_re<span data-count="1437">g</span> written_register loaded_register -&gt;
          <span data-count="141">L</span>ist.rev_appen<span data-count="141">d</span> prefix (instruction :: rest), false
-       | <span data-count="1657">_</span> -&gt; search (instruction :: prefix) rest)
+       | <span data-count="1673">_</span> -&gt; search (instruction :: prefix) rest)
   in
   search [] following_instructions
 ;;
 
 let eliminate_redundant_restore_stores instructions =
-  <span data-count="375">l</span>et rec loop changed acc = function
-    | <span data-count="1306">(</span>Ld (loaded_register, loaded_slot) as load_instruction) :: rest -&gt;
+  <span data-count="391">l</span>et rec loop changed acc = function
+    | <span data-count="1341">(</span>Ld (loaded_register, loaded_slot) as load_instruction) :: rest -&gt;
       let new_rest, removed =
         find_redundant_restore_store loaded_register loaded_slot rest
       in
-      <span data-count="1306">l</span>oop (change<span data-count="0">d</span> || remove<span data-count="3">d</span>) (load_instruction :: acc) new_rest
-    | <span data-count="9738">i</span>nstruction :: rest -&gt; loop changed (instruction :: acc) rest
-    | <span data-count="375">[</span>] -&gt; List.re<span data-count="375">v</span> acc, changed
+      <span data-count="1341">l</span>oop (change<span data-count="0">d</span> || remove<span data-count="3">d</span>) (load_instruction :: acc) new_rest
+    | <span data-count="9986">i</span>nstruction :: rest -&gt; loop changed (instruction :: acc) rest
+    | <span data-count="391">[</span>] -&gt; List.re<span data-count="391">v</span> acc, changed
   in
   loop false [] instructions
 ;;
 
 let optimize instructions =
-  <span data-count="148">l</span>et rec fixed_point current =
-    <span data-count="375">l</span>et after_local, changed_local = one_pass current in
-    <span data-count="375">l</span>et after_load_cache, changed_cache = track_load_cache after_local in
-    <span data-count="375">l</span>et after_redundant_store, changed_redundant_store =
+  <span data-count="154">l</span>et rec fixed_point current =
+    <span data-count="391">l</span>et after_local, changed_local = one_pass current in
+    <span data-count="391">l</span>et after_load_cache, changed_cache = track_load_cache after_local in
+    <span data-count="391">l</span>et after_redundant_store, changed_redundant_store =
       eliminate_redundant_restore_stores after_load_cache
     in
-    <span data-count="375">l</span>et after_dead_store, changed_dead_store =
+    <span data-count="391">l</span>et after_dead_store, changed_dead_store =
       eliminate_local_dead_stores after_redundant_store
     in
-    <span data-count="375">i</span>f changed_loca<span data-count="212">l</span> || changed_cach<span data-count="12">e</span> || changed_redundant_stor<span data-count="1">e</span> || changed_dead_stor<span data-count="2">e</span>
-    then <span data-count="227">f</span>ixed_point after_dead_store
-    else <span data-count="148">a</span>fter_dead_store
+    <span data-count="391">i</span>f changed_loca<span data-count="221">l</span> || changed_cach<span data-count="13">e</span> || changed_redundant_stor<span data-count="1">e</span> || changed_dead_stor<span data-count="2">e</span>
+    then <span data-count="237">f</span>ixed_point after_dead_store
+    else <span data-count="154">a</span>fter_dead_store
   in
   fixed_point instructions
 ;;

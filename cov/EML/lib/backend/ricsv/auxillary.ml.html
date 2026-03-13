@@ -264,11 +264,11 @@ let is_caller_saved = function
   | <span data-count="0">Z</span>ero | <span data-count="0">R</span>A | <span data-count="0">S</span>P | <span data-count="0">S</span> _ -&gt; false
 ;;
 
-let to_tagged_bool dst = <span data-count="24">a</span>d<span data-count="24">d</span> dst dst dst @ add_tag_item<span data-count="24">s</span> dst 1
+let to_tagged_bool dst = <span data-count="26">a</span>d<span data-count="26">d</span> dst dst dst @ add_tag_item<span data-count="26">s</span> dst 1
 
 let compare_ordering dst left_reg right_reg ~invert =
-  <span data-count="11">l</span>et base = slt dst left_reg right_reg in
-  <span data-count="11">(</span>if invert then <span data-count="4">b</span>ase @ xor<span data-count="4">i</span> dst dst 1 else <span data-count="7">b</span>ase) @ to_tagged_boo<span data-count="11">l</span> dst
+  <span data-count="13">l</span>et base = slt dst left_reg right_reg in
+  <span data-count="13">(</span>if invert then <span data-count="4">b</span>ase @ xor<span data-count="4">i</span> dst dst 1 else <span data-count="9">b</span>ase) @ to_tagged_boo<span data-count="13">l</span> dst
 ;;
 
 let compare_eq_ne dst left_reg right_reg ~is_eq =
@@ -277,15 +277,15 @@ let compare_eq_ne dst left_reg right_reg ~is_eq =
 ;;
 
 let bin_op dst op left_reg right_reg : (instr list, string) result =
-  <span data-count="136">m</span>atch op with
-  | <span data-count="68">"</span>+" -&gt; Ok (ad<span data-count="68">d</span> dst left_reg right_reg @ add_tag_item<span data-count="68">s</span> dst (-1))
+  <span data-count="152">m</span>atch op with
+  | <span data-count="80">"</span>+" -&gt; Ok (ad<span data-count="80">d</span> dst left_reg right_reg @ add_tag_item<span data-count="80">s</span> dst (-1))
   | <span data-count="23">"</span>-" -&gt; Ok (su<span data-count="23">b</span> dst left_reg right_reg @ add_tag_item<span data-count="23">s</span> dst 1)
-  | <span data-count="19">"</span>*" -&gt;
+  | <span data-count="21">"</span>*" -&gt;
     Ok
-      (srl<span data-count="19">i</span> left_reg left_reg 1
-       @ add<span data-count="19">i</span> right_reg right_reg (-1)
-       @ mu<span data-count="19">l</span> dst left_reg right_reg
-       @ add_tag_item<span data-count="19">s</span> dst 1)
+      (srl<span data-count="21">i</span> left_reg left_reg 1
+       @ add<span data-count="21">i</span> right_reg right_reg (-1)
+       @ mu<span data-count="21">l</span> dst left_reg right_reg
+       @ add_tag_item<span data-count="21">s</span> dst 1)
   | <span data-count="2">"</span>/" -&gt;
     Ok
       (srl<span data-count="2">i</span> left_reg left_reg 1
@@ -293,7 +293,7 @@ let bin_op dst op left_reg right_reg : (instr list, string) result =
        @ di<span data-count="2">v</span> dst left_reg right_reg
        @ ad<span data-count="2">d</span> dst dst dst
        @ add_tag_item<span data-count="2">s</span> dst 1)
-  | <span data-count="6">"</span>&lt;" -&gt; Ok (compare_orderin<span data-count="6">g</span> dst left_reg right_reg ~invert:false)
+  | <span data-count="8">"</span>&lt;" -&gt; Ok (compare_orderin<span data-count="8">g</span> dst left_reg right_reg ~invert:false)
   | <span data-count="1">"</span>&gt;" -&gt; Ok (compare_orderin<span data-count="1">g</span> dst right_reg left_reg ~invert:false)
   | <span data-count="4">"</span>&lt;=" -&gt; Ok (compare_orderin<span data-count="4">g</span> dst right_reg left_reg ~invert:true)
   | <span data-count="0">"</span>&gt;=" -&gt; Ok (compare_orderin<span data-count="0">g</span> dst left_reg right_reg ~invert:true)
@@ -305,26 +305,26 @@ let bin_op dst op left_reg right_reg : (instr list, string) result =
 let bin_oper_to_string = Utils.Pretty_printer.string_of_bin_op
 
 let vars_in_caller_saved_regs environment =
-  <span data-count="258">B</span>ase.Map.to_alist environment
-  |&gt; <span data-count="258">L</span>ist.filter_map (fun (variable_name, variable_location) -&gt;
+  <span data-count="264">B</span>ase.Map.to_alist environment
+  |&gt; <span data-count="264">L</span>ist.filter_map (fun (variable_name, variable_location) -&gt;
     <span data-count="1236">m</span>atch variable_location with
     | <span data-count="0">L</span>oc_reg register when is_caller_save<span data-count="0">d</span> register -&gt; <span data-count="0">S</span>ome (variable_name, register)
     | <span data-count="1236">_</span> -&gt; None)
 ;;
 
 let indices_of_args_to_spill generation_state immediate_arguments =
-  <span data-count="258">l</span>et argument_overwrites_result_register = function
-    | <span data-count="162">I</span>mmediateConst _ -&gt; false
+  <span data-count="264">l</span>et argument_overwrites_result_register = function
+    | <span data-count="168">I</span>mmediateConst _ -&gt; false
     | <span data-count="236">I</span>mmediateVar function_name -&gt; Base.Map.mem generation_state.arity_map function_name
   in
   Base.List.foldi
     immediate_arguments
     ~init:[]
     ~f:(fun argument_index spilled_indices immediate_argument -&gt;
-      <span data-count="398">i</span>f argument_overwrites_result_register immediate_argument
+      <span data-count="404">i</span>f argument_overwrites_result_register immediate_argument
       then <span data-count="27">a</span>rgument_index :: spilled_indices
-      else <span data-count="371">s</span>pilled_indices)
-  |&gt; <span data-count="258">L</span>ist.rev
+      else <span data-count="377">s</span>pilled_indices)
+  |&gt; <span data-count="264">L</span>ist.rev
 ;;
 
 type call_style =
@@ -347,16 +347,16 @@ type call_style =
 
 let classify_call ~argument_count ~callee_arity_opt ~function_name ~arguments : call_style
   =
-  <span data-count="240">m</span>atch callee_arity_opt with
+  <span data-count="246">m</span>atch callee_arity_opt with
   | <span data-count="27">S</span>ome 0 when argument_count = 1 -&gt; <span data-count="27">N</span>ullary function_name
-  | <span data-count="145">S</span>ome arity when argument_count &gt; arity -&gt;
+  | <span data-count="151">S</span>ome arity when argument_count &gt; arity -&gt;
     <span data-count="8">C</span>urryChain
       { function_name
       ; arity
       ; initial_arguments = Base.List.tak<span data-count="8">e</span> arguments arity
       ; remaining_arguments = Base.List.dro<span data-count="8">p</span> arguments arity
       }
-  | <span data-count="137">S</span>ome arity when argument_count = arity -&gt; <span data-count="114">D</span>irect { function_name; arguments }
+  | <span data-count="143">S</span>ome arity when argument_count = arity -&gt; <span data-count="120">D</span>irect { function_name; arguments }
   | <span data-count="91">_</span> -&gt; ViaApplyNargs { function_name; argument_count; arguments }
 ;;
 </code></pre>

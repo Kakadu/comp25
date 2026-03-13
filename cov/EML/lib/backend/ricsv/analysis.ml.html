@@ -702,16 +702,16 @@ type analysis_result =
   ; resolve : int -&gt; string -&gt; (string * int) option
   }
 
-let sum_by f xs = <span data-count="230">L</span>ist.fold_left (fun acc x -&gt; <span data-count="580">a</span>cc + <span data-count="580">f</span> x) 0 xs
-let max_by f xs = <span data-count="460">L</span>ist.fold_left (fun acc x -&gt; <span data-count="736">m</span>ax acc (<span data-count="736">f</span> x)) 0 xs
+let sum_by f xs = <span data-count="236">L</span>ist.fold_left (fun acc x -&gt; <span data-count="592">a</span>cc + <span data-count="592">f</span> x) 0 xs
+let max_by f xs = <span data-count="472">L</span>ist.fold_left (fun acc x -&gt; <span data-count="748">m</span>ax acc (<span data-count="748">f</span> x)) 0 xs
 
 let rec slots_in_imm = function
-  | <span data-count="756">I</span>mmediateVar _ | <span data-count="239">I</span>mmediateConst _ -&gt; 0
+  | <span data-count="780">I</span>mmediateVar _ | <span data-count="259">I</span>mmediateConst _ -&gt; 0
 
 and slots_in_cexpr = function
   | <span data-count="64">C</span>omplexImmediate imm -&gt; slots_in_imm imm
   | <span data-count="29">C</span>omplexUnit -&gt; 0
-  | <span data-count="136">C</span>omplexBinOper (_, left, right) -&gt; slots_in_im<span data-count="136">m</span> left + slots_in_im<span data-count="136">m</span> right
+  | <span data-count="152">C</span>omplexBinOper (_, left, right) -&gt; slots_in_im<span data-count="152">m</span> left + slots_in_im<span data-count="152">m</span> right
   | <span data-count="5">C</span>omplexUnarOper (_, imm) -&gt; slots_in_imm imm
   | <span data-count="18">C</span>omplexTuple (first, second, rest) -&gt;
     let elts = first :: second :: rest in
@@ -720,14 +720,14 @@ and slots_in_cexpr = function
   | <span data-count="0">C</span>omplexList imm_list -&gt;
     let n = List.length imm_list in
     <span data-count="0">n</span> + sum_b<span data-count="0">y</span> slots_in_imm imm_list
-  | <span data-count="212">C</span>omplexApp (first, second, rest) -&gt;
+  | <span data-count="218">C</span>omplexApp (first, second, rest) -&gt;
     (* +1 for curried-call intermediate; +1 per arg for spill_dangerous_args.
        +8 for spill_caller_saved_vars_to_frame at start of every invocation (can spill a0-a7).
        +N when nargs &gt;= 2: margin so partial stays above argv (confirmed: overwrite → eml_applyN gets c=0x3). *)
     let args = first :: second :: rest in
     let argument_count = List.length args in
-    <span data-count="212">l</span>et additional_margin = if argument_count &gt;= 2 then <span data-count="212">1</span>2 else <span data-count="0">0</span> in
-    1 + 8 + argument_count + additional_margin + sum_b<span data-count="212">y</span> slots_in_imm args
+    <span data-count="218">l</span>et additional_margin = if argument_count &gt;= 2 then <span data-count="218">1</span>2 else <span data-count="0">0</span> in
+    1 + 8 + argument_count + additional_margin + sum_b<span data-count="218">y</span> slots_in_imm args
   | <span data-count="0">C</span>omplexOption None -&gt; 0
   | <span data-count="0">C</span>omplexOption (Some imm) -&gt; slots_in_imm imm
   | <span data-count="0">C</span>omplexLambda (_, body) -&gt; slots_in_anf body
@@ -735,24 +735,24 @@ and slots_in_cexpr = function
     1 + slots_in_im<span data-count="27">m</span> cond + slots_in_an<span data-count="27">f</span> then_e + slots_in_an<span data-count="27">f</span> else_e
 
 and slots_in_anf = function
-  | <span data-count="181">A</span>nfExpr cexp -&gt; slots_in_cexpr cexp
-  | <span data-count="357">A</span>nfLet (_, _, cexp, cont) -&gt; 1 + slots_in_cexp<span data-count="357">r</span> cexp + slots_in_an<span data-count="357">f</span> cont
+  | <span data-count="193">A</span>nfExpr cexp -&gt; slots_in_cexpr cexp
+  | <span data-count="367">A</span>nfLet (_, _, cexp, cont) -&gt; 1 + slots_in_cexp<span data-count="367">r</span> cexp + slots_in_an<span data-count="367">f</span> cont
 ;;
 
 let rec max_stack_args_cexpr = function
   | <span data-count="64">C</span>omplexImmediate _ | <span data-count="29">C</span>omplexUnit -&gt; 0
-  | <span data-count="136">C</span>omplexBinOper (_, left, right) -&gt;
-    max (max_stack_args_im<span data-count="136">m</span> left) (max_stack_args_im<span data-count="136">m</span> right)
+  | <span data-count="152">C</span>omplexBinOper (_, left, right) -&gt;
+    max (max_stack_args_im<span data-count="152">m</span> left) (max_stack_args_im<span data-count="152">m</span> right)
   | <span data-count="5">C</span>omplexUnarOper (_, imm) -&gt; max_stack_args_imm imm
   | <span data-count="18">C</span>omplexTuple (first, second, rest) -&gt;
     max_by max_stack_args_imm (first :: second :: rest)
   | <span data-count="47">C</span>omplexField (imm, _) -&gt; max_stack_args_imm imm
   | <span data-count="0">C</span>omplexList imm_list -&gt; max_by max_stack_args_imm imm_list
-  | <span data-count="212">C</span>omplexApp (_first, second, rest) -&gt;
-    let argument_count = 1 + List.lengt<span data-count="212">h</span> rest in
+  | <span data-count="218">C</span>omplexApp (_first, second, rest) -&gt;
+    let argument_count = 1 + List.lengt<span data-count="218">h</span> rest in
     let required_stack_words = argument_count in
     let max_nested_argument_pressure = max_by max_stack_args_imm (second :: rest) in
-    <span data-count="212">m</span>ax required_stack_words max_nested_argument_pressure
+    <span data-count="218">m</span>ax required_stack_words max_nested_argument_pressure
   | <span data-count="0">C</span>omplexOption None -&gt; 0
   | <span data-count="0">C</span>omplexOption (Some imm) -&gt; max_stack_args_imm imm
   | <span data-count="0">C</span>omplexLambda (_, body) -&gt; max_stack_args_anf body
@@ -762,17 +762,17 @@ let rec max_stack_args_cexpr = function
       (ma<span data-count="27">x</span> (max_stack_args_an<span data-count="27">f</span> then_e) (max_stack_args_an<span data-count="27">f</span> else_e))
 
 and max_stack_args_imm = function
-  | <span data-count="514">I</span>mmediateVar _ | <span data-count="205">I</span>mmediateConst _ -&gt; 0
+  | <span data-count="532">I</span>mmediateVar _ | <span data-count="225">I</span>mmediateConst _ -&gt; 0
 
 and max_stack_args_anf = function
-  | <span data-count="181">A</span>nfExpr cexp -&gt; max_stack_args_cexpr cexp
-  | <span data-count="357">A</span>nfLet (_, _, cexp, cont) -&gt; max (max_stack_args_cexp<span data-count="357">r</span> cexp) (max_stack_args_an<span data-count="357">f</span> cont)
+  | <span data-count="193">A</span>nfExpr cexp -&gt; max_stack_args_cexpr cexp
+  | <span data-count="367">A</span>nfLet (_, _, cexp, cont) -&gt; max (max_stack_args_cexp<span data-count="367">r</span> cexp) (max_stack_args_an<span data-count="367">f</span> cont)
 ;;
 
 let rec max_create_tuple_array_cexpr = function
   | <span data-count="64">C</span>omplexImmediate _ | <span data-count="29">C</span>omplexUnit -&gt; 0
-  | <span data-count="136">C</span>omplexBinOper (_, left, right) -&gt;
-    max (max_create_tuple_array_im<span data-count="136">m</span> left) (max_create_tuple_array_im<span data-count="136">m</span> right)
+  | <span data-count="152">C</span>omplexBinOper (_, left, right) -&gt;
+    max (max_create_tuple_array_im<span data-count="152">m</span> left) (max_create_tuple_array_im<span data-count="152">m</span> right)
   | <span data-count="5">C</span>omplexUnarOper (_, imm) -&gt; max_create_tuple_array_imm imm
   | <span data-count="18">C</span>omplexTuple (first, second, rest) -&gt;
     let elts = first :: second :: rest in
@@ -783,7 +783,7 @@ let rec max_create_tuple_array_cexpr = function
     let bytes_per_cons_cell = 2 * word_size in
     let bytes_from_elements = sum_by max_create_tuple_array_imm imm_list in
     <span data-count="0">(</span>bytes_per_cons_cell * List.lengt<span data-count="0">h</span> imm_list) + bytes_from_elements
-  | <span data-count="212">C</span>omplexApp (_f, second, rest) -&gt; max_by max_create_tuple_array_imm (second :: rest)
+  | <span data-count="218">C</span>omplexApp (_f, second, rest) -&gt; max_by max_create_tuple_array_imm (second :: rest)
   | <span data-count="0">C</span>omplexOption None -&gt; 0
   | <span data-count="0">C</span>omplexOption (Some imm) -&gt; max_create_tuple_array_imm imm
   | <span data-count="0">C</span>omplexLambda (_, body) -&gt; max_create_tuple_array_anf body
@@ -793,66 +793,66 @@ let rec max_create_tuple_array_cexpr = function
       (ma<span data-count="27">x</span> (max_create_tuple_array_an<span data-count="27">f</span> then_e) (max_create_tuple_array_an<span data-count="27">f</span> else_e))
 
 and max_create_tuple_array_imm = function
-  | <span data-count="514">I</span>mmediateVar _ | <span data-count="205">I</span>mmediateConst _ -&gt; 0
+  | <span data-count="532">I</span>mmediateVar _ | <span data-count="225">I</span>mmediateConst _ -&gt; 0
 
 and max_create_tuple_array_anf = function
-  | <span data-count="181">A</span>nfExpr cexp -&gt; max_create_tuple_array_cexpr cexp
-  | <span data-count="357">A</span>nfLet (_, _, cexp, cont) -&gt;
-    max (max_create_tuple_array_cexp<span data-count="357">r</span> cexp) (max_create_tuple_array_an<span data-count="357">f</span> cont)
+  | <span data-count="193">A</span>nfExpr cexp -&gt; max_create_tuple_array_cexpr cexp
+  | <span data-count="367">A</span>nfLet (_, _, cexp, cont) -&gt;
+    max (max_create_tuple_array_cexp<span data-count="367">r</span> cexp) (max_create_tuple_array_an<span data-count="367">f</span> cont)
 ;;
 
 let rec params_of_anf = function
-  | <span data-count="185">A</span>nfExpr (ComplexLambda (pats, body)) -&gt;
+  | <span data-count="191">A</span>nfExpr (ComplexLambda (pats, body)) -&gt;
     let imms =
       List.filter_map
         (function
-          | <span data-count="185">P</span>atVariable id -&gt; Some (ImmediateVar id)
+          | <span data-count="191">P</span>atVariable id -&gt; Some (ImmediateVar id)
           | <span data-count="0">_</span> -&gt; None)
         pats
     in
-    <span data-count="185">l</span>et remaining_parameters, inner_body = params_of_anf body in
-    <span data-count="185">i</span>mms @ remaining_parameters, inner_body
-  | <span data-count="127">o</span>ther -&gt; [], other
+    <span data-count="191">l</span>et remaining_parameters, inner_body = params_of_anf body in
+    <span data-count="191">i</span>mms @ remaining_parameters, inner_body
+  | <span data-count="139">o</span>ther -&gt; [], other
 ;;
 
 let arity_map_of_program (program : anf_program) =
-  <span data-count="45">l</span>et add_function_arity map (function_identifier, arity, _) =
+  <span data-count="51">l</span>et add_function_arity map (function_identifier, arity, _) =
     <span data-count="0">B</span>ase.Map.set map ~key:function_identifier ~data:arity
   in
   List.fold_left
     (fun map -&gt; function
-       | <span data-count="127">A</span>nfValue (_, (function_identifier, arity, _), and_binds) -&gt;
+       | <span data-count="139">A</span>nfValue (_, (function_identifier, arity, _), and_binds) -&gt;
          let map = Base.Map.set map ~key:function_identifier ~data:arity in
-         <span data-count="127">L</span>ist.fold_left add_function_arity map and_binds
+         <span data-count="139">L</span>ist.fold_left add_function_arity map and_binds
        | <span data-count="0">_</span> -&gt; map)
-    (Base.Map.empt<span data-count="45">y</span> (module Base.String))
+    (Base.Map.empt<span data-count="51">y</span> (module Base.String))
     program
 ;;
 
 let analyze (program : anf_program) =
-  <span data-count="45">l</span>et arity_map = arity_map_of_program program in
-  <span data-count="45">l</span>et analyzed_functions_raw =
+  <span data-count="51">l</span>et arity_map = arity_map_of_program program in
+  <span data-count="51">l</span>et analyzed_functions_raw =
     List.filter_map
       (function
-        | <span data-count="127">A</span>nfValue (rec_flag, (func_name, arity, body), _) -&gt;
+        | <span data-count="139">A</span>nfValue (rec_flag, (func_name, arity, body), _) -&gt;
           let params, body = params_of_anf body in
-          <span data-count="127">S</span>ome
+          <span data-count="139">S</span>ome
             ( func_name
             , arity
             , params
             , body
             , rec_flag = Rec
-            , slots_in_an<span data-count="127">f</span> body
-            , max_stack_args_an<span data-count="127">f</span> body
-            , max_create_tuple_array_an<span data-count="127">f</span> body )
+            , slots_in_an<span data-count="139">f</span> body
+            , max_stack_args_an<span data-count="139">f</span> body
+            , max_create_tuple_array_an<span data-count="139">f</span> body )
         | <span data-count="0">A</span>nfEval _ -&gt; None)
       program
   in
-  <span data-count="45">l</span>et is_valid_linker_ident name =
-    <span data-count="127">S</span>tring.lengt<span data-count="127">h</span> name &gt; 0
-    &amp;&amp; <span data-count="127">S</span>tring.for_all
+  <span data-count="51">l</span>et is_valid_linker_ident name =
+    <span data-count="139">S</span>tring.lengt<span data-count="139">h</span> name &gt; 0
+    &amp;&amp; <span data-count="139">S</span>tring.for_all
          (fun c -&gt;
-            <span data-count="600">(</span>c &gt;= 'a' &amp;&amp; <span data-count="528">c</span> &lt;= 'z'<span data-count="526">)</span>
+            <span data-count="630">(</span>c &gt;= 'a' &amp;&amp; <span data-count="558">c</span> &lt;= 'z'<span data-count="556">)</span>
             || (c &gt;= 'A' &amp;&amp; <span data-count="35">c</span> &lt;= 'Z'<span data-count="0">)</span>
             || (c &gt;= '0' &amp;&amp; <span data-count="71">c</span> &lt;= '9'<span data-count="34">)</span>
             || Char.equal c '_')
@@ -887,16 +887,16 @@ let analyze (program : anf_program) =
       | <span data-count="0">c</span> -&gt; "_u" ^ Int.to_strin<span data-count="0">g</span> (Char.cod<span data-count="0">e</span> c))
   in
   let mangle_reserved name =
-    <span data-count="127">i</span>f is_reserved name
+    <span data-count="139">i</span>f is_reserved name
     then <span data-count="1">"</span>eml_" ^ name
-    else <span data-count="126">i</span>f String.equal name "_start"
+    else <span data-count="138">i</span>f String.equal name "_start"
     then <span data-count="1">"</span>eml_start"
-    else <span data-count="125">n</span>ame
+    else <span data-count="137">n</span>ame
   in
   let asm_name_for_func func_name =
-    <span data-count="127">l</span>et base =
+    <span data-count="139">l</span>et base =
       if is_valid_linker_ident func_name
-      then <span data-count="120">f</span>unc_name
+      then <span data-count="132">f</span>unc_name
       else <span data-count="7">m</span>angle_operator_for_linke<span data-count="7">r</span> func_name
     in
     mangle_reserved base
@@ -912,16 +912,16 @@ let analyze (program : anf_program) =
         , slots_count
         , max_stack_args
         , max_create_tuple_array_bytes ) -&gt;
-         <span data-count="127">l</span>et base_asm_name = asm_name_for_func func_name in
-         <span data-count="127">l</span>et duplicate_index =
-           Base.Map.find generated_name_counts func_name |&gt; <span data-count="127">O</span>ption.value ~default:0
+         <span data-count="139">l</span>et base_asm_name = asm_name_for_func func_name in
+         <span data-count="139">l</span>et duplicate_index =
+           Base.Map.find generated_name_counts func_name |&gt; <span data-count="139">O</span>ption.value ~default:0
          in
-         <span data-count="127">l</span>et updated_generated_name_counts =
+         <span data-count="139">l</span>et updated_generated_name_counts =
            Base.Map.set generated_name_counts ~key:func_name ~data:(duplicate_index + 1)
          in
-         <span data-count="127">l</span>et asm_name =
+         <span data-count="139">l</span>et asm_name =
            if duplicate_index = 0
-           then <span data-count="126">b</span>ase_asm_name
+           then <span data-count="138">b</span>ase_asm_name
            else <span data-count="1">b</span>ase_asm_name ^ "_" ^ Int.to_strin<span data-count="1">g</span> duplicate_index
          in
          ( { func_name
@@ -935,14 +935,14 @@ let analyze (program : anf_program) =
            }
            :: reversed_functions
          , updated_generated_name_counts ))
-      ([], Base.Map.empt<span data-count="45">y</span> (module Base.String))
+      ([], Base.Map.empt<span data-count="51">y</span> (module Base.String))
       analyzed_functions_raw
   in
-  <span data-count="45">l</span>et functions = List.rev functions in
-  <span data-count="45">l</span>et has_main = List.exists (fun fn -&gt; <span data-count="127">S</span>tring.equal fn.func_name "main") functions in
-  <span data-count="45">l</span>et functions =
+  <span data-count="51">l</span>et functions = List.rev functions in
+  <span data-count="51">l</span>et has_main = List.exists (fun fn -&gt; <span data-count="139">S</span>tring.equal fn.func_name "main") functions in
+  <span data-count="51">l</span>et functions =
     if has_main
-    then <span data-count="40">f</span>unctions
+    then <span data-count="46">f</span>unctions
     else <span data-count="5">(</span>
       let synthetic_main =
         { func_name = "main"
@@ -958,23 +958,23 @@ let analyze (program : anf_program) =
       functions @ [ synthetic_main ])
   in
   let arity_map =
-    if has_main then <span data-count="40">a</span>rity_map else <span data-count="5">B</span>ase.Map.se<span data-count="5">t</span> arity_map ~key:"main" ~data:0
+    if has_main then <span data-count="46">a</span>rity_map else <span data-count="5">B</span>ase.Map.se<span data-count="5">t</span> arity_map ~key:"main" ~data:0
   in
   let resolver current_function_index variable_name =
-    <span data-count="195">l</span>et rec find_visible_function = function
-      | <span data-count="388">i</span> when i &lt; 0 -&gt; <span data-count="81">N</span>one
-      | <span data-count="307">i</span> -&gt;
+    <span data-count="201">l</span>et rec find_visible_function = function
+      | <span data-count="394">i</span> when i &lt; 0 -&gt; <span data-count="81">N</span>one
+      | <span data-count="313">i</span> -&gt;
         (match Base.List.nth functions i with
          | <span data-count="0">N</span>one -&gt; None
-         | <span data-count="307">S</span>ome fn when String.equa<span data-count="307">l</span> fn.func_name variable_name -&gt;
-           <span data-count="114">S</span>ome (fn.asm_name, List.lengt<span data-count="114">h</span> fn.params)
+         | <span data-count="313">S</span>ome fn when String.equa<span data-count="313">l</span> fn.func_name variable_name -&gt;
+           <span data-count="120">S</span>ome (fn.asm_name, List.lengt<span data-count="120">h</span> fn.params)
          | <span data-count="193">S</span>ome _ -&gt; find_visible_function (i - 1))
     in
     let start_index =
       match Base.List.nth functions current_function_index with
-      | <span data-count="195">S</span>ome fn when fn.is_rec &amp;&amp; <span data-count="27">S</span>tring.equa<span data-count="27">l</span> fn.func_name variable_name -&gt;
+      | <span data-count="201">S</span>ome fn when fn.is_rec &amp;&amp; <span data-count="27">S</span>tring.equa<span data-count="27">l</span> fn.func_name variable_name -&gt;
         <span data-count="19">c</span>urrent_function_index
-      | <span data-count="176">_</span> -&gt; current_function_index - 1
+      | <span data-count="182">_</span> -&gt; current_function_index - 1
     in
     find_visible_function start_index
   in
