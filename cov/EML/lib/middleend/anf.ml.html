@@ -760,28 +760,28 @@ let pp_arity ppf (n : arity) = <span data-count="7">S</span>tdlib.Format.pp_prin
 <span data-count="7">t</span>ype anf_program = <span data-count="35">a</span>nf_structure lis<span data-count="7">t</span> [@@deriving show { with_path = false }]
 
 let rec anf_expr_arity = function
-  | <span data-count="353">A</span>nfExpr (ComplexLambda (pat_list, body)) -&gt; List.lengt<span data-count="353">h</span> pat_list + anf_expr_arit<span data-count="353">y</span> body
+  | <span data-count="361">A</span>nfExpr (ComplexLambda (pat_list, body)) -&gt; List.lengt<span data-count="361">h</span> pat_list + anf_expr_arit<span data-count="361">y</span> body
   | <span data-count="498">A</span>nfLet (_, _, _, body) -&gt; anf_expr_arity body
-  | <span data-count="255">_</span> -&gt; 0
+  | <span data-count="259">_</span> -&gt; 0
 ;;
 
 let optimize_anf_let (is_rec, name1, expr, body) =
-  <span data-count="943">m</span>atch is_rec, body with
-  | <span data-count="439">N</span>onRec, AnfExpr (ComplexImmediate (ImmediateVar name2)) when String.equa<span data-count="439">l</span> name1 name2
-    -&gt; <span data-count="435">A</span>nfExpr expr
+  <span data-count="951">m</span>atch is_rec, body with
+  | <span data-count="447">N</span>onRec, AnfExpr (ComplexImmediate (ImmediateVar name2)) when String.equa<span data-count="447">l</span> name1 name2
+    -&gt; <span data-count="443">A</span>nfExpr expr
   | <span data-count="55">_</span>, AnfLet (is_rec', orig_name, ComplexImmediate (ImmediateVar name2), body')
     when String.equa<span data-count="55">l</span> name1 name2 -&gt; <span data-count="53">A</span>nfLet (is_rec', orig_name, expr, body')
   | <span data-count="455">_</span> -&gt; AnfLet (is_rec, name1, expr, body)
 ;;
 
 let bind_complex_expr complex_expr k =
-  <span data-count="943">l</span>et* var = fresh in
-  <span data-count="943">l</span>et* body_expr = <span data-count="943">k</span> (ImmediateVar var) in
-  <span data-count="943">r</span>eturn (optimize_anf_le<span data-count="943">t</span> (NonRec, var, complex_expr, body_expr))
+  <span data-count="951">l</span>et* var = fresh in
+  <span data-count="951">l</span>et* body_expr = <span data-count="951">k</span> (ImmediateVar var) in
+  <span data-count="951">r</span>eturn (optimize_anf_le<span data-count="951">t</span> (NonRec, var, complex_expr, body_expr))
 ;;
 
 let get_var = function
-  | <span data-count="371">P</span>atVariable id -&gt; return id
+  | <span data-count="375">P</span>atVariable id -&gt; return id
   | <span data-count="6">_</span> -&gt; fresh
 ;;
 
@@ -850,18 +850,18 @@ let build_tuple_top_level_bindings tuple_var indices_pats =
 ;;
 
 let rec anf (expr : expr) (k : immediate -&gt; anf_expr t) : anf_expr t =
-  <span data-count="2465">m</span>atch expr with
+  <span data-count="2481">m</span>atch expr with
   | <span data-count="446">E</span>xpConst c -&gt; k (ImmediateConst c)
-  | <span data-count="915">E</span>xpIdent x -&gt; k (ImmediateVar x)
+  | <span data-count="923">E</span>xpIdent x -&gt; k (ImmediateVar x)
   | <span data-count="10">E</span>xpUnarOper (op, expr) -&gt;
     anf expr (fun imm -&gt; <span data-count="10">b</span>ind_complex_expr (ComplexUnarOper (op, imm)) k)
   | <span data-count="16">E</span>xpBinOper (Custom op_name, exp1, exp2) -&gt;
     anf exp1 (fun imm1 -&gt;
       <span data-count="16">a</span>nf exp2 (fun imm2 -&gt;
         <span data-count="16">b</span>ind_complex_expr (ComplexApp (ImmediateVar op_name, imm1, [ imm2 ])) k))
-  | <span data-count="245">E</span>xpBinOper (op, exp1, exp2) -&gt;
+  | <span data-count="247">E</span>xpBinOper (op, exp1, exp2) -&gt;
     anf exp1 (fun imm1 -&gt;
-      <span data-count="245">a</span>nf exp2 (fun imm2 -&gt; <span data-count="245">b</span>ind_complex_expr (ComplexBinOper (op, imm1, imm2)) k))
+      <span data-count="247">a</span>nf exp2 (fun imm2 -&gt; <span data-count="247">b</span>ind_complex_expr (ComplexBinOper (op, imm1, imm2)) k))
   | <span data-count="54">E</span>xpBranch (cond, then_exp, else_exp_opt) -&gt;
     anf cond (fun imm_cond -&gt;
       <span data-count="54">l</span>et* then_aexp = anf_to_immediate_exp<span data-count="54">r</span> then_exp in
@@ -887,17 +887,17 @@ let rec anf (expr : expr) (k : immediate -&gt; anf_expr t) : anf_expr t =
          <span data-count="57">l</span>et* var = get_va<span data-count="57">r</span> pat in
          <span data-count="57">r</span>eturn (AnfLet (flag, var, ComplexImmediate imm, body_anf_expr)))
      | <span data-count="0">_</span> -&gt; fail "Complex patterns in let not supported")
-  | <span data-count="378">E</span>xpApply (exp1, exp2) -&gt;
+  | <span data-count="380">E</span>xpApply (exp1, exp2) -&gt;
     let func, args_list =
       let rec collect_args acc = function
-        | <span data-count="561">E</span>xpApply (f, arg) -&gt; collect_args (arg :: acc) f
-        | <span data-count="378">f</span> -&gt; f, acc
+        | <span data-count="563">E</span>xpApply (f, arg) -&gt; collect_args (arg :: acc) f
+        | <span data-count="380">f</span> -&gt; f, acc
       in
-      collect_arg<span data-count="378">s</span> [] (ExpApply (exp1, exp2))
+      collect_arg<span data-count="380">s</span> [] (ExpApply (exp1, exp2))
     in
     anf func (fun immediate_func -&gt;
-      <span data-count="378">a</span>nf_list args_list (function
-        | <span data-count="378">a</span>rg1 :: arg_tl -&gt;
+      <span data-count="380">a</span>nf_list args_list (function
+        | <span data-count="380">a</span>rg1 :: arg_tl -&gt;
           bind_complex_expr (ComplexApp (immediate_func, arg1, arg_tl)) k
         | <span data-count="0">[</span>] -&gt; fail "application with no arguments"))
   | <span data-count="15">E</span>xpTuple (exp1, exp2, exp_list) -&gt;
@@ -905,14 +905,14 @@ let rec anf (expr : expr) (k : immediate -&gt; anf_expr t) : anf_expr t =
     anf_list all_exprs (function
       | <span data-count="15">i</span>mm1 :: imm2 :: rest -&gt; bind_complex_expr (ComplexTuple (imm1, imm2, rest)) k
       | <span data-count="0">_</span> -&gt; fail "Invalid tuple")
-  | <span data-count="172">E</span>xpLambda (pat, pat_list, body) -&gt;
+  | <span data-count="176">E</span>xpLambda (pat, pat_list, body) -&gt;
     let params = pat :: pat_list in
-    let* body_anf_expr = anf_to_immediate_exp<span data-count="172">r</span> body in
-    <span data-count="172">l</span>et rec wrap_params current_body = function
-      | <span data-count="172">[</span>] -&gt; return current_body
-      | <span data-count="351">(</span>(<span data-count="351">P</span>atVariable _ | <span data-count="0">P</span>atConst _) as param) :: remaining_params -&gt;
-        let* body_with_rest = wrap_param<span data-count="351">s</span> current_body remaining_params in
-        <span data-count="351">r</span>eturn (AnfExpr (ComplexLambda ([ param ], body_with_rest)))
+    let* body_anf_expr = anf_to_immediate_exp<span data-count="176">r</span> body in
+    <span data-count="176">l</span>et rec wrap_params current_body = function
+      | <span data-count="176">[</span>] -&gt; return current_body
+      | <span data-count="359">(</span>(<span data-count="359">P</span>atVariable _ | <span data-count="0">P</span>atConst _) as param) :: remaining_params -&gt;
+        let* body_with_rest = wrap_param<span data-count="359">s</span> current_body remaining_params in
+        <span data-count="359">r</span>eturn (AnfExpr (ComplexLambda ([ param ], body_with_rest)))
       | <span data-count="8">(</span><span data-count="0">P</span>atAny | <span data-count="0">P</span>atUnit | <span data-count="8">P</span>atConstruct ("()", None)) :: remaining_params -&gt;
         let* body_with_rest = wrap_param<span data-count="8">s</span> current_body remaining_params in
         <span data-count="8">l</span>et* ignored = fresh in
@@ -929,9 +929,9 @@ let rec anf (expr : expr) (k : immediate -&gt; anf_expr t) : anf_expr t =
           (AnfExpr (ComplexLambda ([ PatVariable var ], body_with_tuple_destructured)))
       | <span data-count="0">_</span> -&gt; fail "Only variable, constant and tuple patterns in lambda"
     in
-    let* lambda_anf = wrap_param<span data-count="172">s</span> body_anf_expr params in
-    <span data-count="172">(</span>match lambda_anf with
-     | <span data-count="172">A</span>nfExpr (ComplexLambda (pats, body)) -&gt;
+    let* lambda_anf = wrap_param<span data-count="176">s</span> body_anf_expr params in
+    <span data-count="176">(</span>match lambda_anf with
+     | <span data-count="176">A</span>nfExpr (ComplexLambda (pats, body)) -&gt;
        bind_complex_expr (ComplexLambda (pats, body)) k
      | <span data-count="0">_</span> -&gt; fail "ExpLambda: wrap_params must return ComplexLambda")
   | <span data-count="31">E</span>xpConstruct ("()", None) -&gt; bind_complex_expr ComplexUnit k
@@ -980,29 +980,29 @@ let rec anf (expr : expr) (k : immediate -&gt; anf_expr t) : anf_expr t =
   | <span data-count="0">E</span>xpConstruct _ -&gt; fail "Constructors not implemented"
 
 and anf_to_immediate_expr expr =
-  <span data-count="551">a</span>nf expr (fun imm -&gt; <span data-count="551">r</span>eturn (AnfExpr (ComplexImmediate imm)))
+  <span data-count="559">a</span>nf expr (fun imm -&gt; <span data-count="559">r</span>eturn (AnfExpr (ComplexImmediate imm)))
 
 and anf_list (exprs : expr list) (k : immediate list -&gt; anf_expr t) : anf_expr t =
-  <span data-count="1001">m</span>atch exprs with
-  | <span data-count="393">[</span>] -&gt; k []
-  | <span data-count="608">h</span>d :: tl -&gt;
+  <span data-count="1005">m</span>atch exprs with
+  | <span data-count="395">[</span>] -&gt; k []
+  | <span data-count="610">h</span>d :: tl -&gt;
     anf hd (fun immediate_hd -&gt;
-      <span data-count="608">a</span>nf_list tl (fun immediate_tl -&gt; <span data-count="608">k</span> (immediate_hd :: immediate_tl)))
+      <span data-count="610">a</span>nf_list tl (fun immediate_tl -&gt; <span data-count="610">k</span> (immediate_hd :: immediate_tl)))
 ;;
 
-let to_fun_bind (id, e) = <span data-count="255">i</span>d, anf_expr_arit<span data-count="255">y</span> e, e
+let to_fun_bind (id, e) = <span data-count="259">i</span>d, anf_expr_arit<span data-count="259">y</span> e, e
 
 let anf_structure_item (item : structure) : anf_structure list t =
-  <span data-count="253">m</span>atch item with
+  <span data-count="257">m</span>atch item with
   | <span data-count="0">S</span>Eval expr -&gt;
     let* result = anf_to_immediate_exp<span data-count="0">r</span> expr in
     <span data-count="0">r</span>eturn [ AnfEval result ]
-  | <span data-count="253">S</span>Value (rec_flag, (pat, expr), binds) -&gt;
+  | <span data-count="257">S</span>Value (rec_flag, (pat, expr), binds) -&gt;
     let bindings = (pat, expr) :: binds in
-    List.fold_left bindings ~init:(retur<span data-count="253">n</span> []) ~f:(fun acc (pat, expr) -&gt;
-      <span data-count="255">l</span>et* acc_list = acc in
-      <span data-count="255">l</span>et* anf_expr_body = anf_to_immediate_exp<span data-count="255">r</span> expr in
-      <span data-count="255">m</span>atch pat with
+    List.fold_left bindings ~init:(retur<span data-count="257">n</span> []) ~f:(fun acc (pat, expr) -&gt;
+      <span data-count="259">l</span>et* acc_list = acc in
+      <span data-count="259">l</span>et* anf_expr_body = anf_to_immediate_exp<span data-count="259">r</span> expr in
+      <span data-count="259">m</span>atch pat with
       | <span data-count="0">P</span>atTuple (p1, p2, rest) -&gt;
         let* tuple_var = fresh in
         <span data-count="0">l</span>et* component_bindings =
@@ -1014,19 +1014,19 @@ let anf_structure_item (item : structure) : anf_structure list t =
           :: List.ma<span data-count="0">p</span> component_bindings ~f:one_value
         in
         return (acc_list @ new_items)
-      | <span data-count="255">_</span> -&gt;
-        let* var = get_va<span data-count="255">r</span> pat in
-        <span data-count="255">r</span>eturn (acc_list @ [ AnfValue (rec_flag, to_fun_bin<span data-count="255">d</span> (var, anf_expr_body), []) ]))
+      | <span data-count="259">_</span> -&gt;
+        let* var = get_va<span data-count="259">r</span> pat in
+        <span data-count="259">r</span>eturn (acc_list @ [ AnfValue (rec_flag, to_fun_bin<span data-count="259">d</span> (var, anf_expr_body), []) ]))
 ;;
 
 let anf_program (ast : program) : (anf_program, string) Result.t =
-  <span data-count="92">l</span>et program' =
-    List.fold_left ast ~init:(retur<span data-count="92">n</span> []) ~f:(fun acc item -&gt;
-      <span data-count="253">l</span>et* acc_list = acc in
-      <span data-count="253">l</span>et* item_anf = anf_structure_ite<span data-count="253">m</span> item in
-      <span data-count="253">r</span>eturn (acc_list @ item_anf))
+  <span data-count="96">l</span>et program' =
+    List.fold_left ast ~init:(retur<span data-count="96">n</span> []) ~f:(fun acc item -&gt;
+      <span data-count="257">l</span>et* acc_list = acc in
+      <span data-count="257">l</span>et* item_anf = anf_structure_ite<span data-count="257">m</span> item in
+      <span data-count="257">r</span>eturn (acc_list @ item_anf))
   in
-  <span data-count="92">r</span>un program'
+  <span data-count="96">r</span>un program'
 ;;
 </code></pre>
       </div>

@@ -1706,7 +1706,7 @@ open Frontend.Ast
 open Middleend.Anf
 open Generator_state
 
-let tag_int n = <span data-count="295">1</span> + (n lsl 1)
+let tag_int n = <span data-count="297">1</span> + (n lsl 1)
 let tag_bool b = <span data-count="6">i</span>f b then <span data-count="4">4</span> else <span data-count="2">2</span>
 let tag_char c = <span data-count="0">t</span>ag_int (Char.cod<span data-count="0">e</span> c)
 let context = global_contex<span data-count="95">t</span> ()
@@ -1738,35 +1738,35 @@ let predefined_funcs =
 ;;
 
 let predefined_init current_module =
-  <span data-count="37">L</span>ist.fold_left
+  <span data-count="39">L</span>ist.fold_left
     (fun (value_env, type_env) (function_name, function_type) -&gt;
-       <span data-count="518">l</span>et function_value = declare_function function_name function_type current_module in
-       <span data-count="518">(</span> Base.Map.se<span data-count="518">t</span> value_env ~key:function_name ~data:function_value
-       , Base.Map.se<span data-count="518">t</span> type_env ~key:function_name ~data:function_type ))
-    (Base.Map.empt<span data-count="37">y</span> (module Base.String), Base.Map.empt<span data-count="37">y</span> (module Base.String))
+       <span data-count="546">l</span>et function_value = declare_function function_name function_type current_module in
+       <span data-count="546">(</span> Base.Map.se<span data-count="546">t</span> value_env ~key:function_name ~data:function_value
+       , Base.Map.se<span data-count="546">t</span> type_env ~key:function_name ~data:function_type ))
+    (Base.Map.empt<span data-count="39">y</span> (module Base.String), Base.Map.empt<span data-count="39">y</span> (module Base.String))
     predefined_funcs
 ;;
 
 let emit_void builder instr : (unit, string) Result.t =
-  <span data-count="419">m</span>atch emit builder instr with
-  | <span data-count="419">_</span> -&gt; Ok ()
+  <span data-count="425">m</span>atch emit builder instr with
+  | <span data-count="425">_</span> -&gt; Ok ()
 ;;
 
 let emit_void_st builder instr =
-  <span data-count="419">m</span>atch emit_void builder instr with
-  | <span data-count="419">O</span>k () -&gt; return ()
+  <span data-count="425">m</span>atch emit_void builder instr with
+  | <span data-count="425">O</span>k () -&gt; return ()
   | <span data-count="0">E</span>rror e -&gt; fail e
 ;;
 
 let with_optional_value = function
-  | <span data-count="1807">S</span>ome value -&gt; return value
+  | <span data-count="1821">S</span>ome value -&gt; return value
   | <span data-count="0">N</span>one -&gt; fail "Llvm_backend: expected value"
 ;;
 
 let lookup_func name =
-  <span data-count="390">l</span>et* value_opt = find_value_op<span data-count="390">t</span> name in
-  <span data-count="295">m</span>atch value_opt with
-  | <span data-count="295">S</span>ome func -&gt; return func
+  <span data-count="395">l</span>et* value_opt = find_value_op<span data-count="395">t</span> name in
+  <span data-count="300">m</span>atch value_opt with
+  | <span data-count="300">S</span>ome func -&gt; return func
   | <span data-count="0">N</span>one -&gt;
     let* state = get in
     <span data-count="0">(</span>match lookup_function name state.current_module with
@@ -1775,16 +1775,16 @@ let lookup_func name =
 ;;
 
 let lookup_type name =
-  <span data-count="295">l</span>et* type_opt = find_type_op<span data-count="295">t</span> name in
-  <span data-count="295">m</span>atch type_opt with
-  | <span data-count="295">S</span>ome ty -&gt; return ty
+  <span data-count="300">l</span>et* type_opt = find_type_op<span data-count="300">t</span> name in
+  <span data-count="300">m</span>atch type_opt with
+  | <span data-count="300">S</span>ome ty -&gt; return ty
   | <span data-count="0">N</span>one -&gt; fail ("Couldn't find type for key: " ^ name)
 ;;
 
 let lookup_func_type name =
-  <span data-count="390">l</span>et* func_value = lookup_fun<span data-count="390">c</span> name in
-  <span data-count="295">l</span>et* func_type = lookup_typ<span data-count="295">e</span> name in
-  <span data-count="295">r</span>eturn (func_value, func_type)
+  <span data-count="395">l</span>et* func_value = lookup_fun<span data-count="395">c</span> name in
+  <span data-count="300">l</span>et* func_type = lookup_typ<span data-count="300">e</span> name in
+  <span data-count="300">r</span>eturn (func_value, func_type)
 ;;
 
 let gen_simple_type name args =
@@ -1803,11 +1803,11 @@ let imm_unit =
 ;;
 
 let imm_tagged_int i =
-  <span data-count="186">l</span>et* v =
-    with_optional_valu<span data-count="186">e</span>
-      (inttopt<span data-count="186">r</span> builder (const_in<span data-count="186">t</span> int_t (tag_in<span data-count="186">t</span> i)) ptr_t "tagged_int")
+  <span data-count="188">l</span>et* v =
+    with_optional_valu<span data-count="188">e</span>
+      (inttopt<span data-count="188">r</span> builder (const_in<span data-count="188">t</span> int_t (tag_in<span data-count="188">t</span> i)) ptr_t "tagged_int")
   in
-  <span data-count="186">r</span>eturn v
+  <span data-count="188">r</span>eturn v
 ;;
 
 let imm_tagged_bool b =
@@ -1827,19 +1827,19 @@ let imm_tagged_char c =
 ;;
 
 let untag_int_val tagged_val =
-  <span data-count="196">l</span>et* raw = with_optional_valu<span data-count="196">e</span> (ptrtoin<span data-count="196">t</span> builder tagged_val int_t "raw_int") in
-  <span data-count="196">l</span>et* minus1 = with_optional_valu<span data-count="196">e</span> (su<span data-count="196">b</span> builder raw (const_in<span data-count="196">t</span> int_t 1) "minus1") in
-  <span data-count="196">l</span>et* result =
-    with_optional_valu<span data-count="196">e</span> (sdi<span data-count="196">v</span> builder minus1 (const_in<span data-count="196">t</span> int_t 2) "untagged")
+  <span data-count="198">l</span>et* raw = with_optional_valu<span data-count="198">e</span> (ptrtoin<span data-count="198">t</span> builder tagged_val int_t "raw_int") in
+  <span data-count="198">l</span>et* minus1 = with_optional_valu<span data-count="198">e</span> (su<span data-count="198">b</span> builder raw (const_in<span data-count="198">t</span> int_t 1) "minus1") in
+  <span data-count="198">l</span>et* result =
+    with_optional_valu<span data-count="198">e</span> (sdi<span data-count="198">v</span> builder minus1 (const_in<span data-count="198">t</span> int_t 2) "untagged")
   in
-  <span data-count="196">r</span>eturn result
+  <span data-count="198">r</span>eturn result
 ;;
 
 let tag_int_result i =
-  <span data-count="76">l</span>et* twice = with_optional_valu<span data-count="76">e</span> (mu<span data-count="76">l</span> builder i (const_in<span data-count="76">t</span> int_t 2) "twice") in
-  <span data-count="76">l</span>et* tagged = with_optional_valu<span data-count="76">e</span> (ad<span data-count="76">d</span> builder twice (const_in<span data-count="76">t</span> int_t 1) "tagged") in
-  <span data-count="76">l</span>et* v = with_optional_valu<span data-count="76">e</span> (inttopt<span data-count="76">r</span> builder tagged ptr_t "result_int") in
-  <span data-count="76">r</span>eturn v
+  <span data-count="77">l</span>et* twice = with_optional_valu<span data-count="77">e</span> (mu<span data-count="77">l</span> builder i (const_in<span data-count="77">t</span> int_t 2) "twice") in
+  <span data-count="77">l</span>et* tagged = with_optional_valu<span data-count="77">e</span> (ad<span data-count="77">d</span> builder twice (const_in<span data-count="77">t</span> int_t 1) "tagged") in
+  <span data-count="77">l</span>et* v = with_optional_valu<span data-count="77">e</span> (inttopt<span data-count="77">r</span> builder tagged ptr_t "result_int") in
+  <span data-count="77">r</span>eturn v
 ;;
 
 let untag_bool_val tagged_val =
@@ -1859,14 +1859,14 @@ let tag_bool_result cond_value =
 ;;
 
 let rec gen_imm = function
-  | <span data-count="186">I</span>mmediateConst (ConstInt i) -&gt; imm_tagged_int i
+  | <span data-count="188">I</span>mmediateConst (ConstInt i) -&gt; imm_tagged_int i
   | <span data-count="6">I</span>mmediateConst (ConstBool b) -&gt; imm_tagged_bool b
   | <span data-count="0">I</span>mmediateConst (ConstChar c) -&gt; imm_tagged_char c
   | <span data-count="0">I</span>mmediateConst (ConstString _s) -&gt; imm_unit
-  | <span data-count="386">I</span>mmediateVar id -&gt;
+  | <span data-count="389">I</span>mmediateVar id -&gt;
     let* value =
       let* gc_allocas = get_gc_allocas in
-      <span data-count="386">m</span>atch gc_allocas with
+      <span data-count="389">m</span>atch gc_allocas with
       | <span data-count="0">S</span>ome allocas -&gt;
         (match Generator_state.map_find_opt allocas id with
          | <span data-count="0">S</span>ome alloca -&gt;
@@ -1881,17 +1881,17 @@ let rec gen_imm = function
               <span data-count="0">(</span>match resolved_value with
                | <span data-count="0">N</span>one -&gt; fail ("Unbound variable: " ^ id)
                | <span data-count="0">S</span>ome v -&gt; return v)))
-      | <span data-count="386">N</span>one -&gt;
-        let* value_opt = find_value_op<span data-count="386">t</span> id in
-        <span data-count="386">(</span>match value_opt with
-         | <span data-count="386">S</span>ome v -&gt; return v
+      | <span data-count="389">N</span>one -&gt;
+        let* value_opt = find_value_op<span data-count="389">t</span> id in
+        <span data-count="389">(</span>match value_opt with
+         | <span data-count="389">S</span>ome v -&gt; return v
          | <span data-count="0">N</span>one -&gt;
            let* resolved_value = resolved_find_value_op<span data-count="0">t</span> id in
            <span data-count="0">(</span>match resolved_value with
             | <span data-count="0">N</span>one -&gt; fail ("Unbound variable: " ^ id)
             | <span data-count="0">S</span>ome v -&gt; return v))
     in
-    <span data-count="386">(</span>match classify_value value with
+    <span data-count="389">(</span>match classify_value value with
      | <span data-count="27">V</span>alueKind.Function when Array.lengt<span data-count="27">h</span> (param<span data-count="27">s</span> value) = 0 -&gt;
        <span data-count="1">l</span>et* type_opt = resolved_find_type_op<span data-count="1">t</span> id in
        <span data-count="1">l</span>et* func_type =
@@ -1901,43 +1901,43 @@ let rec gen_imm = function
        in
        <span data-count="1">l</span>et* v = with_optional_valu<span data-count="1">e</span> (cal<span data-count="1">l</span> builder func_type value [||] "call_0") in
        <span data-count="1">r</span>eturn v
-     | <span data-count="385">_</span> -&gt;
-       let* arity_opt = get_resolved_arit<span data-count="385">y</span> id in
-       <span data-count="385">m</span>aybe_closure value arity_opt)
+     | <span data-count="388">_</span> -&gt;
+       let* arity_opt = get_resolved_arit<span data-count="388">y</span> id in
+       <span data-count="388">m</span>aybe_closure value arity_opt)
 
 and get_resolved_arity name =
-  <span data-count="447">l</span>et* state = get in
-  <span data-count="447">r</span>eturn
+  <span data-count="451">l</span>et* state = get in
+  <span data-count="451">r</span>eturn
     (match state.resolve with
-     | <span data-count="447">S</span>ome resolver -&gt;
+     | <span data-count="451">S</span>ome resolver -&gt;
        (match resolver state.current_func_index name with
         | <span data-count="51">S</span>ome (_, arity) -&gt; Some arity
-        | <span data-count="396">N</span>one -&gt; None)
+        | <span data-count="400">N</span>one -&gt; None)
      | <span data-count="0">N</span>one -&gt; None)
 
 and maybe_closure value arity_opt =
-  <span data-count="447">m</span>atch classify_value value with
+  <span data-count="451">m</span>atch classify_value value with
   | <span data-count="49">V</span>alueKind.Function -&gt;
     let arity = Option.value arity_opt ~default:(Array.lengt<span data-count="49">h</span> (param<span data-count="49">s</span> value)) in
     <span data-count="49">l</span>et* function_ptr =
       with_optional_valu<span data-count="49">e</span> (bitcas<span data-count="49">t</span> builder value ptr_t "func_ptr_cast")
     in
     <span data-count="49">g</span>en_simple_type "alloc_closure" [| function_ptr; const_in<span data-count="49">t</span> int_t arity |]
-  | <span data-count="398">_</span> -&gt; return value
+  | <span data-count="402">_</span> -&gt; return value
 ;;
 
 let gen_binop_native op left_v right_v =
-  <span data-count="96">m</span>atch op with
+  <span data-count="97">m</span>atch op with
   | <span data-count="31">P</span>lus -&gt;
     let* l = untag_int_va<span data-count="31">l</span> left_v in
     <span data-count="31">l</span>et* r = untag_int_va<span data-count="31">l</span> right_v in
     <span data-count="31">l</span>et* v = with_optional_valu<span data-count="31">e</span> (ad<span data-count="31">d</span> builder l r "add") in
     <span data-count="31">t</span>ag_int_result v
-  | <span data-count="22">M</span>inus -&gt;
-    let* l = untag_int_va<span data-count="22">l</span> left_v in
-    <span data-count="22">l</span>et* r = untag_int_va<span data-count="22">l</span> right_v in
-    <span data-count="22">l</span>et* v = with_optional_valu<span data-count="22">e</span> (su<span data-count="22">b</span> builder l r "sub") in
-    <span data-count="22">t</span>ag_int_result v
+  | <span data-count="23">M</span>inus -&gt;
+    let* l = untag_int_va<span data-count="23">l</span> left_v in
+    <span data-count="23">l</span>et* r = untag_int_va<span data-count="23">l</span> right_v in
+    <span data-count="23">l</span>et* v = with_optional_valu<span data-count="23">e</span> (su<span data-count="23">b</span> builder l r "sub") in
+    <span data-count="23">t</span>ag_int_result v
   | <span data-count="17">M</span>ultiply -&gt;
     let* l = untag_int_va<span data-count="17">l</span> left_v in
     <span data-count="17">l</span>et* r = untag_int_va<span data-count="17">l</span> right_v in
@@ -2004,12 +2004,12 @@ let gen_unop_native op tagged_val =
 ;;
 
 let rec gen_cexpr = function
-  | <span data-count="64">C</span>omplexImmediate imm -&gt; gen_imm imm
+  | <span data-count="66">C</span>omplexImmediate imm -&gt; gen_imm imm
   | <span data-count="2">C</span>omplexUnit -&gt; imm_unit
-  | <span data-count="96">C</span>omplexBinOper (op, left, right) -&gt;
-    let* left_v = gen_im<span data-count="96">m</span> left in
-    <span data-count="96">l</span>et* right_v = gen_im<span data-count="96">m</span> right in
-    <span data-count="96">g</span>en_binop_native op left_v right_v
+  | <span data-count="97">C</span>omplexBinOper (op, left, right) -&gt;
+    let* left_v = gen_im<span data-count="97">m</span> left in
+    <span data-count="97">l</span>et* right_v = gen_im<span data-count="97">m</span> right in
+    <span data-count="97">g</span>en_binop_native op left_v right_v
   | <span data-count="5">C</span>omplexUnarOper (op, imm) -&gt;
     let* v = gen_im<span data-count="5">m</span> imm in
     <span data-count="5">g</span>en_unop_native op v
@@ -2076,7 +2076,7 @@ let rec gen_cexpr = function
            "field")
     in
     <span data-count="14">r</span>eturn v
-  | <span data-count="162">C</span>omplexApp (ImmediateVar fname, first, rest) -&gt;
+  | <span data-count="163">C</span>omplexApp (ImmediateVar fname, first, rest) -&gt;
     let args_list = first :: rest in
     if fname = "print_int" &amp;&amp; <span data-count="44">L</span>ist.lengt<span data-count="44">h</span> args_list = 1
     then
@@ -2090,11 +2090,11 @@ let rec gen_cexpr = function
       in
       <span data-count="44">i</span>mm_unit
     else
-      <span data-count="118">l</span>et* callee_value, callee_from_alloca =
+      <span data-count="119">l</span>et* callee_value, callee_from_alloca =
         let resolve_callee () =
-          <span data-count="118">l</span>et* resolved_value = resolved_find_value_op<span data-count="118">t</span> fname in
-          <span data-count="118">m</span>atch resolved_value with
-          | <span data-count="118">S</span>ome v -&gt; return (v, false)
+          <span data-count="119">l</span>et* resolved_value = resolved_find_value_op<span data-count="119">t</span> fname in
+          <span data-count="119">m</span>atch resolved_value with
+          | <span data-count="119">S</span>ome v -&gt; return (v, false)
           | <span data-count="0">N</span>one -&gt;
             let* value_opt = find_value_op<span data-count="0">t</span> fname in
             <span data-count="0">(</span>match value_opt with
@@ -2102,39 +2102,39 @@ let rec gen_cexpr = function
              | <span data-count="0">N</span>one -&gt; fail ("Unbound function: " ^ fname))
         in
         let* gc_allocas = get_gc_allocas in
-        <span data-count="118">m</span>atch gc_allocas with
+        <span data-count="119">m</span>atch gc_allocas with
         | <span data-count="0">S</span>ome allocas -&gt;
           (match Generator_state.map_find_opt allocas fname with
            | <span data-count="0">S</span>ome alloca -&gt;
              let* v = with_optional_valu<span data-count="0">e</span> (loa<span data-count="0">d</span> builder ptr_t alloca fname) in
              <span data-count="0">r</span>eturn (v, true)
            | <span data-count="0">N</span>one -&gt; resolve_callee ())
-        | <span data-count="118">N</span>one -&gt; resolve_callee ()
+        | <span data-count="119">N</span>one -&gt; resolve_callee ()
       in
-      <span data-count="118">l</span>et* args =
-        List.fold_lef<span data-count="118">t</span>
+      <span data-count="119">l</span>et* args =
+        List.fold_lef<span data-count="119">t</span>
           (fun acc imm -&gt;
-             <span data-count="212">l</span>et* vs = acc in
-             <span data-count="212">l</span>et* v = gen_im<span data-count="212">m</span> imm in
-             <span data-count="212">r</span>eturn (vs @ [ v ]))
-          (retur<span data-count="118">n</span> [])
+             <span data-count="213">l</span>et* vs = acc in
+             <span data-count="213">l</span>et* v = gen_im<span data-count="213">m</span> imm in
+             <span data-count="213">r</span>eturn (vs @ [ v ]))
+          (retur<span data-count="119">n</span> [])
           args_list
       in
-      <span data-count="118">l</span>et args_values = Array.of_list args in
-      <span data-count="118">l</span>et num_args = Array.length args_values in
-      <span data-count="118">l</span>et is_direct_func =
+      <span data-count="119">l</span>et args_values = Array.of_list args in
+      <span data-count="119">l</span>et num_args = Array.length args_values in
+      <span data-count="119">l</span>et is_direct_func =
         match classify_value callee_value with
         | <span data-count="79">V</span>alueKind.Function -&gt; Array.lengt<span data-count="79">h</span> (param<span data-count="79">s</span> callee_value) = num_args
-        | <span data-count="39">_</span> -&gt; false
+        | <span data-count="40">_</span> -&gt; false
       in
       let is_zero_arg_with_unit =
         match classify_value callee_value with
         | <span data-count="79">V</span>alueKind.Function -&gt; Array.lengt<span data-count="79">h</span> (param<span data-count="79">s</span> callee_value) = 0 &amp;&amp; <span data-count="0">n</span>um_args = 1
-        | <span data-count="39">_</span> -&gt; false
+        | <span data-count="40">_</span> -&gt; false
       in
       let use_direct =
         callee_from_alloca = false
-        &amp;&amp; <span data-count="118">(</span>is_direct_fun<span data-count="57">c</span> || is_zero_arg_with_uni<span data-count="0">t</span>)
+        &amp;&amp; <span data-count="119">(</span>is_direct_fun<span data-count="57">c</span> || is_zero_arg_with_uni<span data-count="0">t</span>)
         &amp;&amp; <span data-count="57">n</span>um_args &lt;= 6
       in
       if use_direct
@@ -2149,10 +2149,10 @@ let rec gen_cexpr = function
         with_optional_value
           (cal<span data-count="56">l</span> builder func_type callee_value args_for_call ("direct_" ^ fname))
       else
-        <span data-count="62">l</span>et* arity_opt = get_resolved_arit<span data-count="62">y</span> fname in
-        <span data-count="62">l</span>et* closure_value = maybe_closur<span data-count="62">e</span> callee_value arity_opt in
-        <span data-count="62">l</span>et* eml_applyN_func, eml_applyN_type = lookup_func_typ<span data-count="62">e</span> "eml_applyN" in
-        <span data-count="62">i</span>f num_args = 0
+        <span data-count="63">l</span>et* arity_opt = get_resolved_arit<span data-count="63">y</span> fname in
+        <span data-count="63">l</span>et* closure_value = maybe_closur<span data-count="63">e</span> callee_value arity_opt in
+        <span data-count="63">l</span>et* eml_applyN_func, eml_applyN_type = lookup_func_typ<span data-count="63">e</span> "eml_applyN" in
+        <span data-count="63">i</span>f num_args = 0
         then <span data-count="0">(</span>
           let arr_ty = Llvm.array_type ptr_t 1 in
           <span data-count="0">l</span>et* alloca_arr =
@@ -2176,42 +2176,42 @@ let rec gen_cexpr = function
                [| closure_value; const_in<span data-count="0">t</span> int_t 0; args_ptr |]
                "boxed_eml_applyN"))
         else
-          <span data-count="62">l</span>et* _then_name, _else_name, merge_name = fresh_blocks in
-          <span data-count="62">l</span>et current_func = block_parent (insertion_bloc<span data-count="62">k</span> builder) in
-          <span data-count="62">l</span>et merge_block = append_block context merge_name current_func in
-          <span data-count="62">l</span>et blocks =
+          <span data-count="63">l</span>et* _then_name, _else_name, merge_name = fresh_blocks in
+          <span data-count="63">l</span>et current_func = block_parent (insertion_bloc<span data-count="63">k</span> builder) in
+          <span data-count="63">l</span>et merge_block = append_block context merge_name current_func in
+          <span data-count="63">l</span>et blocks =
             Array.init num_args (fun i -&gt;
-              <span data-count="116">a</span>ppend_block context ("apply_step_" ^ Int.to_strin<span data-count="116">g</span> i) current_func)
+              <span data-count="117">a</span>ppend_block context ("apply_step_" ^ Int.to_strin<span data-count="117">g</span> i) current_func)
           in
-          <span data-count="62">l</span>et apply_one_step closure arg name =
-            <span data-count="116">l</span>et one_ty = Llvm.array_type ptr_t 1 in
-            <span data-count="116">l</span>et a = Llvm.build_alloca one_ty "apply_one" builder in
-            <span data-count="116">l</span>et p =
+          <span data-count="63">l</span>et apply_one_step closure arg name =
+            <span data-count="117">l</span>et one_ty = Llvm.array_type ptr_t 1 in
+            <span data-count="117">l</span>et a = Llvm.build_alloca one_ty "apply_one" builder in
+            <span data-count="117">l</span>et p =
               Llvm.build_gep
                 one_ty
                 a
-                [| Llvm.const_in<span data-count="116">t</span> i32_t 0; Llvm.const_in<span data-count="116">t</span> i32_t 0 |]
+                [| Llvm.const_in<span data-count="117">t</span> i32_t 0; Llvm.const_in<span data-count="117">t</span> i32_t 0 |]
                 "one_elem"
                 builder
             in
-            <span data-count="116">L</span>lvm_backend.store builder arg p;
-            <span data-count="116">L</span>lvm_backend.call
+            <span data-count="117">L</span>lvm_backend.store builder arg p;
+            <span data-count="117">L</span>lvm_backend.call
               builder
               eml_applyN_type
               eml_applyN_func
-              [| closure; const_in<span data-count="116">t</span> int_t 1; p |]
+              [| closure; const_in<span data-count="117">t</span> int_t 1; p |]
               name
           in
-          let result_vals = Array.make num_args (Llvm.const_nul<span data-count="62">l</span> ptr_t) in
-          <span data-count="62">l</span>et* () = emit_void_s<span data-count="62">t</span> builder (Br blocks.(0)) in
-          <span data-count="62">l</span>et rec loop step_index =
-            <span data-count="178">i</span>f step_index &gt;= num_args
-            then <span data-count="62">r</span>eturn ()
-            else <span data-count="116">(</span>
+          let result_vals = Array.make num_args (Llvm.const_nul<span data-count="63">l</span> ptr_t) in
+          <span data-count="63">l</span>et* () = emit_void_s<span data-count="63">t</span> builder (Br blocks.(0)) in
+          <span data-count="63">l</span>et rec loop step_index =
+            <span data-count="180">i</span>f step_index &gt;= num_args
+            then <span data-count="63">r</span>eturn ()
+            else <span data-count="117">(</span>
               let () = position_at_end blocks.(step_index) builder in
-              <span data-count="116">l</span>et* cur =
+              <span data-count="117">l</span>et* cur =
                 if step_index = 0
-                then <span data-count="62">r</span>etur<span data-count="62">n</span> closure_value
+                then <span data-count="63">r</span>etur<span data-count="63">n</span> closure_value
                 else
                   <span data-count="54">w</span>ith_optional_valu<span data-count="54">e</span>
                     (Llvm_backend.ph<span data-count="54">i</span>
@@ -2219,33 +2219,33 @@ let rec gen_cexpr = function
                        [ result_vals.(step_index - 1), blocks.(step_index - 1) ]
                        ("cur_" ^ Int.to_strin<span data-count="54">g</span> step_index))
               in
-              <span data-count="116">l</span>et* step_result =
-                with_optional_valu<span data-count="116">e</span>
-                  (apply_one_ste<span data-count="116">p</span>
+              <span data-count="117">l</span>et* step_result =
+                with_optional_valu<span data-count="117">e</span>
+                  (apply_one_ste<span data-count="117">p</span>
                      cur
                      args_values.(step_index)
-                     ("apply_step_" ^ Int.to_strin<span data-count="116">g</span> step_index))
+                     ("apply_step_" ^ Int.to_strin<span data-count="117">g</span> step_index))
               in
-              <span data-count="116">l</span>et () = result_vals.(step_index) &lt;- step_result in
-              <span data-count="116">l</span>et* () =
-                emit_void_s<span data-count="116">t</span>
+              <span data-count="117">l</span>et () = result_vals.(step_index) &lt;- step_result in
+              <span data-count="117">l</span>et* () =
+                emit_void_s<span data-count="117">t</span>
                   builder
                   (if step_index &lt; num_args - 1
                    then <span data-count="54">B</span>r blocks.(step_index + 1)
-                   else <span data-count="62">B</span>r merge_block)
+                   else <span data-count="63">B</span>r merge_block)
               in
-              <span data-count="116">l</span>oop (step_index + 1))
+              <span data-count="117">l</span>oop (step_index + 1))
           in
-          let* () = loo<span data-count="62">p</span> 0 in
-          <span data-count="62">l</span>et () = position_at_end merge_block builder in
-          <span data-count="62">l</span>et* final_val =
-            with_optional_valu<span data-count="62">e</span>
-              (Llvm_backend.ph<span data-count="62">i</span>
+          let* () = loo<span data-count="63">p</span> 0 in
+          <span data-count="63">l</span>et () = position_at_end merge_block builder in
+          <span data-count="63">l</span>et* final_val =
+            with_optional_valu<span data-count="63">e</span>
+              (Llvm_backend.ph<span data-count="63">i</span>
                  builder
                  [ result_vals.(num_args - 1), blocks.(num_args - 1) ]
                  "apply_result")
           in
-          <span data-count="62">r</span>eturn final_val
+          <span data-count="63">r</span>eturn final_val
   | <span data-count="0">C</span>omplexApp (_, _, _) -&gt;
     fail "LLVM codegen: ComplexApp with non-variable function not supported"
   | <span data-count="27">C</span>omplexBranch (cond_imm, then_e, else_e) -&gt;
@@ -2275,7 +2275,7 @@ let rec gen_cexpr = function
     fail "LLVM codegen: List/Option/Lambda not yet implemented"
 
 and gen_anf = function
-  | <span data-count="170">A</span>nfExpr cexp -&gt; gen_cexpr cexp
+  | <span data-count="174">A</span>nfExpr cexp -&gt; gen_cexpr cexp
   | <span data-count="210">A</span>nfLet (_, name, cexp, cont) -&gt;
     let* value = gen_cexp<span data-count="210">r</span> cexp in
     <span data-count="210">l</span>et* () =
@@ -2321,12 +2321,12 @@ and gen_anf = function
 ;;
 
 let declare_function (func_layout : function_layout) state =
-  <span data-count="116">l</span>et arg_types = Array.make (List.lengt<span data-count="116">h</span> func_layout.params) ptr_t in
-  <span data-count="116">l</span>et func_type = function_type ptr_t arg_types in
-  <span data-count="116">l</span>et func = declare_function func_layout.asm_name func_type state.current_module in
-  <span data-count="116">{</span> state with
-    value_env = Base.Map.se<span data-count="116">t</span> state.value_env ~key:func_layout.asm_name ~data:func
-  ; type_env = Base.Map.se<span data-count="116">t</span> state.type_env ~key:func_layout.asm_name ~data:func_type
+  <span data-count="120">l</span>et arg_types = Array.make (List.lengt<span data-count="120">h</span> func_layout.params) ptr_t in
+  <span data-count="120">l</span>et func_type = function_type ptr_t arg_types in
+  <span data-count="120">l</span>et func = declare_function func_layout.asm_name func_type state.current_module in
+  <span data-count="120">{</span> state with
+    value_env = Base.Map.se<span data-count="120">t</span> state.value_env ~key:func_layout.asm_name ~data:func
+  ; type_env = Base.Map.se<span data-count="120">t</span> state.type_env ~key:func_layout.asm_name ~data:func_type
   }
 ;;
 
@@ -2349,34 +2349,34 @@ let gen_function
       ~func_index
       initial_state
   =
-  <span data-count="116">l</span>et comp =
+  <span data-count="120">l</span>et comp =
     let* state = get in
-    <span data-count="116">l</span>et* () = pu<span data-count="116">t</span> { state with current_func_index = func_index } in
-    <span data-count="116">l</span>et* func, _ = lookup_func_typ<span data-count="116">e</span> func_layout.asm_name in
-    <span data-count="116">l</span>et entry_block = append_block context "entry" func in
-    <span data-count="116">p</span>osition_at_end entry_block builder;
-    <span data-count="116">l</span>et* () = if enable_gc &amp;&amp; <span data-count="0">i</span>s_entry then <span data-count="0">e</span>mit_gc_prologue else <span data-count="116">r</span>etur<span data-count="116">n</span> () in
-    <span data-count="116">l</span>et* () =
+    <span data-count="120">l</span>et* () = pu<span data-count="120">t</span> { state with current_func_index = func_index } in
+    <span data-count="120">l</span>et* func, _ = lookup_func_typ<span data-count="120">e</span> func_layout.asm_name in
+    <span data-count="120">l</span>et entry_block = append_block context "entry" func in
+    <span data-count="120">p</span>osition_at_end entry_block builder;
+    <span data-count="120">l</span>et* () = if enable_gc &amp;&amp; <span data-count="0">i</span>s_entry then <span data-count="0">e</span>mit_gc_prologue else <span data-count="120">r</span>etur<span data-count="120">n</span> () in
+    <span data-count="120">l</span>et* () =
       if enable_gc
       then <span data-count="0">s</span>et_gc_alloca<span data-count="0">s</span> (Some (Base.Map.empt<span data-count="0">y</span> (module Base.String)))
-      else <span data-count="116">r</span>etur<span data-count="116">n</span> ()
+      else <span data-count="120">r</span>etur<span data-count="120">n</span> ()
     in
-    <span data-count="116">l</span>et* () = if enable_gc then <span data-count="0">s</span>et_gc_entry_bloc<span data-count="0">k</span> (Some entry_block) else <span data-count="116">r</span>etur<span data-count="116">n</span> () in
-    <span data-count="116">l</span>et* () = set_valu<span data-count="116">e</span> func_layout.asm_name func in
-    <span data-count="116">l</span>et* state_before_params = get in
-    <span data-count="116">l</span>et func_params = params func in
-    <span data-count="116">l</span>et* () =
-      Base.List.fold<span data-count="116">i</span> func_layout.params ~init:(retur<span data-count="116">n</span> ()) ~f:(fun param_index acc arg -&gt;
-        <span data-count="160">l</span>et* () = acc in
-        <span data-count="160">m</span>atch arg with
-        | <span data-count="160">I</span>mmediateVar name -&gt;
+    <span data-count="120">l</span>et* () = if enable_gc then <span data-count="0">s</span>et_gc_entry_bloc<span data-count="0">k</span> (Some entry_block) else <span data-count="120">r</span>etur<span data-count="120">n</span> () in
+    <span data-count="120">l</span>et* () = set_valu<span data-count="120">e</span> func_layout.asm_name func in
+    <span data-count="120">l</span>et* state_before_params = get in
+    <span data-count="120">l</span>et func_params = params func in
+    <span data-count="120">l</span>et* () =
+      Base.List.fold<span data-count="120">i</span> func_layout.params ~init:(retur<span data-count="120">n</span> ()) ~f:(fun param_index acc arg -&gt;
+        <span data-count="164">l</span>et* () = acc in
+        <span data-count="164">m</span>atch arg with
+        | <span data-count="164">I</span>mmediateVar name -&gt;
           let* param_value =
-            if param_index &gt;= 0 &amp;&amp; <span data-count="160">p</span>aram_index &lt; Array.lengt<span data-count="160">h</span> func_params
-            then <span data-count="160">r</span>etur<span data-count="160">n</span> (Array.ge<span data-count="160">t</span> func_params param_index)
+            if param_index &gt;= 0 &amp;&amp; <span data-count="164">p</span>aram_index &lt; Array.lengt<span data-count="164">h</span> func_params
+            then <span data-count="164">r</span>etur<span data-count="164">n</span> (Array.ge<span data-count="164">t</span> func_params param_index)
             else <span data-count="0">f</span>ai<span data-count="0">l</span> "gen_function: param index out of bounds"
           in
-          <span data-count="160">s</span>et_value_name name param_value;
-          <span data-count="160">i</span>f enable_gc
+          <span data-count="164">s</span>et_value_name name param_value;
+          <span data-count="164">i</span>f enable_gc
           then <span data-count="0">(</span>
             let* gc_allocas = get_gc_allocas in
             <span data-count="0">l</span>et* allocas_map =
@@ -2387,46 +2387,46 @@ let gen_function
             <span data-count="0">l</span>et* alloca_ptr = with_optional_valu<span data-count="0">e</span> (alloc<span data-count="0">a</span> builder ptr_t name) in
             <span data-count="0">s</span>tore builder param_value alloca_ptr;
             <span data-count="0">s</span>et_gc_allocas (Some (Base.Map.se<span data-count="0">t</span> allocas_map ~key:name ~data:alloca_ptr)))
-          else <span data-count="160">s</span>et_value name param_value
+          else <span data-count="164">s</span>et_value name param_value
         | <span data-count="0">I</span>mmediateConst _ -&gt; return ())
     in
-    <span data-count="116">l</span>et* body_value = gen_an<span data-count="116">f</span> func_layout.body in
-    <span data-count="116">l</span>et* () = emit_void_s<span data-count="116">t</span> builder (Ret (Some body_value)) in
-    <span data-count="116">l</span>et* () = if enable_gc then <span data-count="0">s</span>et_gc_alloca<span data-count="0">s</span> None else <span data-count="116">r</span>etur<span data-count="116">n</span> () in
-    <span data-count="116">l</span>et* () = if enable_gc then <span data-count="0">s</span>et_gc_entry_bloc<span data-count="0">k</span> None else <span data-count="116">r</span>etur<span data-count="116">n</span> () in
-    <span data-count="116">l</span>et* state = get in
-    <span data-count="116">l</span>et value_env =
+    <span data-count="120">l</span>et* body_value = gen_an<span data-count="120">f</span> func_layout.body in
+    <span data-count="120">l</span>et* () = emit_void_s<span data-count="120">t</span> builder (Ret (Some body_value)) in
+    <span data-count="120">l</span>et* () = if enable_gc then <span data-count="0">s</span>et_gc_alloca<span data-count="0">s</span> None else <span data-count="120">r</span>etur<span data-count="120">n</span> () in
+    <span data-count="120">l</span>et* () = if enable_gc then <span data-count="0">s</span>et_gc_entry_bloc<span data-count="0">k</span> None else <span data-count="120">r</span>etur<span data-count="120">n</span> () in
+    <span data-count="120">l</span>et* state = get in
+    <span data-count="120">l</span>et value_env =
       let without_params =
         List.fold_left
           (fun env -&gt; function
-             | <span data-count="160">I</span>mmediateVar name -&gt; Base.Map.remove env name
+             | <span data-count="164">I</span>mmediateVar name -&gt; Base.Map.remove env name
              | <span data-count="0">_</span> -&gt; env)
           state.value_env
           func_layout.params
       in
-      <span data-count="116">L</span>ist.fold_lef<span data-count="116">t</span>
+      <span data-count="120">L</span>ist.fold_lef<span data-count="120">t</span>
         (fun env -&gt; function
-           | <span data-count="160">I</span>mmediateVar name -&gt;
+           | <span data-count="164">I</span>mmediateVar name -&gt;
              (match Generator_state.map_find_opt state_before_params.value_env name with
               | <span data-count="4">S</span>ome v -&gt; Base.Map.set env ~key:name ~data:v
-              | <span data-count="156">N</span>one -&gt; env)
+              | <span data-count="160">N</span>one -&gt; env)
            | <span data-count="0">_</span> -&gt; env)
         without_params
         func_layout.params
     in
     put
       { state with
-        value_env = Base.Map.se<span data-count="116">t</span> value_env ~key:func_layout.asm_name ~data:func
+        value_env = Base.Map.se<span data-count="120">t</span> value_env ~key:func_layout.asm_name ~data:func
       }
   in
   run comp initial_state
 ;;
 
 let gen_program ~output_file ~enable_gc (program : anf_program) =
-  <span data-count="37">l</span>et llvm_module = create_module context "EML" in
-  <span data-count="37">l</span>et value_env, type_env = predefined_init llvm_module in
-  <span data-count="37">l</span>et { functions; resolve; _ } = analyze program in
-  <span data-count="37">l</span>et initial_state : Generator_state.state =
+  <span data-count="39">l</span>et llvm_module = create_module context "EML" in
+  <span data-count="39">l</span>et value_env, type_env = predefined_init llvm_module in
+  <span data-count="39">l</span>et { functions; resolve; _ } = analyze program in
+  <span data-count="39">l</span>et initial_state : Generator_state.state =
     { value_env
     ; type_env
     ; current_module = llvm_module
@@ -2439,30 +2439,30 @@ let gen_program ~output_file ~enable_gc (program : anf_program) =
   in
   (* [functions] is never empty: synthetic main is added when missing. *)
   let entry_name =
-    match List.find_opt (fun func -&gt; <span data-count="116">f</span>unc.func_name = "main") functions with
-    | <span data-count="37">S</span>ome _ -&gt; "main"
+    match List.find_opt (fun func -&gt; <span data-count="120">f</span>unc.func_name = "main") functions with
+    | <span data-count="39">S</span>ome _ -&gt; "main"
     | <span data-count="0">N</span>one -&gt; (List.rev functions |&gt; <span data-count="0">L</span>ist.h<span data-count="0">d</span>).func_name
   in
   let state_after_declares =
-    List.fold_left (fun state func -&gt; <span data-count="116">d</span>eclare_function func state) initial_state functions
+    List.fold_left (fun state func -&gt; <span data-count="120">d</span>eclare_function func state) initial_state functions
   in
-  <span data-count="37">m</span>atch
+  <span data-count="39">m</span>atch
     Base.List.foldi
       functions
       ~init:(Ok state_after_declares)
       ~f:(fun idx acc func_layout -&gt;
-        <span data-count="116">m</span>atch acc with
+        <span data-count="120">m</span>atch acc with
         | <span data-count="0">E</span>rror _ -&gt; acc
-        | <span data-count="116">O</span>k state -&gt;
+        | <span data-count="120">O</span>k state -&gt;
           let is_entry = func_layout.func_name = entry_name in
           (match gen_function func_layout ~enable_gc ~is_entry ~func_index:idx state with
-           | <span data-count="116">O</span>k ((), state') -&gt; Ok state'
+           | <span data-count="120">O</span>k ((), state') -&gt; Ok state'
            | <span data-count="0">E</span>rror err -&gt; Error err))
   with
   | <span data-count="0">E</span>rror err -&gt; Error err
-  | <span data-count="37">O</span>k _ -&gt;
+  | <span data-count="39">O</span>k _ -&gt;
     print_module output_file llvm_module;
-    <span data-count="37">O</span>k ()
+    <span data-count="39">O</span>k ()
 ;;
 </code></pre>
       </div>

@@ -428,10 +428,10 @@ module Riscv_backend = struct
   <span data-count="0">t</span>ype reg =
     <span data-count="0">|</span> Zero
     <span data-count="0">|</span> RA
-    <span data-count="1952">|</span> SP
-    <span data-count="16304">|</span> A of int
-    <span data-count="5462">|</span> T of int
-    <span data-count="32818">|</span> S of int
+    <span data-count="2002">|</span> SP
+    <span data-count="16364">|</span> A of int
+    <span data-count="5478">|</span> T of int
+    <span data-count="33064">|</span> S of int
   [@@deriving eq]
 
   type offset = reg * int
@@ -464,20 +464,20 @@ module Riscv_backend = struct
 
   let pp_reg ppf = function
     | <span data-count="0">Z</span>ero -&gt; fprintf ppf "zero"
-    | <span data-count="256">R</span>A -&gt; fprintf ppf "ra"
-    | <span data-count="1518">S</span>P -&gt; fprintf ppf "sp"
-    | <span data-count="1991">A</span> n -&gt; fprintf ppf "a%d" n
-    | <span data-count="937">T</span> n -&gt; fprintf ppf "t%d" n
-    | <span data-count="1615">S</span> 0 -&gt; fprintf ppf "fp"
+    | <span data-count="264">R</span>A -&gt; fprintf ppf "ra"
+    | <span data-count="1546">S</span>P -&gt; fprintf ppf "sp"
+    | <span data-count="2008">A</span> n -&gt; fprintf ppf "a%d" n
+    | <span data-count="939">T</span> n -&gt; fprintf ppf "t%d" n
+    | <span data-count="1644">S</span> 0 -&gt; fprintf ppf "fp"
     | <span data-count="0">S</span> n -&gt; fprintf ppf "s%d" n
   ;;
 
-  let pp_offset ppf offset = <span data-count="1535">f</span>printf ppf "%d(%a)" (sn<span data-count="1535">d</span> offset) pp_reg (fs<span data-count="1535">t</span> offset)
+  let pp_offset ppf offset = <span data-count="1557">f</span>printf ppf "%d(%a)" (sn<span data-count="1557">d</span> offset) pp_reg (fs<span data-count="1557">t</span> offset)
 
   let pp_instr ppf = function
-    | <span data-count="738">A</span>ddi (rd, rs, imm) -&gt; fprintf ppf "addi %a, %a, %d" pp_reg rd pp_reg rs imm
+    | <span data-count="749">A</span>ddi (rd, rs, imm) -&gt; fprintf ppf "addi %a, %a, %d" pp_reg rd pp_reg rs imm
     | <span data-count="102">A</span>dd (rd, rs1, rs2) -&gt; fprintf ppf "add %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
-    | <span data-count="26">S</span>ub (rd, rs1, rs2) -&gt; fprintf ppf "sub %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+    | <span data-count="27">S</span>ub (rd, rs1, rs2) -&gt; fprintf ppf "sub %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
     | <span data-count="19">M</span>ul (rd, rs1, rs2) -&gt; fprintf ppf "mul %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
     | <span data-count="2">D</span>iv (rd, rs1, rs2) -&gt; fprintf ppf "div %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
     | <span data-count="2">S</span>lli (rd, rs1, imm) -&gt; fprintf ppf "slli %a, %a, %d" pp_reg rd pp_reg rs1 imm
@@ -487,19 +487,19 @@ module Riscv_backend = struct
     | <span data-count="12">S</span>lt (rd, rs1, rs2) -&gt; fprintf ppf "slt %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
     | <span data-count="12">S</span>eqz (rd, rs) -&gt; fprintf ppf "seqz %a, %a" pp_reg rd pp_reg rs
     | <span data-count="1">S</span>nez (rd, rs) -&gt; fprintf ppf "snez %a, %a" pp_reg rd pp_reg rs
-    | <span data-count="560">L</span>i (rd, imm) -&gt; fprintf ppf "li %a, %d" pp_reg rd imm
+    | <span data-count="565">L</span>i (rd, imm) -&gt; fprintf ppf "li %a, %d" pp_reg rd imm
     | <span data-count="53">L</span>a (rd, s) -&gt; fprintf ppf "la %a, %s" pp_reg rd s
-    | <span data-count="249">M</span>v (rd, rs) -&gt; fprintf ppf "mv %a, %a" pp_reg rd pp_reg rs
-    | <span data-count="520">L</span>d (rd, ofs) -&gt; fprintf ppf "ld %a, %a" pp_reg rd pp_offset ofs
-    | <span data-count="1015">S</span>d (rs, ofs) -&gt; fprintf ppf "sd %a, %a" pp_reg rs pp_offset ofs
+    | <span data-count="254">M</span>v (rd, rs) -&gt; fprintf ppf "mv %a, %a" pp_reg rd pp_reg rs
+    | <span data-count="529">L</span>d (rd, ofs) -&gt; fprintf ppf "ld %a, %a" pp_reg rd pp_offset ofs
+    | <span data-count="1028">S</span>d (rs, ofs) -&gt; fprintf ppf "sd %a, %a" pp_reg rs pp_offset ofs
     | <span data-count="26">B</span>eq (rs1, rs2, s) -&gt; fprintf ppf "beq %a, %a, %s" pp_reg rs1 pp_reg rs2 s
     | <span data-count="29">J</span> s -&gt; fprintf ppf "j %s" s
-    | <span data-count="182">L</span>abel s -&gt; fprintf ppf "%s:" s
-    | <span data-count="370">C</span>all s -&gt; fprintf ppf "call %s" s
-    | <span data-count="132">R</span>et -&gt; fprintf ppf "ret"
+    | <span data-count="186">L</span>abel s -&gt; fprintf ppf "%s:" s
+    | <span data-count="371">C</span>all s -&gt; fprintf ppf "call %s" s
+    | <span data-count="136">R</span>et -&gt; fprintf ppf "ret"
   ;;
 
-  let tag_int n = <span data-count="350">(</span>2 * n) + 1
+  let tag_int n = <span data-count="352">(</span>2 * n) + 1
   let fp = S 0
   let sp = SP
   let ra = RA
@@ -515,18 +515,18 @@ module Riscv_backend = struct
   let t0 = T 0
   let t1 = T 1
   let result_reg = a0
-  let addi rd rs imm = <span data-count="663">[</span> Addi (rd, rs, imm) ]
-  let ld rd ofs = <span data-count="833">[</span> Ld (rd, ofs) ]
-  let sd rs ofs = <span data-count="1012">[</span> Sd (rs, ofs) ]
-  let mv rd rs = <span data-count="96">[</span> Mv (rd, rs) ]
-  let li rd imm = <span data-count="562">[</span> Li (rd, imm) ]
+  let addi rd rs imm = <span data-count="677">[</span> Addi (rd, rs, imm) ]
+  let ld rd ofs = <span data-count="845">[</span> Ld (rd, ofs) ]
+  let sd rs ofs = <span data-count="1025">[</span> Sd (rs, ofs) ]
+  let mv rd rs = <span data-count="97">[</span> Mv (rd, rs) ]
+  let li rd imm = <span data-count="567">[</span> Li (rd, imm) ]
   let add rd rs1 rs2 = <span data-count="103">[</span> Add (rd, rs1, rs2) ]
-  let sub rd rs1 rs2 = <span data-count="26">[</span> Sub (rd, rs1, rs2) ]
-  let call s = <span data-count="368">[</span> Call s ]
-  let ret () = <span data-count="128">[</span> Ret ]
+  let sub rd rs1 rs2 = <span data-count="27">[</span> Sub (rd, rs1, rs2) ]
+  let call s = <span data-count="369">[</span> Call s ]
+  let ret () = <span data-count="132">[</span> Ret ]
   let beq rs1 rs2 lbl = <span data-count="27">[</span> Beq (rs1, rs2, lbl) ]
   let j lbl = <span data-count="27">[</span> J lbl ]
-  let label s = <span data-count="182">[</span> Label s ]
+  let label s = <span data-count="186">[</span> Label s ]
   let la rd s = <span data-count="53">[</span> La (rd, s) ]
   let slt rd rs1 rs2 = <span data-count="11">[</span> Slt (rd, rs1, rs2) ]
   let seqz rd rs = <span data-count="12">[</span> Seqz (rd, rs) ]
@@ -537,7 +537,7 @@ module Riscv_backend = struct
   let div rd rs1 rs2 = <span data-count="2">[</span> Div (rd, rs1, rs2) ]
   let slli rd rs imm = <span data-count="0">[</span> Slli (rd, rs, imm) ]
   let srli rd rs imm = <span data-count="23">[</span> Srli (rd, rs, imm) ]
-  let add_tag_items dst delta = <span data-count="135">[</span> Addi (dst, dst, delta) ]
+  let add_tag_items dst delta = <span data-count="136">[</span> Addi (dst, dst, delta) ]
   let arg_regs = [ a0; a1; a2; a3; a4; a5; a6; a7 ]
   let candidate_regs_for_spill = arg_regs
   let arg_regs_count = 8
@@ -553,23 +553,23 @@ module Riscv_backend = struct
   let max_addi_imm = 2048
 
   let rec sub_sp bytes_to_subtract =
-    <span data-count="131">i</span>f bytes_to_subtract &lt;= 0
+    <span data-count="135">i</span>f bytes_to_subtract &lt;= 0
     then <span data-count="0">[</span>]
-    else <span data-count="131">i</span>f bytes_to_subtract &lt;= max_addi_imm
-    then <span data-count="128">a</span>ddi sp sp (<span data-count="128">-</span>bytes_to_subtract)
+    else <span data-count="135">i</span>f bytes_to_subtract &lt;= max_addi_imm
+    then <span data-count="132">a</span>ddi sp sp (<span data-count="132">-</span>bytes_to_subtract)
     else <span data-count="3">a</span>dd<span data-count="3">i</span> sp sp (<span data-count="3">-</span>max_addi_imm) @ sub_s<span data-count="3">p</span> (bytes_to_subtract - max_addi_imm)
   ;;
 
   let addi_or_li_add destination_register source_register immediate_value =
-    <span data-count="134">i</span>f immediate_value &gt;= <span data-count="134">-</span>max_addi_imm &amp;&amp; <span data-count="134">i</span>mmediate_value &lt;= max_addi_imm - 1
-    then <span data-count="125">a</span>ddi destination_register source_register immediate_value
+    <span data-count="138">i</span>f immediate_value &gt;= <span data-count="138">-</span>max_addi_imm &amp;&amp; <span data-count="138">i</span>mmediate_value &lt;= max_addi_imm - 1
+    then <span data-count="129">a</span>ddi destination_register source_register immediate_value
     else <span data-count="9">l</span><span data-count="9">i</span> t0 immediate_value @ ad<span data-count="9">d</span> destination_register source_register t0
   ;;
 
   (* Store at sp+offset; use direct sd when offset in 12-bit range *)
   let sd_at_sp_offset reg offset =
-    <span data-count="256">i</span>f offset &gt;= -2048 &amp;&amp; <span data-count="256">o</span>ffset &lt;= 2047
-    then <span data-count="250">s</span>d reg (sp, offset)
+    <span data-count="264">i</span>f offset &gt;= -2048 &amp;&amp; <span data-count="264">o</span>ffset &lt;= 2047
+    then <span data-count="258">s</span>d reg (sp, offset)
     else <span data-count="6">a</span>ddi_or_li_ad<span data-count="6">d</span> t0 sp offset @ s<span data-count="6">d</span> reg (t0, 0)
   ;;
 
@@ -578,35 +578,35 @@ module Riscv_backend = struct
     | Loc_mem of offset
 
   let prologue ~enable_gc ~name ~stack_size =
-    <span data-count="128">l</span>et ra_offset = stack_size - saved_ra_offset in
+    <span data-count="132">l</span>et ra_offset = stack_size - saved_ra_offset in
     let fp_offset = stack_size - frame_header_size in
     let fp_imm = stack_size - frame_header_size in
     let base =
-      labe<span data-count="128">l</span> name
-      @ sub_s<span data-count="128">p</span> stack_size
-      @ sd_at_sp_offse<span data-count="128">t</span> ra ra_offset
-      @ sd_at_sp_offse<span data-count="128">t</span> fp fp_offset
-      @ addi_or_li_ad<span data-count="128">d</span> fp sp fp_imm
+      labe<span data-count="132">l</span> name
+      @ sub_s<span data-count="132">p</span> stack_size
+      @ sd_at_sp_offse<span data-count="132">t</span> ra ra_offset
+      @ sd_at_sp_offse<span data-count="132">t</span> fp fp_offset
+      @ addi_or_li_ad<span data-count="132">d</span> fp sp fp_imm
     in
     if enable_gc &amp;&amp; <span data-count="12">S</span>tring.equa<span data-count="12">l</span> name "main"
     then <span data-count="6">b</span>ase @ cal<span data-count="6">l</span> "init_gc" @ m<span data-count="6">v</span> a0 fp @ cal<span data-count="6">l</span> "set_ptr_stack"
-    else <span data-count="122">b</span>ase
+    else <span data-count="126">b</span>ase
   ;;
 
   let epilogue ~enable_gc ~is_main =
-    <span data-count="128">l</span>et base =
-      (if enable_gc &amp;&amp; <span data-count="12">i</span>s_main then <span data-count="6">c</span>al<span data-count="6">l</span> "destroy_gc" else <span data-count="122">[</span>])
-      @ add<span data-count="128">i</span> sp fp frame_header_size
-      @ l<span data-count="128">d</span> ra (fp, saved_ra_offset)
-      @ l<span data-count="128">d</span> fp (fp, saved_fp_offset)
+    <span data-count="132">l</span>et base =
+      (if enable_gc &amp;&amp; <span data-count="12">i</span>s_main then <span data-count="6">c</span>al<span data-count="6">l</span> "destroy_gc" else <span data-count="126">[</span>])
+      @ add<span data-count="132">i</span> sp fp frame_header_size
+      @ l<span data-count="132">d</span> ra (fp, saved_ra_offset)
+      @ l<span data-count="132">d</span> fp (fp, saved_fp_offset)
     in
-    if is_main then <span data-count="43">b</span>ase @ l<span data-count="43">i</span> a0 0 @ re<span data-count="43">t</span> () else <span data-count="85">b</span>ase @ re<span data-count="85">t</span> ()
+    if is_main then <span data-count="45">b</span>ase @ l<span data-count="45">i</span> a0 0 @ re<span data-count="45">t</span> () else <span data-count="87">b</span>ase @ re<span data-count="87">t</span> ()
   ;;
 
   let format_item ppf i =
-    <span data-count="4057">(</span>match i with
-     | <span data-count="182">L</span>abel _ -&gt; fprint<span data-count="182">f</span> ppf "%a" pp_instr i
-     | <span data-count="3875">_</span> -&gt; fprint<span data-count="3875">f</span> ppf "  %a" pp_instr i);
+    <span data-count="4110">(</span>match i with
+     | <span data-count="186">L</span>abel _ -&gt; fprint<span data-count="186">f</span> ppf "%a" pp_instr i
+     | <span data-count="3924">_</span> -&gt; fprint<span data-count="3924">f</span> ppf "  %a" pp_instr i);
     fprintf ppf "\n"
   ;;
 end

@@ -386,57 +386,57 @@ type analysis_result =
   }
 
 let rec params_of_anf = function
-  | <span data-count="160">A</span>nfExpr (ComplexLambda (pats, body)) -&gt;
+  | <span data-count="164">A</span>nfExpr (ComplexLambda (pats, body)) -&gt;
     let imms =
       List.filter_map
         (function
-          | <span data-count="160">P</span>atVariable id -&gt; Some (ImmediateVar id)
+          | <span data-count="164">P</span>atVariable id -&gt; Some (ImmediateVar id)
           | <span data-count="0">_</span> -&gt; None)
         pats
     in
-    <span data-count="160">l</span>et rest, inner = params_of_anf body in
-    <span data-count="160">i</span>mms @ rest, inner
-  | <span data-count="113">o</span>ther -&gt; [], other
+    <span data-count="164">l</span>et rest, inner = params_of_anf body in
+    <span data-count="164">i</span>mms @ rest, inner
+  | <span data-count="115">o</span>ther -&gt; [], other
 ;;
 
 let analyze (program : anf_program) =
-  <span data-count="37">l</span>et raw =
+  <span data-count="39">l</span>et raw =
     List.filter_map
       (function
-        | <span data-count="113">A</span>nfValue (rec_flag, (func_name, arity, body), _) -&gt;
+        | <span data-count="115">A</span>nfValue (rec_flag, (func_name, arity, body), _) -&gt;
           let params, body = params_of_anf body in
-          <span data-count="113">S</span>ome (func_name, arity, params, body, rec_flag = Rec)
+          <span data-count="115">S</span>ome (func_name, arity, params, body, rec_flag = Rec)
         | <span data-count="0">A</span>nfEval _ -&gt; None)
       program
   in
-  <span data-count="37">l</span>et is_valid_linker_ident name =
-    <span data-count="113">S</span>tring.lengt<span data-count="113">h</span> name &gt; 0
-    &amp;&amp; <span data-count="113">S</span>tring.for_all
+  <span data-count="39">l</span>et is_valid_linker_ident name =
+    <span data-count="115">S</span>tring.lengt<span data-count="115">h</span> name &gt; 0
+    &amp;&amp; <span data-count="115">S</span>tring.for_all
          (fun c -&gt;
-            <span data-count="548">(</span>c &gt;= 'a' &amp;&amp; <span data-count="482">c</span> &lt;= 'z'<span data-count="481">)</span>
-            || (c &gt;= 'A' &amp;&amp; <span data-count="34">c</span> &lt;= 'Z'<span data-count="0">)</span>
-            || (c &gt;= '0' &amp;&amp; <span data-count="64">c</span> &lt;= '9'<span data-count="29">)</span>
+            <span data-count="550">(</span>c &gt;= 'a' &amp;&amp; <span data-count="483">c</span> &lt;= 'z'<span data-count="481">)</span>
+            || (c &gt;= 'A' &amp;&amp; <span data-count="35">c</span> &lt;= 'Z'<span data-count="0">)</span>
+            || (c &gt;= '0' &amp;&amp; <span data-count="66">c</span> &lt;= '9'<span data-count="29">)</span>
             || Char.equal c '_')
          name
   in
   let mangle_operator_for_linker name =
-    <span data-count="5">"</span>op_"
-    ^ Base.String.concat_ma<span data-count="5">p</span> name ~f:(function
+    <span data-count="7">"</span>op_"
+    ^ Base.String.concat_ma<span data-count="7">p</span> name ~f:(function
       | <span data-count="4">'</span>*' -&gt; "_star"
       | <span data-count="3">'</span>+' -&gt; "_plus"
       | <span data-count="0">'</span>-' -&gt; "_minus"
       | <span data-count="0">'</span>/' -&gt; "_slash"
-      | <span data-count="2">'</span>=' -&gt; "_eq"
+      | <span data-count="4">'</span>=' -&gt; "_eq"
       | <span data-count="0">'</span>&lt;' -&gt; "_lt"
-      | <span data-count="1">'</span>&gt;' -&gt; "_gt"
+      | <span data-count="2">'</span>&gt;' -&gt; "_gt"
       | <span data-count="0">'</span>!' -&gt; "_bang"
       | <span data-count="0">'</span>&amp;' -&gt; "_amp"
       | <span data-count="0">'</span>|' -&gt; "_bar"
-      | <span data-count="2">'</span>^' -&gt; "_hat"
+      | <span data-count="4">'</span>^' -&gt; "_hat"
       | <span data-count="0">'</span>@' -&gt; "_at"
-      | <span data-count="1">'</span>~' -&gt; "_tilde"
+      | <span data-count="2">'</span>~' -&gt; "_tilde"
       | <span data-count="0">'</span>?' -&gt; "_q"
-      | <span data-count="1">'</span>.' -&gt; "_dot"
+      | <span data-count="2">'</span>.' -&gt; "_dot"
       | <span data-count="0">'</span>:' -&gt; "_colon"
       | <span data-count="0">'</span>%' -&gt; "_percent"
       | <span data-count="0">'</span>$' -&gt; "_dollar"
@@ -448,48 +448,48 @@ let analyze (program : anf_program) =
       | <span data-count="0">c</span> -&gt; "_u" ^ Int.to_strin<span data-count="0">g</span> (Char.cod<span data-count="0">e</span> c))
   in
   let mangle_reserved name =
-    <span data-count="113">i</span>f is_reserved name
+    <span data-count="115">i</span>f is_reserved name
     then <span data-count="1">"</span>eml_" ^ name
-    else <span data-count="112">i</span>f String.equal name "_start"
+    else <span data-count="114">i</span>f String.equal name "_start"
     then <span data-count="1">"</span>eml_start"
-    else <span data-count="111">n</span>ame
+    else <span data-count="113">n</span>ame
   in
   let asm_name_for_func func_name =
-    <span data-count="113">l</span>et base =
+    <span data-count="115">l</span>et base =
       if is_valid_linker_ident func_name
       then <span data-count="108">f</span>unc_name
-      else <span data-count="5">m</span>angle_operator_for_linke<span data-count="5">r</span> func_name
+      else <span data-count="7">m</span>angle_operator_for_linke<span data-count="7">r</span> func_name
     in
     mangle_reserved base
   in
   let functions, _ =
     List.fold_left
       (fun (reversed_functions, counts) (func_name, _arity, params, body, is_rec) -&gt;
-         <span data-count="113">l</span>et base_asm_name = asm_name_for_func func_name in
-         <span data-count="113">l</span>et duplicate_index =
-           Base.Map.find counts func_name |&gt; <span data-count="113">O</span>ption.value ~default:0
+         <span data-count="115">l</span>et base_asm_name = asm_name_for_func func_name in
+         <span data-count="115">l</span>et duplicate_index =
+           Base.Map.find counts func_name |&gt; <span data-count="115">O</span>ption.value ~default:0
          in
-         <span data-count="113">l</span>et updated_counts =
+         <span data-count="115">l</span>et updated_counts =
            Base.Map.set counts ~key:func_name ~data:(duplicate_index + 1)
          in
-         <span data-count="113">l</span>et asm_name =
+         <span data-count="115">l</span>et asm_name =
            if duplicate_index = 0
-           then <span data-count="112">b</span>ase_asm_name
+           then <span data-count="114">b</span>ase_asm_name
            else <span data-count="1">b</span>ase_asm_name ^ "_" ^ Int.to_strin<span data-count="1">g</span> duplicate_index
          in
          ( { func_name; asm_name; params; body; is_rec } :: reversed_functions
          , updated_counts ))
-      ([], Base.Map.empt<span data-count="37">y</span> (module Base.String))
+      ([], Base.Map.empt<span data-count="39">y</span> (module Base.String))
       raw
   in
-  <span data-count="37">l</span>et functions = List.rev functions in
-  <span data-count="37">l</span>et has_main =
-    List.exists (fun func_layout -&gt; <span data-count="113">S</span>tring.equal func_layout.func_name "main") functions
+  <span data-count="39">l</span>et functions = List.rev functions in
+  <span data-count="39">l</span>et has_main =
+    List.exists (fun func_layout -&gt; <span data-count="115">S</span>tring.equal func_layout.func_name "main") functions
   in
-  <span data-count="37">l</span>et functions =
+  <span data-count="39">l</span>et functions =
     if has_main
     then <span data-count="34">f</span>unctions
-    else <span data-count="3">(</span>
+    else <span data-count="5">(</span>
       let synthetic_main =
         { func_name = "main"
         ; asm_name = "main"
@@ -501,9 +501,9 @@ let analyze (program : anf_program) =
       functions @ [ synthetic_main ])
   in
   let resolver func_index var_name =
-    <span data-count="622">l</span>et rec find i =
-      <span data-count="1431">i</span>f i &lt; 0
-      then <span data-count="437">N</span>one
+    <span data-count="627">l</span>et rec find i =
+      <span data-count="1436">i</span>f i &lt; 0
+      then <span data-count="442">N</span>one
       else <span data-count="994">(</span>
         match Base.List.nth functions i with
         | <span data-count="0">N</span>one -&gt; None
@@ -513,10 +513,10 @@ let analyze (program : anf_program) =
     in
     let start_index =
       match Base.List.nth functions func_index with
-      | <span data-count="622">S</span>ome func_layout
+      | <span data-count="627">S</span>ome func_layout
         when func_layout.is_rec &amp;&amp; <span data-count="198">S</span>tring.equa<span data-count="198">l</span> func_layout.func_name var_name -&gt;
         <span data-count="37">f</span>unc_index
-      | <span data-count="585">_</span> -&gt; func_index - 1
+      | <span data-count="590">_</span> -&gt; func_index - 1
     in
     find start_index
   in

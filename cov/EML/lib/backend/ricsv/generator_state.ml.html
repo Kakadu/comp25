@@ -258,33 +258,33 @@ module Make (N : NAMING) = struct
 
   type 'a t = state -&gt; ('a * state, string) Result.t
 
-  let return x st = <span data-count="6866">O</span>k (x, st)
+  let return x st = <span data-count="6918">O</span>k (x, st)
   let fail e = fun _ -&gt; <span data-count="0">E</span>rror e
 
   let bind m f =
     fun state -&gt;
-    <span data-count="19413">m</span>atch m state with
-    | <span data-count="19413">O</span>k (x, st') -&gt; f x st'
+    <span data-count="19574">m</span>atch m state with
+    | <span data-count="19574">O</span>k (x, st') -&gt; f x st'
     | <span data-count="0">E</span>rror e -&gt; Error e
   ;;
 
   let ( let* ) = bind
-  let get st = <span data-count="7526">O</span>k (st, st)
-  let put st = fun _ -&gt; <span data-count="5064">O</span>k ((), st)
+  let get st = <span data-count="7587">O</span>k (st, st)
+  let put st = fun _ -&gt; <span data-count="5114">O</span>k ((), st)
 
   let modify f =
-    <span data-count="4261">l</span>et* st = get in
-    <span data-count="4746">p</span>ut (<span data-count="4746">f</span> st)
+    <span data-count="4299">l</span>et* st = get in
+    <span data-count="4788">p</span>ut (<span data-count="4788">f</span> st)
   ;;
 
-  let modify_env f = <span data-count="553">m</span>odify (fun st -&gt; <span data-count="553">{</span> st with env = <span data-count="553">f</span> st.env })
+  let modify_env f = <span data-count="557">m</span>odify (fun st -&gt; <span data-count="557">{</span> st with env = <span data-count="557">f</span> st.env })
 
   let get_env =
     let* st = get in
-    <span data-count="1403">r</span>eturn st.env
+    <span data-count="1409">r</span>eturn st.env
   ;;
 
-  let set_env env = <span data-count="385">m</span>odify (fun st -&gt; <span data-count="385">{</span> st with env })
+  let set_env env = <span data-count="390">m</span>odify (fun st -&gt; <span data-count="390">{</span> st with env })
 
   let fresh_partial =
     let* st = get in
@@ -300,17 +300,17 @@ module Make (N : NAMING) = struct
     <span data-count="27">r</span>eturn pair
   ;;
 
-  let run m = <span data-count="43">m</span>
+  let run m = <span data-count="45">m</span>
 
   let append (items : instr list) =
-    <span data-count="3100">l</span>et modify_instr_buffer f =
-      <span data-count="3100">m</span>odify (fun st -&gt; <span data-count="3100">{</span> st with instr_buffer = <span data-count="3100">f</span> st.instr_buffer })
+    <span data-count="3125">l</span>et modify_instr_buffer f =
+      <span data-count="3125">m</span>odify (fun st -&gt; <span data-count="3125">{</span> st with instr_buffer = <span data-count="3125">f</span> st.instr_buffer })
     in
     match items with
     | <span data-count="0">[</span>] -&gt; return ()
-    | <span data-count="3100">_</span> -&gt;
+    | <span data-count="3125">_</span> -&gt;
       modify_instr_buffer (fun buffer -&gt;
-        <span data-count="3100">L</span>ist.fold_left (fun acc instruction -&gt; <span data-count="4301">i</span>nstruction :: acc) buffer items)
+        <span data-count="3125">L</span>ist.fold_left (fun acc instruction -&gt; <span data-count="4357">i</span>nstruction :: acc) buffer items)
   ;;
 end
 
