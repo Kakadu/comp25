@@ -455,16 +455,19 @@ let bind_param_to_stack env i = function
   | _ -> fail "unsupported pattern"
 ;;
 
-let flush_instr_buffer ppf =
+let flush_instr_buffer ~enable_peephole ppf =
   let* state = get in
   let instruction_buffer = state.instr_buffer in
   let* () = put { state with instr_buffer = [] } in
-  let optimized_instructions = Peephole.optimize (List.rev instruction_buffer) in
-  let () = List.iter (fun item -> format_item ppf item) optimized_instructions in
+  let instructions = List.rev instruction_buffer in
+  let instructions =
+    if enable_peephole then Peephole.optimize instructions else instructions
+  in
+  let () = List.iter (fun item -> format_item ppf item) instructions in
   return ()
 ;;
 
-let gen_func ~enable_gc asm_name params body frame_sz ppf =
+let gen_func ~enable_gc ~enable_peephole asm_name params body frame_sz ppf =
   fprintf ppf "\n  .globl %s\n  .type %s, @function\n" asm_name asm_name;
   let args = List.length params in
   let params_reg, params_stack =
@@ -489,11 +492,11 @@ let gen_func ~enable_gc asm_name params body frame_sz ppf =
   let* () = spill_params_to_frame params_reg in
   let* () = gen_anf result_reg body in
   let* () = append (epilogue ~enable_gc ~is_main:(String.equal asm_name "main")) in
-  let* () = flush_instr_buffer ppf in
+  let* () = flush_instr_buffer ~enable_peephole ppf in
   return ()
 ;;
 
-let gen_program ~enable_gc ppf (analysis : analysis_result) =
+let gen_program ~enable_gc ~enable_peephole ppf (analysis : analysis_result) =
   fprintf ppf ".section .text";
   let base = Runtime.Primitives.runtime_primitive_arities in
   let arity_map =
@@ -519,7 +522,7 @@ let gen_program ~enable_gc ppf (analysis : analysis_result) =
       let* () =
         modify (fun state -> { state with current_func_index = function_index })
       in
-      gen_func ~enable_gc fn.asm_name fn.params fn.body frame_sz ppf)
+      gen_func ~enable_gc ~enable_peephole fn.asm_name fn.params fn.body frame_sz ppf)
   in
   match run comp init with
   | Ok ((), _) ->

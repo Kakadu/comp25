@@ -4,6 +4,7 @@
 
 val gen_program
   :  ?enable_gc:bool
+  -> ?enable_peephole:bool
   -> Format.formatter
   -> Middleend.Anf.anf_program
   -> (unit, string) result

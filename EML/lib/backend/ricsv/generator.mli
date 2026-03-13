@@ -4,6 +4,7 @@
 
 val gen_program
   :  enable_gc:bool
+  -> enable_peephole:bool
   -> Format.formatter
   -> Analysis.analysis_result
   -> (unit, string) Result.t
