@@ -278,6 +278,20 @@ let rec elim_sd_before_ret = function
   | [] -> []
 ;;
 
+let rec elim_id_fun = function
+  | (Addi (SP, SP, _), _)
+    :: (Sd (RA, _), _)
+    :: (Sd (S 0, _), _)
+    :: (Addi (S 0, _, _), _)
+    :: (Addi (SP, _, _), _)
+    :: (Ld (RA, _), _)
+    :: (Ld (S 0, _), _)
+    :: ((Ret, _) as ret)
+    :: rest -> elim_id_fun (ret :: rest)
+  | x :: rest -> x :: elim_id_fun rest
+  | [] -> []
+;;
+
 let rec elim_mv_before_branch = function
   | (Mv (md, mv1), _) :: ((Li (ld, _), _) as li) :: (Bne (br1, br2, label), _) :: rest
     when equal_reg md br1 && equal_reg ld br2 ->
@@ -308,6 +322,7 @@ let peephole code : (instr * string) Queue.t =
   let optimized = fold_addi_sp optimized in
   let optimized = elim_sd_before_ret optimized in
   let optimized = elim_mv_before_branch optimized in
+  let optimized = elim_id_fun optimized in
   Queue.of_list optimized
 ;;
 

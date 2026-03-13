@@ -305,13 +305,6 @@
   .global main
   .type main, @function
   id:
-    addi sp, sp, -56
-    sd ra, 48(sp)
-    sd s0, 40(sp)
-    addi s0, sp, 40
-    addi sp, s0, 16
-    ld ra, 8(s0)
-    ld s0, 0(s0)
     ret
   fresh_1:
     addi sp, sp, -72
@@ -472,13 +465,6 @@
   .global main
   .type main, @function
   id:
-    addi sp, sp, -56
-    sd ra, 48(sp)
-    sd s0, 40(sp)
-    addi s0, sp, 40
-    addi sp, s0, 16
-    ld ra, 8(s0)
-    ld s0, 0(s0)
     ret
   fresh_2:
     addi sp, sp, -72
@@ -1080,13 +1066,6 @@
   .global main
   .type main, @function
   f:
-    addi sp, sp, -56
-    sd ra, 48(sp)
-    sd s0, 40(sp)
-    addi s0, sp, 40
-    addi sp, s0, 16
-    ld ra, 8(s0)
-    ld s0, 0(s0)
     ret
   main:
     addi sp, sp, -144
