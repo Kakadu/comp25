@@ -663,3 +663,86 @@ let%expect_test "codegen closure fn with 10 arg" =
       ret
   |}]
 ;;
+
+
+let%expect_test "custom op cat" =
+  run
+    {|let ( =^.^= ) x y = x - y|};
+  [%expect
+    {|
+    .section .text
+      .globl op__eq_hat_dot_hat_eq
+      .type op__eq_hat_dot_hat_eq, @function
+    op__eq_hat_dot_hat_eq:
+      addi sp, sp, -16
+      sd ra, 8(sp)
+      sd fp, 0(sp)
+      mv fp, sp
+      sd a0, -8(fp)
+      sd a1, -16(fp)
+      sub a0, a0, a1
+      addi a0, a0, 1
+      addi sp, fp, 16
+      ld ra, 8(fp)
+      ld fp, 0(fp)
+      ret
+
+      .globl main
+      .type main, @function
+    main:
+      addi sp, sp, -16
+      sd ra, 8(sp)
+      sd fp, 0(sp)
+      mv fp, sp
+      li a0, 1
+      addi sp, fp, 16
+      ld ra, 8(fp)
+      ld fp, 0(fp)
+      li a0, 0
+      ret
+  |}]
+;;
+
+
+let%expect_test "custom op pipe" =
+  run
+    {|let ( ~> ) x f = f x|};
+  [%expect
+    {|
+    .section .text
+      .globl op__tilde_gt
+      .type op__tilde_gt, @function
+    op__tilde_gt:
+      addi sp, sp, -200
+      sd ra, 192(sp)
+      sd fp, 184(sp)
+      addi fp, sp, 184
+      sd a0, -8(fp)
+      sd a1, -16(fp)
+      mv a0, a1
+      li a1, 1
+      addi sp, sp, -8
+      ld t0, -8(fp)
+      sd t0, 0(sp)
+      mv a2, sp
+      call eml_applyN
+      addi sp, fp, 16
+      ld ra, 8(fp)
+      ld fp, 0(fp)
+      ret
+
+      .globl main
+      .type main, @function
+    main:
+      addi sp, sp, -16
+      sd ra, 8(sp)
+      sd fp, 0(sp)
+      mv fp, sp
+      li a0, 1
+      addi sp, fp, 16
+      ld ra, 8(fp)
+      ld fp, 0(fp)
+      li a0, 0
+      ret
+  |}]
+;;

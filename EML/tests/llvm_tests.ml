@@ -988,3 +988,127 @@ let%expect_test "codegen closure fn with 10 arg" =
 
     attributes #0 = { nocallback nofree nosync nounwind willreturn memory(none) } |}]
 ;;
+
+let%expect_test "custom op cat" =
+  compile_llvm_show
+    {|let ( =^.^= ) x y = x - y|};
+  [%expect
+    {|
+    ; ModuleID = 'EML'
+    source_filename = "EML"
+
+    declare ptr @eml_applyN(ptr, i64, ptr)
+
+    declare ptr @create_tuple(i64, ptr)
+
+    declare ptr @alloc_closure(ptr, i64)
+
+    declare ptr @field(ptr, i64)
+
+    declare ptr @llvm_call_indirect(ptr, ptr, i64)
+
+    declare void @print_int(i64)
+
+    declare void @init_gc()
+
+    declare void @destroy_gc()
+
+    declare void @set_ptr_stack(ptr)
+
+    declare i64 @get_heap_start()
+
+    declare i64 @get_heap_final()
+
+    declare ptr @collect()
+
+    declare ptr @print_gc_status()
+
+    ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(none)
+    declare ptr @llvm.frameaddress.p0(i32 immarg) #0
+
+    define ptr @op__eq_hat_dot_hat_eq(ptr %x, ptr %y) {
+    entry:
+      %raw_int = ptrtoint ptr %x to i64
+      %minus1 = sub i64 %raw_int, 1
+      %untagged = sdiv i64 %minus1, 2
+      %raw_int1 = ptrtoint ptr %y to i64
+      %minus12 = sub i64 %raw_int1, 1
+      %untagged3 = sdiv i64 %minus12, 2
+      %sub = sub i64 %untagged, %untagged3
+      %twice = mul i64 %sub, 2
+      %tagged = add i64 %twice, 1
+      %result_int = inttoptr i64 %tagged to ptr
+      ret ptr %result_int
+    }
+
+    define ptr @main() {
+    entry:
+      ret ptr inttoptr (i64 1 to ptr)
+    }
+
+    attributes #0 = { nocallback nofree nosync nounwind willreturn memory(none) }
+  |}]
+;;
+
+
+let%expect_test "custom op pipe" =
+  compile_llvm_show
+    {|let ( ~> ) x f = f x|};
+  [%expect
+    {|
+    ; ModuleID = 'EML'
+    source_filename = "EML"
+
+    declare ptr @eml_applyN(ptr, i64, ptr)
+
+    declare ptr @create_tuple(i64, ptr)
+
+    declare ptr @alloc_closure(ptr, i64)
+
+    declare ptr @field(ptr, i64)
+
+    declare ptr @llvm_call_indirect(ptr, ptr, i64)
+
+    declare void @print_int(i64)
+
+    declare void @init_gc()
+
+    declare void @destroy_gc()
+
+    declare void @set_ptr_stack(ptr)
+
+    declare i64 @get_heap_start()
+
+    declare i64 @get_heap_final()
+
+    declare ptr @collect()
+
+    declare ptr @print_gc_status()
+
+    ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(none)
+    declare ptr @llvm.frameaddress.p0(i32 immarg) #0
+
+    define ptr @op__tilde_gt(ptr %x, ptr %f) {
+    entry:
+      br label %apply_step_0
+
+    merge_0:                                          ; preds = %apply_step_0
+      %apply_result = phi ptr [ %apply_step_01, %apply_step_0 ]
+      ret ptr %apply_result
+
+    apply_step_0:                                     ; preds = %entry
+      %apply_one = alloca [1 x ptr], align 8
+      %one_elem = getelementptr [1 x ptr], ptr %apply_one, i32 0, i32 0
+      store ptr %x, ptr %one_elem, align 8
+      %apply_step_01 = call ptr @eml_applyN(ptr %f, i64 1, ptr %one_elem)
+      br label %merge_0
+    }
+
+    define ptr @main() {
+    entry:
+      ret ptr inttoptr (i64 1 to ptr)
+    }
+
+    attributes #0 = { nocallback nofree nosync nounwind willreturn memory(none) }
+  |}]
+;;
