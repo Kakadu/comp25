@@ -2,10 +2,8 @@
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
-open Format
 open Base
 open Machine
-open Target
 
 (** [optimize instrs] performs optimizations on the code [instrs] *)
 val optimize : (instr * string) Queue.t -> (instr * string) Queue.t

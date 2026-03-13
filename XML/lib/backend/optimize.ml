@@ -27,7 +27,7 @@ let rec elim_addi_sd_mv_addi = function
     :: ((Mv (_, mr2), _) as mv_i)
     :: (Addi (_, _, aimm2), _)
     :: rest
-    when aimm1 == -aimm2 && equal_reg sr mr2 -> elim_addi_sd_mv_addi (mv_i :: rest)
+    when aimm1 = -aimm2 && equal_reg sr mr2 -> elim_addi_sd_mv_addi (mv_i :: rest)
   | x :: rest -> x :: elim_addi_sd_mv_addi rest
   | [] -> []
 ;;
