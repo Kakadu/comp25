@@ -990,8 +990,7 @@ let%expect_test "codegen closure fn with 10 arg" =
 ;;
 
 let%expect_test "custom op cat" =
-  compile_llvm_show
-    {|let ( =^.^= ) x y = x - y|};
+  compile_llvm_show {|let ( =^.^= ) x y = x - y|};
   [%expect
     {|
     ; ModuleID = 'EML'
@@ -1050,10 +1049,8 @@ let%expect_test "custom op cat" =
   |}]
 ;;
 
-
 let%expect_test "custom op pipe" =
-  compile_llvm_show
-    {|let ( ~> ) x f = f x|};
+  compile_llvm_show {|let ( ~> ) x f = f x|};
   [%expect
     {|
     ; ModuleID = 'EML'

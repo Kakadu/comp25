@@ -664,10 +664,8 @@ let%expect_test "codegen closure fn with 10 arg" =
   |}]
 ;;
 
-
 let%expect_test "custom op cat" =
-  run
-    {|let ( =^.^= ) x y = x - y|};
+  run {|let ( =^.^= ) x y = x - y|};
   [%expect
     {|
     .section .text
@@ -703,10 +701,8 @@ let%expect_test "custom op cat" =
   |}]
 ;;
 
-
 let%expect_test "custom op pipe" =
-  run
-    {|let ( ~> ) x f = f x|};
+  run {|let ( ~> ) x f = f x|};
   [%expect
     {|
     .section .text
