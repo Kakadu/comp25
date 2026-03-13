@@ -56,3 +56,7 @@
   manytests/typed/013foldfoldr.ml
   manytests/typed/015tuples.ml
   manytests/typed/016lists.ml))
+
+(cram
+ (applies_to optimization_diff)
+ (deps codegen.t unoptimized_codegen.t))
