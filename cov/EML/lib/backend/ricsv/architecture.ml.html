@@ -465,38 +465,38 @@ module Riscv_backend = struct
   let pp_reg ppf = function
     | <span data-count="0">Z</span>ero -&gt; fprintf ppf "zero"
     | <span data-count="264">R</span>A -&gt; fprintf ppf "ra"
-    | <span data-count="1546">S</span>P -&gt; fprintf ppf "sp"
-    | <span data-count="2008">A</span> n -&gt; fprintf ppf "a%d" n
-    | <span data-count="939">T</span> n -&gt; fprintf ppf "t%d" n
-    | <span data-count="1644">S</span> 0 -&gt; fprintf ppf "fp"
+    | <span data-count="1562">S</span>P -&gt; fprintf ppf "sp"
+    | <span data-count="2031">A</span> n -&gt; fprintf ppf "a%d" n
+    | <span data-count="992">T</span> n -&gt; fprintf ppf "t%d" n
+    | <span data-count="1650">S</span> 0 -&gt; fprintf ppf "fp"
     | <span data-count="0">S</span> n -&gt; fprintf ppf "s%d" n
   ;;
 
-  let pp_offset ppf offset = <span data-count="1557">f</span>printf ppf "%d(%a)" (sn<span data-count="1557">d</span> offset) pp_reg (fs<span data-count="1557">t</span> offset)
+  let pp_offset ppf offset = <span data-count="1575">f</span>printf ppf "%d(%a)" (sn<span data-count="1575">d</span> offset) pp_reg (fs<span data-count="1575">t</span> offset)
 
   let pp_instr ppf = function
-    | <span data-count="749">A</span>ddi (rd, rs, imm) -&gt; fprintf ppf "addi %a, %a, %d" pp_reg rd pp_reg rs imm
-    | <span data-count="102">A</span>dd (rd, rs1, rs2) -&gt; fprintf ppf "add %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+    | <span data-count="752">A</span>ddi (rd, rs, imm) -&gt; fprintf ppf "addi %a, %a, %d" pp_reg rd pp_reg rs imm
+    | <span data-count="111">A</span>dd (rd, rs1, rs2) -&gt; fprintf ppf "add %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
     | <span data-count="27">S</span>ub (rd, rs1, rs2) -&gt; fprintf ppf "sub %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
-    | <span data-count="19">M</span>ul (rd, rs1, rs2) -&gt; fprintf ppf "mul %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+    | <span data-count="21">M</span>ul (rd, rs1, rs2) -&gt; fprintf ppf "mul %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
     | <span data-count="2">D</span>iv (rd, rs1, rs2) -&gt; fprintf ppf "div %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
     | <span data-count="2">S</span>lli (rd, rs1, imm) -&gt; fprintf ppf "slli %a, %a, %d" pp_reg rd pp_reg rs1 imm
     | <span data-count="23">S</span>rli (rd, rs1, imm) -&gt; fprintf ppf "srli %a, %a, %d" pp_reg rd pp_reg rs1 imm
     | <span data-count="5">X</span>ori (rd, rs1, imm) -&gt; fprintf ppf "xori %a, %a, %d" pp_reg rd pp_reg rs1 imm
     | <span data-count="13">X</span>or (rd, rs1, rs2) -&gt; fprintf ppf "xor %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
-    | <span data-count="12">S</span>lt (rd, rs1, rs2) -&gt; fprintf ppf "slt %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
+    | <span data-count="13">S</span>lt (rd, rs1, rs2) -&gt; fprintf ppf "slt %a, %a, %a" pp_reg rd pp_reg rs1 pp_reg rs2
     | <span data-count="12">S</span>eqz (rd, rs) -&gt; fprintf ppf "seqz %a, %a" pp_reg rd pp_reg rs
     | <span data-count="1">S</span>nez (rd, rs) -&gt; fprintf ppf "snez %a, %a" pp_reg rd pp_reg rs
-    | <span data-count="565">L</span>i (rd, imm) -&gt; fprintf ppf "li %a, %d" pp_reg rd imm
+    | <span data-count="575">L</span>i (rd, imm) -&gt; fprintf ppf "li %a, %d" pp_reg rd imm
     | <span data-count="53">L</span>a (rd, s) -&gt; fprintf ppf "la %a, %s" pp_reg rd s
-    | <span data-count="254">M</span>v (rd, rs) -&gt; fprintf ppf "mv %a, %a" pp_reg rd pp_reg rs
-    | <span data-count="529">L</span>d (rd, ofs) -&gt; fprintf ppf "ld %a, %a" pp_reg rd pp_offset ofs
-    | <span data-count="1028">S</span>d (rs, ofs) -&gt; fprintf ppf "sd %a, %a" pp_reg rs pp_offset ofs
-    | <span data-count="26">B</span>eq (rs1, rs2, s) -&gt; fprintf ppf "beq %a, %a, %s" pp_reg rs1 pp_reg rs2 s
-    | <span data-count="29">J</span> s -&gt; fprintf ppf "j %s" s
-    | <span data-count="186">L</span>abel s -&gt; fprintf ppf "%s:" s
-    | <span data-count="371">C</span>all s -&gt; fprintf ppf "call %s" s
-    | <span data-count="136">R</span>et -&gt; fprintf ppf "ret"
+    | <span data-count="258">M</span>v (rd, rs) -&gt; fprintf ppf "mv %a, %a" pp_reg rd pp_reg rs
+    | <span data-count="538">L</span>d (rd, ofs) -&gt; fprintf ppf "ld %a, %a" pp_reg rd pp_offset ofs
+    | <span data-count="1037">S</span>d (rs, ofs) -&gt; fprintf ppf "sd %a, %a" pp_reg rs pp_offset ofs
+    | <span data-count="27">B</span>eq (rs1, rs2, s) -&gt; fprintf ppf "beq %a, %a, %s" pp_reg rs1 pp_reg rs2 s
+    | <span data-count="30">J</span> s -&gt; fprintf ppf "j %s" s
+    | <span data-count="187">L</span>abel s -&gt; fprintf ppf "%s:" s
+    | <span data-count="373">C</span>all s -&gt; fprintf ppf "call %s" s
+    | <span data-count="140">R</span>et -&gt; fprintf ppf "ret"
   ;;
 
   let tag_int n = <span data-count="352">(</span>2 * n) + 1

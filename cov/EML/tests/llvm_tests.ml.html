@@ -20,7 +20,7 @@
     <div id="navbar">
       <span class="unvisited" style="top:1.35%"></span>
       <span class="unvisited" style="top:1.71%"></span>
-      <span class="unvisited" style="top:2.42%"></span>
+      <span class="unvisited" style="top:2.43%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -1018,8 +1018,8 @@
 <a id="L991"></a><span > </span>
 <a id="L992"></a><span > </span>
 <a id="L993"></a><span class="visited"> </span>
-<a id="L994"></a><span > </span>
-<a id="L995"></a><span class="visited"> </span>
+<a id="L994"></a><span class="visited"> </span>
+<a id="L995"></a><span > </span>
 <a id="L996"></a><span > </span>
 <a id="L997"></a><span > </span>
 <a id="L998"></a><span > </span>
@@ -1073,15 +1073,15 @@
 <a id="L1046"></a><span > </span>
 <a id="L1047"></a><span > </span>
 <a id="L1048"></a><span > </span>
-<a id="L1049"></a><span > </span>
-<a id="L1050"></a><span class="visited"> </span>
+<a id="L1049"></a><span class="visited"> </span>
+<a id="L1050"></a><span > </span>
 <a id="L1051"></a><span > </span>
 <a id="L1052"></a><span > </span>
-<a id="L1053"></a><span > </span>
-<a id="L1054"></a><span > </span>
-<a id="L1055"></a><span class="visited"> </span>
+<a id="L1053"></a><span class="visited"> </span>
+<a id="L1054"></a><span class="visited"> </span>
+<a id="L1055"></a><span > </span>
 <a id="L1056"></a><span > </span>
-<a id="L1057"></a><span class="visited"> </span>
+<a id="L1057"></a><span > </span>
 <a id="L1058"></a><span > </span>
 <a id="L1059"></a><span > </span>
 <a id="L1060"></a><span > </span>
@@ -1134,11 +1134,8 @@
 <a id="L1107"></a><span > </span>
 <a id="L1108"></a><span > </span>
 <a id="L1109"></a><span > </span>
-<a id="L1110"></a><span > </span>
+<a id="L1110"></a><span class="visited"> </span>
 <a id="L1111"></a><span > </span>
-<a id="L1112"></a><span > </span>
-<a id="L1113"></a><span class="visited"> </span>
-<a id="L1114"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -2254,9 +2251,6 @@
 <a href="#L1109">1109</a>
 <a href="#L1110">1110</a>
 <a href="#L1111">1111</a>
-<a href="#L1112">1112</a>
-<a href="#L1113">1113</a>
-<a href="#L1114">1114</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2025-2026, Victoria Ostrovskaya &amp; Danil Usoltsev *)
 
@@ -3250,8 +3244,7 @@ let%expect_test "codegen closure fn with 10 arg" =
 ;;
 
 let%expect_test "custom op cat" =
-  <span data-count="1">c</span>ompile_llvm_show
-    {|let ( =^.^= ) x y = x - y|};
+  <span data-count="1">c</span>ompile_llvm_show {|let ( =^.^= ) x y = x - y|};
   <span data-count="1">[</span>%expect
     {|
     ; ModuleID = 'EML'
@@ -3310,10 +3303,8 @@ let%expect_test "custom op cat" =
   |}<span data-count="19">]</span>
 ;;
 
-
 let%expect_test "custom op pipe" =
-  <span data-count="1">c</span>ompile_llvm_show
-    {|let ( ~&gt; ) x f = f x|};
+  <span data-count="1">c</span>ompile_llvm_show {|let ( ~&gt; ) x f = f x|};
   <span data-count="1">[</span>%expect
     {|
     ; ModuleID = 'EML'

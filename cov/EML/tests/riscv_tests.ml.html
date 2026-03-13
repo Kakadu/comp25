@@ -18,9 +18,9 @@
       <h2>94.64%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="top:1.74%"></span>
-      <span class="unvisited" style="top:2.41%"></span>
-      <span class="unvisited" style="top:3.48%"></span>
+      <span class="unvisited" style="top:1.75%"></span>
+      <span class="unvisited" style="top:2.42%"></span>
+      <span class="unvisited" style="top:3.49%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -692,10 +692,10 @@
 <a id="L665"></a><span > </span>
 <a id="L666"></a><span > </span>
 <a id="L667"></a><span > </span>
-<a id="L668"></a><span > </span>
+<a id="L668"></a><span class="visited"> </span>
 <a id="L669"></a><span class="visited"> </span>
 <a id="L670"></a><span > </span>
-<a id="L671"></a><span class="visited"> </span>
+<a id="L671"></a><span > </span>
 <a id="L672"></a><span > </span>
 <a id="L673"></a><span > </span>
 <a id="L674"></a><span > </span>
@@ -725,16 +725,16 @@
 <a id="L698"></a><span > </span>
 <a id="L699"></a><span > </span>
 <a id="L700"></a><span > </span>
-<a id="L701"></a><span > </span>
+<a id="L701"></a><span class="visited"> </span>
 <a id="L702"></a><span > </span>
-<a id="L703"></a><span class="visited"> </span>
+<a id="L703"></a><span > </span>
 <a id="L704"></a><span > </span>
-<a id="L705"></a><span > </span>
-<a id="L706"></a><span > </span>
+<a id="L705"></a><span class="visited"> </span>
+<a id="L706"></a><span class="visited"> </span>
 <a id="L707"></a><span > </span>
-<a id="L708"></a><span class="visited"> </span>
+<a id="L708"></a><span > </span>
 <a id="L709"></a><span > </span>
-<a id="L710"></a><span class="visited"> </span>
+<a id="L710"></a><span > </span>
 <a id="L711"></a><span > </span>
 <a id="L712"></a><span > </span>
 <a id="L713"></a><span > </span>
@@ -767,12 +767,8 @@
 <a id="L740"></a><span > </span>
 <a id="L741"></a><span > </span>
 <a id="L742"></a><span > </span>
-<a id="L743"></a><span > </span>
+<a id="L743"></a><span class="visited"> </span>
 <a id="L744"></a><span > </span>
-<a id="L745"></a><span > </span>
-<a id="L746"></a><span > </span>
-<a id="L747"></a><span class="visited"> </span>
-<a id="L748"></a><span > </span>
 </pre>
       </div>
       <div id="text-layer">
@@ -1521,10 +1517,6 @@
 <a href="#L742">742</a>
 <a href="#L743">743</a>
 <a href="#L744">744</a>
-<a href="#L745">745</a>
-<a href="#L746">746</a>
-<a href="#L747">747</a>
-<a href="#L748">748</a>
 </pre>
 <pre><code class="ocaml">(** Copyright 2025-2026, Victoria Ostrovskaya &amp; Danil Usoltsev *)
 
@@ -2192,10 +2184,8 @@ let%expect_test "codegen closure fn with 10 arg" =
   |}<span data-count="19">]</span>
 ;;
 
-
 let%expect_test "custom op cat" =
-  <span data-count="1">r</span>un
-    {|let ( =^.^= ) x y = x - y|};
+  <span data-count="1">r</span>un {|let ( =^.^= ) x y = x - y|};
   <span data-count="1">[</span>%expect
     {|
     .section .text
@@ -2231,10 +2221,8 @@ let%expect_test "custom op cat" =
   |}<span data-count="19">]</span>
 ;;
 
-
 let%expect_test "custom op pipe" =
-  <span data-count="1">r</span>un
-    {|let ( ~&gt; ) x f = f x|};
+  <span data-count="1">r</span>un {|let ( ~&gt; ) x f = f x|};
   <span data-count="1">[</span>%expect
     {|
     .section .text
