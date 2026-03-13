@@ -156,16 +156,20 @@ let rec elim_inverse_mv = function
   | [] -> []
 ;;
 
-let rec elim_load_mv_before_call = function
+let rec elim_mv_before_call = function
   | (Li (ld, lii), _) :: (Mv (md, m1), _) :: ((Call _, _) as ci) :: rest
     when equal_reg ld m1 ->
     let li = Li (md, lii), "" in
-    elim_load_mv_before_call (li :: ci :: rest)
+    elim_mv_before_call (li :: ci :: rest)
   | (Ld (ld, off), _) :: (Mv (md, m1), _) :: ((Call _, _) as ci) :: rest
     when equal_reg ld m1 ->
     let li = Ld (md, off), "" in
-    elim_load_mv_before_call (li :: ci :: rest)
-  | x :: rest -> x :: elim_load_mv_before_call rest
+    elim_mv_before_call (li :: ci :: rest)
+  | (Mv (md1, mv1), _) :: (Mv (md2, mv2), _) :: ((Call _, _) as ci) :: rest
+    when equal_reg md1 mv2 ->
+    let mv = Mv (md2, mv1), "" in
+    elim_mv_before_call (mv :: ci :: rest)
+  | x :: rest -> x :: elim_mv_before_call rest
   | [] -> []
 ;;
 
@@ -176,12 +180,58 @@ let rec fold_mv_smth = function
   | (Mv (md, mv1), _) :: (Addi (ad, a1, aimm), _) :: rest when equal_reg md a1 ->
     let i = Addi (ad, mv1, aimm), "" in
     fold_mv_smth (i :: rest)
+  | (Mv (md, mv1), _) :: (Add (ad, a1, a2), _) :: rest
+    when equal_reg md a1 || equal_reg md a2 ->
+    let add = if equal_reg md a1 then Add (ad, mv1, a2), "" else Add (ad, a1, mv1), "" in
+    fold_mv_smth (add :: rest)
   | x :: rest -> x :: fold_mv_smth rest
   | [] -> []
 ;;
 
 let rec fold_addi_sp = function
-  (* todo: long addi sd chains *)
+  (* can't just do as is like with ld, but it happens on A registers, so i listed the cases *)
+  | (Addi (SP, SP, aimm1), _)
+    :: (Sd (r1, (SP, off1)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: (Sd (r2, (SP, off2)), _)
+    :: (Addi (SP, SP, aimm3), _)
+    :: (Sd (r3, (SP, off3)), _)
+    :: (Addi (SP, SP, aimm4), _)
+    :: (Sd (r4, (SP, off4)), _)
+    :: (Addi (SP, SP, aimm5), _)
+    :: ((Sd (_, (SP, _)), _) as sdi5)
+    :: rest ->
+    let addi = Addi (SP, SP, aimm1 + aimm2 + aimm3 + aimm4 + aimm5), "" in
+    let sdi1 = Sd (r1, (SP, off1 - aimm1 - aimm2 - aimm3 - aimm4)), "" in
+    let sdi2 = Sd (r2, (SP, off2 - aimm2 - aimm3 - aimm4)), "" in
+    let sdi3 = Sd (r3, (SP, off3 - aimm3 - aimm4)), "" in
+    let sdi4 = Sd (r4, (SP, off4 - aimm4)), "" in
+    fold_addi_sp (addi :: sdi1 :: sdi2 :: sdi3 :: sdi4 :: sdi5 :: rest)
+  | (Addi (SP, SP, aimm1), _)
+    :: (Sd (r1, (SP, off1)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: (Sd (r2, (SP, off2)), _)
+    :: (Addi (SP, SP, aimm3), _)
+    :: (Sd (r3, (SP, off3)), _)
+    :: (Addi (SP, SP, aimm4), _)
+    :: ((Sd (_, (SP, _)), _) as sdi4)
+    :: rest ->
+    let addi = Addi (SP, SP, aimm1 + aimm2 + aimm3 + aimm4), "" in
+    let sdi1 = Sd (r1, (SP, off1 - aimm1 - aimm2 - aimm3)), "" in
+    let sdi2 = Sd (r2, (SP, off2 - aimm2 - aimm3)), "" in
+    let sdi3 = Sd (r3, (SP, off3 - aimm3)), "" in
+    fold_addi_sp (addi :: sdi1 :: sdi2 :: sdi3 :: sdi4 :: rest)
+  | (Addi (SP, SP, aimm1), _)
+    :: (Sd (r1, (SP, off1)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: (Sd (r2, (SP, off2)), _)
+    :: (Addi (SP, SP, aimm3), _)
+    :: ((Sd (_, (SP, _)), _) as sdi3)
+    :: rest ->
+    let addi = Addi (SP, SP, aimm1 + aimm2 + aimm3), "" in
+    let sdi1 = Sd (r1, (SP, off1 - aimm1 - aimm2)), "" in
+    let sdi2 = Sd (r2, (SP, off2 - aimm2)), "" in
+    fold_addi_sp (addi :: sdi1 :: sdi2 :: sdi3 :: rest)
   | (Addi (SP, SP, aimm1), _)
     :: (Sd (sd1, (SP, _)), _)
     :: (Addi (SP, SP, aimm2), _)
@@ -205,8 +255,43 @@ let rec fold_addi_sp = function
     let ldi2 = Ld (ld2, (SP, aimm1 - li2)), "" in
     let addi = Addi (SP, SP, aimm1 + aimm2), "" in
     fold_addi_sp (ldi1 :: ldi2 :: addi :: rest)
-  (* | Sd :: Addi :: Sd :: rest ->  *)
+  | (Addi (SP, SP, aimm1), _) :: ((i, _) as i2) :: (Addi (SP, SP, aimm2), _) :: rest
+    when aimm1 = -aimm2 && not (reg_used_in_instr SP i) -> fold_addi_sp (i2 :: rest)
   | x :: rest -> x :: fold_addi_sp rest
+  | [] -> []
+;;
+
+let rec elim_sd_before_ret = function
+  | (Sd (_, _), _) :: ((Ret, _) as ret) :: rest -> elim_sd_before_ret (ret :: rest)
+  | (Sd (_, _), _) :: addi_sp :: ld_ra :: ld_s0 :: ((Ret, _) as ret) :: rest ->
+    elim_sd_before_ret (addi_sp :: ld_ra :: ld_s0 :: ret :: rest)
+  | (Sd (_, (reg, _)), _)
+    :: ((i, _) as ic)
+    :: addi_sp
+    :: ld_ra
+    :: ld_s0
+    :: ((Ret, _) as ret)
+    :: rest
+    when not (reg_used_in_instr reg i) ->
+    elim_sd_before_ret (ic :: addi_sp :: ld_ra :: ld_s0 :: ret :: rest)
+  | x :: rest -> x :: elim_sd_before_ret rest
+  | [] -> []
+;;
+
+let rec elim_mv_before_branch = function
+  | (Mv (md, mv1), _) :: ((Li (ld, _), _) as li) :: (Bne (br1, br2, label), _) :: rest
+    when equal_reg md br1 && equal_reg ld br2 ->
+    let b = Bne (mv1, ld, label), "" in
+    fold_branch (li :: b :: rest)
+  | (Mv (md, mv1), _) :: ((Li (ld, _), _) as li) :: (Blt (br1, br2, label), _) :: rest
+    when equal_reg md br2 && equal_reg ld br1 ->
+    let b = Blt (ld, mv1, label), "" in
+    fold_branch (li :: b :: rest)
+  | (Mv (md, mv1), _) :: ((Li (ld, _), _) as li) :: (Ble (br1, br2, label), _) :: rest
+    when equal_reg md br2 && equal_reg ld br1 ->
+    let b = Ble (ld, mv1, label), "" in
+    fold_branch (li :: b :: rest)
+  | x :: rest -> x :: elim_mv_before_branch rest
   | [] -> []
 ;;
 
@@ -218,9 +303,11 @@ let peephole code : (instr * string) Queue.t =
   let optimized = fold_constants optimized in
   let optimized = elim_inverse_mv optimized in
   let optimized = fold_branch optimized in
-  let optimized = elim_load_mv_before_call optimized in
+  let optimized = elim_mv_before_call optimized in
   let optimized = fold_mv_smth optimized in
   let optimized = fold_addi_sp optimized in
+  let optimized = elim_sd_before_ret optimized in
+  let optimized = elim_mv_before_branch optimized in
   Queue.of_list optimized
 ;;
 
