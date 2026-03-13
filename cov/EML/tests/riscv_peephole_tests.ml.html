@@ -1336,14 +1336,14 @@ let show_diff ~input ~output value =
   <span data-count="19">o</span>utput value
 ;;
 
-let show_with_without_peephole src =
+let show_codogen_diff src =
   <span data-count="3">s</span>how_diff
     ~input:(fun source -&gt; <span data-count="3">p</span>rint_endline (compile_risc<span data-count="3">v</span> ~enable_peephole:false source))
     ~output:(fun source -&gt; <span data-count="3">p</span>rint_endline (compile_risc<span data-count="3">v</span> ~enable_peephole:true source))
     src
 ;;
 
-let show_peephole_diff instrs =
+let show_instr_diff instrs =
   <span data-count="16">s</span>how_diff
     ~input:print_instrs
     ~output:(fun instructions -&gt;
@@ -1363,7 +1363,7 @@ let%expect_test "optimizes repeated stack load pattern from task description" =
     ; Sd (T 1, (SP, 64))
     ]
   in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1387,7 +1387,7 @@ let%expect_test "removes redundant load and forwards store to load" =
   <span data-count="1">l</span>et input =
     [ Ld (T 0, (SP, 64)); Ld (T 1, (SP, 64)); Sd (T 1, (SP, 64)); Ld (A 0, (SP, 64)) ]
   in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1408,7 +1408,7 @@ let%expect_test "folds addi chain and removes dead overwrite" =
   <span data-count="1">l</span>et input =
     [ Addi (SP, SP, -16); Addi (SP, SP, 8); Li (T 0, 1); Li (T 0, 2); Addi (T 1, T 1, 0) ]
   in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1426,7 +1426,7 @@ li t0, 2
 
 let%expect_test "drops jump to the immediately following label" =
   <span data-count="1">l</span>et input = [ J "l1"; Label "l1"; Mv (A 0, A 0); Ret ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1442,7 +1442,7 @@ ret
 
 let%expect_test "collapses double copy before binary op" =
   <span data-count="1">l</span>et input = [ Mv (T 0, A 0); Mv (T 1, A 0); Add (A 0, T 0, T 1) ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1457,7 +1457,7 @@ add a0, a0, a0
 
 let%expect_test "propagates single mv into following consumer" =
   <span data-count="1">l</span>et input = [ Mv (T 0, A 0); Li (T 1, 1); Slt (A 0, T 0, T 1) ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1473,7 +1473,7 @@ slt a0, a0, t1
 
 let%expect_test "rewrites li plus add into addi" =
   <span data-count="1">l</span>et input = [ Li (T 1, 1); Add (A 0, T 0, T 1) ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1487,7 +1487,7 @@ addi a0, t0, 1
 
 let%expect_test "folds li plus add when destination is constant register" =
   <span data-count="1">l</span>et input = [ Li (T 0, 1); Add (T 0, T 1, T 0) ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1501,7 +1501,7 @@ addi t0, t1, 1
 
 let%expect_test "rewrites mul by power of two into slli" =
   <span data-count="1">l</span>et input = [ Li (T 0, 4); Mul (A 0, T 1, T 0) ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1517,7 +1517,7 @@ let%expect_test "keeps load cache barriers on call" =
   <span data-count="1">l</span>et input =
     [ Ld (T 0, (SP, 64)); Call "foo"; Ld (T 1, (SP, 64)); Add (A 0, T 0, T 1) ]
   in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1536,7 +1536,7 @@ add a0, t0, t1
 
 let%expect_test "forwards store to following load on same slot" =
   <span data-count="1">l</span>et input = [ Sd (A 0, (fp, -16)); Ld (T 0, (fp, -16)); Add (A 0, T 0, A 1) ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1552,7 +1552,7 @@ add a0, a0, a1
 
 let%expect_test "folds constant beq into jump" =
   <span data-count="1">l</span>et input = [ Li (T 0, 1); Li (T 1, 1); Beq (T 0, T 1, "else_1") ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1569,7 +1569,7 @@ j else_1
 
 let%expect_test "removes dead store before ret in same block" =
   <span data-count="1">l</span>et input = [ Sd (A 0, (fp, -8)); Add (A 0, A 0, A 1); Ret ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1585,7 +1585,7 @@ ret
 
 let%expect_test "keeps store before call barrier" =
   <span data-count="1">l</span>et input = [ Sd (A 0, (fp, -8)); Call "foo"; Ret ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1602,7 +1602,7 @@ ret
 
 let%expect_test "removes store that restores unchanged loaded slot value" =
   <span data-count="1">l</span>et input = [ Ld (T 1, (sp, 64)); Add (T 0, T 1, T 0); Sd (T 1, (sp, 64)) ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1618,7 +1618,7 @@ add t0, t1, t0
 
 let%expect_test "drops overwritten store before next store to same slot" =
   <span data-count="1">l</span>et input = [ Sd (A 0, (fp, -8)); Add (A 0, A 0, A 1); Sd (T 0, (fp, -8)); Ret ] in
-  show_peephole_diff input;
+  show_instr_diff input;
   <span data-count="1">[</span>%expect
     {|
 === Without peepholes ===
@@ -1642,7 +1642,7 @@ let%expect_test "shows code with and without peephole 1" =
       let main = f 1
     |}
   in
-  show_with_without_peephole src;
+  show_codogen_diff src;
   <span data-count="1">[</span>%expect
     {|
     === Without peepholes ===
@@ -1733,7 +1733,7 @@ let%expect_test "shows code with and without peephole 2" =
       let main = f 10
     |}
   in
-  show_with_without_peephole src;
+  show_codogen_diff src;
   <span data-count="1">[</span>%expect
     {|
     === Without peepholes ===
@@ -1838,7 +1838,7 @@ let%expect_test "shows code with and without peephole 3" =
       let main = g 1
     |}
   in
-  show_with_without_peephole src;
+  show_codogen_diff src;
   <span data-count="1">[</span>%expect
     {|
     === Without peepholes ===
