@@ -1137,78 +1137,78 @@ let pprint_err ppf = function
 
 type 'a t = ('a, error) result
 
-let return x = <span data-count="12536">O</span>k x
+let return x = <span data-count="14185">O</span>k x
 let fail e = <span data-count="17">E</span>rror e
 let ( let* ) = Result.bind
 let current_level = ref 0
-let enter_level () = <span data-count="178">i</span>ncr current_level
-let leave_level () = <span data-count="176">d</span>ecr current_level
+let enter_level () = <span data-count="204">i</span>ncr current_level
+let leave_level () = <span data-count="202">d</span>ecr current_level
 
 let rec occurs_check tv = function
-  | <span data-count="1431">T</span>ype_var tv' when tv == tv' -&gt; <span data-count="1">f</span>ail Occurs_check
-  | <span data-count="953">T</span>ype_var ({ contents = Unbound (name, l) } as tv') -&gt;
+  | <span data-count="1555">T</span>ype_var tv' when tv == tv' -&gt; <span data-count="1">f</span>ail Occurs_check
+  | <span data-count="1027">T</span>ype_var ({ contents = Unbound (name, l) } as tv') -&gt;
     let min_lvl =
       match !tv with
-      | <span data-count="953">U</span>nbound (_, l') -&gt; mi<span data-count="953">n</span> l l'
+      | <span data-count="1027">U</span>nbound (_, l') -&gt; mi<span data-count="1027">n</span> l l'
       | <span data-count="0">_</span> -&gt; l
     in
     tv' := Unbound (name, min_lvl);
     return ()
-  | <span data-count="477">T</span>ype_var { contents = Link t } -&gt; occurs_check tv t
-  | <span data-count="1168">T</span>ype_arrow (t1, t2) -&gt;
-    let* () = occurs_chec<span data-count="1168">k</span> tv t1 in
-    <span data-count="1167">l</span>et* () = occurs_chec<span data-count="1167">k</span> tv t2 in
-    <span data-count="1167">r</span>eturn ()
-  | <span data-count="87">T</span>ype_tuple (t1, t2, tl) -&gt;
+  | <span data-count="527">T</span>ype_var { contents = Link t } -&gt; occurs_check tv t
+  | <span data-count="1326">T</span>ype_arrow (t1, t2) -&gt;
+    let* () = occurs_chec<span data-count="1326">k</span> tv t1 in
+    <span data-count="1325">l</span>et* () = occurs_chec<span data-count="1325">k</span> tv t2 in
+    <span data-count="1325">r</span>eturn ()
+  | <span data-count="105">T</span>ype_tuple (t1, t2, tl) -&gt;
     List.fold_left
       (fun acc t -&gt;
-         <span data-count="190">l</span>et* () = acc in
-         <span data-count="190">o</span>ccurs_check tv t)
-      (retur<span data-count="87">n</span> ())
+         <span data-count="234">l</span>et* () = acc in
+         <span data-count="234">o</span>ccurs_check tv t)
+      (retur<span data-count="105">n</span> ())
       (t1 :: t2 :: tl)
-  | <span data-count="1995">T</span>ype_construct (_, lst) -&gt;
+  | <span data-count="2301">T</span>ype_construct (_, lst) -&gt;
     List.fold_left
       (fun acc t -&gt;
          <span data-count="116">l</span>et* () = acc in
          <span data-count="116">o</span>ccurs_check tv t)
-      (retur<span data-count="1995">n</span> ())
+      (retur<span data-count="2301">n</span> ())
       lst
   | <span data-count="0">_</span> -&gt; return ()
 ;;
 
 let rec unify t1 t2 =
-  <span data-count="4274">m</span>atch t1, t2 with
-  | <span data-count="4274">t</span>1, t2 when t1 == t2 -&gt; <span data-count="164">r</span>eturn ()
-  | <span data-count="531">T</span>ype_var { contents = Link t1 }, t2 | <span data-count="526">t</span>1, Type_var { contents = Link t2 } -&gt;
+  <span data-count="4757">m</span>atch t1, t2 with
+  | <span data-count="4757">t</span>1, t2 when t1 == t2 -&gt; <span data-count="178">r</span>eturn ()
+  | <span data-count="577">T</span>ype_var { contents = Link t1 }, t2 | <span data-count="575">t</span>1, Type_var { contents = Link t2 } -&gt;
     unify t1 t2
-  | <span data-count="950">T</span>ype_var ({ contents = Unbound _ } as tv), t'
-  | <span data-count="613">t</span>', Type_var ({ contents = Unbound _ } as tv) -&gt;
-    let* () = occurs_chec<span data-count="1563">k</span> tv t' in
-    <span data-count="1562">t</span>v := Link t';
+  | <span data-count="1070">T</span>ype_var ({ contents = Unbound _ } as tv), t'
+  | <span data-count="689">t</span>', Type_var ({ contents = Unbound _ } as tv) -&gt;
+    let* () = occurs_chec<span data-count="1759">k</span> tv t' in
+    <span data-count="1758">t</span>v := Link t';
     return ()
-  | <span data-count="623">T</span>ype_arrow (l1, l2), Type_arrow (r1, r2) -&gt;
-    let* () = unif<span data-count="623">y</span> l1 r1 in
-    <span data-count="621">u</span>nify l2 r2
-  | <span data-count="82">T</span>ype_tuple (l1, l2, ltl), Type_tuple (r1, r2, rtl) -&gt;
-    if List.lengt<span data-count="82">h</span> ltl &lt;&gt; List.lengt<span data-count="82">h</span> rtl
+  | <span data-count="695">T</span>ype_arrow (l1, l2), Type_arrow (r1, r2) -&gt;
+    let* () = unif<span data-count="695">y</span> l1 r1 in
+    <span data-count="693">u</span>nify l2 r2
+  | <span data-count="91">T</span>ype_tuple (l1, l2, ltl), Type_tuple (r1, r2, rtl) -&gt;
+    if List.lengt<span data-count="91">h</span> ltl &lt;&gt; List.lengt<span data-count="91">h</span> rtl
     then <span data-count="2">f</span>ail Cannot_unify_tuple_size
     else
-      <span data-count="80">L</span>ist.fold_left2
+      <span data-count="89">L</span>ist.fold_left2
         (fun acc l r -&gt;
-           <span data-count="176">l</span>et* () = acc in
-           <span data-count="176">u</span>nify l r)
-        (retur<span data-count="80">n</span> ())
+           <span data-count="202">l</span>et* () = acc in
+           <span data-count="202">u</span>nify l r)
+        (retur<span data-count="89">n</span> ())
         (l1 :: l2 :: ltl)
         (r1 :: r2 :: rtl)
-  | <span data-count="785">T</span>ype_construct (lc, llst), Type_construct (rc, rlst) -&gt;
+  | <span data-count="882">T</span>ype_construct (lc, llst), Type_construct (rc, rlst) -&gt;
     if lc &lt;&gt; rc
     then <span data-count="11">f</span>ail (Cannot_unify_constructors (lc, rc))
     else
-      <span data-count="774">L</span>ist.fold_left2
+      <span data-count="871">L</span>ist.fold_left2
         (fun acc l r -&gt;
            <span data-count="93">l</span>et* () = acc in
            <span data-count="93">u</span>nify l r)
-        (retur<span data-count="774">n</span> ())
+        (retur<span data-count="871">n</span> ())
         llst
         rlst
   | <span data-count="0">Q</span>uant_type_var _, _ | <span data-count="0">_</span>, Quant_type_var _ -&gt; fail Cannot_unify_quantified
@@ -1216,14 +1216,14 @@ let rec unify t1 t2 =
 ;;
 
 let rec generalize = function
-  | <span data-count="281">T</span>ype_var { contents = Unbound (name, l) } when l &gt;= !current_level -&gt;
-    <span data-count="261">Q</span>uant_type_var name
-  | <span data-count="759">T</span>ype_var { contents = Link ty } -&gt; generalize ty
-  | <span data-count="400">T</span>ype_arrow (ty1, ty2) -&gt; Type_arrow (generaliz<span data-count="400">e</span> ty1, generaliz<span data-count="400">e</span> ty2)
-  | <span data-count="43">T</span>ype_tuple (t1, t2, tl) -&gt;
-    Type_tuple (generaliz<span data-count="43">e</span> t1, generaliz<span data-count="43">e</span> t2, List.ma<span data-count="43">p</span> generalize tl)
-  | <span data-count="576">T</span>ype_construct (c, lst) -&gt; Type_construct (c, List.ma<span data-count="576">p</span> generalize lst)
-  | <span data-count="20">t</span>y -&gt; ty
+  | <span data-count="313">T</span>ype_var { contents = Unbound (name, l) } when l &gt;= !current_level -&gt;
+    <span data-count="289">Q</span>uant_type_var name
+  | <span data-count="880">T</span>ype_var { contents = Link ty } -&gt; generalize ty
+  | <span data-count="449">T</span>ype_arrow (ty1, ty2) -&gt; Type_arrow (generaliz<span data-count="449">e</span> ty1, generaliz<span data-count="449">e</span> ty2)
+  | <span data-count="56">T</span>ype_tuple (t1, t2, tl) -&gt;
+    Type_tuple (generaliz<span data-count="56">e</span> t1, generaliz<span data-count="56">e</span> t2, List.ma<span data-count="56">p</span> generalize tl)
+  | <span data-count="688">T</span>ype_construct (c, lst) -&gt; Type_construct (c, List.ma<span data-count="688">p</span> generalize lst)
+  | <span data-count="24">t</span>y -&gt; ty
 ;;
 
 type env = (ident * TypeExpr.t) list
@@ -1233,40 +1233,40 @@ let reset_gensym : unit -&gt; unit = fun () -&gt; <span data-count="67">g</span>
 
 let gensym : unit -&gt; string =
   fun () -&gt;
-  <span data-count="1770">l</span>et n = !gensym_counter in
+  <span data-count="1984">l</span>et n = !gensym_counter in
   let () = incr gensym_counter in
-  <span data-count="1770">i</span>f n &lt; 26 then <span data-count="1350">S</span>tring.make 1 (Char.ch<span data-count="1350">r</span> (Char.cod<span data-count="1350">e</span> 'a' + n)) else <span data-count="420">"</span>t" ^ string_of_in<span data-count="420">t</span> n
+  <span data-count="1984">i</span>f n &lt; 26 then <span data-count="1534">S</span>tring.make 1 (Char.ch<span data-count="1534">r</span> (Char.cod<span data-count="1534">e</span> 'a' + n)) else <span data-count="450">"</span>t" ^ string_of_in<span data-count="450">t</span> n
 ;;
 
-let newvar () = <span data-count="1770">T</span>ype_var (ref (Unbound (gensy<span data-count="1770">m</span> (), !current_level)))
+let newvar () = <span data-count="1984">T</span>ype_var (ref (Unbound (gensy<span data-count="1984">m</span> (), !current_level)))
 
 let inst =
   let rec loop subst = function
-    | <span data-count="547">Q</span>uant_type_var name -&gt;
+    | <span data-count="589">Q</span>uant_type_var name -&gt;
       (match List.assoc_opt name subst with
-       | <span data-count="251">S</span>ome typ -&gt; typ, subst
-       | <span data-count="296">N</span>one -&gt;
+       | <span data-count="267">S</span>ome typ -&gt; typ, subst
+       | <span data-count="322">N</span>one -&gt;
          let tv = newvar () in
-         <span data-count="296">t</span>v, (name, tv) :: subst)
-    | <span data-count="358">T</span>ype_var { contents = Link ty } -&gt; loop subst ty
-    | <span data-count="659">T</span>ype_arrow (t1, t2) -&gt;
+         <span data-count="322">t</span>v, (name, tv) :: subst)
+    | <span data-count="382">T</span>ype_var { contents = Link ty } -&gt; loop subst ty
+    | <span data-count="733">T</span>ype_arrow (t1, t2) -&gt;
       let t1', subst = loop subst t1 in
-      <span data-count="659">l</span>et t2', subst = loop subst t2 in
-      <span data-count="659">T</span>ype_arrow (t1', t2'), subst
-    | <span data-count="95">T</span>ype_tuple (t1, t2, tl) -&gt;
+      <span data-count="733">l</span>et t2', subst = loop subst t2 in
+      <span data-count="733">T</span>ype_arrow (t1', t2'), subst
+    | <span data-count="108">T</span>ype_tuple (t1, t2, tl) -&gt;
       let t1', subst = loop subst t1 in
-      <span data-count="95">l</span>et t2', subst = loop subst t2 in
-      <span data-count="95">l</span>et tl'_rev, subst =
+      <span data-count="108">l</span>et t2', subst = loop subst t2 in
+      <span data-count="108">l</span>et tl'_rev, subst =
         List.fold_left
           (fun (acc, subst) t -&gt;
-             <span data-count="16">l</span>et t', subst = loop subst t in
-             <span data-count="16">t</span>' :: acc, subst)
+             <span data-count="24">l</span>et t', subst = loop subst t in
+             <span data-count="24">t</span>' :: acc, subst)
           ([], subst)
           tl
       in
-      <span data-count="95">l</span>et tl' = List.rev tl'_rev in
-      <span data-count="95">T</span>ype_tuple (t1', t2', tl'), subst
-    | <span data-count="1443">T</span>ype_construct (constr, lst) -&gt;
+      <span data-count="108">l</span>et tl' = List.rev tl'_rev in
+      <span data-count="108">T</span>ype_tuple (t1', t2', tl'), subst
+    | <span data-count="1640">T</span>ype_construct (constr, lst) -&gt;
       let lst'_rev, subst =
         List.fold_left
           (fun (acc, subst) t -&gt;
@@ -1275,48 +1275,48 @@ let inst =
           ([], subst)
           lst
       in
-      <span data-count="1443">l</span>et lst' = List.rev lst'_rev in
-      <span data-count="1443">T</span>ype_construct (constr, lst'), subst
-    | <span data-count="535">t</span>y -&gt; ty, subst
+      <span data-count="1640">l</span>et lst' = List.rev lst'_rev in
+      <span data-count="1640">T</span>ype_construct (constr, lst'), subst
+    | <span data-count="588">t</span>y -&gt; ty, subst
   in
-  fun ty -&gt; <span data-count="1563">f</span>st (loo<span data-count="1563">p</span> [] ty)
+  fun ty -&gt; <span data-count="1760">f</span>st (loo<span data-count="1760">p</span> [] ty)
 ;;
 
 let rec infer_pat env = function
-  | <span data-count="36">P</span>at_any -&gt;
+  | <span data-count="37">P</span>at_any -&gt;
     let fresh = newvar () in
-    <span data-count="36">r</span>eturn (env, fresh)
-  | <span data-count="816">P</span>at_var id -&gt;
+    <span data-count="37">r</span>eturn (env, fresh)
+  | <span data-count="934">P</span>at_var id -&gt;
     let fresh = newvar () in
-    <span data-count="816">l</span>et new_env = (id, fresh) :: env in
+    <span data-count="934">l</span>et new_env = (id, fresh) :: env in
     return (new_env, fresh)
   | <span data-count="18">P</span>at_constant const -&gt;
     (match const with
      | <span data-count="1">C</span>onst_char _ -&gt; return (env, Type_construct ("char", []))
      | <span data-count="16">C</span>onst_integer _ -&gt; return (env, Type_construct ("int", []))
      | <span data-count="1">C</span>onst_string _ -&gt; return (env, Type_construct ("string", [])))
-  | <span data-count="62">P</span>at_tuple (p1, p2, ptl) -&gt;
-    let* new_env, ty1 = infer_pa<span data-count="62">t</span> env p1 in
-    <span data-count="62">l</span>et* new_env1, ty2 = infer_pa<span data-count="62">t</span> new_env p2 in
-    <span data-count="62">l</span>et* new_env2, tytl =
-      List.fold_lef<span data-count="62">t</span>
+  | <span data-count="71">P</span>at_tuple (p1, p2, ptl) -&gt;
+    let* new_env, ty1 = infer_pa<span data-count="71">t</span> env p1 in
+    <span data-count="71">l</span>et* new_env1, ty2 = infer_pa<span data-count="71">t</span> new_env p2 in
+    <span data-count="71">l</span>et* new_env2, tytl =
+      List.fold_lef<span data-count="71">t</span>
         (fun acc exp -&gt;
-           <span data-count="20">l</span>et* eacc, tacc = acc in
-           <span data-count="20">l</span>et* curr_env, ty = infer_pa<span data-count="20">t</span> eacc exp in
-           <span data-count="20">r</span>eturn (curr_env, ty :: tacc))
-        (retur<span data-count="62">n</span> (new_env1, []))
+           <span data-count="28">l</span>et* eacc, tacc = acc in
+           <span data-count="28">l</span>et* curr_env, ty = infer_pa<span data-count="28">t</span> eacc exp in
+           <span data-count="28">r</span>eturn (curr_env, ty :: tacc))
+        (retur<span data-count="71">n</span> (new_env1, []))
         ptl
     in
-    <span data-count="62">r</span>eturn (new_env2, Type_tuple (ty1, ty2, List.re<span data-count="62">v</span> tytl))
-  | <span data-count="89">P</span>at_construct (name, pat) -&gt;
+    <span data-count="71">r</span>eturn (new_env2, Type_tuple (ty1, ty2, List.re<span data-count="71">v</span> tytl))
+  | <span data-count="90">P</span>at_construct (name, pat) -&gt;
     let ty = List.assoc name env in
-    <span data-count="89">l</span>et inst_ty = inst ty in
-    <span data-count="89">(</span>match inst_ty, pat with
+    <span data-count="90">l</span>et inst_ty = inst ty in
+    <span data-count="90">(</span>match inst_ty, pat with
      | <span data-count="35">T</span>ype_arrow (arg, body), Some p -&gt;
        let* new_env, new_ty = infer_pa<span data-count="35">t</span> env p in
        <span data-count="35">l</span>et* () = unif<span data-count="35">y</span> arg new_ty in
        <span data-count="35">r</span>eturn (new_env, body)
-     | <span data-count="54">_</span> -&gt; return (env, inst_ty))
+     | <span data-count="55">_</span> -&gt; return (env, inst_ty))
   | <span data-count="0">P</span>at_constraint (p, ty) -&gt;
     let* new_env, new_ty = infer_pa<span data-count="0">t</span> env p in
     <span data-count="0">l</span>et* () = unif<span data-count="0">y</span> ty new_ty in
@@ -1324,99 +1324,99 @@ let rec infer_pat env = function
 ;;
 
 let add_rec_names env vb_list =
-  <span data-count="50">L</span>ist.fold_left
+  <span data-count="54">L</span>ist.fold_left
     (fun cenv { pat; _ } -&gt;
-       <span data-count="52">l</span>et* cenv = cenv in
-       <span data-count="52">m</span>atch pat with
-       | <span data-count="52">P</span>at_var id | <span data-count="0">P</span>at_constraint (Pat_var id, _) -&gt;
-         let* ncenv, typ_p = infer_pa<span data-count="52">t</span> cenv pat in
-         <span data-count="52">r</span>eturn ((id, typ_p) :: ncenv)
+       <span data-count="56">l</span>et* cenv = cenv in
+       <span data-count="56">m</span>atch pat with
+       | <span data-count="56">P</span>at_var id | <span data-count="0">P</span>at_constraint (Pat_var id, _) -&gt;
+         let* ncenv, typ_p = infer_pa<span data-count="56">t</span> cenv pat in
+         <span data-count="56">r</span>eturn ((id, typ_p) :: ncenv)
        | <span data-count="0">_</span> -&gt; fail Invalid_let_rec_lhs)
-    (retur<span data-count="50">n</span> env)
+    (retur<span data-count="54">n</span> env)
     vb_list
 ;;
 
 let rec get_pat_names acc = function
-  | <span data-count="587">P</span>at_var id -&gt; id :: acc
-  | <span data-count="28">P</span>at_tuple (pat1, pat2, rest) -&gt;
+  | <span data-count="694">P</span>at_var id -&gt; id :: acc
+  | <span data-count="37">P</span>at_tuple (pat1, pat2, rest) -&gt;
     Base.List.fold_left ~f:get_pat_names ~init:acc (pat1 :: pat2 :: rest)
   | <span data-count="4">P</span>at_construct ("Some", Some pat) -&gt; get_pat_names acc pat
   | <span data-count="0">P</span>at_constraint (pat, _) -&gt; get_pat_names acc pat
-  | <span data-count="93">_</span> -&gt; acc
+  | <span data-count="95">_</span> -&gt; acc
 ;;
 
 let rec infer_vb env { pat; expr } =
   (* we don't need local names *)
-  <span data-count="340">l</span>et* _, typ_e = infer_ex<span data-count="340">p</span> env expr in
-  <span data-count="340">l</span>et* new_env, typ_p = infer_pa<span data-count="340">t</span> env pat in
-  <span data-count="340">l</span>et* () = unif<span data-count="340">y</span> typ_p typ_e in
-  <span data-count="338">l</span>et pat_names = get_pat_names [] pat in
-  <span data-count="338">l</span>et new_env1 =
+  <span data-count="395">l</span>et* _, typ_e = infer_ex<span data-count="395">p</span> env expr in
+  <span data-count="395">l</span>et* new_env, typ_p = infer_pa<span data-count="395">t</span> env pat in
+  <span data-count="395">l</span>et* () = unif<span data-count="395">y</span> typ_p typ_e in
+  <span data-count="393">l</span>et pat_names = get_pat_names [] pat in
+  <span data-count="393">l</span>et new_env1 =
     List.fold_left
       (fun env name -&gt;
-         <span data-count="320">l</span>et typ = List.assoc name env in
-         <span data-count="320">l</span>et env = List.remove_assoc name env in
-         <span data-count="320">(</span>name, generaliz<span data-count="320">e</span> typ) :: env)
+         <span data-count="390">l</span>et typ = List.assoc name env in
+         <span data-count="390">l</span>et env = List.remove_assoc name env in
+         <span data-count="390">(</span>name, generaliz<span data-count="390">e</span> typ) :: env)
       new_env
       pat_names
   in
-  <span data-count="338">r</span>eturn new_env1
+  <span data-count="393">r</span>eturn new_env1
 
 and infer_vb_rec env { pat; expr } =
-  <span data-count="52">m</span>atch pat with
-  | <span data-count="52">P</span>at_var id | <span data-count="0">P</span>at_constraint (Pat_var id, _) -&gt;
-    let* new_env, typ_p = infer_pa<span data-count="52">t</span> env pat in
-    <span data-count="52">l</span>et new_env = (id, typ_p) :: new_env in
+  <span data-count="56">m</span>atch pat with
+  | <span data-count="56">P</span>at_var id | <span data-count="0">P</span>at_constraint (Pat_var id, _) -&gt;
+    let* new_env, typ_p = infer_pa<span data-count="56">t</span> env pat in
+    <span data-count="56">l</span>et new_env = (id, typ_p) :: new_env in
     let* new_env1, typ_e =
       match expr with
       | <span data-count="1">E</span>xp_ident eid when id = eid -&gt; <span data-count="1">f</span>ai<span data-count="1">l</span> Invalid_let_rec_rhs
-      | <span data-count="51">_</span> -&gt; infer_ex<span data-count="51">p</span> new_env expr
+      | <span data-count="55">_</span> -&gt; infer_ex<span data-count="55">p</span> new_env expr
     in
-    <span data-count="51">l</span>et* () = unif<span data-count="51">y</span> typ_p typ_e in
-    <span data-count="51">l</span>et pat_names = get_pat_names [] pat in
-    <span data-count="51">l</span>et new_env2 =
+    <span data-count="55">l</span>et* () = unif<span data-count="55">y</span> typ_p typ_e in
+    <span data-count="55">l</span>et pat_names = get_pat_names [] pat in
+    <span data-count="55">l</span>et new_env2 =
       List.fold_left
         (fun env name -&gt;
-           <span data-count="51">l</span>et typ = List.assoc name env in
-           <span data-count="51">l</span>et env = List.remove_assoc name env in
-           <span data-count="51">(</span>name, generaliz<span data-count="51">e</span> typ) :: env)
+           <span data-count="55">l</span>et typ = List.assoc name env in
+           <span data-count="55">l</span>et env = List.remove_assoc name env in
+           <span data-count="55">(</span>name, generaliz<span data-count="55">e</span> typ) :: env)
         new_env1
         pat_names
     in
-    <span data-count="51">r</span>eturn new_env2
+    <span data-count="55">r</span>eturn new_env2
   | <span data-count="0">_</span> -&gt; fail Invalid_let_rec_lhs
 
 and infer_exp env = function
-  | <span data-count="1016">E</span>xp_ident id -&gt;
+  | <span data-count="1140">E</span>xp_ident id -&gt;
     (match List.assoc_opt id env with
-     | <span data-count="1014">S</span>ome ty -&gt; return (env, ins<span data-count="1014">t</span> ty)
+     | <span data-count="1138">S</span>ome ty -&gt; return (env, ins<span data-count="1138">t</span> ty)
      | <span data-count="2">N</span>one -&gt; fail (Unbound_variable id))
-  | <span data-count="504">E</span>xp_constant const -&gt;
+  | <span data-count="579">E</span>xp_constant const -&gt;
     (match const with
      | <span data-count="7">C</span>onst_char _ -&gt; return (env, Type_construct ("char", []))
-     | <span data-count="488">C</span>onst_integer _ -&gt; return (env, Type_construct ("int", []))
+     | <span data-count="563">C</span>onst_integer _ -&gt; return (env, Type_construct ("int", []))
      | <span data-count="9">C</span>onst_string _ -&gt; return (env, Type_construct ("string", [])))
-  | <span data-count="340">E</span>xp_fun ((pat, pats), exp) -&gt;
-    let* new_env, typ_p = infer_pa<span data-count="340">t</span> env pat in
-    <span data-count="340">l</span>et* newest_env, typ_exp =
+  | <span data-count="380">E</span>xp_fun ((pat, pats), exp) -&gt;
+    let* new_env, typ_p = infer_pa<span data-count="380">t</span> env pat in
+    <span data-count="380">l</span>et* newest_env, typ_exp =
       match pats with
-      | <span data-count="168">h</span>d :: tl -&gt; infer_ex<span data-count="168">p</span> new_env (Exp_fun ((hd, tl), exp))
-      | <span data-count="172">[</span>] -&gt; infer_ex<span data-count="172">p</span> new_env exp
+      | <span data-count="190">h</span>d :: tl -&gt; infer_ex<span data-count="190">p</span> new_env (Exp_fun ((hd, tl), exp))
+      | <span data-count="190">[</span>] -&gt; infer_ex<span data-count="190">p</span> new_env exp
     in
-    <span data-count="339">r</span>eturn (newest_env, Type_arrow (typ_p, typ_exp))
-  | <span data-count="258">E</span>xp_apply (Exp_ident op, Exp_tuple (exp1, exp2, [])) -&gt;
+    <span data-count="379">r</span>eturn (newest_env, Type_arrow (typ_p, typ_exp))
+  | <span data-count="294">E</span>xp_apply (Exp_ident op, Exp_tuple (exp1, exp2, [])) -&gt;
     (match op with
-     | <span data-count="25">"</span>*" | <span data-count="2">"</span>/" | <span data-count="85">"</span>+" | <span data-count="53">"</span>-" | <span data-count="9">"</span>&lt;" | <span data-count="0">"</span>&gt;" | <span data-count="47">"</span>=" | <span data-count="3">"</span>&lt;&gt;" | <span data-count="6">"</span>&lt;=" | <span data-count="0">"</span>&gt;=" | <span data-count="0">"</span>&amp;&amp;" | <span data-count="0">"</span>||" -&gt;
-       let* new_env, typ1 = infer_ex<span data-count="230">p</span> env exp1 in
-       <span data-count="230">l</span>et* new_env1, typ2 = infer_ex<span data-count="230">p</span> new_env exp2 in
-       <span data-count="230">l</span>et* arg_typ, res_typ =
+     | <span data-count="27">"</span>*" | <span data-count="2">"</span>/" | <span data-count="103">"</span>+" | <span data-count="59">"</span>-" | <span data-count="10">"</span>&lt;" | <span data-count="0">"</span>&gt;" | <span data-count="54">"</span>=" | <span data-count="4">"</span>&lt;&gt;" | <span data-count="7">"</span>&lt;=" | <span data-count="0">"</span>&gt;=" | <span data-count="0">"</span>&amp;&amp;" | <span data-count="0">"</span>||" -&gt;
+       let* new_env, typ1 = infer_ex<span data-count="266">p</span> env exp1 in
+       <span data-count="266">l</span>et* new_env1, typ2 = infer_ex<span data-count="266">p</span> new_env exp2 in
+       <span data-count="266">l</span>et* arg_typ, res_typ =
          match List.assoc_opt op env with
-         | <span data-count="230">S</span>ome (Type_arrow (arg, Type_arrow (_, res))) -&gt; retur<span data-count="230">n</span> (ins<span data-count="230">t</span> arg, ins<span data-count="230">t</span> res)
+         | <span data-count="266">S</span>ome (Type_arrow (arg, Type_arrow (_, res))) -&gt; retur<span data-count="266">n</span> (ins<span data-count="266">t</span> arg, ins<span data-count="266">t</span> res)
          | <span data-count="0">_</span> -&gt; fai<span data-count="0">l</span> (Operator_not_found op)
        in
-       <span data-count="230">l</span>et* () = unif<span data-count="230">y</span> typ1 arg_typ in
-       <span data-count="230">l</span>et* () = unif<span data-count="230">y</span> typ2 arg_typ in
-       <span data-count="230">r</span>eturn (new_env1, res_typ)
+       <span data-count="266">l</span>et* () = unif<span data-count="266">y</span> typ1 arg_typ in
+       <span data-count="266">l</span>et* () = unif<span data-count="266">y</span> typ2 arg_typ in
+       <span data-count="266">r</span>eturn (new_env1, res_typ)
      | <span data-count="28">_</span> -&gt;
        let* new_env, typ_op = infer_ex<span data-count="28">p</span> env (Exp_ident op) in
        <span data-count="28">l</span>et* new_env1, typ_args = infer_ex<span data-count="28">p</span> new_env (Exp_tuple (exp1, exp2, [])) in
@@ -1427,51 +1427,51 @@ and infer_exp env = function
     let* new_env1, typ_arg = infer_ex<span data-count="2">p</span> env arg in
     <span data-count="2">l</span>et* () = unif<span data-count="2">y</span> typ_arg (Type_construct ("int", [])) in
     <span data-count="2">r</span>eturn (new_env1, Type_construct ("int", []))
-  | <span data-count="568">E</span>xp_apply (f, arg) -&gt;
-    let* new_env, typ_f = infer_ex<span data-count="568">p</span> env f in
-    <span data-count="568">l</span>et* new_env1, typ_arg = infer_ex<span data-count="568">p</span> new_env arg in
-    <span data-count="568">l</span>et typ_res = newvar () in
-    <span data-count="568">l</span>et* () = unif<span data-count="568">y</span> typ_f (Type_arrow (typ_arg, typ_res)) in
-    <span data-count="565">r</span>eturn (new_env1, typ_res)
+  | <span data-count="637">E</span>xp_apply (f, arg) -&gt;
+    let* new_env, typ_f = infer_ex<span data-count="637">p</span> env f in
+    <span data-count="637">l</span>et* new_env1, typ_arg = infer_ex<span data-count="637">p</span> new_env arg in
+    <span data-count="637">l</span>et typ_res = newvar () in
+    <span data-count="637">l</span>et* () = unif<span data-count="637">y</span> typ_f (Type_arrow (typ_arg, typ_res)) in
+    <span data-count="634">r</span>eturn (new_env1, typ_res)
   | <span data-count="28">E</span>xp_construct (name, Some exp) -&gt; infer_exp env (Exp_apply (Exp_ident name, exp))
   | <span data-count="21">E</span>xp_construct (name, None) -&gt; infer_exp env (Exp_ident name)
-  | <span data-count="67">E</span>xp_tuple (e1, e2, etl) -&gt;
-    let* new_env, ty1 = infer_ex<span data-count="67">p</span> env e1 in
-    <span data-count="67">l</span>et* new_env1, ty2 = infer_ex<span data-count="67">p</span> new_env e2 in
-    <span data-count="67">l</span>et* new_env2, tytl =
-      List.fold_lef<span data-count="67">t</span>
+  | <span data-count="76">E</span>xp_tuple (e1, e2, etl) -&gt;
+    let* new_env, ty1 = infer_ex<span data-count="76">p</span> env e1 in
+    <span data-count="76">l</span>et* new_env1, ty2 = infer_ex<span data-count="76">p</span> new_env e2 in
+    <span data-count="76">l</span>et* new_env2, tytl =
+      List.fold_lef<span data-count="76">t</span>
         (fun acc exp -&gt;
-           <span data-count="20">l</span>et* eacc, tacc = acc in
-           <span data-count="20">l</span>et* curr_env, ty = infer_ex<span data-count="20">p</span> eacc exp in
-           <span data-count="20">r</span>eturn (curr_env, ty :: tacc))
-        (retur<span data-count="67">n</span> (new_env1, []))
+           <span data-count="28">l</span>et* eacc, tacc = acc in
+           <span data-count="28">l</span>et* curr_env, ty = infer_ex<span data-count="28">p</span> eacc exp in
+           <span data-count="28">r</span>eturn (curr_env, ty :: tacc))
+        (retur<span data-count="76">n</span> (new_env1, []))
         etl
     in
-    <span data-count="67">r</span>eturn (new_env2, Type_tuple (ty1, ty2, List.re<span data-count="67">v</span> tytl))
-  | <span data-count="65">E</span>xp_if (cond, the, els) -&gt;
-    let* new_env, ty1 = infer_ex<span data-count="65">p</span> env cond in
-    <span data-count="65">l</span>et* () = unif<span data-count="65">y</span> ty1 (Type_construct ("bool", [])) in
-    <span data-count="64">l</span>et* new_env1, ty2 = infer_ex<span data-count="64">p</span> new_env the in
-    <span data-count="64">(</span>match els with
+    <span data-count="76">r</span>eturn (new_env2, Type_tuple (ty1, ty2, List.re<span data-count="76">v</span> tytl))
+  | <span data-count="74">E</span>xp_if (cond, the, els) -&gt;
+    let* new_env, ty1 = infer_ex<span data-count="74">p</span> env cond in
+    <span data-count="74">l</span>et* () = unif<span data-count="74">y</span> ty1 (Type_construct ("bool", [])) in
+    <span data-count="73">l</span>et* new_env1, ty2 = infer_ex<span data-count="73">p</span> new_env the in
+    <span data-count="73">(</span>match els with
      | <span data-count="2">N</span>one -&gt;
        let* () = unif<span data-count="2">y</span> ty2 (Type_construct ("unit", [])) in
        <span data-count="1">r</span>eturn (new_env1, ty2)
-     | <span data-count="62">S</span>ome els -&gt;
-       let* new_env, ty3 = infer_ex<span data-count="62">p</span> new_env1 els in
-       <span data-count="62">l</span>et* () = unif<span data-count="62">y</span> ty2 ty3 in
-       <span data-count="62">r</span>eturn (new_env, ty3))
-  | <span data-count="173">E</span>xp_let (Nonrecursive, (vb, vbs), exprb) -&gt;
+     | <span data-count="71">S</span>ome els -&gt;
+       let* new_env, ty3 = infer_ex<span data-count="71">p</span> new_env1 els in
+       <span data-count="71">l</span>et* () = unif<span data-count="71">y</span> ty2 ty3 in
+       <span data-count="71">r</span>eturn (new_env, ty3))
+  | <span data-count="199">E</span>xp_let (Nonrecursive, (vb, vbs), exprb) -&gt;
     enter_level ();
-    <span data-count="173">l</span>et* new_env =
-      List.fold_lef<span data-count="173">t</span>
+    <span data-count="199">l</span>et* new_env =
+      List.fold_lef<span data-count="199">t</span>
         (fun env bind -&gt;
-           <span data-count="174">l</span>et* env = env in
-           <span data-count="174">i</span>nfer_vb env bind)
-        (retur<span data-count="173">n</span> env)
+           <span data-count="200">l</span>et* env = env in
+           <span data-count="200">i</span>nfer_vb env bind)
+        (retur<span data-count="199">n</span> env)
         (vb :: vbs)
     in
-    <span data-count="171">l</span>eave_level ();
-    <span data-count="171">i</span>nfer_exp new_env exprb
+    <span data-count="197">l</span>eave_level ();
+    <span data-count="197">i</span>nfer_exp new_env exprb
   | <span data-count="5">E</span>xp_let (Recursive, (vb, vbs), exprb) -&gt;
     let new_env = add_rec_names env (vb :: vbs) in
     <span data-count="5">e</span>nter_level ();
@@ -1538,46 +1538,46 @@ let infer_structure_item env = function
   | <span data-count="0">S</span>tr_eval exp -&gt;
     let* _, typ = infer_ex<span data-count="0">p</span> env exp in
     <span data-count="0">r</span>eturn (("-", typ) :: env, [])
-  | <span data-count="166">S</span>tr_value (Nonrecursive, (vb, vbs)) -&gt;
+  | <span data-count="195">S</span>tr_value (Nonrecursive, (vb, vbs)) -&gt;
     let new_names =
-      List.fold_left (fun names { pat; _ } -&gt; <span data-count="166">g</span>et_pat_names names pat) [] (vb :: vbs)
+      List.fold_left (fun names { pat; _ } -&gt; <span data-count="195">g</span>et_pat_names names pat) [] (vb :: vbs)
     in
-    <span data-count="166">l</span>et* new_env =
-      List.fold_lef<span data-count="166">t</span>
+    <span data-count="195">l</span>et* new_env =
+      List.fold_lef<span data-count="195">t</span>
         (fun env bind -&gt;
-           <span data-count="166">l</span>et* env = env in
-           <span data-count="166">i</span>nfer_vb env bind)
-        (retur<span data-count="166">n</span> env)
+           <span data-count="195">l</span>et* env = env in
+           <span data-count="195">i</span>nfer_vb env bind)
+        (retur<span data-count="195">n</span> env)
         (vb :: vbs)
     in
-    <span data-count="166">r</span>eturn (new_env, new_names)
-  | <span data-count="45">S</span>tr_value (Recursive, (vb, vbs)) -&gt;
+    <span data-count="195">r</span>eturn (new_env, new_names)
+  | <span data-count="49">S</span>tr_value (Recursive, (vb, vbs)) -&gt;
     let new_names =
-      List.fold_left (fun names { pat; _ } -&gt; <span data-count="46">g</span>et_pat_names names pat) [] (vb :: vbs)
+      List.fold_left (fun names { pat; _ } -&gt; <span data-count="50">g</span>et_pat_names names pat) [] (vb :: vbs)
     in
-    <span data-count="45">l</span>et new_env = add_rec_names env (vb :: vbs) in
-    <span data-count="45">l</span>et* new_env1 =
-      List.fold_lef<span data-count="45">t</span>
+    <span data-count="49">l</span>et new_env = add_rec_names env (vb :: vbs) in
+    <span data-count="49">l</span>et* new_env1 =
+      List.fold_lef<span data-count="49">t</span>
         (fun env bind -&gt;
-           <span data-count="46">l</span>et* env = env in
-           <span data-count="46">i</span>nfer_vb_rec env bind)
+           <span data-count="50">l</span>et* env = env in
+           <span data-count="50">i</span>nfer_vb_rec env bind)
         new_env
         (vb :: vbs)
     in
-    <span data-count="44">r</span>eturn (new_env1, new_names)
+    <span data-count="48">r</span>eturn (new_env1, new_names)
 ;;
 
 let infer_program env prog =
-  <span data-count="80">l</span>et* new_env, new_names =
-    List.fold_lef<span data-count="80">t</span>
+  <span data-count="94">l</span>et* new_env, new_names =
+    List.fold_lef<span data-count="94">t</span>
       (fun acc str_item -&gt;
-         <span data-count="211">l</span>et* env, names = acc in
-         <span data-count="211">l</span>et* new_env, new_names = infer_structure_ite<span data-count="211">m</span> env str_item in
-         <span data-count="210">r</span>eturn (new_env, new_names @ names))
-      (retur<span data-count="80">n</span> (env, []))
+         <span data-count="244">l</span>et* env, names = acc in
+         <span data-count="244">l</span>et* new_env, new_names = infer_structure_ite<span data-count="244">m</span> env str_item in
+         <span data-count="243">r</span>eturn (new_env, new_names @ names))
+      (retur<span data-count="94">n</span> (env, []))
       prog
   in
-  <span data-count="79">r</span>eturn (new_env, new_names)
+  <span data-count="93">r</span>eturn (new_env, new_names)
 ;;
 
 let env_with_things =

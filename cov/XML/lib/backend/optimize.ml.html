@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>optimize.ml &mdash; Coverage report</title>
+    <meta name="description" content="81.30% coverage in lib/backend/optimize.ml">
+    <link rel="stylesheet" href="../../coverage.css"/>
+    <script src="../../highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </head>
+  <body>
+    <div id="header">
+      <h1>
+        <a href="../../index.html">
+          <span class="dirname">lib/backend/</span>optimize.ml
+        </a>
+      </h1>
+      <h2>81.30%</h2>
+    </div>
+    <div id="navbar">
+      <span class="unvisited" style="top:20.48%"></span>
+      <span class="unvisited" style="top:21.99%"></span>
+      <span class="unvisited" style="top:22.29%"></span>
+      <span class="some-visited" style="top:27.41%"></span>
+      <span class="some-visited" style="top:27.71%"></span>
+      <span class="some-visited" style="top:28.01%"></span>
+      <span class="some-visited" style="top:28.31%"></span>
+      <span class="some-visited" style="top:28.61%"></span>
+      <span class="some-visited" style="top:28.92%"></span>
+      <span class="unvisited" style="top:30.72%"></span>
+      <span class="unvisited" style="top:31.02%"></span>
+      <span class="unvisited" style="top:31.33%"></span>
+      <span class="unvisited" style="top:31.63%"></span>
+      <span class="unvisited" style="top:31.93%"></span>
+      <span class="some-visited" style="top:32.83%"></span>
+      <span class="unvisited" style="top:33.13%"></span>
+      <span class="unvisited" style="top:33.43%"></span>
+      <span class="unvisited" style="top:33.73%"></span>
+      <span class="unvisited" style="top:34.34%"></span>
+      <span class="unvisited" style="top:34.94%"></span>
+      <span class="unvisited" style="top:35.24%"></span>
+      <span class="unvisited" style="top:37.65%"></span>
+      <span class="unvisited" style="top:37.95%"></span>
+      <span class="unvisited" style="top:38.25%"></span>
+      <span class="unvisited" style="top:38.55%"></span>
+      <span class="unvisited" style="top:38.86%"></span>
+      <span class="unvisited" style="top:39.16%"></span>
+      <span class="unvisited" style="top:39.46%"></span>
+      <span class="unvisited" style="top:39.76%"></span>
+      <span class="unvisited" style="top:40.06%"></span>
+      <span class="unvisited" style="top:40.36%"></span>
+      <span class="unvisited" style="top:40.66%"></span>
+      <span class="unvisited" style="top:40.96%"></span>
+      <span class="unvisited" style="top:41.27%"></span>
+      <span class="unvisited" style="top:41.57%"></span>
+      <span class="unvisited" style="top:41.87%"></span>
+      <span class="unvisited" style="top:42.17%"></span>
+      <span class="unvisited" style="top:42.47%"></span>
+      <span class="some-visited" style="bottom:44.58%"></span>
+      <span class="some-visited" style="bottom:44.28%"></span>
+      <span class="unvisited" style="bottom:20.18%"></span>
+    </div>
+    <div id="report">
+      <div id="lines-layer">
+        <pre>
+<a id="L1"></a><span > </span>
+<a id="L2"></a><span > </span>
+<a id="L3"></a><span > </span>
+<a id="L4"></a><span > </span>
+<a id="L5"></a><span > </span>
+<a id="L6"></a><span > </span>
+<a id="L7"></a><span > </span>
+<a id="L8"></a><span > </span>
+<a id="L9"></a><span class="visited"> </span>
+<a id="L10"></a><span class="visited"> </span>
+<a id="L11"></a><span class="visited"> </span>
+<a id="L12"></a><span class="visited"> </span>
+<a id="L13"></a><span > </span>
+<a id="L14"></a><span > </span>
+<a id="L15"></a><span > </span>
+<a id="L16"></a><span class="visited"> </span>
+<a id="L17"></a><span class="visited"> </span>
+<a id="L18"></a><span class="visited"> </span>
+<a id="L19"></a><span > </span>
+<a id="L20"></a><span class="visited"> </span>
+<a id="L21"></a><span class="visited"> </span>
+<a id="L22"></a><span > </span>
+<a id="L23"></a><span > </span>
+<a id="L24"></a><span > </span>
+<a id="L25"></a><span class="visited"> </span>
+<a id="L26"></a><span > </span>
+<a id="L27"></a><span > </span>
+<a id="L28"></a><span > </span>
+<a id="L29"></a><span > </span>
+<a id="L30"></a><span class="visited"> </span>
+<a id="L31"></a><span class="visited"> </span>
+<a id="L32"></a><span class="visited"> </span>
+<a id="L33"></a><span > </span>
+<a id="L34"></a><span > </span>
+<a id="L35"></a><span > </span>
+<a id="L36"></a><span class="visited"> </span>
+<a id="L37"></a><span class="visited"> </span>
+<a id="L38"></a><span > </span>
+<a id="L39"></a><span class="visited"> </span>
+<a id="L40"></a><span class="visited"> </span>
+<a id="L41"></a><span class="visited"> </span>
+<a id="L42"></a><span > </span>
+<a id="L43"></a><span class="visited"> </span>
+<a id="L44"></a><span class="visited"> </span>
+<a id="L45"></a><span > </span>
+<a id="L46"></a><span > </span>
+<a id="L47"></a><span > </span>
+<a id="L48"></a><span class="visited"> </span>
+<a id="L49"></a><span > </span>
+<a id="L50"></a><span class="visited"> </span>
+<a id="L51"></a><span > </span>
+<a id="L52"></a><span class="visited"> </span>
+<a id="L53"></a><span > </span>
+<a id="L54"></a><span > </span>
+<a id="L55"></a><span > </span>
+<a id="L56"></a><span > </span>
+<a id="L57"></a><span class="visited"> </span>
+<a id="L58"></a><span class="visited"> </span>
+<a id="L59"></a><span > </span>
+<a id="L60"></a><span class="visited"> </span>
+<a id="L61"></a><span > </span>
+<a id="L62"></a><span > </span>
+<a id="L63"></a><span > </span>
+<a id="L64"></a><span > </span>
+<a id="L65"></a><span class="visited"> </span>
+<a id="L66"></a><span class="visited"> </span>
+<a id="L67"></a><span > </span>
+<a id="L68"></a><span class="unvisited"> </span>
+<a id="L69"></a><span > </span>
+<a id="L70"></a><span > </span>
+<a id="L71"></a><span > </span>
+<a id="L72"></a><span > </span>
+<a id="L73"></a><span class="unvisited"> </span>
+<a id="L74"></a><span class="unvisited"> </span>
+<a id="L75"></a><span > </span>
+<a id="L76"></a><span class="visited"> </span>
+<a id="L77"></a><span > </span>
+<a id="L78"></a><span > </span>
+<a id="L79"></a><span > </span>
+<a id="L80"></a><span > </span>
+<a id="L81"></a><span class="visited"> </span>
+<a id="L82"></a><span class="visited"> </span>
+<a id="L83"></a><span > </span>
+<a id="L84"></a><span > </span>
+<a id="L85"></a><span class="visited"> </span>
+<a id="L86"></a><span class="visited"> </span>
+<a id="L87"></a><span > </span>
+<a id="L88"></a><span > </span>
+<a id="L89"></a><span > </span>
+<a id="L90"></a><span class="visited"> </span>
+<a id="L91"></a><span class="some-visited"> </span>
+<a id="L92"></a><span class="some-visited"> </span>
+<a id="L93"></a><span class="some-visited"> </span>
+<a id="L94"></a><span class="some-visited"> </span>
+<a id="L95"></a><span class="some-visited"> </span>
+<a id="L96"></a><span class="some-visited"> </span>
+<a id="L97"></a><span > </span>
+<a id="L98"></a><span > </span>
+<a id="L99"></a><span > </span>
+<a id="L100"></a><span > </span>
+<a id="L101"></a><span class="visited"> </span>
+<a id="L102"></a><span class="unvisited"> </span>
+<a id="L103"></a><span class="unvisited"> </span>
+<a id="L104"></a><span class="unvisited"> </span>
+<a id="L105"></a><span class="unvisited"> </span>
+<a id="L106"></a><span class="unvisited"> </span>
+<a id="L107"></a><span class="visited"> </span>
+<a id="L108"></a><span class="visited"> </span>
+<a id="L109"></a><span class="some-visited"> </span>
+<a id="L110"></a><span class="unvisited"> </span>
+<a id="L111"></a><span class="unvisited"> </span>
+<a id="L112"></a><span class="unvisited"> </span>
+<a id="L113"></a><span class="visited"> </span>
+<a id="L114"></a><span class="unvisited"> </span>
+<a id="L115"></a><span class="visited"> </span>
+<a id="L116"></a><span class="unvisited"> </span>
+<a id="L117"></a><span class="unvisited"> </span>
+<a id="L118"></a><span class="visited"> </span>
+<a id="L119"></a><span class="visited"> </span>
+<a id="L120"></a><span class="visited"> </span>
+<a id="L121"></a><span > </span>
+<a id="L122"></a><span > </span>
+<a id="L123"></a><span > </span>
+<a id="L124"></a><span class="visited"> </span>
+<a id="L125"></a><span class="unvisited"> </span>
+<a id="L126"></a><span class="unvisited"> </span>
+<a id="L127"></a><span class="unvisited"> </span>
+<a id="L128"></a><span class="unvisited"> </span>
+<a id="L129"></a><span class="unvisited"> </span>
+<a id="L130"></a><span class="unvisited"> </span>
+<a id="L131"></a><span class="unvisited"> </span>
+<a id="L132"></a><span class="unvisited"> </span>
+<a id="L133"></a><span class="unvisited"> </span>
+<a id="L134"></a><span class="unvisited"> </span>
+<a id="L135"></a><span class="unvisited"> </span>
+<a id="L136"></a><span class="unvisited"> </span>
+<a id="L137"></a><span class="unvisited"> </span>
+<a id="L138"></a><span class="unvisited"> </span>
+<a id="L139"></a><span class="unvisited"> </span>
+<a id="L140"></a><span class="unvisited"> </span>
+<a id="L141"></a><span class="unvisited"> </span>
+<a id="L142"></a><span class="visited"> </span>
+<a id="L143"></a><span class="visited"> </span>
+<a id="L144"></a><span > </span>
+<a id="L145"></a><span > </span>
+<a id="L146"></a><span > </span>
+<a id="L147"></a><span class="visited"> </span>
+<a id="L148"></a><span class="visited"> </span>
+<a id="L149"></a><span class="visited"> </span>
+<a id="L150"></a><span class="visited"> </span>
+<a id="L151"></a><span class="visited"> </span>
+<a id="L152"></a><span class="visited"> </span>
+<a id="L153"></a><span class="visited"> </span>
+<a id="L154"></a><span class="visited"> </span>
+<a id="L155"></a><span class="visited"> </span>
+<a id="L156"></a><span class="visited"> </span>
+<a id="L157"></a><span > </span>
+<a id="L158"></a><span > </span>
+<a id="L159"></a><span > </span>
+<a id="L160"></a><span class="visited"> </span>
+<a id="L161"></a><span class="visited"> </span>
+<a id="L162"></a><span class="visited"> </span>
+<a id="L163"></a><span > </span>
+<a id="L164"></a><span class="visited"> </span>
+<a id="L165"></a><span class="visited"> </span>
+<a id="L166"></a><span class="visited"> </span>
+<a id="L167"></a><span > </span>
+<a id="L168"></a><span class="visited"> </span>
+<a id="L169"></a><span class="visited"> </span>
+<a id="L170"></a><span class="visited"> </span>
+<a id="L171"></a><span > </span>
+<a id="L172"></a><span class="visited"> </span>
+<a id="L173"></a><span class="visited"> </span>
+<a id="L174"></a><span > </span>
+<a id="L175"></a><span > </span>
+<a id="L176"></a><span > </span>
+<a id="L177"></a><span class="visited"> </span>
+<a id="L178"></a><span class="visited"> </span>
+<a id="L179"></a><span > </span>
+<a id="L180"></a><span class="visited"> </span>
+<a id="L181"></a><span class="visited"> </span>
+<a id="L182"></a><span > </span>
+<a id="L183"></a><span class="visited"> </span>
+<a id="L184"></a><span class="some-visited"> </span>
+<a id="L185"></a><span class="some-visited"> </span>
+<a id="L186"></a><span > </span>
+<a id="L187"></a><span class="visited"> </span>
+<a id="L188"></a><span class="visited"> </span>
+<a id="L189"></a><span > </span>
+<a id="L190"></a><span > </span>
+<a id="L191"></a><span > </span>
+<a id="L192"></a><span > </span>
+<a id="L193"></a><span class="visited"> </span>
+<a id="L194"></a><span > </span>
+<a id="L195"></a><span > </span>
+<a id="L196"></a><span > </span>
+<a id="L197"></a><span > </span>
+<a id="L198"></a><span > </span>
+<a id="L199"></a><span > </span>
+<a id="L200"></a><span > </span>
+<a id="L201"></a><span > </span>
+<a id="L202"></a><span > </span>
+<a id="L203"></a><span > </span>
+<a id="L204"></a><span > </span>
+<a id="L205"></a><span > </span>
+<a id="L206"></a><span > </span>
+<a id="L207"></a><span > </span>
+<a id="L208"></a><span > </span>
+<a id="L209"></a><span > </span>
+<a id="L210"></a><span class="visited"> </span>
+<a id="L211"></a><span > </span>
+<a id="L212"></a><span > </span>
+<a id="L213"></a><span > </span>
+<a id="L214"></a><span > </span>
+<a id="L215"></a><span > </span>
+<a id="L216"></a><span > </span>
+<a id="L217"></a><span > </span>
+<a id="L218"></a><span > </span>
+<a id="L219"></a><span > </span>
+<a id="L220"></a><span > </span>
+<a id="L221"></a><span > </span>
+<a id="L222"></a><span > </span>
+<a id="L223"></a><span > </span>
+<a id="L224"></a><span class="visited"> </span>
+<a id="L225"></a><span > </span>
+<a id="L226"></a><span > </span>
+<a id="L227"></a><span > </span>
+<a id="L228"></a><span > </span>
+<a id="L229"></a><span > </span>
+<a id="L230"></a><span > </span>
+<a id="L231"></a><span > </span>
+<a id="L232"></a><span > </span>
+<a id="L233"></a><span > </span>
+<a id="L234"></a><span > </span>
+<a id="L235"></a><span class="visited"> </span>
+<a id="L236"></a><span > </span>
+<a id="L237"></a><span > </span>
+<a id="L238"></a><span > </span>
+<a id="L239"></a><span > </span>
+<a id="L240"></a><span > </span>
+<a id="L241"></a><span > </span>
+<a id="L242"></a><span > </span>
+<a id="L243"></a><span class="visited"> </span>
+<a id="L244"></a><span > </span>
+<a id="L245"></a><span > </span>
+<a id="L246"></a><span > </span>
+<a id="L247"></a><span > </span>
+<a id="L248"></a><span > </span>
+<a id="L249"></a><span > </span>
+<a id="L250"></a><span class="visited"> </span>
+<a id="L251"></a><span > </span>
+<a id="L252"></a><span > </span>
+<a id="L253"></a><span > </span>
+<a id="L254"></a><span > </span>
+<a id="L255"></a><span > </span>
+<a id="L256"></a><span > </span>
+<a id="L257"></a><span > </span>
+<a id="L258"></a><span class="visited"> </span>
+<a id="L259"></a><span class="visited"> </span>
+<a id="L260"></a><span class="visited"> </span>
+<a id="L261"></a><span class="visited"> </span>
+<a id="L262"></a><span > </span>
+<a id="L263"></a><span > </span>
+<a id="L264"></a><span > </span>
+<a id="L265"></a><span class="unvisited"> </span>
+<a id="L266"></a><span class="visited"> </span>
+<a id="L267"></a><span > </span>
+<a id="L268"></a><span class="visited"> </span>
+<a id="L269"></a><span > </span>
+<a id="L270"></a><span > </span>
+<a id="L271"></a><span > </span>
+<a id="L272"></a><span > </span>
+<a id="L273"></a><span > </span>
+<a id="L274"></a><span > </span>
+<a id="L275"></a><span class="visited"> </span>
+<a id="L276"></a><span class="visited"> </span>
+<a id="L277"></a><span class="visited"> </span>
+<a id="L278"></a><span class="visited"> </span>
+<a id="L279"></a><span > </span>
+<a id="L280"></a><span > </span>
+<a id="L281"></a><span > </span>
+<a id="L282"></a><span class="visited"> </span>
+<a id="L283"></a><span > </span>
+<a id="L284"></a><span > </span>
+<a id="L285"></a><span > </span>
+<a id="L286"></a><span > </span>
+<a id="L287"></a><span > </span>
+<a id="L288"></a><span > </span>
+<a id="L289"></a><span > </span>
+<a id="L290"></a><span > </span>
+<a id="L291"></a><span class="visited"> </span>
+<a id="L292"></a><span class="visited"> </span>
+<a id="L293"></a><span > </span>
+<a id="L294"></a><span > </span>
+<a id="L295"></a><span > </span>
+<a id="L296"></a><span class="visited"> </span>
+<a id="L297"></a><span class="visited"> </span>
+<a id="L298"></a><span class="visited"> </span>
+<a id="L299"></a><span > </span>
+<a id="L300"></a><span class="visited"> </span>
+<a id="L301"></a><span class="visited"> </span>
+<a id="L302"></a><span class="visited"> </span>
+<a id="L303"></a><span > </span>
+<a id="L304"></a><span class="visited"> </span>
+<a id="L305"></a><span class="visited"> </span>
+<a id="L306"></a><span class="visited"> </span>
+<a id="L307"></a><span > </span>
+<a id="L308"></a><span class="visited"> </span>
+<a id="L309"></a><span class="visited"> </span>
+<a id="L310"></a><span > </span>
+<a id="L311"></a><span > </span>
+<a id="L312"></a><span > </span>
+<a id="L313"></a><span class="visited"> </span>
+<a id="L314"></a><span class="visited"> </span>
+<a id="L315"></a><span class="visited"> </span>
+<a id="L316"></a><span class="visited"> </span>
+<a id="L317"></a><span class="visited"> </span>
+<a id="L318"></a><span class="visited"> </span>
+<a id="L319"></a><span class="visited"> </span>
+<a id="L320"></a><span class="visited"> </span>
+<a id="L321"></a><span class="visited"> </span>
+<a id="L322"></a><span class="visited"> </span>
+<a id="L323"></a><span class="visited"> </span>
+<a id="L324"></a><span class="visited"> </span>
+<a id="L325"></a><span class="visited"> </span>
+<a id="L326"></a><span class="visited"> </span>
+<a id="L327"></a><span > </span>
+<a id="L328"></a><span > </span>
+<a id="L329"></a><span > </span>
+<a id="L330"></a><span class="visited"> </span>
+<a id="L331"></a><span class="visited"> </span>
+<a id="L332"></a><span > </span>
+</pre>
+      </div>
+      <div id="text-layer">
+        <pre id="line-numbers">
+<a href="#L1">  1</a>
+<a href="#L2">  2</a>
+<a href="#L3">  3</a>
+<a href="#L4">  4</a>
+<a href="#L5">  5</a>
+<a href="#L6">  6</a>
+<a href="#L7">  7</a>
+<a href="#L8">  8</a>
+<a href="#L9">  9</a>
+<a href="#L10"> 10</a>
+<a href="#L11"> 11</a>
+<a href="#L12"> 12</a>
+<a href="#L13"> 13</a>
+<a href="#L14"> 14</a>
+<a href="#L15"> 15</a>
+<a href="#L16"> 16</a>
+<a href="#L17"> 17</a>
+<a href="#L18"> 18</a>
+<a href="#L19"> 19</a>
+<a href="#L20"> 20</a>
+<a href="#L21"> 21</a>
+<a href="#L22"> 22</a>
+<a href="#L23"> 23</a>
+<a href="#L24"> 24</a>
+<a href="#L25"> 25</a>
+<a href="#L26"> 26</a>
+<a href="#L27"> 27</a>
+<a href="#L28"> 28</a>
+<a href="#L29"> 29</a>
+<a href="#L30"> 30</a>
+<a href="#L31"> 31</a>
+<a href="#L32"> 32</a>
+<a href="#L33"> 33</a>
+<a href="#L34"> 34</a>
+<a href="#L35"> 35</a>
+<a href="#L36"> 36</a>
+<a href="#L37"> 37</a>
+<a href="#L38"> 38</a>
+<a href="#L39"> 39</a>
+<a href="#L40"> 40</a>
+<a href="#L41"> 41</a>
+<a href="#L42"> 42</a>
+<a href="#L43"> 43</a>
+<a href="#L44"> 44</a>
+<a href="#L45"> 45</a>
+<a href="#L46"> 46</a>
+<a href="#L47"> 47</a>
+<a href="#L48"> 48</a>
+<a href="#L49"> 49</a>
+<a href="#L50"> 50</a>
+<a href="#L51"> 51</a>
+<a href="#L52"> 52</a>
+<a href="#L53"> 53</a>
+<a href="#L54"> 54</a>
+<a href="#L55"> 55</a>
+<a href="#L56"> 56</a>
+<a href="#L57"> 57</a>
+<a href="#L58"> 58</a>
+<a href="#L59"> 59</a>
+<a href="#L60"> 60</a>
+<a href="#L61"> 61</a>
+<a href="#L62"> 62</a>
+<a href="#L63"> 63</a>
+<a href="#L64"> 64</a>
+<a href="#L65"> 65</a>
+<a href="#L66"> 66</a>
+<a href="#L67"> 67</a>
+<a href="#L68"> 68</a>
+<a href="#L69"> 69</a>
+<a href="#L70"> 70</a>
+<a href="#L71"> 71</a>
+<a href="#L72"> 72</a>
+<a href="#L73"> 73</a>
+<a href="#L74"> 74</a>
+<a href="#L75"> 75</a>
+<a href="#L76"> 76</a>
+<a href="#L77"> 77</a>
+<a href="#L78"> 78</a>
+<a href="#L79"> 79</a>
+<a href="#L80"> 80</a>
+<a href="#L81"> 81</a>
+<a href="#L82"> 82</a>
+<a href="#L83"> 83</a>
+<a href="#L84"> 84</a>
+<a href="#L85"> 85</a>
+<a href="#L86"> 86</a>
+<a href="#L87"> 87</a>
+<a href="#L88"> 88</a>
+<a href="#L89"> 89</a>
+<a href="#L90"> 90</a>
+<a href="#L91"> 91</a>
+<a href="#L92"> 92</a>
+<a href="#L93"> 93</a>
+<a href="#L94"> 94</a>
+<a href="#L95"> 95</a>
+<a href="#L96"> 96</a>
+<a href="#L97"> 97</a>
+<a href="#L98"> 98</a>
+<a href="#L99"> 99</a>
+<a href="#L100">100</a>
+<a href="#L101">101</a>
+<a href="#L102">102</a>
+<a href="#L103">103</a>
+<a href="#L104">104</a>
+<a href="#L105">105</a>
+<a href="#L106">106</a>
+<a href="#L107">107</a>
+<a href="#L108">108</a>
+<a href="#L109">109</a>
+<a href="#L110">110</a>
+<a href="#L111">111</a>
+<a href="#L112">112</a>
+<a href="#L113">113</a>
+<a href="#L114">114</a>
+<a href="#L115">115</a>
+<a href="#L116">116</a>
+<a href="#L117">117</a>
+<a href="#L118">118</a>
+<a href="#L119">119</a>
+<a href="#L120">120</a>
+<a href="#L121">121</a>
+<a href="#L122">122</a>
+<a href="#L123">123</a>
+<a href="#L124">124</a>
+<a href="#L125">125</a>
+<a href="#L126">126</a>
+<a href="#L127">127</a>
+<a href="#L128">128</a>
+<a href="#L129">129</a>
+<a href="#L130">130</a>
+<a href="#L131">131</a>
+<a href="#L132">132</a>
+<a href="#L133">133</a>
+<a href="#L134">134</a>
+<a href="#L135">135</a>
+<a href="#L136">136</a>
+<a href="#L137">137</a>
+<a href="#L138">138</a>
+<a href="#L139">139</a>
+<a href="#L140">140</a>
+<a href="#L141">141</a>
+<a href="#L142">142</a>
+<a href="#L143">143</a>
+<a href="#L144">144</a>
+<a href="#L145">145</a>
+<a href="#L146">146</a>
+<a href="#L147">147</a>
+<a href="#L148">148</a>
+<a href="#L149">149</a>
+<a href="#L150">150</a>
+<a href="#L151">151</a>
+<a href="#L152">152</a>
+<a href="#L153">153</a>
+<a href="#L154">154</a>
+<a href="#L155">155</a>
+<a href="#L156">156</a>
+<a href="#L157">157</a>
+<a href="#L158">158</a>
+<a href="#L159">159</a>
+<a href="#L160">160</a>
+<a href="#L161">161</a>
+<a href="#L162">162</a>
+<a href="#L163">163</a>
+<a href="#L164">164</a>
+<a href="#L165">165</a>
+<a href="#L166">166</a>
+<a href="#L167">167</a>
+<a href="#L168">168</a>
+<a href="#L169">169</a>
+<a href="#L170">170</a>
+<a href="#L171">171</a>
+<a href="#L172">172</a>
+<a href="#L173">173</a>
+<a href="#L174">174</a>
+<a href="#L175">175</a>
+<a href="#L176">176</a>
+<a href="#L177">177</a>
+<a href="#L178">178</a>
+<a href="#L179">179</a>
+<a href="#L180">180</a>
+<a href="#L181">181</a>
+<a href="#L182">182</a>
+<a href="#L183">183</a>
+<a href="#L184">184</a>
+<a href="#L185">185</a>
+<a href="#L186">186</a>
+<a href="#L187">187</a>
+<a href="#L188">188</a>
+<a href="#L189">189</a>
+<a href="#L190">190</a>
+<a href="#L191">191</a>
+<a href="#L192">192</a>
+<a href="#L193">193</a>
+<a href="#L194">194</a>
+<a href="#L195">195</a>
+<a href="#L196">196</a>
+<a href="#L197">197</a>
+<a href="#L198">198</a>
+<a href="#L199">199</a>
+<a href="#L200">200</a>
+<a href="#L201">201</a>
+<a href="#L202">202</a>
+<a href="#L203">203</a>
+<a href="#L204">204</a>
+<a href="#L205">205</a>
+<a href="#L206">206</a>
+<a href="#L207">207</a>
+<a href="#L208">208</a>
+<a href="#L209">209</a>
+<a href="#L210">210</a>
+<a href="#L211">211</a>
+<a href="#L212">212</a>
+<a href="#L213">213</a>
+<a href="#L214">214</a>
+<a href="#L215">215</a>
+<a href="#L216">216</a>
+<a href="#L217">217</a>
+<a href="#L218">218</a>
+<a href="#L219">219</a>
+<a href="#L220">220</a>
+<a href="#L221">221</a>
+<a href="#L222">222</a>
+<a href="#L223">223</a>
+<a href="#L224">224</a>
+<a href="#L225">225</a>
+<a href="#L226">226</a>
+<a href="#L227">227</a>
+<a href="#L228">228</a>
+<a href="#L229">229</a>
+<a href="#L230">230</a>
+<a href="#L231">231</a>
+<a href="#L232">232</a>
+<a href="#L233">233</a>
+<a href="#L234">234</a>
+<a href="#L235">235</a>
+<a href="#L236">236</a>
+<a href="#L237">237</a>
+<a href="#L238">238</a>
+<a href="#L239">239</a>
+<a href="#L240">240</a>
+<a href="#L241">241</a>
+<a href="#L242">242</a>
+<a href="#L243">243</a>
+<a href="#L244">244</a>
+<a href="#L245">245</a>
+<a href="#L246">246</a>
+<a href="#L247">247</a>
+<a href="#L248">248</a>
+<a href="#L249">249</a>
+<a href="#L250">250</a>
+<a href="#L251">251</a>
+<a href="#L252">252</a>
+<a href="#L253">253</a>
+<a href="#L254">254</a>
+<a href="#L255">255</a>
+<a href="#L256">256</a>
+<a href="#L257">257</a>
+<a href="#L258">258</a>
+<a href="#L259">259</a>
+<a href="#L260">260</a>
+<a href="#L261">261</a>
+<a href="#L262">262</a>
+<a href="#L263">263</a>
+<a href="#L264">264</a>
+<a href="#L265">265</a>
+<a href="#L266">266</a>
+<a href="#L267">267</a>
+<a href="#L268">268</a>
+<a href="#L269">269</a>
+<a href="#L270">270</a>
+<a href="#L271">271</a>
+<a href="#L272">272</a>
+<a href="#L273">273</a>
+<a href="#L274">274</a>
+<a href="#L275">275</a>
+<a href="#L276">276</a>
+<a href="#L277">277</a>
+<a href="#L278">278</a>
+<a href="#L279">279</a>
+<a href="#L280">280</a>
+<a href="#L281">281</a>
+<a href="#L282">282</a>
+<a href="#L283">283</a>
+<a href="#L284">284</a>
+<a href="#L285">285</a>
+<a href="#L286">286</a>
+<a href="#L287">287</a>
+<a href="#L288">288</a>
+<a href="#L289">289</a>
+<a href="#L290">290</a>
+<a href="#L291">291</a>
+<a href="#L292">292</a>
+<a href="#L293">293</a>
+<a href="#L294">294</a>
+<a href="#L295">295</a>
+<a href="#L296">296</a>
+<a href="#L297">297</a>
+<a href="#L298">298</a>
+<a href="#L299">299</a>
+<a href="#L300">300</a>
+<a href="#L301">301</a>
+<a href="#L302">302</a>
+<a href="#L303">303</a>
+<a href="#L304">304</a>
+<a href="#L305">305</a>
+<a href="#L306">306</a>
+<a href="#L307">307</a>
+<a href="#L308">308</a>
+<a href="#L309">309</a>
+<a href="#L310">310</a>
+<a href="#L311">311</a>
+<a href="#L312">312</a>
+<a href="#L313">313</a>
+<a href="#L314">314</a>
+<a href="#L315">315</a>
+<a href="#L316">316</a>
+<a href="#L317">317</a>
+<a href="#L318">318</a>
+<a href="#L319">319</a>
+<a href="#L320">320</a>
+<a href="#L321">321</a>
+<a href="#L322">322</a>
+<a href="#L323">323</a>
+<a href="#L324">324</a>
+<a href="#L325">325</a>
+<a href="#L326">326</a>
+<a href="#L327">327</a>
+<a href="#L328">328</a>
+<a href="#L329">329</a>
+<a href="#L330">330</a>
+<a href="#L331">331</a>
+<a href="#L332">332</a>
+</pre>
+<pre><code class="ocaml">(** Copyright 2026,  Mikhail Gavrilenko, Danila Rudnev-Stepanyan, Daniel Vlasenko*)
+
+(** SPDX-License-Identifier: LGPL-3.0-or-later *)
+
+open Base
+open Machine
+
+let rec elim_sd_ld_same_reg = function
+  | <span data-count="293">(</span>Sd (r1, o1), _) :: (Ld (r2, o2), _) :: rest
+    when equal_re<span data-count="293">g</span> r1 r2 &amp;&amp; <span data-count="155">e</span>qual_offse<span data-count="155">t</span> o1 o2 -&gt; <span data-count="137">e</span>lim_sd_ld_same_reg rest
+  | <span data-count="2395">x</span> :: rest -&gt; x :: elim_sd_ld_same_re<span data-count="2395">g</span> rest
+  | <span data-count="21">[</span>] -&gt; []
+;;
+
+let rec elim_sd_ld_same_offset = function
+  | <span data-count="156">(</span>(Sd (r1, o1), _) as i1) :: (Ld (r2, o2), _) :: rest
+    when (not (equal_re<span data-count="156">g</span> r1 r2)) &amp;&amp; <span data-count="138">e</span>qual_offse<span data-count="138">t</span> o1 o2 -&gt;
+    <span data-count="95">l</span>et new_i = Mv (r2, r1), "" in
+    elim_sd_ld_same_offset (i1 :: new_i :: rest)
+  | <span data-count="2395">x</span> :: rest -&gt; x :: elim_sd_ld_same_offse<span data-count="2395">t</span> rest
+  | <span data-count="21">[</span>] -&gt; []
+;;
+
+let rec elim_addi_sd_mv_addi = function
+  | <span data-count="59">(</span>Addi (_, _, aimm1), _)
+    :: (Sd (sr, _), _)
+    :: ((Mv (_, mr2), _) as mv_i)
+    :: (Addi (_, _, aimm2), _)
+    :: rest
+    when aimm1 = <span data-count="59">-</span>aimm2 &amp;&amp; <span data-count="48">e</span>qual_re<span data-count="48">g</span> sr mr2 -&gt; <span data-count="48">e</span>lim_addi_sd_mv_addi (mv_i :: rest)
+  | <span data-count="2251">x</span> :: rest -&gt; x :: elim_addi_sd_mv_add<span data-count="2251">i</span> rest
+  | <span data-count="21">[</span>] -&gt; []
+;;
+
+let rec fold_constants = function
+  | <span data-count="10">(</span>Li (lid, lii), _) :: (Sub (srd, sr1, sr2), _) :: rest when equal_re<span data-count="10">g</span> lid sr2 -&gt;
+    <span data-count="10">l</span>et addi = Addi (srd, sr1, <span data-count="10">-</span>lii), "" in
+    fold_constants (addi :: rest)
+  | <span data-count="35">(</span>Addi (aid1, ai1, aii1), _) :: (Addi (aid2, ai2, aii2), _) :: rest
+    when equal_re<span data-count="35">g</span> aid1 ai1 &amp;&amp; <span data-count="26">e</span>qual_re<span data-count="26">g</span> aid1 ai2 -&gt;
+    <span data-count="26">l</span>et addi = Addi (aid2, ai1, aii1 + aii2), "" in
+    fold_constants (addi :: rest)
+  | <span data-count="2215">x</span> :: rest -&gt; x :: fold_constant<span data-count="2215">s</span> rest
+  | <span data-count="21">[</span>] -&gt; []
+;;
+
+let rec fold_branch = function
+  | <span data-count="1">(</span>Slt (sld, sl1, sl2), _) :: (Beq (brc, Zero, label), _) :: rest when equal_re<span data-count="1">g</span> sld brc
+    -&gt;
+    <span data-count="1">l</span>et br = Ble (sl2, sl1, label), "" in
+    fold_branch (br :: rest)
+  | <span data-count="10">(</span>(Li (lid, _), _) as li)
+    :: (Xor (xd, x1, x2), _)
+    :: (Seqz (sd, s1), _)
+    :: (Beq (br, Zero, label), _)
+    :: rest
+    when equal_re<span data-count="10">g</span> lid x2 &amp;&amp; <span data-count="10">e</span>qual_re<span data-count="10">g</span> xd s1 &amp;&amp; <span data-count="10">e</span>qual_re<span data-count="10">g</span> sd br -&gt;
+    <span data-count="10">l</span>et br = Bne (x1, x2, label), "" in
+    fold_branch (li :: br :: rest)
+  | <span data-count="1">(</span>(Li (lid, _), _) as li)
+    :: (Slt (sld, sl1, sl2), _)
+    :: (Seqz (sd, s1), _)
+    :: (Beq (br, Zero, label), _)
+    :: rest
+    when equal_re<span data-count="1">g</span> lid sl1 &amp;&amp; <span data-count="1">e</span>qual_re<span data-count="1">g</span> sld s1 &amp;&amp; <span data-count="1">e</span>qual_re<span data-count="1">g</span> sd br -&gt;
+    <span data-count="1">l</span>et br = Blt (lid, sl2, label), "" in
+    fold_branch (li :: br :: rest)
+  | <span data-count="0">(</span>(Li (lid, _), _) as li)
+    :: (Xor (xd, x1, x2), _)
+    :: (Snez (snd, sn1), _)
+    :: (Beq (br, Zero, label), _)
+    :: rest
+    when equal_re<span data-count="0">g</span> lid x2 &amp;&amp; <span data-count="0">e</span>qual_re<span data-count="0">g</span> xd sn1 &amp;&amp; <span data-count="0">e</span>qual_re<span data-count="0">g</span> snd br -&gt;
+    <span data-count="0">l</span>et br = Beq (x1, lid, label), "" in
+    fold_branch (li :: br :: rest)
+  | <span data-count="1">(</span>(Mv (mvd, mv1), _) as li)
+    :: (Xor (xd, x1, x2), _)
+    :: (Snez (snd, sn1), _)
+    :: (Beq (br, Zero, label), _)
+    :: rest
+    when equal_re<span data-count="1">g</span> mvd x2 &amp;&amp; <span data-count="1">e</span>qual_re<span data-count="1">g</span> xd sn1 &amp;&amp; <span data-count="1">e</span>qual_re<span data-count="1">g</span> snd br -&gt;
+    <span data-count="1">l</span>et br = Beq (x1, mv1, label), "" in
+    fold_branch (li :: br :: rest)
+  (* | XOR :: SNEZ :: BEQ *)
+  | <span data-count="2864">x</span> :: rest -&gt; x :: fold_branc<span data-count="2864">h</span> rest
+  | <span data-count="30">[</span>] -&gt; []
+;;
+
+let is_arg_reg r =
+  <span data-count="73">e</span>qual_re<span data-count="73">g</span> r (A 0<span data-count="72">)</span>
+  || equal_re<span data-count="1">g</span> r (A 1<span data-count="0">)</span>
+  || equal_re<span data-count="1">g</span> r (A 2<span data-count="0">)</span>
+  || equal_re<span data-count="1">g</span> r (A 3<span data-count="0">)</span>
+  || equal_re<span data-count="1">g</span> r (A 4<span data-count="0">)</span>
+  || equal_re<span data-count="1">g</span> r (A 5<span data-count="0">)</span>
+  || equal_re<span data-count="1">g</span> r (A 6<span data-count="0">)</span>
+  || equal_reg r (A 7)
+;;
+
+let reg_used_in_instr reg instr =
+  <span data-count="127">m</span>atch instr with
+  | <span data-count="0">A</span>dd (_, r1, r2)
+  | <span data-count="0">S</span>ub (_, r1, r2)
+  | <span data-count="0">M</span>ul (_, r1, r2)
+  | <span data-count="0">S</span>lt (_, r1, r2)
+  | <span data-count="0">X</span>or (_, r1, r2)
+  | <span data-count="28">S</span>d (r1, (r2, _))
+  | <span data-count="14">L</span>d (r1, (r2, _))
+    when equal_re<span data-count="42">g</span> reg r<span data-count="22">1</span> || equal_re<span data-count="20">g</span> reg r<span data-count="0">2</span> -&gt; <span data-count="22">t</span>rue
+  | <span data-count="0">S</span>eqz (_, r1)
+  | <span data-count="0">S</span>nez (_, r1)
+  | <span data-count="0">B</span>eq (_, r1, _)
+  | <span data-count="5">A</span>ddi (_, r1, _)
+  | <span data-count="0">X</span>ori (_, r1, _)
+  | <span data-count="25">M</span>v (_, r1)
+  | <span data-count="0">S</span>lli (_, r1, _)
+  | <span data-count="0">S</span>rai (_, r1, _)
+    when equal_re<span data-count="30">g</span> reg r1 -&gt; <span data-count="5">t</span>rue
+  | <span data-count="37">C</span>all _ when is_arg_re<span data-count="37">g</span> reg -&gt; <span data-count="36">t</span>rue
+  | <span data-count="64">_</span> -&gt; false
+;;
+
+let reg_modified_in_instr reg instr =
+  <span data-count="58">m</span>atch instr with
+  | <span data-count="0">A</span>dd (r1, _, _)
+  | <span data-count="0">S</span>ub (r1, _, _)
+  | <span data-count="0">M</span>ul (r1, _, _)
+  | <span data-count="0">S</span>lt (r1, _, _)
+  | <span data-count="0">X</span>or (r1, _, _)
+  | <span data-count="0">S</span>eqz (r1, _)
+  | <span data-count="0">S</span>nez (r1, _)
+  | <span data-count="0">A</span>ddi (r1, _, _)
+  | <span data-count="0">X</span>ori (r1, _, _)
+  | <span data-count="0">M</span>v (r1, _)
+  | <span data-count="0">S</span>lli (r1, _, _)
+  | <span data-count="0">S</span>rai (r1, _, _)
+  | <span data-count="0">L</span>la (r1, _)
+  | <span data-count="0">L</span>i (r1, _)
+  | <span data-count="0">L</span>d (r1, _)
+  | <span data-count="0">L</span>a (r1, _)
+    when equal_re<span data-count="0">g</span> reg r1 -&gt; <span data-count="0">t</span>rue
+  | <span data-count="36">C</span>all _ when is_arg_re<span data-count="36">g</span> reg -&gt; <span data-count="36">t</span>rue
+  | <span data-count="22">_</span> -&gt; false
+;;
+
+let rec elim_inverse_mv = function
+  | <span data-count="46">(</span>Mv (md1, mv1), _) :: (Mv (md2, mv2), _) :: rest
+    when equal_re<span data-count="46">g</span> md1 mv2 &amp;&amp; <span data-count="17">e</span>qual_re<span data-count="17">g</span> mv1 md2 -&gt; <span data-count="15">e</span>lim_inverse_mv rest
+  | <span data-count="144">(</span>Mv (md1, mv1), _) :: ((i2, _) as i2c) :: (Mv (md2, mv2), _) :: rest
+    when equal_re<span data-count="144">g</span> md1 mv2 &amp;&amp; <span data-count="98">e</span>qual_re<span data-count="98">g</span> mv1 md2 &amp;&amp; <span data-count="89">n</span>ot (reg_used_in_inst<span data-count="89">r</span> md1 i2) -&gt;
+    <span data-count="31">e</span>lim_inverse_mv (i2c :: rest) (* can eliminate both *)
+  | <span data-count="113">(</span>(Mv (md1, mv1), _) as i1) :: ((i2, _) as i2c) :: (Mv (md2, mv2), _) :: rest
+    when equal_re<span data-count="113">g</span> md1 mv2 &amp;&amp; <span data-count="67">e</span>qual_re<span data-count="67">g</span> mv1 md2 &amp;&amp; <span data-count="58">n</span>ot (reg_modified_in_inst<span data-count="58">r</span> md1 i2) -&gt;
+    <span data-count="22">e</span>lim_inverse_mv (i1 :: i2c :: rest) (* can eliminate the second one *)
+  | <span data-count="2101">x</span> :: rest -&gt; x :: elim_inverse_m<span data-count="2101">v</span> rest
+  | <span data-count="21">[</span>] -&gt; []
+;;
+
+let rec elim_mv_before_call = function
+  | <span data-count="28">(</span>Li (ld, lii), _) :: (Mv (md, m1), _) :: ((Call _, _) as ci) :: rest
+    when equal_re<span data-count="28">g</span> ld m1 -&gt;
+    <span data-count="28">l</span>et li = Li (md, lii), "" in
+    elim_mv_before_call (li :: ci :: rest)
+  | <span data-count="26">(</span>Ld (ld, off), _) :: (Mv (md, m1), _) :: ((Call _, _) as ci) :: rest
+    when equal_re<span data-count="26">g</span> ld m1 -&gt;
+    <span data-count="26">l</span>et li = Ld (md, off), "" in
+    elim_mv_before_call (li :: ci :: rest)
+  | <span data-count="19">(</span>Mv (md1, mv1), _) :: (Mv (md2, mv2), _) :: ((Call _, _) as ci) :: rest
+    when equal_re<span data-count="19">g</span> md1 mv2 -&gt;
+    <span data-count="2">l</span>et mv = Mv (md2, mv1), "" in
+    elim_mv_before_call (mv :: ci :: rest)
+  | <span data-count="2020">x</span> :: rest -&gt; x :: elim_mv_before_cal<span data-count="2020">l</span> rest
+  | <span data-count="21">[</span>] -&gt; []
+;;
+
+let rec fold_mv_smth = function
+  | <span data-count="75">(</span>Mv (md, mv1), _) :: (Sd (sd, off), _) :: rest when equal_re<span data-count="75">g</span> md sd -&gt;
+    <span data-count="75">l</span>et i = Sd (mv1, off), "" in
+    fold_mv_smth (i :: rest)
+  | <span data-count="60">(</span>Mv (md, mv1), _) :: (Addi (ad, a1, aimm), _) :: rest when equal_re<span data-count="60">g</span> md a1 -&gt;
+    <span data-count="10">l</span>et i = Addi (ad, mv1, aimm), "" in
+    fold_mv_smth (i :: rest)
+  | <span data-count="9">(</span>Mv (md, mv1), _) :: (Add (ad, a1, a2), _) :: rest
+    when equal_re<span data-count="9">g</span> md a<span data-count="0">1</span> || equal_re<span data-count="9">g</span> md a<span data-count="9">2</span> -&gt;
+    <span data-count="9">l</span>et add = if equal_reg md a1 then <span data-count="0">A</span>dd (ad, mv1, a2), "" else <span data-count="9">A</span>dd (ad, a1, mv1), "" in
+    fold_mv_smth (add :: rest)
+  | <span data-count="1926">x</span> :: rest -&gt; x :: fold_mv_smt<span data-count="1926">h</span> rest
+  | <span data-count="21">[</span>] -&gt; []
+;;
+
+let rec fold_addi_sp = function
+  (* can't just do as is like with ld, but it happens on A registers, so i listed the cases *)
+  | <span data-count="1">(</span>Addi (SP, SP, aimm1), _)
+    :: (Sd (r1, (SP, off1)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: (Sd (r2, (SP, off2)), _)
+    :: (Addi (SP, SP, aimm3), _)
+    :: (Sd (r3, (SP, off3)), _)
+    :: (Addi (SP, SP, aimm4), _)
+    :: (Sd (r4, (SP, off4)), _)
+    :: (Addi (SP, SP, aimm5), _)
+    :: ((Sd (_, (SP, _)), _) as sdi5)
+    :: rest -&gt;
+    let addi = Addi (SP, SP, aimm1 + aimm2 + aimm3 + aimm4 + aimm5), "" in
+    let sdi1 = Sd (r1, (SP, off1 - aimm1 - aimm2 - aimm3 - aimm4)), "" in
+    let sdi2 = Sd (r2, (SP, off2 - aimm2 - aimm3 - aimm4)), "" in
+    let sdi3 = Sd (r3, (SP, off3 - aimm3 - aimm4)), "" in
+    let sdi4 = Sd (r4, (SP, off4 - aimm4)), "" in
+    fold_addi_sp (addi :: sdi1 :: sdi2 :: sdi3 :: sdi4 :: sdi5 :: rest)
+  | <span data-count="3">(</span>Addi (SP, SP, aimm1), _)
+    :: (Sd (r1, (SP, off1)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: (Sd (r2, (SP, off2)), _)
+    :: (Addi (SP, SP, aimm3), _)
+    :: (Sd (r3, (SP, off3)), _)
+    :: (Addi (SP, SP, aimm4), _)
+    :: ((Sd (_, (SP, _)), _) as sdi4)
+    :: rest -&gt;
+    let addi = Addi (SP, SP, aimm1 + aimm2 + aimm3 + aimm4), "" in
+    let sdi1 = Sd (r1, (SP, off1 - aimm1 - aimm2 - aimm3)), "" in
+    let sdi2 = Sd (r2, (SP, off2 - aimm2 - aimm3)), "" in
+    let sdi3 = Sd (r3, (SP, off3 - aimm3)), "" in
+    fold_addi_sp (addi :: sdi1 :: sdi2 :: sdi3 :: sdi4 :: rest)
+  | <span data-count="5">(</span>Addi (SP, SP, aimm1), _)
+    :: (Sd (r1, (SP, off1)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: (Sd (r2, (SP, off2)), _)
+    :: (Addi (SP, SP, aimm3), _)
+    :: ((Sd (_, (SP, _)), _) as sdi3)
+    :: rest -&gt;
+    let addi = Addi (SP, SP, aimm1 + aimm2 + aimm3), "" in
+    let sdi1 = Sd (r1, (SP, off1 - aimm1 - aimm2)), "" in
+    let sdi2 = Sd (r2, (SP, off2 - aimm2)), "" in
+    fold_addi_sp (addi :: sdi1 :: sdi2 :: sdi3 :: rest)
+  | <span data-count="15">(</span>Addi (SP, SP, aimm1), _)
+    :: (Sd (sd1, (SP, _)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: ((Sd (_, (SP, si2)), _) as sdi2)
+    :: rest -&gt;
+    let addi = Addi (SP, SP, aimm1 + aimm2), "" in
+    let sdi1 = Sd (sd1, (SP, si2 - aimm2)), "" in
+    fold_addi_sp (addi :: sdi1 :: sdi2 :: rest)
+  | <span data-count="22">(</span>Addi (SP, SP, aimm1), _)
+    :: (Ld (ld, (SP, limm)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: rest -&gt;
+    let li = Ld (ld, (SP, aimm1 - limm)), "" in
+    let addi = Addi (SP, SP, aimm1 + aimm2), "" in
+    fold_addi_sp (li :: addi :: rest)
+  | <span data-count="37">(</span>(Ld (_, (SP, _)), _) as ldi1)
+    :: (Addi (SP, SP, aimm1), _)
+    :: (Ld (ld2, (SP, li2)), _)
+    :: (Addi (SP, SP, aimm2), _)
+    :: rest -&gt;
+    let ldi2 = Ld (ld2, (SP, aimm1 - li2)), "" in
+    let addi = Addi (SP, SP, aimm1 + aimm2), "" in
+    fold_addi_sp (ldi1 :: ldi2 :: addi :: rest)
+  | <span data-count="39">(</span>Addi (SP, SP, aimm1), _) :: ((i, _) as i2) :: (Addi (SP, SP, aimm2), _) :: rest
+    when aimm1 = <span data-count="39">-</span>aimm2 &amp;&amp; <span data-count="6">n</span>ot (reg_used_in_inst<span data-count="6">r</span> SP i) -&gt; <span data-count="6">f</span>old_addi_sp (i2 :: rest)
+  | <span data-count="1817">x</span> :: rest -&gt; x :: fold_addi_s<span data-count="1817">p</span> rest
+  | <span data-count="21">[</span>] -&gt; []
+;;
+
+let rec elim_sd_before_ret = function
+  | <span data-count="0">(</span>Sd (_, _), _) :: ((Ret, _) as ret) :: rest -&gt; elim_sd_before_ret (ret :: rest)
+  | <span data-count="17">(</span>Sd (_, _), _) :: addi_sp :: ld_ra :: ld_s0 :: ((Ret, _) as ret) :: rest -&gt;
+    elim_sd_before_ret (addi_sp :: ld_ra :: ld_s0 :: ret :: rest)
+  | <span data-count="32">(</span>Sd (_, (reg, _)), _)
+    :: ((i, _) as ic)
+    :: addi_sp
+    :: ld_ra
+    :: ld_s0
+    :: ((Ret, _) as ret)
+    :: rest
+    when not (reg_used_in_inst<span data-count="32">r</span> reg i) -&gt;
+    <span data-count="27">e</span>lim_sd_before_ret (ic :: addi_sp :: ld_ra :: ld_s0 :: ret :: rest)
+  | <span data-count="1773">x</span> :: rest -&gt; x :: elim_sd_before_re<span data-count="1773">t</span> rest
+  | <span data-count="21">[</span>] -&gt; []
+;;
+
+let rec elim_id_fun = function
+  | <span data-count="5">(</span>Addi (SP, SP, _), _)
+    :: (Sd (RA, _), _)
+    :: (Sd (S 0, _), _)
+    :: (Addi (S 0, _, _), _)
+    :: (Addi (SP, _, _), _)
+    :: (Ld (RA, _), _)
+    :: (Ld (S 0, _), _)
+    :: ((Ret, _) as ret)
+    :: rest -&gt; elim_id_fun (ret :: rest)
+  | <span data-count="1729">x</span> :: rest -&gt; x :: elim_id_fu<span data-count="1729">n</span> rest
+  | <span data-count="21">[</span>] -&gt; []
+;;
+
+let rec elim_mv_before_branch = function
+  | <span data-count="7">(</span>Mv (md, mv1), _) :: ((Li (ld, _), _) as li) :: (Bne (br1, br2, label), _) :: rest
+    when equal_re<span data-count="7">g</span> md br1 &amp;&amp; <span data-count="7">e</span>qual_re<span data-count="7">g</span> ld br2 -&gt;
+    <span data-count="7">l</span>et b = Bne (mv1, ld, label), "" in
+    fold_branch (li :: b :: rest)
+  | <span data-count="1">(</span>Mv (md, mv1), _) :: ((Li (ld, _), _) as li) :: (Blt (br1, br2, label), _) :: rest
+    when equal_re<span data-count="1">g</span> md br2 &amp;&amp; <span data-count="1">e</span>qual_re<span data-count="1">g</span> ld br1 -&gt;
+    <span data-count="1">l</span>et b = Blt (ld, mv1, label), "" in
+    fold_branch (li :: b :: rest)
+  | <span data-count="1">(</span>Mv (md, mv1), _) :: ((Li (ld, _), _) as li) :: (Ble (br1, br2, label), _) :: rest
+    when equal_re<span data-count="1">g</span> md br2 &amp;&amp; <span data-count="1">e</span>qual_re<span data-count="1">g</span> ld br1 -&gt;
+    <span data-count="1">l</span>et b = Ble (ld, mv1, label), "" in
+    fold_branch (li :: b :: rest)
+  | <span data-count="976">x</span> :: rest -&gt; x :: elim_mv_before_branc<span data-count="976">h</span> rest
+  | <span data-count="12">[</span>] -&gt; []
+;;
+
+let peephole code : (instr * string) Queue.t =
+  <span data-count="21">l</span>et code = Queue.to_list code in
+  <span data-count="21">l</span>et optimized = elim_sd_ld_same_reg code in
+  <span data-count="21">l</span>et optimized = elim_sd_ld_same_offset optimized in
+  <span data-count="21">l</span>et optimized = elim_addi_sd_mv_addi optimized in
+  <span data-count="21">l</span>et optimized = fold_constants optimized in
+  <span data-count="21">l</span>et optimized = elim_inverse_mv optimized in
+  <span data-count="21">l</span>et optimized = fold_branch optimized in
+  <span data-count="21">l</span>et optimized = elim_mv_before_call optimized in
+  <span data-count="21">l</span>et optimized = fold_mv_smth optimized in
+  <span data-count="21">l</span>et optimized = fold_addi_sp optimized in
+  <span data-count="21">l</span>et optimized = elim_sd_before_ret optimized in
+  <span data-count="21">l</span>et optimized = elim_mv_before_branch optimized in
+  <span data-count="21">l</span>et optimized = elim_id_fun optimized in
+  <span data-count="21">Q</span>ueue.of_list optimized
+;;
+
+let optimize code : (instr * string) Queue.t =
+  <span data-count="21">l</span>et code = peephole code in
+  <span data-count="21">c</span>ode
+;;
+</code></pre>
+      </div>
+    </div>
+    <script src="../../coverage.js"></script>
+  </body>
+</html>

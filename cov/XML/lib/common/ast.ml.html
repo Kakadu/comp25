@@ -860,14 +860,14 @@ open Stdlib
 
 <span data-count="0">t</span>ype ident = <span data-count="0">s</span>tring [@@deriving eq, show { with_path = false }]
 
-let gen_charc = ma<span data-count="99">p</span> Char.chr (int_rang<span data-count="99">e</span> (Char.cod<span data-count="99">e</span> 'a') (Char.cod<span data-count="99">e</span> 'z'))
+let gen_charc = ma<span data-count="115">p</span> Char.chr (int_rang<span data-count="115">e</span> (Char.cod<span data-count="115">e</span> 'a') (Char.cod<span data-count="115">e</span> 'z'))
 
 let is_not_keyword = function
-  | <span data-count="22116">"</span>let"
+  | <span data-count="23632">"</span>let"
   | <span data-count="0">"</span>if"
-  | <span data-count="11444">"</span>then"
-  | <span data-count="11436">"</span>else"
-  | <span data-count="58635">"</span>in"
+  | <span data-count="12424">"</span>then"
+  | <span data-count="12416">"</span>else"
+  | <span data-count="62135">"</span>in"
   | <span data-count="0">"</span>fun"
   | <span data-count="0">"</span>true"
   | <span data-count="0">"</span>false"
@@ -878,37 +878,37 @@ let is_not_keyword = function
   | <span data-count="5132">"</span>with"
   | <span data-count="0">"</span>type"
   | <span data-count="0">"</span>of" -&gt; false
-  | <span data-count="899980">_</span> -&gt; true
+  | <span data-count="953500">_</span> -&gt; true
 ;;
 
-let gen_id_first_char = QCheck.Gen.oneof_weighte<span data-count="99">d</span> [ 5, char_rang<span data-count="99">e</span> 'a' 'z'; 1, retur<span data-count="99">n</span> '_' ]
-let gen_digit = char_rang<span data-count="99">e</span> '0' '9'
+let gen_id_first_char = QCheck.Gen.oneof_weighte<span data-count="115">d</span> [ 5, char_rang<span data-count="115">e</span> 'a' 'z'; 1, retur<span data-count="115">n</span> '_' ]
+let gen_digit = char_rang<span data-count="115">e</span> '0' '9'
 
 let gen_id_char =
-  QCheck.Gen.oneof_weighte<span data-count="99">d</span>
-    [ 5, gen_id_first_char; 5, char_rang<span data-count="99">e</span> 'A' 'Z'; 5, gen_digit; 1, retur<span data-count="99">n</span> '\'' ]
+  QCheck.Gen.oneof_weighte<span data-count="115">d</span>
+    [ 5, gen_id_first_char; 5, char_rang<span data-count="115">e</span> 'A' 'Z'; 5, gen_digit; 1, retur<span data-count="115">n</span> '\'' ]
 ;;
 
 let gen_ident =
   let gen_name =
-    let* fst = gen_id_first_char &gt;|<span data-count="99">=</span> Base.Char.to_string in
+    let* fst = gen_id_first_char &gt;|<span data-count="115">=</span> Base.Char.to_string in
     <span data-count="14">l</span>et range = if Base.String.( = ) fst "_" then 1 <span data-count="3">-</span><span data-count="3">-</span> 4 else 0 <span data-count="11">-</span><span data-count="11">-</span> 4 in
     let* rest = string_siz<span data-count="14">e</span> ~gen:gen_id_char range in
     <span data-count="14">r</span>eturn (fst ^ rest)
   in
   let rec loop gen =
-    <span data-count="99">g</span>en &gt;&gt;= fun name -&gt; <span data-count="14">i</span>f is_not_keyword name then <span data-count="14">r</span>eturn name else <span data-count="0">l</span>oop gen
+    <span data-count="115">g</span>en &gt;&gt;= fun name -&gt; <span data-count="14">i</span>f is_not_keyword name then <span data-count="14">r</span>eturn name else <span data-count="0">l</span>oop gen
   in
-  loo<span data-count="99">p</span> gen_name
+  loo<span data-count="115">p</span> gen_name
 ;;
 
 module List1 = struct
   <span data-count="0">t</span>ype 'a t = <span data-count="0">'</span>a * <span data-count="0">'</span>a lis<span data-count="0">t</span> [@@deriving eq, show { with_path = false }]
 
   let gen gen_a =
-    <span data-count="54412">Q</span>Check.Gen.map
+    <span data-count="63116">Q</span>Check.Gen.map
       (fun (gen0, gen1) -&gt; <span data-count="0">g</span>en0, gen1)
-      (QCheck.Gen.pai<span data-count="54412">r</span> gen_a (list_siz<span data-count="54412">e</span> (int_boun<span data-count="54412">d</span> 5) gen_a))
+      (QCheck.Gen.pai<span data-count="63116">r</span> gen_a (list_siz<span data-count="63116">e</span> (int_boun<span data-count="63116">d</span> 5) gen_a))
   ;;
 
   let arb gen_a = <span data-count="0">Q</span>Check.make (ge<span data-count="0">n</span> gen_a)
@@ -918,9 +918,9 @@ module List2 = struct
   <span data-count="0">t</span>ype 'a t = <span data-count="0">'</span>a * <span data-count="0">'</span><span data-count="0">a</span> * <span data-count="0">'</span>a lis<span data-count="0">t</span> [@@deriving eq, show { with_path = false }]
 
   let gen gen_a =
-    <span data-count="17103">Q</span>Check.Gen.map
+    <span data-count="19839">Q</span>Check.Gen.map
       (fun (gen0, gen1, gen2) -&gt; <span data-count="0">g</span>en0, gen1, gen2)
-      (QCheck.Gen.tripl<span data-count="17103">e</span> gen_a gen_a (QCheck.Gen.lis<span data-count="17103">t</span> gen_a))
+      (QCheck.Gen.tripl<span data-count="19839">e</span> gen_a gen_a (QCheck.Gen.lis<span data-count="19839">t</span> gen_a))
   ;;
 
   let arb gen_a = <span data-count="0">Q</span>Check.make (ge<span data-count="0">n</span> gen_a)
@@ -934,23 +934,23 @@ module Constant = struct
   [@@deriving eq, show { with_path = false }]
 
   let gen =
-    QCheck.Gen.oneof_weighte<span data-count="99">d</span>
-      [ 1, QCheck.Gen.ma<span data-count="99">p</span> (fun gen0 -&gt; <span data-count="5">C</span>onst_integer gen0) nat_small
-      ; 1, QCheck.Gen.ma<span data-count="99">p</span> (fun gen0 -&gt; <span data-count="4">C</span>onst_char gen0) gen_charc
-      ; 1, QCheck.Gen.ma<span data-count="99">p</span> (fun gen0 -&gt; <span data-count="8">C</span>onst_string gen0) (string_small_o<span data-count="99">f</span> gen_charc)
+    QCheck.Gen.oneof_weighte<span data-count="115">d</span>
+      [ 1, QCheck.Gen.ma<span data-count="115">p</span> (fun gen0 -&gt; <span data-count="5">C</span>onst_integer gen0) nat_small
+      ; 1, QCheck.Gen.ma<span data-count="115">p</span> (fun gen0 -&gt; <span data-count="4">C</span>onst_char gen0) gen_charc
+      ; 1, QCheck.Gen.ma<span data-count="115">p</span> (fun gen0 -&gt; <span data-count="8">C</span>onst_string gen0) (string_small_o<span data-count="115">f</span> gen_charc)
       ]
   ;;
 
-  let arb = QCheck.mak<span data-count="99">e</span> gen
+  let arb = QCheck.mak<span data-count="115">e</span> gen
 end
 
 module TypeExpr = struct
   let gen_ref inner_gen =
-    <span data-count="1700">l</span>et open QCheck.Gen in
+    <span data-count="1972">l</span>et open QCheck.Gen in
     map ref inner_gen
   ;;
 
-  <span data-count="0">t</span>ype level = (<span data-count="0">i</span>nt[@gen nat_small]) [@@deriving eq, show { with_path = false }, qcheck<span data-count="99">]</span>
+  <span data-count="0">t</span>ype level = (<span data-count="0">i</span>nt[@gen nat_small]) [@@deriving eq, show { with_path = false }, qcheck<span data-count="115">]</span>
 
   <span data-count="0">t</span>ype t =
     <span data-count="0">|</span> Type_arrow of t * <span data-count="0">t</span> (** Function type [t1 -&gt; t2] *)
@@ -966,45 +966,45 @@ module TypeExpr = struct
   [@@deriving eq, show { with_path = false }]
 
   let rec gen_sized n =
-    <span data-count="22303">m</span>atch n with
-    | <span data-count="20603">0</span> -&gt; QCheck.Gen.map (fun gen0 -&gt; <span data-count="0">Q</span>uant_type_var gen0) gen_ident
-    | <span data-count="1700">_</span> -&gt;
+    <span data-count="25871">m</span>atch n with
+    | <span data-count="23899">0</span> -&gt; QCheck.Gen.map (fun gen0 -&gt; <span data-count="0">Q</span>uant_type_var gen0) gen_ident
+    | <span data-count="1972">_</span> -&gt;
       QCheck.Gen.oneof_weighted
-        [ 1, QCheck.Gen.ma<span data-count="1700">p</span> (fun gen0 -&gt; <span data-count="0">Q</span>uant_type_var gen0) gen_ident
+        [ 1, QCheck.Gen.ma<span data-count="1972">p</span> (fun gen0 -&gt; <span data-count="0">Q</span>uant_type_var gen0) gen_ident
         ; ( 1
-          , QCheck.Gen.ma<span data-count="1700">p</span>
+          , QCheck.Gen.ma<span data-count="1972">p</span>
               (fun (gen0, gen1) -&gt; <span data-count="0">T</span>ype_arrow (gen0, gen1))
-              (QCheck.Gen.pai<span data-count="1700">r</span> (gen_size<span data-count="1700">d</span> (n / 2)) (gen_size<span data-count="1700">d</span> (n / 2))) )
-        ; 1, QCheck.Gen.ma<span data-count="1700">p</span> (fun gen0 -&gt; <span data-count="0">T</span>ype_tuple gen0) (List2.ge<span data-count="1700">n</span> (gen_size<span data-count="1700">d</span> (n / 2)))
-        ; 1, QCheck.Gen.ma<span data-count="1700">p</span> (fun gen0 -&gt; <span data-count="0">T</span>ype_var gen0) (gen_re<span data-count="1700">f</span> (gen_tv_size<span data-count="1700">d</span> (n / 2)))
+              (QCheck.Gen.pai<span data-count="1972">r</span> (gen_size<span data-count="1972">d</span> (n / 2)) (gen_size<span data-count="1972">d</span> (n / 2))) )
+        ; 1, QCheck.Gen.ma<span data-count="1972">p</span> (fun gen0 -&gt; <span data-count="0">T</span>ype_tuple gen0) (List2.ge<span data-count="1972">n</span> (gen_size<span data-count="1972">d</span> (n / 2)))
+        ; 1, QCheck.Gen.ma<span data-count="1972">p</span> (fun gen0 -&gt; <span data-count="0">T</span>ype_var gen0) (gen_re<span data-count="1972">f</span> (gen_tv_size<span data-count="1972">d</span> (n / 2)))
         ; ( 1
-          , QCheck.Gen.ma<span data-count="1700">p</span>
+          , QCheck.Gen.ma<span data-count="1972">p</span>
               (fun (gen0, gen1) -&gt; <span data-count="0">T</span>ype_construct (gen0, gen1))
-              (QCheck.Gen.pai<span data-count="1700">r</span> gen_ident (QCheck.Gen.lis<span data-count="1700">t</span> (gen_size<span data-count="1700">d</span> (n / 2)))) )
+              (QCheck.Gen.pai<span data-count="1972">r</span> gen_ident (QCheck.Gen.lis<span data-count="1972">t</span> (gen_size<span data-count="1972">d</span> (n / 2)))) )
         ]
 
   and gen_tv_sized n =
-    <span data-count="1700">m</span>atch n with
-    | <span data-count="1600">0</span> -&gt;
+    <span data-count="1972">m</span>atch n with
+    | <span data-count="1856">0</span> -&gt;
       QCheck.Gen.map
         (fun (gen0, gen1) -&gt; <span data-count="0">U</span>nbound (gen0, gen1))
-        (QCheck.Gen.pai<span data-count="1600">r</span> gen_ident gen_level)
-    | <span data-count="100">_</span> -&gt;
+        (QCheck.Gen.pai<span data-count="1856">r</span> gen_ident gen_level)
+    | <span data-count="116">_</span> -&gt;
       QCheck.Gen.oneof_weighted
         [ ( 1
-          , QCheck.Gen.ma<span data-count="100">p</span>
+          , QCheck.Gen.ma<span data-count="116">p</span>
               (fun (gen0, gen1) -&gt; <span data-count="0">U</span>nbound (gen0, gen1))
-              (QCheck.Gen.pai<span data-count="100">r</span> gen_ident gen_level) )
-        ; 1, QCheck.Gen.ma<span data-count="100">p</span> (fun gen0 -&gt; <span data-count="0">L</span>ink gen0) (gen_size<span data-count="100">d</span> (n / 2))
+              (QCheck.Gen.pai<span data-count="116">r</span> gen_ident gen_level) )
+        ; 1, QCheck.Gen.ma<span data-count="116">p</span> (fun gen0 -&gt; <span data-count="0">L</span>ink gen0) (gen_size<span data-count="116">d</span> (n / 2))
         ]
   ;;
 
-  let gen = QCheck.Gen.size<span data-count="99">d</span> gen_sized
-  let gen_tv = QCheck.Gen.size<span data-count="99">d</span> gen_tv_sized
+  let gen = QCheck.Gen.size<span data-count="115">d</span> gen_sized
+  let gen_tv = QCheck.Gen.size<span data-count="115">d</span> gen_tv_sized
   let arb_sized n = <span data-count="0">Q</span>Check.make (gen_size<span data-count="0">d</span> n)
   let arb_tv_sized n = <span data-count="0">Q</span>Check.make (gen_tv_size<span data-count="0">d</span> n)
-  let arb = QCheck.mak<span data-count="99">e</span> gen
-  let arb_tv = QCheck.mak<span data-count="99">e</span> gen_tv
+  let arb = QCheck.mak<span data-count="115">e</span> gen
+  let arb_tv = QCheck.mak<span data-count="115">e</span> gen_tv
 end
 
 module Pattern = struct
@@ -1023,33 +1023,33 @@ module Pattern = struct
   [@@deriving eq, show { with_path = false }]
 
   let rec gen_sized n =
-    <span data-count="59816">m</span>atch n with
-    | <span data-count="58016">0</span> -&gt;
+    <span data-count="69384">m</span>atch n with
+    | <span data-count="67296">0</span> -&gt;
       QCheck.Gen.oneof_weighted
-        [ 1, QCheck.Gen.pur<span data-count="58016">e</span> Pat_any
-        ; 1, QCheck.Gen.ma<span data-count="58016">p</span> (fun gen0 -&gt; <span data-count="9">P</span>at_var gen0) gen_ident
-        ; 1, QCheck.Gen.ma<span data-count="58016">p</span> (fun gen0 -&gt; <span data-count="5">P</span>at_constant gen0) Constant.gen
+        [ 1, QCheck.Gen.pur<span data-count="67296">e</span> Pat_any
+        ; 1, QCheck.Gen.ma<span data-count="67296">p</span> (fun gen0 -&gt; <span data-count="9">P</span>at_var gen0) gen_ident
+        ; 1, QCheck.Gen.ma<span data-count="67296">p</span> (fun gen0 -&gt; <span data-count="5">P</span>at_constant gen0) Constant.gen
         ]
-    | <span data-count="1800">_</span> -&gt;
+    | <span data-count="2088">_</span> -&gt;
       QCheck.Gen.oneof_weighted
-        [ 1, QCheck.Gen.pur<span data-count="1800">e</span> Pat_any
-        ; 1, QCheck.Gen.ma<span data-count="1800">p</span> (fun gen0 -&gt; <span data-count="0">P</span>at_var gen0) gen_ident
-        ; 1, QCheck.Gen.ma<span data-count="1800">p</span> (fun gen0 -&gt; <span data-count="0">P</span>at_constant gen0) Constant.gen
+        [ 1, QCheck.Gen.pur<span data-count="2088">e</span> Pat_any
+        ; 1, QCheck.Gen.ma<span data-count="2088">p</span> (fun gen0 -&gt; <span data-count="0">P</span>at_var gen0) gen_ident
+        ; 1, QCheck.Gen.ma<span data-count="2088">p</span> (fun gen0 -&gt; <span data-count="0">P</span>at_constant gen0) Constant.gen
         ; ( 1
-          , QCheck.Gen.ma<span data-count="1800">p</span>
+          , QCheck.Gen.ma<span data-count="2088">p</span>
               (fun (gen0, gen1) -&gt; <span data-count="0">P</span>at_constraint (gen0, gen1))
-              (QCheck.Gen.pai<span data-count="1800">r</span> (gen_size<span data-count="1800">d</span> (n / 2)) (TypeExpr.gen_size<span data-count="1800">d</span> (n / 2))) )
-        ; 1, QCheck.Gen.ma<span data-count="1800">p</span> (fun gen0 -&gt; <span data-count="0">P</span>at_tuple gen0) (List2.ge<span data-count="1800">n</span> (gen_size<span data-count="1800">d</span> (n / 2)))
+              (QCheck.Gen.pai<span data-count="2088">r</span> (gen_size<span data-count="2088">d</span> (n / 2)) (TypeExpr.gen_size<span data-count="2088">d</span> (n / 2))) )
+        ; 1, QCheck.Gen.ma<span data-count="2088">p</span> (fun gen0 -&gt; <span data-count="0">P</span>at_tuple gen0) (List2.ge<span data-count="2088">n</span> (gen_size<span data-count="2088">d</span> (n / 2)))
         ; ( 1
-          , QCheck.Gen.ma<span data-count="1800">p</span>
+          , QCheck.Gen.ma<span data-count="2088">p</span>
               (fun (gen0, gen1) -&gt; <span data-count="0">P</span>at_construct (gen0, gen1))
-              (QCheck.Gen.pai<span data-count="1800">r</span> gen_ident (QCheck.Gen.optio<span data-count="1800">n</span> (gen_size<span data-count="1800">d</span> (n / 2)))) )
+              (QCheck.Gen.pai<span data-count="2088">r</span> gen_ident (QCheck.Gen.optio<span data-count="2088">n</span> (gen_size<span data-count="2088">d</span> (n / 2)))) )
         ]
   ;;
 
-  let gen = QCheck.Gen.size<span data-count="99">d</span> gen_sized
+  let gen = QCheck.Gen.size<span data-count="115">d</span> gen_sized
   let arb_sized n = <span data-count="0">Q</span>Check.make (gen_size<span data-count="0">d</span> n)
-  let arb = QCheck.mak<span data-count="99">e</span> gen
+  let arb = QCheck.mak<span data-count="115">e</span> gen
 end
 
 module Expression = struct
@@ -1059,11 +1059,11 @@ module Expression = struct
   [@@deriving eq, show { with_path = false }]
 
   let gen_rec_flag =
-    QCheck.Gen.oneof_weighte<span data-count="99">d</span>
-      [ 1, QCheck.Gen.pur<span data-count="99">e</span> Nonrecursive; 1, QCheck.Gen.pur<span data-count="99">e</span> Recursive ]
+    QCheck.Gen.oneof_weighte<span data-count="115">d</span>
+      [ 1, QCheck.Gen.pur<span data-count="115">e</span> Nonrecursive; 1, QCheck.Gen.pur<span data-count="115">e</span> Recursive ]
   ;;
 
-  let arb_rec_flag = QCheck.mak<span data-count="99">e</span> gen_rec_flag
+  let arb_rec_flag = QCheck.mak<span data-count="115">e</span> gen_rec_flag
 
   <span data-count="0">t</span>ype 'expr value_binding =
     { pat : Pattern.t
@@ -1072,7 +1072,7 @@ module Expression = struct
   [@@deriving eq, show { with_path = false }<span data-count="0">]</span>
 
   let gen_value_binding gen_expr n =
-    <span data-count="13607">m</span>ap2 (fun pat expr -&gt; <span data-count="17">{</span> pat; expr }) (Pattern.gen_size<span data-count="13607">d</span> (n / 2)) (gen_exp<span data-count="13607">r</span> (n / 2))
+    <span data-count="15783">m</span>ap2 (fun pat expr -&gt; <span data-count="17">{</span> pat; expr }) (Pattern.gen_size<span data-count="15783">d</span> (n / 2)) (gen_exp<span data-count="15783">r</span> (n / 2))
   ;;
 
   <span data-count="0">t</span>ype 'expr case =
@@ -1082,10 +1082,10 @@ module Expression = struct
   [@@deriving eq, show { with_path = false }<span data-count="0">]</span>
 
   let gen_case gen_expr n =
-    <span data-count="27206">m</span>ap2
+    <span data-count="31558">m</span>ap2
       (fun first second -&gt; <span data-count="0">{</span> first; second })
-      (Pattern.gen_size<span data-count="27206">d</span> (n / 2))
-      (gen_exp<span data-count="27206">r</span> (n / 2))
+      (Pattern.gen_size<span data-count="31558">d</span> (n / 2))
+      (gen_exp<span data-count="31558">r</span> (n / 2))
   ;;
 
   <span data-count="0">t</span>ype t =
@@ -1118,65 +1118,65 @@ module Expression = struct
   [@@deriving eq, show { with_path = false }]
 
   let rec gen_sized n =
-    <span data-count="190552">m</span>atch n with
-    | <span data-count="176949">0</span> -&gt;
+    <span data-count="221032">m</span>atch n with
+    | <span data-count="205253">0</span> -&gt;
       QCheck.Gen.oneof_weighted
-        [ 1, QCheck.Gen.ma<span data-count="176949">p</span> (fun gen0 -&gt; <span data-count="5">E</span>xp_ident gen0) gen_ident
-        ; 1, QCheck.Gen.ma<span data-count="176949">p</span> (fun gen0 -&gt; <span data-count="12">E</span>xp_constant gen0) Constant.gen
+        [ 1, QCheck.Gen.ma<span data-count="205253">p</span> (fun gen0 -&gt; <span data-count="5">E</span>xp_ident gen0) gen_ident
+        ; 1, QCheck.Gen.ma<span data-count="205253">p</span> (fun gen0 -&gt; <span data-count="12">E</span>xp_constant gen0) Constant.gen
         ]
-    | <span data-count="13603">_</span> -&gt;
+    | <span data-count="15779">_</span> -&gt;
       QCheck.Gen.oneof_weighted
-        [ 1, QCheck.Gen.ma<span data-count="13603">p</span> (fun gen0 -&gt; <span data-count="0">E</span>xp_ident gen0) gen_ident
-        ; 1, QCheck.Gen.ma<span data-count="13603">p</span> (fun gen0 -&gt; <span data-count="0">E</span>xp_constant gen0) Constant.gen
-        ; 1, QCheck.Gen.ma<span data-count="13603">p</span> (fun gen0 -&gt; <span data-count="0">E</span>xp_tuple gen0) (List2.ge<span data-count="13603">n</span> (gen_size<span data-count="13603">d</span> (n / 2)))
+        [ 1, QCheck.Gen.ma<span data-count="15779">p</span> (fun gen0 -&gt; <span data-count="0">E</span>xp_ident gen0) gen_ident
+        ; 1, QCheck.Gen.ma<span data-count="15779">p</span> (fun gen0 -&gt; <span data-count="0">E</span>xp_constant gen0) Constant.gen
+        ; 1, QCheck.Gen.ma<span data-count="15779">p</span> (fun gen0 -&gt; <span data-count="0">E</span>xp_tuple gen0) (List2.ge<span data-count="15779">n</span> (gen_size<span data-count="15779">d</span> (n / 2)))
         ; ( 1
-          , QCheck.Gen.ma<span data-count="13603">p</span>
+          , QCheck.Gen.ma<span data-count="15779">p</span>
               (fun gen0 -&gt; <span data-count="0">E</span>xp_function gen0)
-              (List1.ge<span data-count="13603">n</span> (gen_cas<span data-count="13603">e</span> gen_sized (n / 2))) )
+              (List1.ge<span data-count="15779">n</span> (gen_cas<span data-count="15779">e</span> gen_sized (n / 2))) )
         ; ( 1
-          , QCheck.Gen.ma<span data-count="13603">p</span>
+          , QCheck.Gen.ma<span data-count="15779">p</span>
               (fun (gen0, gen1) -&gt; <span data-count="0">E</span>xp_fun (gen0, gen1))
-              (QCheck.Gen.pai<span data-count="13603">r</span>
-                 (List1.ge<span data-count="13603">n</span> (Pattern.gen_size<span data-count="13603">d</span> (n / 2)))
-                 (gen_size<span data-count="13603">d</span> (n / 2))) )
+              (QCheck.Gen.pai<span data-count="15779">r</span>
+                 (List1.ge<span data-count="15779">n</span> (Pattern.gen_size<span data-count="15779">d</span> (n / 2)))
+                 (gen_size<span data-count="15779">d</span> (n / 2))) )
         ; ( 1
-          , QCheck.Gen.ma<span data-count="13603">p</span>
+          , QCheck.Gen.ma<span data-count="15779">p</span>
               (fun (gen0, gen1) -&gt; <span data-count="0">E</span>xp_apply (gen0, gen1))
-              (QCheck.Gen.pai<span data-count="13603">r</span> (gen_size<span data-count="13603">d</span> (n / 2)) (gen_size<span data-count="13603">d</span> (n / 2))) )
+              (QCheck.Gen.pai<span data-count="15779">r</span> (gen_size<span data-count="15779">d</span> (n / 2)) (gen_size<span data-count="15779">d</span> (n / 2))) )
         ; ( 1
-          , QCheck.Gen.ma<span data-count="13603">p</span>
+          , QCheck.Gen.ma<span data-count="15779">p</span>
               (fun (gen0, gen1) -&gt; <span data-count="0">E</span>xp_match (gen0, gen1))
-              (QCheck.Gen.pai<span data-count="13603">r</span>
-                 (gen_size<span data-count="13603">d</span> (n / 2))
-                 (List1.ge<span data-count="13603">n</span> (gen_cas<span data-count="13603">e</span> gen_sized (n / 2)))) )
+              (QCheck.Gen.pai<span data-count="15779">r</span>
+                 (gen_size<span data-count="15779">d</span> (n / 2))
+                 (List1.ge<span data-count="15779">n</span> (gen_cas<span data-count="15779">e</span> gen_sized (n / 2)))) )
         ; ( 1
-          , QCheck.Gen.ma<span data-count="13603">p</span>
+          , QCheck.Gen.ma<span data-count="15779">p</span>
               (fun (gen0, gen1) -&gt; <span data-count="0">E</span>xp_constraint (gen0, gen1))
-              (QCheck.Gen.pai<span data-count="13603">r</span> (gen_size<span data-count="13603">d</span> (n / 2)) (TypeExpr.gen_size<span data-count="13603">d</span> (n / 2))) )
+              (QCheck.Gen.pai<span data-count="15779">r</span> (gen_size<span data-count="15779">d</span> (n / 2)) (TypeExpr.gen_size<span data-count="15779">d</span> (n / 2))) )
         ; ( 1
-          , QCheck.Gen.ma<span data-count="13603">p</span>
+          , QCheck.Gen.ma<span data-count="15779">p</span>
               (fun (gen0, gen1, gen2) -&gt; <span data-count="0">E</span>xp_if (gen0, gen1, gen2))
-              (QCheck.Gen.tripl<span data-count="13603">e</span>
-                 (gen_size<span data-count="13603">d</span> (n / 2))
-                 (gen_size<span data-count="13603">d</span> (n / 2))
-                 (QCheck.Gen.optio<span data-count="13603">n</span> (gen_size<span data-count="13603">d</span> (n / 2)))) )
+              (QCheck.Gen.tripl<span data-count="15779">e</span>
+                 (gen_size<span data-count="15779">d</span> (n / 2))
+                 (gen_size<span data-count="15779">d</span> (n / 2))
+                 (QCheck.Gen.optio<span data-count="15779">n</span> (gen_size<span data-count="15779">d</span> (n / 2)))) )
         ; ( 1
-          , QCheck.Gen.ma<span data-count="13603">p</span>
+          , QCheck.Gen.ma<span data-count="15779">p</span>
               (fun (gen0, gen1, gen2) -&gt; <span data-count="0">E</span>xp_let (gen0, gen1, gen2))
-              (QCheck.Gen.tripl<span data-count="13603">e</span>
+              (QCheck.Gen.tripl<span data-count="15779">e</span>
                  gen_rec_flag
-                 (List1.ge<span data-count="13603">n</span> (gen_value_bindin<span data-count="13603">g</span> gen_sized (n / 2)))
-                 (gen_size<span data-count="13603">d</span> (n / 2))) )
+                 (List1.ge<span data-count="15779">n</span> (gen_value_bindin<span data-count="15779">g</span> gen_sized (n / 2)))
+                 (gen_size<span data-count="15779">d</span> (n / 2))) )
         ; ( 1
-          , QCheck.Gen.ma<span data-count="13603">p</span>
+          , QCheck.Gen.ma<span data-count="15779">p</span>
               (fun (gen0, gen1) -&gt; <span data-count="0">E</span>xp_construct (gen0, gen1))
-              (QCheck.Gen.pai<span data-count="13603">r</span> gen_ident (QCheck.Gen.optio<span data-count="13603">n</span> (gen_size<span data-count="13603">d</span> (n / 2)))) )
+              (QCheck.Gen.pai<span data-count="15779">r</span> gen_ident (QCheck.Gen.optio<span data-count="15779">n</span> (gen_size<span data-count="15779">d</span> (n / 2)))) )
         ]
   ;;
 
-  let gen = QCheck.Gen.size<span data-count="99">d</span> gen_sized
+  let gen = QCheck.Gen.size<span data-count="115">d</span> gen_sized
   let arb_sized n = <span data-count="0">Q</span>Check.make (gen_size<span data-count="0">d</span> n)
-  let arb = QCheck.mak<span data-count="99">e</span> gen
+  let arb = QCheck.mak<span data-count="115">e</span> gen
 end
 
 module Structure = struct
@@ -1191,11 +1191,11 @@ module Structure = struct
   [@@deriving eq, show { with_path = false }]
 
   let gen_structure_item n =
-    <span data-count="106">o</span>neof_weighted
-      [ 1, ma<span data-count="106">p</span> (fun expr -&gt; <span data-count="0">S</span>tr_eval expr) (Expression.gen_size<span data-count="106">d</span> (n / 2))
+    <span data-count="122">o</span>neof_weighted
+      [ 1, ma<span data-count="122">p</span> (fun expr -&gt; <span data-count="0">S</span>tr_eval expr) (Expression.gen_size<span data-count="122">d</span> (n / 2))
       ; ( 1
         , let* rec_flag =
-            oneo<span data-count="106">f</span> [ retur<span data-count="106">n</span> Expression.Nonrecursive; retur<span data-count="106">n</span> Expression.Recursive ]
+            oneo<span data-count="122">f</span> [ retur<span data-count="122">n</span> Expression.Nonrecursive; retur<span data-count="122">n</span> Expression.Recursive ]
           in
           <span data-count="2">l</span>et* bind1 = Expression.gen_value_bindin<span data-count="2">g</span> Expression.gen_sized (n / 2) in
           <span data-count="2">l</span>et* bindl =
@@ -1205,7 +1205,7 @@ module Structure = struct
       ]
   ;;
 
-  let arb_structure_item = QCheck.mak<span data-count="99">e</span> (gen_structure_ite<span data-count="99">m</span> 10)
+  let arb_structure_item = QCheck.mak<span data-count="115">e</span> (gen_structure_ite<span data-count="115">m</span> 10)
 end
 
 <span data-count="0">t</span>ype program = <span data-count="0">S</span>tructure.structure_item lis<span data-count="0">t</span> [@@deriving eq, show { with_path = false }]
