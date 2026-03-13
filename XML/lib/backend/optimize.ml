@@ -97,8 +97,7 @@ let is_arg_reg r =
   || equal_reg r (A 7)
 ;;
 
-let reg_used_in_instr reg instr =
-  match instr with
+let reg_used_in_instr reg = function
   | Add (_, r1, r2)
   | Sub (_, r1, r2)
   | Mul (_, r1, r2)
@@ -120,8 +119,7 @@ let reg_used_in_instr reg instr =
   | _ -> false
 ;;
 
-let reg_modified_in_instr reg instr =
-  match instr with
+let reg_modified_in_instr reg = function
   | Add (r1, _, _)
   | Sub (r1, _, _)
   | Mul (r1, _, _)
