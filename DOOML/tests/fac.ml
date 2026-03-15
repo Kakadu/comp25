@@ -1,4 +1,5 @@
 let rec f = fun n -> if n = 1 then 1 else f (n - 1) * n
+;;
 
 let main =
   fun () ->
