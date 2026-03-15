@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>llvm_wrapper.ml &mdash; Coverage report</title>
+    <meta name="description" content="76.09% coverage in lib/llvm_wrapper.ml">
+    <link rel="stylesheet" href="../coverage.css"/>
+    <script src="../highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </head>
+  <body>
+    <div id="header">
+      <h1>
+        <a href="../index.html">
+          <span class="dirname">lib/</span>llvm_wrapper.ml
+        </a>
+      </h1>
+      <h2>76.09%</h2>
+    </div>
+    <div id="navbar">
+      <span class="some-visited" style="bottom:28.33%"></span>
+      <span class="some-visited" style="bottom:25.00%"></span>
+      <span class="some-visited" style="bottom:24.17%"></span>
+      <span class="unvisited" style="bottom:20.83%"></span>
+      <span class="unvisited" style="bottom:19.17%"></span>
+      <span class="unvisited" style="bottom:18.33%"></span>
+      <span class="some-visited" style="bottom:13.33%"></span>
+      <span class="unvisited" style="bottom:3.33%"></span>
+    </div>
+    <div id="report">
+      <div id="lines-layer">
+        <pre>
+<a id="L1"></a><span > </span>
+<a id="L2"></a><span > </span>
+<a id="L3"></a><span > </span>
+<a id="L4"></a><span > </span>
+<a id="L5"></a><span > </span>
+<a id="L6"></a><span > </span>
+<a id="L7"></a><span > </span>
+<a id="L8"></a><span > </span>
+<a id="L9"></a><span > </span>
+<a id="L10"></a><span > </span>
+<a id="L11"></a><span > </span>
+<a id="L12"></a><span > </span>
+<a id="L13"></a><span > </span>
+<a id="L14"></a><span > </span>
+<a id="L15"></a><span > </span>
+<a id="L16"></a><span > </span>
+<a id="L17"></a><span > </span>
+<a id="L18"></a><span > </span>
+<a id="L19"></a><span > </span>
+<a id="L20"></a><span > </span>
+<a id="L21"></a><span > </span>
+<a id="L22"></a><span > </span>
+<a id="L23"></a><span > </span>
+<a id="L24"></a><span > </span>
+<a id="L25"></a><span > </span>
+<a id="L26"></a><span > </span>
+<a id="L27"></a><span > </span>
+<a id="L28"></a><span > </span>
+<a id="L29"></a><span > </span>
+<a id="L30"></a><span > </span>
+<a id="L31"></a><span > </span>
+<a id="L32"></a><span > </span>
+<a id="L33"></a><span > </span>
+<a id="L34"></a><span > </span>
+<a id="L35"></a><span > </span>
+<a id="L36"></a><span > </span>
+<a id="L37"></a><span > </span>
+<a id="L38"></a><span > </span>
+<a id="L39"></a><span > </span>
+<a id="L40"></a><span > </span>
+<a id="L41"></a><span > </span>
+<a id="L42"></a><span > </span>
+<a id="L43"></a><span > </span>
+<a id="L44"></a><span > </span>
+<a id="L45"></a><span > </span>
+<a id="L46"></a><span > </span>
+<a id="L47"></a><span > </span>
+<a id="L48"></a><span > </span>
+<a id="L49"></a><span > </span>
+<a id="L50"></a><span > </span>
+<a id="L51"></a><span > </span>
+<a id="L52"></a><span > </span>
+<a id="L53"></a><span > </span>
+<a id="L54"></a><span > </span>
+<a id="L55"></a><span > </span>
+<a id="L56"></a><span > </span>
+<a id="L57"></a><span > </span>
+<a id="L58"></a><span > </span>
+<a id="L59"></a><span > </span>
+<a id="L60"></a><span > </span>
+<a id="L61"></a><span class="visited"> </span>
+<a id="L62"></a><span > </span>
+<a id="L63"></a><span > </span>
+<a id="L64"></a><span > </span>
+<a id="L65"></a><span class="visited"> </span>
+<a id="L66"></a><span > </span>
+<a id="L67"></a><span class="visited"> </span>
+<a id="L68"></a><span class="visited"> </span>
+<a id="L69"></a><span > </span>
+<a id="L70"></a><span > </span>
+<a id="L71"></a><span > </span>
+<a id="L72"></a><span class="visited"> </span>
+<a id="L73"></a><span class="visited"> </span>
+<a id="L74"></a><span > </span>
+<a id="L75"></a><span > </span>
+<a id="L76"></a><span > </span>
+<a id="L77"></a><span class="visited"> </span>
+<a id="L78"></a><span class="visited"> </span>
+<a id="L79"></a><span > </span>
+<a id="L80"></a><span > </span>
+<a id="L81"></a><span class="visited"> </span>
+<a id="L82"></a><span class="visited"> </span>
+<a id="L83"></a><span class="visited"> </span>
+<a id="L84"></a><span class="visited"> </span>
+<a id="L85"></a><span class="visited"> </span>
+<a id="L86"></a><span class="some-visited"> </span>
+<a id="L87"></a><span class="visited"> </span>
+<a id="L88"></a><span class="visited"> </span>
+<a id="L89"></a><span class="visited"> </span>
+<a id="L90"></a><span class="some-visited"> </span>
+<a id="L91"></a><span class="some-visited"> </span>
+<a id="L92"></a><span class="visited"> </span>
+<a id="L93"></a><span > </span>
+<a id="L94"></a><span > </span>
+<a id="L95"></a><span class="unvisited"> </span>
+<a id="L96"></a><span > </span>
+<a id="L97"></a><span class="unvisited"> </span>
+<a id="L98"></a><span class="unvisited"> </span>
+<a id="L99"></a><span > </span>
+<a id="L100"></a><span > </span>
+<a id="L101"></a><span > </span>
+<a id="L102"></a><span class="visited"> </span>
+<a id="L103"></a><span class="visited"> </span>
+<a id="L104"></a><span class="some-visited"> </span>
+<a id="L105"></a><span > </span>
+<a id="L106"></a><span > </span>
+<a id="L107"></a><span > </span>
+<a id="L108"></a><span > </span>
+<a id="L109"></a><span class="visited"> </span>
+<a id="L110"></a><span class="visited"> </span>
+<a id="L111"></a><span class="visited"> </span>
+<a id="L112"></a><span class="visited"> </span>
+<a id="L113"></a><span > </span>
+<a id="L114"></a><span > </span>
+<a id="L115"></a><span > </span>
+<a id="L116"></a><span class="unvisited"> </span>
+<a id="L117"></a><span > </span>
+<a id="L118"></a><span > </span>
+<a id="L119"></a><span > </span>
+<a id="L120"></a><span > </span>
+</pre>
+      </div>
+      <div id="text-layer">
+        <pre id="line-numbers">
+<a href="#L1">  1</a>
+<a href="#L2">  2</a>
+<a href="#L3">  3</a>
+<a href="#L4">  4</a>
+<a href="#L5">  5</a>
+<a href="#L6">  6</a>
+<a href="#L7">  7</a>
+<a href="#L8">  8</a>
+<a href="#L9">  9</a>
+<a href="#L10"> 10</a>
+<a href="#L11"> 11</a>
+<a href="#L12"> 12</a>
+<a href="#L13"> 13</a>
+<a href="#L14"> 14</a>
+<a href="#L15"> 15</a>
+<a href="#L16"> 16</a>
+<a href="#L17"> 17</a>
+<a href="#L18"> 18</a>
+<a href="#L19"> 19</a>
+<a href="#L20"> 20</a>
+<a href="#L21"> 21</a>
+<a href="#L22"> 22</a>
+<a href="#L23"> 23</a>
+<a href="#L24"> 24</a>
+<a href="#L25"> 25</a>
+<a href="#L26"> 26</a>
+<a href="#L27"> 27</a>
+<a href="#L28"> 28</a>
+<a href="#L29"> 29</a>
+<a href="#L30"> 30</a>
+<a href="#L31"> 31</a>
+<a href="#L32"> 32</a>
+<a href="#L33"> 33</a>
+<a href="#L34"> 34</a>
+<a href="#L35"> 35</a>
+<a href="#L36"> 36</a>
+<a href="#L37"> 37</a>
+<a href="#L38"> 38</a>
+<a href="#L39"> 39</a>
+<a href="#L40"> 40</a>
+<a href="#L41"> 41</a>
+<a href="#L42"> 42</a>
+<a href="#L43"> 43</a>
+<a href="#L44"> 44</a>
+<a href="#L45"> 45</a>
+<a href="#L46"> 46</a>
+<a href="#L47"> 47</a>
+<a href="#L48"> 48</a>
+<a href="#L49"> 49</a>
+<a href="#L50"> 50</a>
+<a href="#L51"> 51</a>
+<a href="#L52"> 52</a>
+<a href="#L53"> 53</a>
+<a href="#L54"> 54</a>
+<a href="#L55"> 55</a>
+<a href="#L56"> 56</a>
+<a href="#L57"> 57</a>
+<a href="#L58"> 58</a>
+<a href="#L59"> 59</a>
+<a href="#L60"> 60</a>
+<a href="#L61"> 61</a>
+<a href="#L62"> 62</a>
+<a href="#L63"> 63</a>
+<a href="#L64"> 64</a>
+<a href="#L65"> 65</a>
+<a href="#L66"> 66</a>
+<a href="#L67"> 67</a>
+<a href="#L68"> 68</a>
+<a href="#L69"> 69</a>
+<a href="#L70"> 70</a>
+<a href="#L71"> 71</a>
+<a href="#L72"> 72</a>
+<a href="#L73"> 73</a>
+<a href="#L74"> 74</a>
+<a href="#L75"> 75</a>
+<a href="#L76"> 76</a>
+<a href="#L77"> 77</a>
+<a href="#L78"> 78</a>
+<a href="#L79"> 79</a>
+<a href="#L80"> 80</a>
+<a href="#L81"> 81</a>
+<a href="#L82"> 82</a>
+<a href="#L83"> 83</a>
+<a href="#L84"> 84</a>
+<a href="#L85"> 85</a>
+<a href="#L86"> 86</a>
+<a href="#L87"> 87</a>
+<a href="#L88"> 88</a>
+<a href="#L89"> 89</a>
+<a href="#L90"> 90</a>
+<a href="#L91"> 91</a>
+<a href="#L92"> 92</a>
+<a href="#L93"> 93</a>
+<a href="#L94"> 94</a>
+<a href="#L95"> 95</a>
+<a href="#L96"> 96</a>
+<a href="#L97"> 97</a>
+<a href="#L98"> 98</a>
+<a href="#L99"> 99</a>
+<a href="#L100">100</a>
+<a href="#L101">101</a>
+<a href="#L102">102</a>
+<a href="#L103">103</a>
+<a href="#L104">104</a>
+<a href="#L105">105</a>
+<a href="#L106">106</a>
+<a href="#L107">107</a>
+<a href="#L108">108</a>
+<a href="#L109">109</a>
+<a href="#L110">110</a>
+<a href="#L111">111</a>
+<a href="#L112">112</a>
+<a href="#L113">113</a>
+<a href="#L114">114</a>
+<a href="#L115">115</a>
+<a href="#L116">116</a>
+<a href="#L117">117</a>
+<a href="#L118">118</a>
+<a href="#L119">119</a>
+<a href="#L120">120</a>
+</pre>
+<pre><code class="ocaml">[@@@ocaml.text "/*"]
+
+(** Copyright 2023-2024, Kakadu and contributors *)
+
+(** SPDX-License-Identifier: LGPL-3.0-or-later *)
+
+[@@@ocaml.text "/*"]
+
+open Llvm
+
+module type S = sig
+  val context : Llvm.llcontext
+  val module_ : Llvm.llmodule
+  val builder : Llvm.llbuilder
+  val build_store : Llvm.llvalue -&gt; Llvm.llvalue -&gt; Llvm.llvalue
+  val build_call : ?name:string -&gt; lltype -&gt; llvalue -&gt; llvalue list -&gt; llvalue
+  val define_func : string -&gt; Llvm.lltype -&gt; Llvm.lltype array -&gt; Llvm.llvalue
+  val declare_func : string -&gt; Llvm.lltype -&gt; Llvm.lltype array -&gt; Llvm.llvalue
+  val build_add : ?name:string -&gt; llvalue -&gt; llvalue -&gt; llvalue
+  val build_sub : ?name:string -&gt; llvalue -&gt; llvalue -&gt; llvalue
+  val build_mul : ?name:string -&gt; llvalue -&gt; llvalue -&gt; llvalue
+  val build_sdiv : ?name:string -&gt; llvalue -&gt; llvalue -&gt; llvalue
+  val build_icmp : ?name:string -&gt; Icmp.t -&gt; llvalue -&gt; llvalue -&gt; llvalue
+  val build_ret : llvalue -&gt; llvalue
+  val build_br : llbasicblock -&gt; llvalue
+  val build_cond_br : llvalue -&gt; llbasicblock -&gt; llbasicblock -&gt; llvalue
+  val build_phi : ?name:string -&gt; (llvalue * llbasicblock) list -&gt; llvalue
+  val build_array_alloca : ?name:string -&gt; lltype -&gt; llvalue -&gt; llvalue
+  val build_gep : ?name:string -&gt; llvalue -&gt; llvalue array -&gt; llvalue
+
+  (** [set_metadata v kind fmt] sets metadata to value [v] of kind [k].
+      Returns this value [v]. Useful for attaching debugging *)
+  val set_metadata
+    :  llvalue
+    -&gt; string
+    -&gt; ('a, Format.formatter, unit, llvalue) format4
+    -&gt; 'a
+
+  (* ?? *)
+
+  val build_pointercast : ?name:string -&gt; llvalue -&gt; lltype -&gt; llvalue
+  val position_at_end : llbasicblock -&gt; unit
+  val append_block : ?name:string -&gt; llvalue -&gt; llbasicblock
+  val insertion_block : unit -&gt; llbasicblock
+
+  (** Just aliases *)
+
+  val void_type : Llvm.lltype
+  val block_parent : Llvm.llbasicblock -&gt; Llvm.llvalue
+  val entry_block : Llvm.llvalue -&gt; Llvm.llbasicblock
+  val i64_type : Llvm.lltype
+  val i1_type : Llvm.lltype
+  val ptr_type : Llvm.lltype
+  val function_type : lltype -&gt; lltype array -&gt; lltype
+  val const_int : Llvm.lltype -&gt; int -&gt; Llvm.llvalue
+  val params : Llvm.llvalue -&gt; Llvm.llvalue array
+  val pp_value : Format.formatter -&gt; llvalue -&gt; unit
+end
+
+let make context builder module_ =
+  <span data-count="10">l</span>et module L : S = struct
+    let context = context
+    let builder = builder
+    let module_ = module_
+    let build_store a b = <span data-count="18">L</span>lvm.build_store a b builder
+
+    let build_call ?(name = <span data-count="175">"</span>") typ f args =
+      <span data-count="175">b</span>uild_call typ f (Array.of_lis<span data-count="175">t</span> args) name builder
+    ;;
+
+    let declare_func name ret params =
+      <span data-count="63">l</span>et typ = Llvm.function_type ret params in
+      <span data-count="63">L</span>lvm.declare_function name typ module_
+    ;;
+
+    let define_func name ret params =
+      <span data-count="36">l</span>et typ = Llvm.function_type ret params in
+      <span data-count="36">L</span>lvm.define_function name typ module_
+    ;;
+
+    let build_add ?(name = <span data-count="4">"</span>") l r = <span data-count="4">b</span>uild_add l r name builder
+    let build_sub ?(name = <span data-count="4">"</span>") l r = <span data-count="4">b</span>uild_sub l r name builder
+    let build_mul ?(name = <span data-count="4">"</span>") l r = <span data-count="4">b</span>uild_mul l r name builder
+    let build_sdiv ?(name = <span data-count="4">"</span>") l r = <span data-count="4">b</span>uild_sdiv l r name builder
+    let build_icmp ?(name = <span data-count="23">"</span>") op l r = <span data-count="23">b</span>uild_icmp op l r name builder
+    let build_pointercast ?(name = <span data-count="0">"</span>") f typ = <span data-count="19">L</span>lvm.build_pointercast f typ name builder
+    let build_ret v = <span data-count="47">b</span>uild_ret v builder
+    let build_br bb = <span data-count="6">b</span>uild_br bb builder
+    let build_cond_br c tb fb = <span data-count="3">b</span>uild_cond_br c tb fb builder
+    let build_phi ?(name = <span data-count="0">"</span>") rules = <span data-count="3">b</span>uild_phi rules name builder
+    let build_array_alloca ?(name = <span data-count="0">"</span>") typ n = <span data-count="14">L</span>lvm.build_array_alloca typ n name builder
+    let build_gep ?(name = <span data-count="18">"</span>") v ind = <span data-count="18">L</span>lvm.build_gep (type_o<span data-count="18">f</span> v) v ind name builder
+
+    let set_metadata v kind fmt =
+      <span data-count="0">F</span>ormat.kasprintf
+        (fun s -&gt;
+           <span data-count="0">L</span>lvm.set_metadata v (Llvm.mdkind_i<span data-count="0">d</span> context kind) (Llvm.mdstrin<span data-count="0">g</span> context s);
+           <span data-count="0">v</span>)
+        fmt
+    ;;
+
+    let position_at_end bb = <span data-count="68">L</span>lvm.position_at_end bb builder
+    let insertion_block () = <span data-count="9">L</span>lvm.insertion_block builder
+    let append_block ?(name = <span data-count="0">"</span>") f = <span data-count="20">L</span>lvm.append_block context name f
+
+    (* Aliases *)
+    let block_parent = Llvm.block_parent
+    let entry_block = Llvm.entry_block
+    let void_type = Llvm.void_typ<span data-count="10">e</span> context
+    let i64_type = Llvm.i64_typ<span data-count="10">e</span> context
+    let i1_type = Llvm.i1_typ<span data-count="10">e</span> context
+    let ptr_type = Llvm.pointer_typ<span data-count="10">e</span> context
+    let function_type = Llvm.function_type
+    let const_int = Llvm.const_int
+    let params = Llvm.params
+    let pp_value ppf x = <span data-count="0">F</span>ormat.fprintf ppf "%s" (Llvm.string_of_llvalu<span data-count="0">e</span> x)
+  end
+  in
+  (module L : S)
+;;
+</code></pre>
+      </div>
+    </div>
+    <script src="../coverage.js"></script>
+  </body>
+</html>
