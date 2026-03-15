@@ -778,7 +778,6 @@ let%expect_test "basic" =
     # adjusting:
       addi sp, sp, 24
     # Body of f ended here:
-      addi sp, sp, 64
       addi sp, sp, 16
       ld ra, -8(s0)
       ld s0, -16(s0)

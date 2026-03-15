@@ -356,59 +356,21 @@ let%expect_test "basic" =
     source_filename = "main"
     target triple = "x86_64-pc-linux-gnu"
 
-    define i1 @"="(i64 %0, i64 %1) {
-    entry:
-      %2 = icmp eq i64 %0, %1
-      ret i1 %2
-    }
+    declare void @print_gc_status(i64)
 
-    define i1 @">="(i64 %0, i64 %1) {
-    entry:
-      %2 = icmp sge i64 %0, %1
-      ret i1 %2
-    }
+    declare i64 @get_heap_fin(i64)
 
-    define i1 @"<="(i64 %0, i64 %1) {
-    entry:
-      %2 = icmp sle i64 %0, %1
-      ret i1 %2
-    }
+    declare i64 @get_heap_start(i64)
 
-    define i1 @">"(i64 %0, i64 %1) {
-    entry:
-      %2 = icmp sgt i64 %0, %1
-      ret i1 %2
-    }
+    declare void @collect(i64)
 
-    define i1 @"<"(i64 %0, i64 %1) {
-    entry:
-      %2 = icmp slt i64 %0, %1
-      ret i1 %2
-    }
+    declare void @sp_init()
 
-    define i64 @"/"(i64 %0, i64 %1) {
-    entry:
-      %2 = sdiv i64 %0, %1
-      ret i64 %2
-    }
+    declare void @gc_init()
 
-    define i64 @"*"(i64 %0, i64 %1) {
-    entry:
-      %2 = mul i64 %0, %1
-      ret i64 %2
-    }
+    declare i64 @box_imm(i64)
 
-    define i64 @-(i64 %0, i64 %1) {
-    entry:
-      %2 = sub i64 %0, %1
-      ret i64 %2
-    }
-
-    define i64 @"+"(i64 %0, i64 %1) {
-    entry:
-      %2 = add i64 %0, %1
-      ret i64 %2
-    }
+    declare i64 @unbox(i64)
 
     declare i64 @tuple_nth(i64, i64)
 
@@ -418,25 +380,104 @@ let%expect_test "basic" =
 
     declare i64 @create_closure(i64, i64, i64, i64)
 
-    declare void @print_int(i64)
+    declare i64 @print_int(i64)
+
+    define i1 @"="(i64 %0, i64 %1) {
+    entry:
+      %2 = call i64 @unbox(i64 %1)
+      %3 = call i64 @unbox(i64 %0)
+      %4 = icmp eq i64 %3, %2
+      ret i1 %4
+    }
+
+    define i1 @">="(i64 %0, i64 %1) {
+    entry:
+      %2 = call i64 @unbox(i64 %1)
+      %3 = call i64 @unbox(i64 %0)
+      %4 = icmp sge i64 %3, %2
+      ret i1 %4
+    }
+
+    define i1 @"<="(i64 %0, i64 %1) {
+    entry:
+      %2 = call i64 @unbox(i64 %1)
+      %3 = call i64 @unbox(i64 %0)
+      %4 = icmp sle i64 %3, %2
+      ret i1 %4
+    }
+
+    define i1 @">"(i64 %0, i64 %1) {
+    entry:
+      %2 = call i64 @unbox(i64 %1)
+      %3 = call i64 @unbox(i64 %0)
+      %4 = icmp sgt i64 %3, %2
+      ret i1 %4
+    }
+
+    define i1 @"<"(i64 %0, i64 %1) {
+    entry:
+      %2 = call i64 @unbox(i64 %1)
+      %3 = call i64 @unbox(i64 %0)
+      %4 = icmp slt i64 %3, %2
+      ret i1 %4
+    }
+
+    define i64 @"/"(i64 %0, i64 %1) {
+    entry:
+      %2 = call i64 @unbox(i64 %1)
+      %3 = call i64 @unbox(i64 %0)
+      %4 = sdiv i64 %3, %2
+      %5 = call i64 @box_imm(i64 %4)
+      ret i64 %5
+    }
+
+    define i64 @"*"(i64 %0, i64 %1) {
+    entry:
+      %2 = call i64 @unbox(i64 %1)
+      %3 = call i64 @unbox(i64 %0)
+      %4 = mul i64 %3, %2
+      %5 = call i64 @box_imm(i64 %4)
+      ret i64 %5
+    }
+
+    define i64 @-(i64 %0, i64 %1) {
+    entry:
+      %2 = call i64 @unbox(i64 %1)
+      %3 = call i64 @unbox(i64 %0)
+      %4 = sub i64 %3, %2
+      %5 = call i64 @box_imm(i64 %4)
+      ret i64 %5
+    }
+
+    define i64 @"+"(i64 %0, i64 %1) {
+    entry:
+      %2 = call i64 @unbox(i64 %1)
+      %3 = call i64 @unbox(i64 %0)
+      %4 = add i64 %3, %2
+      %5 = call i64 @box_imm(i64 %4)
+      ret i64 %5
+    }
 
     define i64 @f(i64 %0) {
     entry:
-      %1 = call i1 @"="(i64 %0, i64 1)
-      %2 = icmp ne i1 %1, false
-      br i1 %1, label %then, label %else
+      %1 = call i64 @box_imm(i64 1)
+      %2 = call i1 @"="(i64 %0, i64 %1)
+      %3 = icmp ne i1 %2, false
+      br i1 %2, label %then, label %else
 
     then:                                             ; preds = %entry
+      %4 = call i64 @box_imm(i64 1)
       br label %merge
 
     else:                                             ; preds = %entry
-      %3 = call i64 @-(i64 %0, i64 1)
-      %4 = call i64 @f(i64 %3)
-      %5 = call i64 @"*"(i64 %4, i64 %0)
+      %5 = call i64 @box_imm(i64 1)
+      %6 = call i64 @-(i64 %0, i64 %5)
+      %7 = call i64 @f(i64 %6)
+      %8 = call i64 @"*"(i64 %7, i64 %0)
       br label %merge
 
     merge:                                            ; preds = %else, %then
-      %ifphi = phi i64 [ 1, %then ], [ %5, %else ]
+      %ifphi = phi i64 [ %4, %then ], [ %8, %else ]
       ret i64 %ifphi
     }
     |}]
