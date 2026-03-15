@@ -382,8 +382,7 @@ let%expect_test "ite in ite" =
     {|
     let f = if (if 1 then 0 else 0) then 1 else 0;;
   |};
-  [%expect
-    {| let f = if if 1 then 0 else 0 then 1 else 0;; |}]
+  [%expect {| let f = if if 1 then 0 else 0 then 1 else 0;; |}]
 ;;
 
 let%expect_test "tuples and plugs" =

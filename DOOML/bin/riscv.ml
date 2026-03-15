@@ -40,8 +40,7 @@ let parse input =
      (Format.pp_print_list ~pp_sep:Format.pp_print_newline Anf.pp_decl)
      asts;
    asts
-  *)
-      )
+          *))
 ;;
 
 let () =
