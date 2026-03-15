@@ -6,10 +6,29 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define MEM 10000
-#define WORD_SIZE sizeof(int64_t)
+#define MEM 64000
+#define WORD_SIZE sizeof(GCWord)
 
-typedef long int64_t;
+typedef enum __attribute__((packed)) {
+    Tuple,
+    Closure,
+    Forward
+} GCObjTag;
+
+typedef union {
+    bool is_header : 1;
+
+    struct {
+        bool is_header : 1;
+        int64_t value : 63;
+    } value;
+
+    struct {
+        bool is_header : 1;
+        GCObjTag tag;
+        uint32_t bsize;
+    } header;
+} GCWord;
 
 typedef struct {
     uint32_t bsize;
@@ -21,44 +40,31 @@ typedef struct {
 typedef struct {
     GCStats stats;
 
-    int64_t *from_bank_start;
+    GCWord *from_bank_start;
     uint32_t from_bank_bsize;
-    int64_t *to_bank_start;
+    GCWord *to_bank_start;
     uint32_t to_bank_bsize;
 
-    int64_t *free_space_start;
+    GCWord *free_space_start;
 } GC;
 
-typedef enum {
-    Tuple,
-    Closure,
-    Forward,
-    ENUM_SIZE_FORCE_32BIT = UINT8_MAX
-} GCObjTag;
-
-
 typedef struct {
-    uint32_t bsize;
-    GCObjTag tag;
-} __attribute__((aligned(8))) GCObjHeader;
-
-typedef struct {
-    GCObjHeader header;
-    int64_t callee;
-    int64_t arity;
-    int64_t argc;
-    int64_t args[];
+    GCWord header;
+    GCWord callee;
+    GCWord arity;
+    GCWord argc;
+    GCWord args[];
 } GCClosure;
 
 typedef struct {
-    GCObjHeader header;
-    int64_t size;
-    int64_t fields[];
+    GCWord header;
+    GCWord size;
+    GCWord fields[];
 } GCTuple;
 
 typedef struct {
-    GCObjHeader header;
-    int64_t ptr;
+    GCWord header;
+    GCWord ptr;
 } GCForward;
 
 static const uint64_t GC_BANK_SIZE = MEM;
@@ -89,6 +95,7 @@ int64_t unbox(int64_t n) {
 }
 
 void gc_init() {
+    assert(WORD_SIZE == 8);
     assert(GC_BANK_SIZE % WORD_SIZE == 0);
     GCStats init_stats = {
         .runs = 0,
@@ -122,21 +129,22 @@ void print_obj_helper(int64_t ptr) {
         printf("int %ld", unbox(ptr));
         return;
     }
-    GCObjTag tag = ((GCObjHeader *)ptr)->tag;
+    assert(((GCWord *)ptr)->is_header);
+    GCObjTag tag = ((GCWord *)ptr)->header.tag;
     if (tag == Forward) {
-        printf("Forward -> %ld: ", ((GCForward *)ptr)->ptr);
-        print_obj_helper(((GCForward *)ptr)->ptr);
+        printf("Forward -> %ld: ", (int64_t)((GCForward *)ptr)->ptr.value.value);
+        print_obj_helper(((GCForward *)ptr)->ptr.value.value);
     }
     if (tag == Closure) {
         GCClosure *closure = (GCClosure *)ptr;
-        printf("Closure %ld(", closure->callee);
-        for (int i = 0; i < closure->arity; i++) {
-            if (i < closure->argc) {
-                print_obj_helper(closure->args[i]);
+        printf("Closure %ld(", (int64_t)closure->callee.value.value);
+        for (int i = 0; i < closure->arity.value.value; i++) {
+            if (i < closure->argc.value.value) {
+                print_obj_helper(closure->args[i].value.value);
             } else {
                 printf("...");
             }
-            if (i != closure->arity - 1) {
+            if (i != closure->arity.value.value - 1) {
                 printf(", ");
             }
         }
@@ -145,9 +153,9 @@ void print_obj_helper(int64_t ptr) {
     if (tag == Tuple) {
         GCTuple *tuple = (GCTuple *)ptr;
         printf("Tuple (");
-        for (int i = 0; i < tuple->size; i++) {
-            print_obj_helper(tuple->fields[i]);
-            if (i != tuple->size - 1) {
+        for (int i = 0; i < tuple->size.value.value; i++) {
+            print_obj_helper(tuple->fields[i].value.value);
+            if (i != tuple->size.value.value - 1) {
                 printf(", ");
             }
         }
@@ -163,10 +171,31 @@ void debug_print_value(int64_t ptr) {
 
 void gc_collect();
 
-int64_t *gc_alloc(uint32_t bsize, GCObjTag tag) {
+GCWord gc_header_to_word(uint32_t bsize, GCObjTag tag) {
+    GCWord word = {
+        .header = {
+            .is_header = true,
+            .tag = tag,
+            .bsize = bsize,
+        },
+    };
+    return word;
+}
+
+GCWord gc_value_to_word(int64_t value) {
+    GCWord word = {
+        .value = {
+            .is_header = false,
+            .value = value & 0x7FFFFFFFFFFFFFFF,
+        },
+    };
+    return word;
+}
+
+GCWord *gc_alloc(uint32_t bsize, GCObjTag tag) {
     assert(bsize % WORD_SIZE == 0);
     debugf("> gc_alloc (%u, %u)\n", bsize, tag);
-    int64_t *ptr = gc.free_space_start;
+    GCWord *ptr = gc.free_space_start;
     uint32_t taken_bytes = ((uint32_t) (ptr - gc.from_bank_start)) * WORD_SIZE;
     uint32_t free_space = gc.from_bank_bsize - taken_bytes;
     debugf("  free_space: %u\n", free_space);
@@ -185,56 +214,62 @@ int64_t *gc_alloc(uint32_t bsize, GCObjTag tag) {
     gc.free_space_start += (bsize / WORD_SIZE);
     gc.stats.allocated_bsize += bsize;
     gc.stats.bsize += bsize;
-    ((GCObjHeader *)ptr)->bsize = bsize;
-    ((GCObjHeader *)ptr)->tag = tag;
+    *ptr = gc_header_to_word(bsize, tag);
 
     return ptr;
 }
 
 GCClosure *gc_alloc_closure_base(int64_t callee, int64_t arity, int64_t argc) {
-  int64_t bsize = sizeof(GCClosure) + arity * sizeof(int64_t);
+  int64_t bsize = sizeof(GCClosure) + arity * sizeof(GCWord);
   GCClosure *closure = (GCClosure *)gc_alloc(bsize, Closure);
-  closure->callee = callee;
-  closure->arity = arity;
-  closure->argc = argc;
+  closure->callee = gc_value_to_word(callee);
+  closure->arity = gc_value_to_word(arity);
+  closure->argc = gc_value_to_word(argc);
   debugf("< alloc(%ld): closure %ld with %ld(%ld out of %ld)\n", bsize, (int64_t)closure, callee, argc, arity);
   return closure;
 }
 
 GCTuple *gc_alloc_tuple_base(int64_t size) {
-  int64_t bsize = sizeof(GCTuple) + size * sizeof(int64_t);
+  int64_t bsize = sizeof(GCTuple) + size * sizeof(GCWord);
   GCTuple *tuple = (GCTuple *)gc_alloc(bsize, Tuple);
-  tuple->size = size;
+  tuple->size = gc_value_to_word(size);
   debugf("< alloc(%ld): tuple %ld with size %ld\n", bsize, (int64_t)tuple, size);
   return tuple;
 }
 
 void gc_make_fwd(int64_t ptr, int64_t new_ptr) {
-    ((GCObjHeader *)ptr)->tag = Forward;
-    ((GCForward *)ptr)->ptr = new_ptr;
+    assert(((GCWord *)ptr)->is_header);
+    ((GCForward *)ptr)->header = gc_header_to_word(((GCForward *)ptr)->header.header.bsize, Forward);
+    ((GCForward *)ptr)->ptr = gc_value_to_word(new_ptr);
 }
 
-int64_t gc_mark_and_copy(int64_t ptr) {
-    debugf("> mark_and_copy: %ld, %ld\n", ptr, ptr % 8);
-    GCObjTag tag = ((GCObjHeader *)ptr)->tag;
+int64_t gc_mark_and_copy(int64_t ptr, int64_t gc_bank_range_start, int64_t gc_bank_range_end) {
+    debugf("> mark_and_copy: %ld\n", ptr);
+    assert(((GCWord *)ptr)->is_header);
+    GCObjTag tag = ((GCWord *)ptr)->header.tag;
     debugf("  tag: %d\n", tag);
     if (tag == Forward) {
-        return ((GCForward *)ptr)->ptr;
+        return ((GCForward *)ptr)->ptr.value.value;
     }
 
     if (tag == Closure) {
         GCClosure *closure = (GCClosure *)ptr;
-        GCClosure *closure2 = gc_alloc_closure_base(closure->callee, closure->arity, closure->argc);
+        GCClosure *closure2 = gc_alloc_closure_base(closure->callee.value.value, closure->arity.value.value, closure->argc.value.value);
 
         // rewrites header and callee
         gc_make_fwd(ptr, (int64_t)closure2);
 
-        for (int64_t i = 0; i < closure2->argc; i++) {
-            int64_t arg = closure->args[i];
+        int64_t callee = closure->callee.value.value;
+        if (callee >= gc_bank_range_start && callee <= gc_bank_range_end) {
+            closure2->callee = gc_value_to_word(gc_mark_and_copy(callee, gc_bank_range_start, gc_bank_range_end));
+        }
+
+        for (int64_t i = 0; i < closure2->argc.value.value; i++) {
+            int64_t arg = closure->args[i].value.value;
             if (is_imm(arg)) {
-                closure2->args[i] = arg;
+                closure2->args[i] = gc_value_to_word(arg);
             } else {
-                closure2->args[i] = gc_mark_and_copy(arg);
+                closure2->args[i] = gc_value_to_word(gc_mark_and_copy(arg, gc_bank_range_start, gc_bank_range_end));
             }
         }
 
@@ -243,17 +278,17 @@ int64_t gc_mark_and_copy(int64_t ptr) {
 
     if (tag == Tuple) {
         GCTuple *tuple = (GCTuple *)ptr;
-        GCTuple *tuple2 = gc_alloc_tuple_base(tuple->size);
+        GCTuple *tuple2 = gc_alloc_tuple_base(tuple->size.value.value);
 
         // rewrites header and size
         gc_make_fwd(ptr, (int64_t)tuple2);
 
-        for (int64_t i = 0; i < tuple2->size; i++) {
-            int64_t field = tuple->fields[i];
+        for (int64_t i = 0; i < tuple2->size.value.value; i++) {
+            int64_t field = tuple->fields[i].value.value;
             if (is_imm(field)) {
-                tuple2->fields[i] = field;
+                tuple2->fields[i] = gc_value_to_word(field);
             } else {
-                tuple2->fields[i] = gc_mark_and_copy(field);
+                tuple2->fields[i] = gc_value_to_word(gc_mark_and_copy(field, gc_bank_range_start, gc_bank_range_end));
             }
         }
 
@@ -269,7 +304,7 @@ void gc_collect() {
     int64_t gc_bank_range_start = (int64_t)gc.from_bank_start;
     int64_t gc_bank_range_end = (int64_t)gc.free_space_start;
 
-    int64_t *to_bank_start = gc.to_bank_start;
+    GCWord *to_bank_start = gc.to_bank_start;
     int64_t to_bank_bsize = gc.to_bank_bsize;
     gc.to_bank_start = gc.from_bank_start;
     gc.from_bank_start = to_bank_start;
@@ -282,10 +317,10 @@ void gc_collect() {
     debugf("> gc_collect\n");
     for (int64_t *stack_cell = initial_sp; stack_cell >= sp; stack_cell--) {
         int64_t obj_ptr = *stack_cell;
-        if (!is_imm(obj_ptr) && obj_ptr >= gc_bank_range_start && obj_ptr < gc_bank_range_end) {
+        if (!is_imm(obj_ptr) && obj_ptr >= gc_bank_range_start && obj_ptr < gc_bank_range_end && ((GCWord *)obj_ptr)->is_header) {
             debugf("  gc_root: %ld\n", obj_ptr);
             debug_print_value(obj_ptr);
-            *stack_cell = gc_mark_and_copy(obj_ptr);
+            *stack_cell = gc_mark_and_copy(obj_ptr, gc_bank_range_start, gc_bank_range_end);
             debugf("  new pointer on stack: %ld\n", *stack_cell);
         }
     }
@@ -318,7 +353,7 @@ void print_gc_status(int64_t unit) {
 int64_t create_tuple(int64_t size, int64_t init) {
   GCTuple *tuple = gc_alloc_tuple_base(size);
   for (int64_t i = 0; i < size; i++) {
-    tuple->fields[i] = ((int64_t*) init)[i];
+    tuple->fields[i] = gc_value_to_word(((int64_t*) init)[i]);
   }
   debug_print_value((int64_t)tuple);
 
@@ -328,11 +363,11 @@ int64_t create_tuple(int64_t size, int64_t init) {
 int64_t tuple_nth(int64_t tuple, int64_t i) {
   int64_t unboxed_i = unbox(i);
   GCTuple *tuple_ptr = (GCTuple*) tuple;
-  if (unboxed_i >= tuple_ptr->size) {
+  if (unboxed_i >= tuple_ptr->size.value.value) {
     fprintf(stderr, "tuple_nth: index is out of bounds\n");
     exit(1);
   }
-  return tuple_ptr->fields[unboxed_i];
+  return tuple_ptr->fields[unboxed_i].value.value;
 }
 
 int64_t create_closure(int64_t callee, int64_t arity, int64_t argc, int64_t argv_) {
@@ -342,7 +377,7 @@ int64_t create_closure(int64_t callee, int64_t arity, int64_t argc, int64_t argv
 
   int64_t *argv = (int64_t*) argv_;
   for (int64_t i = 0; i < argc; i++) {
-    closure->args[i] = argv[i];
+    closure->args[i] = gc_value_to_word(argv[i]);
   }
   debug_print_value((int64_t)closure);
 
@@ -350,8 +385,8 @@ int64_t create_closure(int64_t callee, int64_t arity, int64_t argc, int64_t argv
 }
 
 GCClosure *copy_closure(GCClosure *closure) {
-  GCClosure *closure2 = gc_alloc_closure_base(closure->callee, closure->arity, closure->argc);
-  for (int64_t i = 0; i < closure->argc; i++) {
+  GCClosure *closure2 = gc_alloc_closure_base(closure->callee.value.value, closure->arity.value.value, closure->argc.value.value);
+  for (int64_t i = 0; i < closure->argc.value.value; i++) {
     closure2->args[i] = closure->args[i];
   }
 
@@ -365,18 +400,25 @@ int64_t closure_apply(int64_t closure_, int64_t argc, int64_t argv_) {
 
   int64_t *argv = (int64_t*) argv_;
   GCClosure *closure = copy_closure((GCClosure *)closure_);
-  int64_t current_argc = closure->argc;
+  int64_t current_argc = closure->argc.value.value;
   for (int64_t i = 0; i < argc; i++) {
-    closure->args[i + current_argc] = argv[i];
-    closure->argc++;
+    closure->args[i + current_argc] = gc_value_to_word(argv[i]);
+    closure->argc.value.value++;
   }
 
   debugf("  applied: ");
   debug_print_value((int64_t)closure);
 
-  if (closure->argc >= closure->arity) {
+  if (closure->argc.value.value >= closure->arity.value.value) {
     debugf("  closure_apply: calling\n");
-    return call_function((void*) closure->callee, closure->arity, closure->args);
+
+    int64_t args[closure->arity.value.value];
+    for (int64_t i = 0; i < closure->arity.value.value; i++) {
+        args[i] = closure->args[i].value.value;
+    }
+
+    int64_t callee = closure->callee.value.value;
+    return call_function((void*) callee, closure->arity.value.value, args);
   } else {
     debugf("  closure_apply: returning a new closure");
     return (int64_t) closure;
