@@ -6,6 +6,7 @@ let rec fib_cps =
 ;;
 
 let f = fun n -> fib_cps n (fun x -> x)
+;;
 
 let main =
   let _ = print_int (f 1) in
