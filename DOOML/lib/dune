@@ -19,13 +19,19 @@
 
 (rule
  (targets runtime.so)
- (deps runtime/gc-runtime.c runtime/call-runtime.h runtime/any-call-runtime.c)
+ (deps
+  runtime/gc-runtime.c
+  runtime/call-runtime.h
+  runtime/any-call-runtime.c)
  (action
   (run gcc -fPIC -shared %{deps} -o %{targets} -lffi)))
 
 (rule
  (targets debug-runtime.so)
- (deps runtime/gc-runtime.c runtime/call-runtime.h runtime/any-call-runtime.c)
+ (deps
+  runtime/gc-runtime.c
+  runtime/call-runtime.h
+  runtime/any-call-runtime.c)
  (action
   (run gcc -fPIC -DDEBUG -shared %{deps} -o %{targets} -lffi)))
 
