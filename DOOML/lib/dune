@@ -37,19 +37,19 @@
 
 (rule
  (targets riscv-call-runtime.o)
- (deps runtime/riscv-call-runtime.c runtime/call-runtime.h)
+ (deps runtime/riscv-call-runtime.c)
  (action
   (run riscv64-linux-gnu-gcc -c %{deps})))
 
 (rule
  (targets runtime.o)
- (deps runtime/runtime.c runtime/call-runtime.h)
+ (deps runtime/runtime.c)
  (action
   (run riscv64-linux-gnu-gcc -c %{deps})))
 
 (rule
  (targets gc-runtime.o)
- (deps runtime/gc-runtime.c runtime/call-runtime.h)
+ (deps runtime/gc-runtime.c)
  (action
   (run riscv64-linux-gnu-gcc -c %{deps})))
 

@@ -13,6 +13,3 @@
  (libraries DOOML)
  (instrumentation
   (backend bisect_ppx)))
-
-(cram
- (deps ./main.exe runtime.c))
