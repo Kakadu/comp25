@@ -12,6 +12,8 @@ val pass_ws : unit Angstrom.t
 val pass_ws1 : unit Angstrom.t
 val token : string -> string Angstrom.t
 val pparenth : 'a Angstrom.t -> 'a Angstrom.t
+val is_operator_char : char -> bool
+val pinfix_op : ?starts:string -> unit -> string Angstrom.t
 val pident_cap : string Angstrom.t
 val pident_lc : string Angstrom.t
 val pconstint : Constant.t Angstrom.t

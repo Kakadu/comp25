@@ -5,6 +5,7 @@
 open Format
 open Common.Ast
 open Anf
+open Common.Parser
 
 let pp_list ~sep pp ppf xs =
   let pp_sep ppf () = Format.fprintf ppf "%s@ " sep in
@@ -75,7 +76,9 @@ let print_anf_expr ppf e = pp_anf_expr_impl ~parens:false ppf e
 let print_anf_structure_item ppf = function
   | Anf_str_eval e -> fprintf ppf "@[<hov 2>%a@];;" print_anf_expr e
   | Anf_str_value (rf, name, e) ->
-    fprintf ppf "@[<hov 2>%a %s = %a@];;" pp_rec_flag rf name print_anf_expr e
+    if is_operator_char name.[0]
+    then fprintf ppf "@[<hov 2>%a (%s) = %a@];;" pp_rec_flag rf name print_anf_expr e
+    else fprintf ppf "@[<hov 2>%a %s = %a@];;" pp_rec_flag rf name print_anf_expr e
 ;;
 
 let print_anf_program ppf (prog : aprogram) =

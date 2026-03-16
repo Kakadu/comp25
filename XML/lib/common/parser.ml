@@ -48,6 +48,48 @@ let pident_cap =
   else fail "Found a keyword instead of an identifier"
 ;;
 
+(* https://ocaml.org/manual/5.4/lex.html#start-section *)
+let is_core_operator_char = function
+  | '$' | '&' | '*' | '+' | '-' | '/' | '=' | '>' | '@' | '^' -> true
+  | _ -> false
+;;
+
+let is_operator_char = function
+  | x when is_core_operator_char x -> true
+  | '~' | '!' | '?' | ':' | '.' | '<' | '%' -> true
+  | _ -> false
+;;
+
+let pinfix_symbol ?starts () =
+  let* p1 =
+    Option.value_map
+      starts
+      ~f:string
+      ~default:(char '%' <|> char '<' <|> satisfy is_core_operator_char >>| Char.to_string)
+  in
+  let* p2 = take_while is_operator_char in
+  return (p1 ^ p2)
+;;
+
+let pinfix_op ?starts () =
+  let pbin =
+    string "*"
+    <|> string "+"
+    <|> string "-"
+    <|> string "="
+    <|> string "!="
+    <|> string "<"
+    <|> string ">"
+    <|> string "||"
+    <|> string "|"
+    <|> string "&&"
+  in
+  Option.value_map
+    starts
+    ~f:(fun s -> pinfix_symbol ~starts:s ())
+    ~default:(pinfix_symbol () <|> pbin)
+;;
+
 let pident_lc =
   let first_char_str =
     satisfy (function
@@ -279,7 +321,7 @@ let ptuplepat ppattern =
 ;;
 
 let ppatvar =
-  let* id = pident_lc in
+  let* id = pident_lc <|> pparenth (pinfix_op ()) in
   match id with
   | "_" -> return Pattern.Pat_any
   | _ -> return (Pattern.Pat_var id)
@@ -521,19 +563,19 @@ let pexpr =
       return (Expression.Exp_apply (constr, arg))
     in
     let papply = lchain (pconstructor_apply <|> poprnd) papplyexpr in
-    let prefop =
+    let pprefix1 =
       parseprefop
         papply
         (choice [ token "+"; token "-" ]
          >>| fun id expr -> Expression.Exp_apply (Exp_ident id, expr))
       <|> papply
     in
-    let pmuldiv = lchain prefop (pmul <|> pdiv) in
-    let paddsub = lchain pmuldiv (padd <|> psub) in
-    let pcompare = lchain paddsub pcompops in
-    let pexpcons = pexpcons pcompare <|> pcompare in
-    let plogop = rchain pexpcons plogops in
-    let ptuple = ptupleexpr plogop <|> plogop in
+    let pinfix1 = lchain pprefix1 (pmul <|> pdiv) in
+    let pinfix2 = lchain pinfix1 (padd <|> psub) in
+    let pinfix3 = lchain pinfix2 pcompops in
+    let pinfix4 = pexpcons pinfix3 <|> pinfix3 in
+    let pinfix5 = rchain pinfix4 plogops in
+    let ptuple = ptupleexpr pinfix5 <|> pinfix5 in
     choice
       [ pfunction pexpr; pfunexpr pexpr; pletexpr pexpr; pifexpr pexpr; pmatch pexpr ]
     <|> ptuple)
