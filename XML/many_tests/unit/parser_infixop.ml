@@ -209,7 +209,6 @@ let%expect_test "parse infix operator in paren second (strange but ok)" =
 [%expect{| let f = (fun x y -> (x >>=) y);; |}]
 
 
-
 let%expect_test "parse infix operator" =
   parse {|
     let f x y = x >>= y;;
@@ -222,6 +221,26 @@ let%expect_test "parse infix operator in paren third (strange but ok)" =
     let f x y = x y (>>=);;
   |};
 [%expect{| let f = (fun x y -> (x y) >>=);; |}]
+
+
+let%expect_test "now try function" =
+  parse {|
+    let (@) f x = f x in
+    (@) (fun x -> x) 5;;
+  |};
+[%expect{|
+  let (@) = (fun f x -> (f x)) in ((@) (fun x -> x)) 5 ;; |}]
+
+
+let%expect_test "now try function infix" =
+  parse {|
+    let (@) f x = f x in
+    (fun x -> x) @ 5;;
+  |};
+[%expect{|
+  let (@) = (fun f x -> (f x)) in (fun x -> x @ 5) ;; |}]
+
+
 
 
 (************************** Chain **************************)

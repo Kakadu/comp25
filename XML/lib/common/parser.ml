@@ -499,17 +499,26 @@ let rec parseprefop pexpr pop =
   <|> pexpr
 ;;
 
-let parsebinop starts =
+let parse_infix_startw starts =
   let* op = pass_ws *> pinfix_op ~starts () <* pass_ws in
   return (fun e1 e2 -> Expression.Exp_apply (Exp_ident op, Exp_tuple (e1, e2, [])))
 ;;
 
-let padd = parsebinop "+"
-let psub = parsebinop "-"
-let pdiv = parsebinop "/"
-let pmul = parsebinop "*"
-let pcompops = choice [ parsebinop "="; parsebinop "<"; parsebinop ">"; parsebinop "$" ]
-let plogops = choice [ parsebinop "&&"; parsebinop "||" ]
+let padd = parse_infix_startw "+"
+let psub = parse_infix_startw "-"
+let pdiv = parse_infix_startw "/"
+let pmul = parse_infix_startw "*"
+
+let pcompops =
+  choice
+    [ parse_infix_startw "="
+    ; parse_infix_startw "<"
+    ; parse_infix_startw ">"
+    ; parse_infix_startw "$"
+    ]
+;;
+
+let plogops = choice [ parse_infix_startw "&&"; parse_infix_startw "||" ]
 
 let pexprconstraint pexpr =
   let* expr = token "(" *> pexpr in
@@ -559,12 +568,14 @@ let pexpr =
          >>| fun id expr -> Expression.Exp_apply (Exp_ident id, expr))
       <|> papply
     in
-    let pinfix1 = lchain pprefix1 (pmul <|> pdiv) in
-    let pinfix2 = lchain pinfix1 (padd <|> psub) in
-    let pinfix3 = lchain pinfix2 pcompops in
-    let pinfix4 = pexpcons pinfix3 <|> pinfix3 in
-    let pinfix5 = rchain pinfix4 plogops in
-    let ptuple = ptupleexpr pinfix5 <|> pinfix5 in
+    let pinfix = lchain pprefix1 (parse_infix_startw "**") in
+    let pinfix = lchain pinfix (parse_infix_startw "*" <|> parse_infix_startw "/") in
+    let pinfix = lchain pinfix (parse_infix_startw "+" <|> parse_infix_startw "-") in
+    let pinfix = pexpcons pinfix <|> pinfix in
+    let pinfix = lchain pinfix (parse_infix_startw "@" <|> parse_infix_startw "^") in
+    let pinfix = lchain pinfix pcompops in
+    let pinfix = rchain pinfix plogops in
+    let ptuple = ptupleexpr pinfix <|> pinfix in
     choice
       [ pfunction pexpr; pfunexpr pexpr; pletexpr pexpr; pifexpr pexpr; pmatch pexpr ]
     <|> ptuple)
