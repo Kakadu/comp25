@@ -1,3 +1,7 @@
+(** Copyright 2025-2026, Georgiy Belyanin, Ignat Sergeev *)
+
+(** SPDX-License-Identifier: LGPL-3.0-or-later *)
+
 module Scope = Set.Make (String)
 
 module Ctx = struct
@@ -72,7 +76,7 @@ module Ctx = struct
       List.map of_pattern args |> List.fold_left Scope.union scope |> Scope.union ctx.recs
     in
     let captured = [] in
-    { locals; captured; globals = ctx.globals; recs = Scope.empty }
+    { ctx with recs = Scope.empty; locals; captured }
   ;;
 end
 

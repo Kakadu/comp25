@@ -1,3 +1,7 @@
+(** Copyright 2025-2026, Georgiy Belyanin, Ignat Sergeev *)
+
+(** SPDX-License-Identifier: LGPL-3.0-or-later *)
+
 module Map = Base.Map.Poly
 
 let context = Llvm.global_context ()
@@ -27,15 +31,15 @@ let define_ibinop ?(box_ret = false) funcs name ret build_f =
   let func = define_func name (Llvm.return_type typ) (Llvm.param_types typ) in
   let entry = entry_block func in
   position_at_end entry;
-  (match params func with
-   | [| lhs; rhs |] ->
-     let lhs, rhs = unbox funcs lhs, unbox funcs rhs in
-     let binop = build_f lhs rhs in
-     let binop = if box_ret then box_imm funcs binop else binop in
-     build_ret binop |> ignore
-   | _ -> assert false);
-  Llvm_analysis.assert_valid_function func;
-  name, (func, typ, External)
+  match params func with
+  | [| lhs; rhs |] ->
+    let lhs, rhs = unbox funcs lhs, unbox funcs rhs in
+    let binop = build_f lhs rhs in
+    let binop = if box_ret then box_imm funcs binop else binop in
+    let (_ : Llvm.llvalue) = build_ret binop in
+    Llvm_analysis.assert_valid_function func;
+    name, (func, typ, External)
+  | _ -> assert false
 ;;
 
 let declare_internal name ret params =
@@ -97,7 +101,8 @@ let emit_create_closure funcs func args =
   args
   |> List.iteri (fun i a ->
     let el_ptr = build_gep argv_lv [| const_int i64_type i |] in
-    build_store a el_ptr |> ignore);
+    let (_ : Llvm.llvalue) = build_store a el_ptr in
+    ());
   let argv_lv = build_pointercast argv_lv i64_type ~name:"args_arr_toi64_cast" in
   let arity_lv = const_int i64_type arity in
   build_call typ create_closure [ func; arity_lv; argc_lv; argv_lv ]
@@ -110,7 +115,8 @@ let emit_create_tuple funcs init =
   init
   |> List.iteri (fun i a ->
     let el_ptr = build_gep init_lv [| const_int i64_type i |] in
-    build_store a el_ptr |> ignore);
+    let (_ : Llvm.llvalue) = build_store a el_ptr in
+    ());
   let init_lv = build_pointercast init_lv i64_type ~name:"init_arr_toi64_cast" in
   let create_tuple, typ, _ = Map.find_exn funcs "create_tuple" in
   build_call typ create_tuple [ size_lv; init_lv ]
@@ -142,7 +148,7 @@ let emit_capp binds funcs name args =
   in
   let argc = List.length args in
   match app_type with
-  | `Fun (func, typ, arity) when argc == arity ->
+  | `Fun (func, typ, arity) when argc = arity ->
     let args_lv = args |> List.map (fun a -> emit_immexpr binds funcs a) in
     build_call typ func args_lv
   | `Fun (func, _, arity) when argc < arity ->
@@ -162,7 +168,8 @@ let emit_capp binds funcs name args =
     args_lv
     |> List.iteri (fun i a ->
       let el_ptr = build_gep argv_lv [| const_int i64_type i |] in
-      build_store a el_ptr |> ignore);
+      let (_ : Llvm.llvalue) = build_store a el_ptr in
+      ());
     let argv_lv = build_pointercast argv_lv i64_type ~name:"args_arr_toi64_cast" in
     let apply_args = [ closure; argc_lv; argv_lv ] in
     build_call typ closure_apply apply_args
@@ -173,7 +180,7 @@ let rec emit_cexpr binds funcs = function
   | Anf.CIte (cond_, then_, else_) ->
     let cond_lv = emit_immexpr binds funcs cond_ in
     let zero = const_int i1_type 0 in
-    build_icmp Llvm.Icmp.Ne cond_lv zero |> ignore;
+    let (_ : Llvm.llvalue) = build_icmp Llvm.Icmp.Ne cond_lv zero in
     let start_bb = insertion_block () in
     let the_function = block_parent start_bb in
     let then_bb = append_block ~name:"then" the_function in
@@ -189,11 +196,11 @@ let rec emit_cexpr binds funcs = function
     let phi_setup = [ then_lv, new_then_bb; else_lv, new_else_bb ] in
     let phi = build_phi ~name:"ifphi" phi_setup in
     position_at_end start_bb;
-    build_cond_br cond_lv then_bb else_bb |> ignore;
+    let (_ : Llvm.llvalue) = build_cond_br cond_lv then_bb else_bb in
     position_at_end new_then_bb;
-    build_br merge_bb |> ignore;
+    let (_ : Llvm.llvalue) = build_br merge_bb in
     position_at_end new_else_bb;
-    build_br merge_bb |> ignore;
+    let (_ : Llvm.llvalue) = build_br merge_bb in
     position_at_end merge_bb;
     phi
   | Anf.CApp (name, args) -> emit_capp binds funcs name args
@@ -235,12 +242,13 @@ let emit_decl funcs (decl : Anf.decl) =
     if name = "main"
     then (
       let gc_init, gc_init_t, _ = Map.find_exn funcs "gc_init" in
-      build_call gc_init_t gc_init [] |> ignore;
+      let (_ : Llvm.llvalue) = build_call gc_init_t gc_init [] in
       let sp_init, sp_init_t, _ = Map.find_exn funcs "sp_init" in
-      build_call sp_init_t sp_init [] |> ignore);
+      let (_ : Llvm.llvalue) = build_call sp_init_t sp_init [] in
+      ());
     let body = emit_aexpr par_binds funcs body in
     let body = if name = "main" then unbox funcs body else body in
-    build_ret body |> ignore;
+    let (_ : Llvm.llvalue) = build_ret body in
     let funcs =
       match rec_flag with
       | Ast.Rec -> funcs
@@ -254,7 +262,9 @@ let emit_ir ?(triple = "x86_64-pc-linux-gnu") program =
   assert (Llvm_executionengine.initialize ());
   Llvm.set_target_triple triple the_module;
   let funcs = emit_builtins () in
-  List.fold_left (fun funcs d -> emit_decl funcs d) funcs program |> ignore;
+  let (_ : (string, Llvm.llvalue * Llvm.lltype * visibility) Map.t) =
+    List.fold_left emit_decl funcs program
+  in
   Llvm_all_backends.initialize ();
   the_module
 ;;

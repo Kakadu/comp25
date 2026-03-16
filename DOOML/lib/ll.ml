@@ -1,3 +1,7 @@
+(** Copyright 2025-2026, Georgiy Belyanin, Ignat Sergeev *)
+
+(** SPDX-License-Identifier: LGPL-3.0-or-later *)
+
 module Scope = struct
   include Set.Make (String)
 end
