@@ -188,9 +188,104 @@ let%expect_test "invalid infix operator" =
 
 (************************** Parse custom operators as expressions **************************)
 
-let%expect_test "parse valid infix operator" =
+let%expect_test "parse infix operator in paren first" =
   parse {|
-    let f x y = x !+ y;;
+    let f x y = (**) x y;;
   |};
-[%expect{| : end_of_input |}]
+[%expect{| let f = (fun x y -> ((**) x) y);; |}]
 
+
+let%expect_test "parse infix operator in paren first" =
+  parse {|
+    let f x y = (>>=) x y;;
+  |};
+[%expect{| let f = (fun x y -> ((>>=) x) y);; |}]
+
+
+let%expect_test "parse infix operator in paren second (strange but ok)" =
+  parse {|
+    let f x y = x (>>=) y;;
+  |};
+[%expect{| let f = (fun x y -> (x >>=) y);; |}]
+
+
+
+let%expect_test "parse infix operator" =
+  parse {|
+    let f x y = x >>= y;;
+  |};
+[%expect{| let f = (fun x y -> x >>= y);; |}]
+
+
+let%expect_test "parse infix operator in paren third (strange but ok)" =
+  parse {|
+    let f x y = x y (>>=);;
+  |};
+[%expect{| let f = (fun x y -> (x y) >>=);; |}]
+
+
+(************************** Chain **************************)
+
+let%expect_test "chain **" =
+  parse {|
+    let f x y = x ** y ** z;;
+  |};
+[%expect{| let f = (fun x y -> x ** y ** z);; |}]
+
+
+let%expect_test "chain ** //" =
+  parse {|
+    let f x y = x ** y // z;;
+  |};
+[%expect{| let f = (fun x y -> x ** y // z);; |}]
+
+
+let%expect_test "chain ** ++" =
+  parse {|
+    let f x y = x ** y ++ z;;
+  |};
+[%expect{| let f = (fun x y -> x ** y ++ z);; |}]
+
+
+
+let%expect_test "chain ++ **" =
+  parse {|
+    let f x y = x ++ y ** z;;
+  |};
+[%expect{| let f = (fun x y -> x ++ y ** z);; |}]
+
+
+let%expect_test "chain ++ ** paren" =
+  parse {|
+    let f x y = x ++ (y ** z);;
+  |};
+[%expect{| let f = (fun x y -> x ++ y ** z);; |}]
+
+
+let%expect_test "chain ++ ** paren 2" =
+  parse {|
+    let f x y = (x ++ y) ** z;;
+  |};
+[%expect{| let f = (fun x y -> (x ++ y) ** z);; |}]
+
+
+
+let%expect_test "chain different *" =
+  parse {|
+    let f x y = x * (y *! z *+++ d);;
+  |};
+[%expect{| let f = (fun x y -> x * (y *! z *+++ d));; |}]
+
+
+let%expect_test "chain many" =
+  parse {|
+    let f x y = x * y ++ z *** d +++ c ++ y;;
+  |};
+[%expect{| let f = (fun x y -> x * y ++ z *** d +++ c ++ y);; |}]
+
+
+let%expect_test "chain many with parentheses" =
+  parse {|
+    let f x y = x * ((y ++ z) *** d +++ c) ++ y;;
+  |};
+[%expect{| let f = (fun x y -> x * ((y ++ z) *** d +++ c) ++ y);; |}]

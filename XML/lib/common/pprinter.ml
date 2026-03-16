@@ -21,12 +21,18 @@ let get_op_pr id =
   | Exp_ident "=" -> 4
   | Exp_ident "+" | Exp_ident "-" -> 5
   | Exp_ident "*" | Exp_ident "/" -> 6
+  | Exp_ident name ->
+    (match name.[0] with
+     | '*' | '/' | '%' -> 6
+     | '+' | '-' -> 5
+     | '=' | '<' | '>' | '|' | '&' | '$' -> 4
+     | _ -> 0)
   | Exp_if (_, _, _) -> 1
   | Exp_let (_, _, _)
   | Exp_match (_, _)
   | Exp_function _
   | Exp_fun (_, _)
-  | Exp_constant _ | Exp_ident _ -> 0
+  | Exp_constant _ -> 0
   | Exp_apply (_, _) | Exp_construct _ -> 7
   | _ -> 0
 ;;
@@ -244,9 +250,9 @@ let rec pprint_expression fmt n =
   | Exp_apply (ex1, ex2) ->
     let op_pr = get_op_pr ex1 in
     let format_apply =
-      match ex2 with
-      | Expression.Exp_tuple (first, second, _)
-        when List.mem [ 2; 3; 4; 5; 6 ] op_pr ~equal:Int.equal ->
+      match ex1, ex2 with
+      | _, Expression.Exp_tuple (first, second, _)
+        when List.mem [ 0; 1; 2; 3; 4; 5; 6 ] op_pr ~equal:Int.equal ->
         let left_pr, right_pr =
           if List.mem [ 2; 3 ] op_pr ~equal:Int.equal
           then op_pr + 1, op_pr
@@ -260,6 +266,22 @@ let rec pprint_expression fmt n =
           ex1
           (fun fmt -> pprint_expression fmt right_pr)
           second
+      | Exp_ident id, _ ->
+        if is_operator_char id.[0]
+        then
+          asprintf
+            "(%a) %a"
+            (fun fmt -> pprint_expression fmt (op_pr + 1))
+            ex1
+            (fun fmt -> pprint_expression fmt (op_pr + 1))
+            ex2
+        else
+          asprintf
+            "%a %a"
+            (fun fmt -> pprint_expression fmt (op_pr + 1))
+            ex1
+            (fun fmt -> pprint_expression fmt (op_pr + 1))
+            ex2
       | _ ->
         asprintf
           "%a %a"

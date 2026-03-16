@@ -399,6 +399,7 @@ let pexprconst =
 
 let pidentexpr =
   pident_lc
+  <|> pparenth (pinfix_op ())
   >>= fun ident ->
   if is_not_keyword ident
   then return (Expression.Exp_ident ident)
@@ -498,28 +499,16 @@ let rec parseprefop pexpr pop =
   <|> pexpr
 ;;
 
-let parsebinop binoptoken =
-  token binoptoken
-  *> return (fun e1 e2 ->
-    Expression.Exp_apply (Exp_ident binoptoken, Exp_tuple (e1, e2, [])))
+let parsebinop starts =
+  let* op = pass_ws *> pinfix_op ~starts () <* pass_ws in
+  return (fun e1 e2 -> Expression.Exp_apply (Exp_ident op, Exp_tuple (e1, e2, [])))
 ;;
 
 let padd = parsebinop "+"
 let psub = parsebinop "-"
 let pdiv = parsebinop "/"
 let pmul = parsebinop "*"
-
-let pcompops =
-  choice
-    [ parsebinop ">="
-    ; parsebinop "<="
-    ; parsebinop "<>"
-    ; parsebinop "<"
-    ; parsebinop ">"
-    ; parsebinop "="
-    ]
-;;
-
+let pcompops = choice [ parsebinop "="; parsebinop "<"; parsebinop ">"; parsebinop "$" ]
 let plogops = choice [ parsebinop "&&"; parsebinop "||" ]
 
 let pexprconstraint pexpr =
