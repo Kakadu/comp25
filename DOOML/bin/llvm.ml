@@ -1,10 +1,6 @@
-[@@@ocaml.text "/*"]
-
-(** Copyright 2023-2025, Kakadu and contributors *)
+(** Copyright 2025-2026, Georgiy Belyanin, Ignat Sergeev *)
 
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
-
-[@@@ocaml.text "/*"]
 
 open DOOML
 module Map = Base.Map.Poly

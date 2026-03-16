@@ -1,3 +1,7 @@
+(** Copyright 2025-2026, Georgiy Belyanin, Ignat Sergeev *)
+
+(** SPDX-License-Identifier: LGPL-3.0-or-later *)
+
 module Map = Map.Make (String)
 module Set = Set.Make (String)
 
@@ -137,7 +141,7 @@ type instr =
 let mv rd rs = addi rd rs 0
 let li rd v = addi rd zero v
 
-let _pp_instr fmt =
+let pp_instr fmt =
   Format.(
     function
     (* Arithmetic instructions *)
@@ -508,7 +512,7 @@ let rec cexpr =
       in
       let argc = List.length args in
       (match arity with
-       | `Fun arity when arity == argc ->
+       | `Fun arity when arity = argc ->
          let* _ =
            List.fold_left
              (fun acc (i, a) ->
@@ -655,7 +659,7 @@ let pp_code =
     | Etc l -> Format.fprintf ppf "%s" l
     | Label l -> Format.fprintf ppf "%s:" l
     | Comment c -> Format.fprintf ppf "# %s:" c
-    | Instr instr -> Format.fprintf ppf "  %a" _pp_instr instr)
+    | Instr instr -> Format.fprintf ppf "  %a" pp_instr instr)
 ;;
 
 let%expect_test "basic" =
