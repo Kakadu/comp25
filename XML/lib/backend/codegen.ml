@@ -3,6 +3,7 @@
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
 open Common.Ast
+open Common.Parser
 open Middleend.Anf
 open Format
 open Target
@@ -162,6 +163,11 @@ and gen_comp_expr (state : cg_state) (dst : reg) (cexpr : comp_expr) : cg_state 
     let* () = gen_im_expr state dst imm in
     ok state
   | Comp_binop (op, v1, v2) ->
+    let* () = gen_im_expr state (T 0) v1 in
+    let* () = gen_im_expr state (T 1) v2 in
+    emit_tagged_binop op dst (T 0) (T 1);
+    ok state
+  | Comp_app (Imm_ident op, [ v1; v2 ]) when is_operator_char op.[0] ->
     let* () = gen_im_expr state (T 0) v1 in
     let* () = gen_im_expr state (T 1) v2 in
     emit_tagged_binop op dst (T 0) (T 1);

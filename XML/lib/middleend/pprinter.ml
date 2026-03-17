@@ -30,6 +30,8 @@ let pp_app ppf (f, args) =
 let rec pp_anf_expr_impl ~parens ppf (e : anf_expr) =
   let pp_comp ppf = function
     | Comp_imm imm -> pp_immediate ppf imm
+    | Comp_app (Imm_ident op, [ arg1; arg2 ]) when is_operator_char op.[0] ->
+      fprintf ppf "(%a %s %a)" pp_immediate arg1 op pp_immediate arg2
     | Comp_binop (op, a, b) -> fprintf ppf "(%a %s %a)" pp_immediate a op pp_immediate b
     | Comp_app (f, args) -> pp_app ppf (f, args)
     | Comp_branch (c, t, e) ->

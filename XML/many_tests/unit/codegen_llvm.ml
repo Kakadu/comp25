@@ -49,7 +49,7 @@ let%expect_test "num" =
 
 let%expect_test "comp binop" =
   codegen_prog_str {| 1 + 2 |};
-  [%expect {|
+  [%expect{|
     ; ModuleID = 'main'
     source_filename = "main"
     target triple = "riscv64-unknown-linux-gnu"
@@ -76,7 +76,10 @@ let%expect_test "comp binop" =
 
     define i64 @main() {
     entry:
+      %t_0 = alloca i64, align 8
       call void @rt_init(i64 5120)
+      store i64 7, ptr %t_0, align 8
+      %t_01 = load i64, ptr %t_0, align 8
       call void @collect()
       ret i64 0
     } |}]

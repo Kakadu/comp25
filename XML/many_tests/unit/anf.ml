@@ -79,7 +79,7 @@ let%expect_test "apply f x y" =
 
 let%expect_test "apply 1 + 2" =
   to_anf_prog {| 1 + 2 |};
-  [%expect{| 3;; |}]
+  [%expect{| let t_0 = (1 + 2) in t_0;; |}]
 
 
 let%expect_test "fun x -> x" =

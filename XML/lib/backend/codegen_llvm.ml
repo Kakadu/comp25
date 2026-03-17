@@ -5,6 +5,7 @@
 open Middleend.Anf
 open Common.Ast
 open Target
+open Common.Parser
 
 let context = Llvm.global_context ()
 let i64_type = Llvm.i64_type context
@@ -209,6 +210,8 @@ let build_apply_part fmap fclos args =
 let rec gen_comp_expr_ir fmap env = function
   | Comp_imm imm -> gen_im_expr_ir fmap env imm
   | Comp_binop (op, lhs, rhs) -> gen_tagged_binop fmap env op lhs rhs
+  | Comp_app (Imm_ident op, [ arg1; arg2 ]) when is_operator_char op.[0] ->
+    gen_tagged_binop fmap env op arg1 arg2
   | Comp_app (Imm_ident f, args) ->
     let f_map = if f = "main" then subst_main else f in
     (match FuncMap.find fmap f_map with
@@ -341,10 +344,12 @@ let gen_function fmap the_mod name params body =
 
 let gen_astructure_item fmap the_mod main_fn env = function
   | Anf_str_eval expr ->
+    Llvm.position_at_end (Llvm.entry_block main_fn) builder;
     let _, new_env = gen_anf_expr fmap env expr in
     new_env
   | Anf_str_value (_, name, Anf_comp_expr (Comp_func (params, body))) ->
     let _ = gen_function fmap the_mod name params body in
+    Llvm.position_at_end (Llvm.entry_block main_fn) builder;
     env
   | Anf_str_value (_, name, expr) ->
     Llvm.position_at_end (Llvm.entry_block main_fn) builder;

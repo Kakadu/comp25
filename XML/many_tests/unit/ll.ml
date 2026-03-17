@@ -166,8 +166,8 @@ to_ll {|
    (@) (fun x -> x) 5
 |};
 [%expect{|
-  let t_2 = t_2__ll$2 in let t_3 = (t_2 @ 5) in t_3;;
-  let (@__ll$1) = fun f x -> let t_0 = f x in t_0;;
+  let t_2 = t_2__ll$2 in let t_3 = att__ll$1 t_2 5 in t_3;;
+  let att__ll$1 = fun f x -> let t_0 = f x in t_0;;
   let t_2__ll$2 = fun x -> x;; |}]
 
 
@@ -177,8 +177,8 @@ to_ll {|
    (fun x -> x) @ 5
 |};
 [%expect{|
-  let t_2 = t_2__ll$2 in let t_3 = (t_2 @ 5) in t_3;;
-  let (@__ll$1) = fun f x -> let t_0 = f x in t_0;;
+  let t_2 = t_2__ll$2 in let t_3 = att__ll$1 t_2 5 in t_3;;
+  let att__ll$1 = fun f x -> let t_0 = f x in t_0;;
   let t_2__ll$2 = fun x -> x;; |}]
 
 
@@ -188,9 +188,9 @@ to_ll {|
    (@) (fun x -> x) 5;;
 |};
 [%expect{|
-  let (@) = fun f x -> let t_0 = f x in t_0;;
-  let t_2 = t_2__ll$1 in let t_3 = (t_2 @ 5) in t_3;;
-  let t_2__ll$1 = fun x -> x;; |}]
+  let att__ll$1 = fun f x -> let t_0 = f x in t_0;;
+  let t_2 = t_2__ll$2 in let t_3 = att__ll$1 t_2 5 in t_3;;
+  let t_2__ll$2 = fun x -> x;; |}]
 
 
 
@@ -200,9 +200,9 @@ to_ll {|
    (fun x -> x) @ 5;;
 |};
 [%expect{|
-  let (@) = fun f x -> let t_0 = f x in t_0;;
-  let t_2 = t_2__ll$1 in let t_3 = (t_2 @ 5) in t_3;;
-  let t_2__ll$1 = fun x -> x;; |}]
+  let att__ll$1 = fun f x -> let t_0 = f x in t_0;;
+  let t_2 = t_2__ll$2 in let t_3 = att__ll$1 t_2 5 in t_3;;
+  let t_2__ll$2 = fun x -> x;; |}]
 
 
 let%expect_test "override operator" =
@@ -211,8 +211,8 @@ to_ll {|
    (+) (fun x -> x) 5
 |};
 [%expect{|
-  let t_2 = t_2__ll$2 in let t_3 = (t_2 + 5) in t_3;;
-  let (+__ll$1) = fun f x -> let t_0 = f x in t_0;;
+  let t_2 = t_2__ll$2 in let t_3 = pls__ll$1 t_2 5 in t_3;;
+  let pls__ll$1 = fun f x -> let t_0 = f x in t_0;;
   let t_2__ll$2 = fun x -> x;; |}]
 
 
@@ -223,6 +223,23 @@ to_ll {|
    (+) (fun x -> x) 5;;
 |};
 [%expect{|
-  let (+) = fun f x -> let t_0 = f x in t_0;;
-  let t_2 = t_2__ll$1 in let t_3 = (t_2 + 5) in t_3;;
-  let t_2__ll$1 = fun x -> x;; |}]
+  let pls__ll$1 = fun f x -> let t_0 = f x in t_0;;
+  let t_2 = t_2__ll$2 in let t_3 = pls__ll$1 t_2 5 in t_3;;
+  let t_2__ll$2 = fun x -> x;; |}]
+
+
+
+let%expect_test "override operator after using it" =
+to_ll {|
+  let g x y = x + y in
+  g 5 10;;
+
+  let (+) f x = f x;;
+   (+) (fun x -> x) 5;;
+|};
+[%expect{|
+  let t_2 = g__ll$1 5 in let t_3 = t_2 10 in t_3;;
+  let pls__ll$2 = fun f x -> let t_4 = f x in t_4;;
+  let t_6 = t_6__ll$3 in let t_7 = pls__ll$2 t_6 5 in t_7;;
+  let g__ll$1 = fun x y -> let t_0 = (x + y) in t_0;;
+  let t_6__ll$3 = fun x -> x;; |}]

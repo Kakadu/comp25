@@ -17,7 +17,6 @@ type error =
   | Cannot_unify_constructors of string * string
   | Cannot_unify_quantified
   | Unbound_variable of string
-  | Operator_not_found of string
   | Invalid_let_rec_rhs
   | Invalid_let_rec_lhs
 
@@ -30,7 +29,6 @@ let pprint_err ppf = function
     Format.fprintf ppf "Cannot unify different constructors: %s and %s" c1 c2
   | Cannot_unify_quantified -> Format.fprintf ppf "Cannot unify quantified variable"
   | Unbound_variable id -> Format.fprintf ppf "Unbound variable %s" id
-  | Operator_not_found op -> Format.fprintf ppf "Operator not found: %s" op
   | Invalid_let_rec_rhs ->
     Format.fprintf
       ppf

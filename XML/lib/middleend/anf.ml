@@ -158,16 +158,7 @@ let rec norm_comp expr (k : comp_expr -> nstate -> (anf_expr * nstate) r) (st : 
       (fun v1 ->
          norm_to_imm expr2 (fun v2 ->
            fun st ->
-           let ce =
-             match v1, v2 with
-             | Imm_num n1, Imm_num n2 ->
-               (match op with
-                | "+" -> Comp_imm (Imm_num (n1 + n2))
-                | "-" -> Comp_imm (Imm_num (n1 - n2))
-                | "*" -> Comp_imm (Imm_num (n1 * n2))
-                | _ -> Comp_binop (op, v1, v2))
-             | _ -> Comp_binop (op, v1, v2)
-           in
+           let ce = Comp_app (Imm_ident op, [ v1; v2 ]) in
            k ce st))
       st
   | Exp_apply (func_expr, arg_expr) ->
