@@ -158,3 +158,71 @@ to_ll {|
                            in let t_2 = t_0[0]
                                 in let a = t_2
                                      in let t_1 = t_0[8] in let b = t_1 in a;; |}]
+
+
+let%expect_test "custom operator" =
+to_ll {|
+  let (@) f x = f x in
+   (@) (fun x -> x) 5
+|};
+[%expect{|
+  let t_2 = t_2__ll$2 in let t_3 = (t_2 @ 5) in t_3;;
+  let (@__ll$1) = fun f x -> let t_0 = f x in t_0;;
+  let t_2__ll$2 = fun x -> x;; |}]
+
+
+let%expect_test "custom operator infix" =
+to_ll {|
+  let (@) f x = f x in
+   (fun x -> x) @ 5
+|};
+[%expect{|
+  let t_2 = t_2__ll$2 in let t_3 = (t_2 @ 5) in t_3;;
+  let (@__ll$1) = fun f x -> let t_0 = f x in t_0;;
+  let t_2__ll$2 = fun x -> x;; |}]
+
+
+let%expect_test "custom operator 2" =
+to_ll {|
+  let (@) f x = f x;;
+   (@) (fun x -> x) 5;;
+|};
+[%expect{|
+  let (@) = fun f x -> let t_0 = f x in t_0;;
+  let t_2 = t_2__ll$1 in let t_3 = (t_2 @ 5) in t_3;;
+  let t_2__ll$1 = fun x -> x;; |}]
+
+
+
+let%expect_test "custom operator 2 infix" =
+to_ll {|
+  let (@) f x = f x;;
+   (fun x -> x) @ 5;;
+|};
+[%expect{|
+  let (@) = fun f x -> let t_0 = f x in t_0;;
+  let t_2 = t_2__ll$1 in let t_3 = (t_2 @ 5) in t_3;;
+  let t_2__ll$1 = fun x -> x;; |}]
+
+
+let%expect_test "override operator" =
+to_ll {|
+  let (+) f x = f x in
+   (+) (fun x -> x) 5
+|};
+[%expect{|
+  let t_2 = t_2__ll$2 in let t_3 = (t_2 + 5) in t_3;;
+  let (+__ll$1) = fun f x -> let t_0 = f x in t_0;;
+  let t_2__ll$2 = fun x -> x;; |}]
+
+
+
+let%expect_test "override operator 2" =
+to_ll {|
+  let (+) f x = f x;;
+   (+) (fun x -> x) 5;;
+|};
+[%expect{|
+  let (+) = fun f x -> let t_0 = f x in t_0;;
+  let t_2 = t_2__ll$1 in let t_3 = (t_2 + 5) in t_3;;
+  let t_2__ll$1 = fun x -> x;; |}]

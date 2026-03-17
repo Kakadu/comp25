@@ -8,6 +8,7 @@ open Common.Ast.Structure
 open Common.Ast.Pattern
 open Common.Ast.TypeExpr
 open Common.Pprinter
+open Common.Parser
 
 type error =
   | Occurs_check
@@ -307,24 +308,30 @@ and infer_exp env = function
       | [] -> infer_exp new_env exp
     in
     return (newest_env, Type_arrow (typ_p, typ_exp))
-  | Exp_apply (Exp_ident op, Exp_tuple (exp1, exp2, [])) ->
-    (match op with
-     | "*" | "/" | "+" | "-" | "<" | ">" | "=" | "<>" | "<=" | ">=" | "&&" | "||" ->
-       let* new_env, typ1 = infer_exp env exp1 in
-       let* new_env1, typ2 = infer_exp new_env exp2 in
-       let* arg_typ, res_typ =
-         match List.assoc_opt op env with
-         | Some (Type_arrow (arg, Type_arrow (_, res))) -> return (inst arg, inst res)
-         | _ -> fail (Operator_not_found op)
+  | Exp_apply (Exp_apply (Exp_ident op, exp1), exp2) when is_operator_char op.[0] ->
+    let* new_env, typ1 = infer_exp env exp1 in
+    let* new_env1, typ2 = infer_exp new_env exp2 in
+    (match List.assoc_opt op env with
+     | Some op_ty ->
+       let inst_op_ty = inst op_ty in
+       let* res =
+         match inst_op_ty with
+         | Type_arrow (arg1, Type_arrow (arg2, res))
+         | Type_arrow (Type_tuple (arg1, arg2, []), res) ->
+           let* () = unify typ1 arg1 in
+           let* () = unify typ2 arg2 in
+           return res
+         | _ ->
+           let typ_res = newvar () in
+           let tuple_ty = Type_tuple (typ1, typ2, []) in
+           let* () = unify inst_op_ty (Type_arrow (tuple_ty, typ_res)) in
+           return typ_res
        in
-       let* () = unify typ1 arg_typ in
-       let* () = unify typ2 arg_typ in
-       return (new_env1, res_typ)
-     | _ ->
-       let* new_env, typ_op = infer_exp env (Exp_ident op) in
-       let* new_env1, typ_args = infer_exp new_env (Exp_tuple (exp1, exp2, [])) in
+       return (new_env1, res)
+     | None ->
        let typ_res = newvar () in
-       let* () = unify typ_op (Type_arrow (typ_args, typ_res)) in
+       let tuple_ty = Type_tuple (typ1, typ2, []) in
+       let* () = unify typ_res (Type_arrow (tuple_ty, typ_res)) in
        return (new_env1, typ_res))
   | Exp_apply (Exp_ident "-", arg) ->
     let* new_env1, typ_arg = infer_exp env arg in

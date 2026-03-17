@@ -4,7 +4,7 @@
   > let add x = x + c in
   > let mul x = x * c in
   > print_int (add 3 + mul 4)
-  let main = (let c = 2 in (let add = ((fun c x -> x + c) c) in (let mul = ((fun c x -> x * c) c) in (print_int (add c) 3 + (mul c) 4))));;
+  let main = (let c = 2 in (let add = ((fun c x -> x + c) c) in (let mul = ((fun c x -> x * c) c) in (print_int ((add c) 3) + ((mul c) 4)))));;
   
   
   $ dune exec ./../bin/XML.exe -- --cc <<EOF
@@ -24,13 +24,13 @@
   
   let fresh_2 = (fun p1 k p2 -> (k p1 + p2));;
   
-  let fresh_1 = (fun n k fib p1 -> (fib n - 2) ((fresh_2 p1) k));;
+  let fresh_1 = (fun n k fib p1 -> ((fib n - 2) ((fresh_2 p1) k)));;
   
   let rec fib = (fun n k -> (if n < 2
     then (k n)
-    else (fib n - 1) (((fresh_1 n) k) fib)));;
+    else ((fib n - 1) ((fresh_1 n) k) fib)));;
   
-  let main = (let z = (print_int (fib 6) id) in 0);;
+  let main = (let z = (print_int ((fib 6) id)) in 0);;
   
   
 

@@ -6,6 +6,7 @@ open Common.Ast.Expression
 open Common.Ast.Constant
 open Common.Ast.Structure
 open Common.Ast
+open Common.Parser
 
 (* Immediate, atomic expressions that do not require the reduction *)
 type im_expr =
@@ -151,8 +152,7 @@ let rec norm_comp expr (k : comp_expr -> nstate -> (anf_expr * nstate) r) (st : 
   | Exp_tuple (expr1, expr2, rest_list) ->
     let all_exprs = expr1 :: expr2 :: rest_list in
     norm_list_to_imm all_exprs (fun imm_list st -> k (Comp_alloc imm_list) st) st
-  | Exp_apply (Exp_ident op, Exp_tuple (expr1, expr2, []))
-    when List.mem op [ "+"; "-"; "*"; "="; "<"; ">"; "<="; ">="; "<>" ] ->
+  | Exp_apply (Exp_apply (Exp_ident op, expr1), expr2) when is_operator_char op.[0] ->
     norm_to_imm
       expr1
       (fun v1 ->

@@ -247,48 +247,44 @@ let rec pprint_expression fmt n =
         exp
     in
     if n > 0 then fprintf fmt "(%s)" if_string else fprintf fmt "%s" if_string
-  | Exp_apply (ex1, ex2) ->
-    let op_pr = get_op_pr ex1 in
+  | Exp_apply (Exp_apply (id, first), second) ->
+    let op_pr = get_op_pr id in
     let format_apply =
-      match ex1, ex2 with
-      | _, Expression.Exp_tuple (first, second, _)
-        when List.mem [ 0; 1; 2; 3; 4; 5; 6 ] op_pr ~equal:Int.equal ->
+      match id, second with
+      | Exp_ident op, _ when is_operator_char op.[0] ->
+        (* Binary operator case *)
         let left_pr, right_pr =
           if List.mem [ 2; 3 ] op_pr ~equal:Int.equal
           then op_pr + 1, op_pr
           else op_pr, op_pr + 1
         in
         asprintf
-          "%a %a %a"
+          "%a %s %a"
           (fun fmt -> pprint_expression fmt left_pr)
           first
-          (fun fmt -> pprint_expression fmt op_pr)
-          ex1
+          op
           (fun fmt -> pprint_expression fmt right_pr)
           second
-      | Exp_ident id, _ ->
-        if is_operator_char id.[0]
-        then
-          asprintf
-            "(%a) %a"
-            (fun fmt -> pprint_expression fmt (op_pr + 1))
-            ex1
-            (fun fmt -> pprint_expression fmt (op_pr + 1))
-            ex2
-        else
-          asprintf
-            "%a %a"
-            (fun fmt -> pprint_expression fmt (op_pr + 1))
-            ex1
-            (fun fmt -> pprint_expression fmt (op_pr + 1))
-            ex2
       | _ ->
+        (* Not a binary operator - regular function application *)
         asprintf
           "%a %a"
           (fun fmt -> pprint_expression fmt (op_pr + 1))
-          ex1
+          (Exp_apply (id, first))
           (fun fmt -> pprint_expression fmt (op_pr + 1))
-          ex2
+          second
+    in
+    if n > op_pr then fprintf fmt "(%s)" format_apply else fprintf fmt "%s" format_apply
+  | Exp_apply (f, arg) ->
+    (* Handle other application cases *)
+    let op_pr = get_op_pr f in
+    let format_apply =
+      asprintf
+        "%a %a"
+        (fun fmt -> pprint_expression fmt (op_pr + 1))
+        f
+        (fun fmt -> pprint_expression fmt (op_pr + 1))
+        arg
     in
     if n > op_pr then fprintf fmt "(%s)" format_apply else fprintf fmt "%s" format_apply
   | Exp_match (ex, (cs, csl)) ->

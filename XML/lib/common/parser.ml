@@ -501,7 +501,7 @@ let rec parseprefop pexpr pop =
 
 let parse_infix_startw starts =
   let* op = pass_ws *> pinfix_op ~starts () <* pass_ws in
-  return (fun e1 e2 -> Expression.Exp_apply (Exp_ident op, Exp_tuple (e1, e2, [])))
+  return (fun e1 e2 -> Expression.Exp_apply (Exp_apply (Exp_ident op, e1), e2))
 ;;
 
 let padd = parse_infix_startw "+"

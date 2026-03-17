@@ -26,7 +26,7 @@ to_cc {|
 [%expect {|
   let fac = (fun n -> (let rec fack = (fun n k -> (if n <= 1
     then (k 1)
-    else (fack n - 1) (((fun k n m -> (k m * n)) k) n))) in (fack n) (fun x -> x)));; |}]
+    else ((fack n - 1) (((fun k n m -> (k m * n)) k) n)))) in ((fack n) (fun x -> x))));; |}]
 
 
 let%expect_test "LN_CC_1" =
@@ -68,9 +68,9 @@ to_cc {|
     greater_10
 |};
 [%expect {|
-  let f = (let ret1 = 1 in (let ret2 = 2 in (let greater_10 = ((fun ret1 ret2 x -> (if x > 10
+  let f = (let ret1 = 1 in (let ret2 = 2 in (let greater_10 = (((fun ret1 ret2 x -> (if x > 10
     then ret1
-    else ret2)) ret1) ret2 in (greater_10 ret1) ret2)));; |}]
+    else ret2)) ret1) ret2) in ((greater_10 ret1) ret2))));; |}]
 
 
 let%expect_test "tuple" =
@@ -81,7 +81,7 @@ to_cc {|
     to_tuple
 |};
 [%expect {|
-  let tuples = (let (a, b) = (10, 20) in (let to_tuple = ((fun a b x -> (x, a, b)) a) b in (to_tuple a) b));; |}]
+  let tuples = (let (a, b) = (10, 20) in (let to_tuple = (((fun a b x -> (x, a, b)) a) b) in ((to_tuple a) b)));; |}]
 
 
 let%expect_test "func" =
@@ -115,8 +115,8 @@ to_cc {|
     g
 |};
 [%expect{|
-  let f = (fun x -> (let y = 10 in (let g = ((fun x y z -> (match x with
+  let f = (fun x -> (let y = 10 in (let g = (((fun x y z -> (match x with
     | Some _ -> y
-    | _ -> z)) x) y in (g x) y)));; |}]
+    | _ -> z)) x) y) in ((g x) y))));; |}]
 
   

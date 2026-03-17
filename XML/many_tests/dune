@@ -18,6 +18,7 @@
  (applies_to
   codegen
   codegen_llvm
+  codegen_operators
   anf
   cc
   ll
