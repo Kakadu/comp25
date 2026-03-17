@@ -299,7 +299,7 @@ let%expect_test "020closures.pdf" =
 <span data-count="1">[</span>%expect {|
   let fac = (fun n -&gt; (let rec fack = (fun n k -&gt; (if n &lt;= 1
     then (k 1)
-    else (fack n - 1) (((fun k n m -&gt; (k m * n)) k) n))) in (fack n) (fun x -&gt; x)));; |}<span data-count="15">]</span>
+    else ((fack n - 1) (((fun k n m -&gt; (k m * n)) k) n)))) in ((fack n) (fun x -&gt; x))));; |}<span data-count="17">]</span>
 
 
 let%expect_test "LN_CC_1" =
@@ -310,7 +310,7 @@ let%expect_test "LN_CC_1" =
     g
 |};
 <span data-count="1">[</span>%expect {|
-  let f = (fun x -&gt; (let g = ((fun x y -&gt; x) x) in (g x)));; |}<span data-count="15">]</span>
+  let f = (fun x -&gt; (let g = ((fun x y -&gt; x) x) in (g x)));; |}<span data-count="17">]</span>
 
 
 let%expect_test "LN_CC_2" =
@@ -318,7 +318,7 @@ let%expect_test "LN_CC_2" =
   fun x -&gt; x + a + b
 |};
 <span data-count="1">[</span>%expect {|
-  ((fun a b x -&gt; x + a + b) a) b ;; |}<span data-count="15">]</span>
+  ((fun a b x -&gt; x + a + b) a) b ;; |}<span data-count="17">]</span>
 
 
 let%expect_test "LN_CC_3" =
@@ -329,7 +329,7 @@ let%expect_test "LN_CC_3" =
     (add, mul)
 |};
 <span data-count="1">[</span>%expect {|
-  let mkPair = (fun x -&gt; (let add = ((fun x y -&gt; x + y) x) in (let mul = ((fun x z -&gt; x * z) x) in ((add x), (mul x)))));; |}<span data-count="15">]</span>
+  let mkPair = (fun x -&gt; (let add = ((fun x y -&gt; x + y) x) in (let mul = ((fun x z -&gt; x * z) x) in ((add x), (mul x)))));; |}<span data-count="17">]</span>
 
 
 let%expect_test "if" =
@@ -341,9 +341,9 @@ let%expect_test "if" =
     greater_10
 |};
 <span data-count="1">[</span>%expect {|
-  let f = (let ret1 = 1 in (let ret2 = 2 in (let greater_10 = ((fun ret1 ret2 x -&gt; (if x &gt; 10
+  let f = (let ret1 = 1 in (let ret2 = 2 in (let greater_10 = (((fun ret1 ret2 x -&gt; (if x &gt; 10
     then ret1
-    else ret2)) ret1) ret2 in (greater_10 ret1) ret2)));; |}<span data-count="15">]</span>
+    else ret2)) ret1) ret2) in ((greater_10 ret1) ret2))));; |}<span data-count="17">]</span>
 
 
 let%expect_test "tuple" =
@@ -354,7 +354,7 @@ let%expect_test "tuple" =
     to_tuple
 |};
 <span data-count="1">[</span>%expect {|
-  let tuples = (let (a, b) = (10, 20) in (let to_tuple = ((fun a b x -&gt; (x, a, b)) a) b in (to_tuple a) b));; |}<span data-count="15">]</span>
+  let tuples = (let (a, b) = (10, 20) in (let to_tuple = (((fun a b x -&gt; (x, a, b)) a) b) in ((to_tuple a) b)));; |}<span data-count="17">]</span>
 
 
 let%expect_test "func" =
@@ -363,7 +363,7 @@ let%expect_test "func" =
     ((fun x -&gt; fun x -&gt; y) x) x
 |};
 <span data-count="1">[</span>%expect {|
-  let f = (fun x y -&gt; (((fun y x -&gt; ((fun y x -&gt; y) y)) y) x) x);; |}<span data-count="15">]</span>
+  let f = (fun x y -&gt; (((fun y x -&gt; ((fun y x -&gt; y) y)) y) x) x);; |}<span data-count="17">]</span>
 
 
 let%expect_test "load" =
@@ -373,7 +373,7 @@ let%expect_test "load" =
       let (a, b) = x, y in
       a in g
 |};
-<span data-count="1">[</span>%expect{| let f = (fun x -&gt; (let g = ((fun x y -&gt; (let (a, b) = (x, y) in a)) x) in (g x)));; |}<span data-count="15">]</span>
+<span data-count="1">[</span>%expect{| let f = (fun x -&gt; (let g = ((fun x y -&gt; (let (a, b) = (x, y) in a)) x) in (g x)));; |}<span data-count="17">]</span>
 
 
 let%expect_test "match" =
@@ -388,9 +388,9 @@ let%expect_test "match" =
     g
 |};
 <span data-count="1">[</span>%expect{|
-  let f = (fun x -&gt; (let y = 10 in (let g = ((fun x y z -&gt; (match x with
+  let f = (fun x -&gt; (let y = 10 in (let g = (((fun x y z -&gt; (match x with
     | Some _ -&gt; y
-    | _ -&gt; z)) x) y in (g x) y)));; |}<span data-count="15">]</span>
+    | _ -&gt; z)) x) y) in ((g x) y))));; |}<span data-count="17">]</span>
 
   
 </code></pre>

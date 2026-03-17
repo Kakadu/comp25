@@ -582,267 +582,267 @@ let test x =
 
 let%expect_test "addi" =
   <span data-count="1">t</span>est (Addi (SP, SP, 8) = Addi (SP, SP, 8));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "addi false" =
   <span data-count="1">t</span>est (Addi (SP, SP, 8) = Addi (SP, SP, 16));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "add" =
   <span data-count="1">t</span>est (Add (SP, SP, A 0) = Add (SP, SP, A 0));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "add false" =
   <span data-count="1">t</span>est (Add (SP, SP, A 0) = Add (SP, A 0, SP));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "sub" =
   <span data-count="1">t</span>est (Sub (SP, SP, A 0) = Sub (SP, SP, A 0));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "sub false" =
   <span data-count="1">t</span>est (Sub (SP, SP, A 0) = Sub (SP, A 0, SP));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "mul" =
   <span data-count="1">t</span>est (Mul (SP, SP, A 0) = Mul (SP, SP, A 0));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "mul false" =
   <span data-count="1">t</span>est (Mul (SP, SP, A 0) = Mul (SP, A 0, SP));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "slt" =
   <span data-count="1">t</span>est (Slt (SP, SP, A 0) = Slt (SP, SP, A 0));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "slt false" =
   <span data-count="1">t</span>est (Slt (SP, SP, A 0) = Slt (SP, A 0, SP));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "seqz" =
   <span data-count="1">t</span>est (Seqz (SP, A 0) = Seqz (SP, A 0));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "seqz false" =
   <span data-count="1">t</span>est (Seqz (SP, A 0) = Seqz (A 0, SP));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "snez" =
   <span data-count="1">t</span>est (Snez (SP, A 0) = Snez (SP, A 0));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "snez false" =
   <span data-count="1">t</span>est (Snez (SP, A 0) = Snez (A 0, SP));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "xor" =
   <span data-count="1">t</span>est (Xor (SP, SP, A 0) = Xor (SP, SP, A 0));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "xor false" =
   <span data-count="1">t</span>est (Xor (SP, SP, A 0) = Xor (SP, A 0, SP));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "xori" =
   <span data-count="1">t</span>est (Xori (SP, SP, 8) = Xori (SP, SP, 8));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "xori false" =
   <span data-count="1">t</span>est (Xori (SP, SP, 8) = Xori (SP, SP, 16));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "beq" =
   <span data-count="1">t</span>est (Beq (SP, A 0, "label1") = Beq (SP, A 0, "label1"));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "beq false reg" =
   <span data-count="1">t</span>est (Beq (SP, A 0, "label1") = Beq (A 0, SP, "label1"));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "beq false label" =
   <span data-count="1">t</span>est (Beq (SP, A 0, "label1") = Beq (SP, A 0, "label2"));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "blt" =
   <span data-count="1">t</span>est (Blt (SP, A 0, "label1") = Blt (SP, A 0, "label1"));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "blt false reg" =
   <span data-count="1">t</span>est (Blt (SP, A 0, "label1") = Blt (A 0, SP, "label1"));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "blt false label" =
   <span data-count="1">t</span>est (Blt (SP, A 0, "label1") = Blt (SP, A 0, "label2"));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "ble" =
   <span data-count="1">t</span>est (Ble (SP, A 0, "label1") = Ble (SP, A 0, "label1"));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "ble false reg" =
   <span data-count="1">t</span>est (Ble (SP, A 0, "label1") = Ble (A 0, SP, "label1"));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "ble false label" =
   <span data-count="1">t</span>est (Ble (SP, A 0, "label1") = Ble (SP, A 0, "label2"));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "lla" =
   <span data-count="1">t</span>est (Lla (SP, "label1") = Lla (SP, "label1"));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "lla false reg" =
   <span data-count="1">t</span>est (Lla (SP, "label1") = Lla (A 0, "label1"));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "lla false label" =
   <span data-count="1">t</span>est (Lla (SP, "label1") = Lla (SP, "label2"));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "li" =
   <span data-count="1">t</span>est (Li (SP, 42) = Li (SP, 42));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "li false reg" =
   <span data-count="1">t</span>est (Li (SP, 42) = Li (A 0, 42));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "li false imm" =
   <span data-count="1">t</span>est (Li (SP, 42) = Li (SP, 100));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "ld" =
   <span data-count="1">t</span>est (Ld (SP,  (SP, 8)) = Ld (SP,  (SP, 8)));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "ld false reg" =
   <span data-count="1">t</span>est (Ld (SP,  (SP, 8)) = Ld (A 0,  (SP, 8)));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "ld false  reg" =
   <span data-count="1">t</span>est (Ld (SP,  (SP, 8)) = Ld (SP,  (A 0, 8)));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "ld false  imm" =
   <span data-count="1">t</span>est (Ld (SP,  (SP, 8)) = Ld (SP,  (SP, 16)));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "sd" =
   <span data-count="1">t</span>est (Sd (SP,  (SP, 8)) = Sd (SP,  (SP, 8)));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "sd false reg" =
   <span data-count="1">t</span>est (Sd (SP,  (SP, 8)) = Sd (A 0,  (SP, 8)));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "sd false  reg" =
   <span data-count="1">t</span>est (Sd (SP,  (SP, 8)) = Sd (SP,  (A 0, 8)));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "sd false  imm" =
   <span data-count="1">t</span>est (Sd (SP,  (SP, 8)) = Sd (SP,  (SP, 16)));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "mv" =
   <span data-count="1">t</span>est (Mv (SP, A 0) = Mv (SP, A 0));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "mv false" =
   <span data-count="1">t</span>est (Mv (SP, A 0) = Mv (A 0, SP));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "comment" =
   <span data-count="1">t</span>est (Comment "test comment" = Comment "test comment");
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "comment false" =
   <span data-count="1">t</span>est (Comment "test comment" = Comment "different comment");
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "label" =
   <span data-count="1">t</span>est (Label "label1" = Label "label1");
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "label false" =
   <span data-count="1">t</span>est (Label "label1" = Label "label2");
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "call" =
   <span data-count="1">t</span>est (Call "func1" = Call "func1");
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "call false" =
   <span data-count="1">t</span>est (Call "func1" = Call "func2");
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "j" =
   <span data-count="1">t</span>est (J "label1" = J "label1");
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "j false" =
   <span data-count="1">t</span>est (J "label1" = J "label2");
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "ecall" =
   <span data-count="1">t</span>est (Ecall = Ecall);
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "ecall false" =
   <span data-count="1">t</span>est (Ecall = Ret);
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "ret" =
   <span data-count="1">t</span>est (Ret = Ret);
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "ret false" =
   <span data-count="1">t</span>est (Ret = Ecall);
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "la" =
   <span data-count="1">t</span>est (La (SP, "func1") = La (SP, "func1"));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "la false reg" =
   <span data-count="1">t</span>est (La (SP, "func1") = La (A 0, "func1"));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "la false label" =
   <span data-count="1">t</span>est (La (SP, "func1") = La (SP, "func2"));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "slli" =
   <span data-count="1">t</span>est (Slli (SP, A 0, 4) = Slli (SP, A 0, 4));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "slli false reg dest" =
   <span data-count="1">t</span>est (Slli (SP, A 0, 4) = Slli (A 0, A 0, 4));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "slli false reg src" =
   <span data-count="1">t</span>est (Slli (SP, A 0, 4) = Slli (SP, SP, 4));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "slli false imm" =
   <span data-count="1">t</span>est (Slli (SP, A 0, 4) = Slli (SP, A 0, 8));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "srai" =
   <span data-count="1">t</span>est (Srai (SP, A 0, 4) = Srai (SP, A 0, 4));
-  <span data-count="1">[</span>%expect {| true |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| true |}<span data-count="17">]</span>
 
 let%expect_test "srai false reg dest" =
   <span data-count="1">t</span>est (Srai (SP, A 0, 4) = Srai (A 0, A 0, 4));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "srai false reg src" =
   <span data-count="1">t</span>est (Srai (SP, A 0, 4) = Srai (SP, SP, 4));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 
 let%expect_test "srai false imm" =
   <span data-count="1">t</span>est (Srai (SP, A 0, 4) = Srai (SP, A 0, 8));
-  <span data-count="1">[</span>%expect {| false |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect {| false |}<span data-count="17">]</span>
 </code></pre>
       </div>
     </div>

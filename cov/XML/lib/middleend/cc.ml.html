@@ -725,33 +725,33 @@ let std_lib_names =
 ;;
 
 let rec pattern_vars_list acc = function
-  | <span data-count="1700">P</span>at_var v -&gt; v :: acc
+  | <span data-count="1879">P</span>at_var v -&gt; v :: acc
   | <span data-count="2">P</span>at_construct (_, Some p) -&gt; pattern_vars_list acc p
   | <span data-count="113">P</span>at_tuple (p1, p2, ps) -&gt; List.fold_left pattern_vars_list acc (p1 :: p2 :: ps)
   | <span data-count="0">P</span>at_constraint (p, _) -&gt; pattern_vars_list acc p
-  | <span data-count="114">P</span>at_any | <span data-count="0">P</span>at_constant _ | <span data-count="8">P</span>at_construct (_, None) -&gt; acc
+  | <span data-count="118">P</span>at_any | <span data-count="0">P</span>at_constant _ | <span data-count="8">P</span>at_construct (_, None) -&gt; acc
 ;;
 
-let pattern_vars p = <span data-count="1661">p</span>attern_vars_list [] p
+let pattern_vars p = <span data-count="1844">p</span>attern_vars_list [] p
 
 let construct_fun patterns body =
-  <span data-count="327">m</span>atch patterns with
+  <span data-count="398">m</span>atch patterns with
   | <span data-count="0">[</span>] -&gt; body
-  | <span data-count="327">h</span>d :: tl -&gt; Exp_fun ((hd, tl), body)
+  | <span data-count="398">h</span>d :: tl -&gt; Exp_fun ((hd, tl), body)
 ;;
 
 (* Recursively computes the set of free variables in expression. *)
 let rec free_vars_in bound_vars = function
-  | <span data-count="1879">E</span>xp_ident id when SSet.me<span data-count="1879">m</span> id bound_vars -&gt; <span data-count="1235">S</span>Set.empty
-  | <span data-count="644">E</span>xp_ident id -&gt; SSet.singleton id
+  | <span data-count="2023">E</span>xp_ident id when SSet.me<span data-count="2023">m</span> id bound_vars -&gt; <span data-count="1354">S</span>Set.empty
+  | <span data-count="669">E</span>xp_ident id -&gt; SSet.singleton id
   | <span data-count="435">E</span>xp_constant _ | <span data-count="0">E</span>xp_construct (_, None) -&gt; SSet.empty
-  | <span data-count="532">E</span>xp_tuple (e1, e2, es) -&gt;
+  | <span data-count="41">E</span>xp_tuple (e1, e2, es) -&gt;
     List.fold_left
-      (fun acc e -&gt; <span data-count="1066">S</span>Set.union acc (free_vars_i<span data-count="1066">n</span> bound_vars e))
+      (fun acc e -&gt; <span data-count="84">S</span>Set.union acc (free_vars_i<span data-count="84">n</span> bound_vars e))
       SSet.empty
       (e1 :: e2 :: es)
-  | <span data-count="1042">E</span>xp_apply (e1, e2) -&gt;
-    SSet.union (free_vars_i<span data-count="1042">n</span> bound_vars e1) (free_vars_i<span data-count="1042">n</span> bound_vars e2)
+  | <span data-count="1606">E</span>xp_apply (e1, e2) -&gt;
+    SSet.union (free_vars_i<span data-count="1606">n</span> bound_vars e1) (free_vars_i<span data-count="1606">n</span> bound_vars e2)
   | <span data-count="0">E</span>xp_construct (_, Some e) -&gt; free_vars_in bound_vars e
   | <span data-count="0">E</span>xp_constraint (e, _) -&gt; free_vars_in bound_vars e
   | <span data-count="37">E</span>xp_fun ((p, ps), body) -&gt;
@@ -816,41 +816,41 @@ let rec free_vars_in bound_vars = function
 
 (* main function *)
 let rec closure_expr toplvl_set env expr =
-  <span data-count="6101">m</span>atch expr with
+  <span data-count="6630">m</span>atch expr with
   (* if id is already converted functions - apply it to free vars *)
-  | <span data-count="2427">E</span>xp_ident id -&gt;
+  | <span data-count="2651">E</span>xp_ident id -&gt;
     (match SMap.find_opt id env with
-     | <span data-count="425">S</span>ome free_vars when not (SSet.is_empt<span data-count="425">y</span> free_vars) -&gt;
+     | <span data-count="437">S</span>ome free_vars when not (SSet.is_empt<span data-count="437">y</span> free_vars) -&gt;
        <span data-count="15">S</span>Set.fold (fun fv acc -&gt; <span data-count="20">E</span>xp_apply (acc, Exp_ident fv)) free_vars (Exp_ident id)
-     | <span data-count="2412">_</span> -&gt; expr)
+     | <span data-count="2636">_</span> -&gt; expr)
   (* conversion `fun p1 ... -&gt; body` *)
-  | <span data-count="24">E</span>xp_fun ((p, ps), body) -&gt;
+  | <span data-count="47">E</span>xp_fun ((p, ps), body) -&gt;
     let patterns = p :: ps in
     let fun_bound_vars =
       List.fold_left
-        (fun acc p -&gt; <span data-count="24">S</span>Set.union acc (SSet.of_lis<span data-count="24">t</span> (pattern_var<span data-count="24">s</span> p)))
+        (fun acc p -&gt; <span data-count="47">S</span>Set.union acc (SSet.of_lis<span data-count="47">t</span> (pattern_var<span data-count="47">s</span> p)))
         SSet.empty
         patterns
     in
-    <span data-count="24">l</span>et free_vars = free_vars_in fun_bound_vars body in
-    <span data-count="24">l</span>et captured_vars = SSet.diff free_vars toplvl_set in
+    <span data-count="47">l</span>et free_vars = free_vars_in fun_bound_vars body in
+    <span data-count="47">l</span>et captured_vars = SSet.diff free_vars toplvl_set in
     (* let captured_vars = SSet.filter (fun v -&gt; not (List.mem v std_lib_names)) free_vars in *)
-    <span data-count="24">l</span>et captured_vars_list = SSet.elements captured_vars in
-    <span data-count="24">l</span>et new_pats_for_capture = List.map (fun v -&gt; <span data-count="20">P</span>at_var v) captured_vars_list in
-    <span data-count="24">l</span>et saturated_patterns = new_pats_for_capture @ patterns in
+    <span data-count="47">l</span>et captured_vars_list = SSet.elements captured_vars in
+    <span data-count="47">l</span>et new_pats_for_capture = List.map (fun v -&gt; <span data-count="20">P</span>at_var v) captured_vars_list in
+    <span data-count="47">l</span>et saturated_patterns = new_pats_for_capture @ patterns in
     let new_body = closure_expr toplvl_set env body in
-    <span data-count="24">l</span>et new_fun = construct_fun saturated_patterns new_body in
-    <span data-count="24">L</span>ist.fold_left
+    <span data-count="47">l</span>et new_fun = construct_fun saturated_patterns new_body in
+    <span data-count="47">L</span>ist.fold_left
       (fun acc_expr fv -&gt; <span data-count="20">E</span>xp_apply (acc_expr, Exp_ident fv))
       new_fun
       captured_vars_list
-  | <span data-count="348">E</span>xp_let (rec_flag, (vb, vbs), body) -&gt;
+  | <span data-count="364">E</span>xp_let (rec_flag, (vb, vbs), body) -&gt;
     let bindings = vb :: vbs in
     let new_bindings, new_env = transform_bindings toplvl_set env rec_flag bindings in
-    <span data-count="348">l</span>et new_body = closure_expr toplvl_set new_env body in
-    <span data-count="348">(</span>match new_bindings with
+    <span data-count="364">l</span>et new_body = closure_expr toplvl_set new_env body in
+    <span data-count="364">(</span>match new_bindings with
      | <span data-count="0">[</span>] -&gt; new_body
-     | <span data-count="348">h</span>d :: tl -&gt; Exp_let (rec_flag, (hd, tl), new_body))
+     | <span data-count="364">h</span>d :: tl -&gt; Exp_let (rec_flag, (hd, tl), new_body))
   | <span data-count="0">E</span>xp_function (case, cases) -&gt;
     let fresh_arg_name = "__fun_arg" in
     let desugared_expr =
@@ -858,11 +858,11 @@ let rec closure_expr toplvl_set env expr =
         ((Pat_var fresh_arg_name, []), Exp_match (Exp_ident fresh_arg_name, (case, cases)))
     in
     closure_expr toplvl_set env desugared_expr
-  | <span data-count="1532">E</span>xp_apply (e1, e2) -&gt;
-    Exp_apply (closure_exp<span data-count="1532">r</span> toplvl_set env e1, closure_exp<span data-count="1532">r</span> toplvl_set env e2)
-  | <span data-count="645">E</span>xp_tuple (e1, e2, es) -&gt;
+  | <span data-count="2273">E</span>xp_apply (e1, e2) -&gt;
+    Exp_apply (closure_exp<span data-count="2273">r</span> toplvl_set env e1, closure_exp<span data-count="2273">r</span> toplvl_set env e2)
+  | <span data-count="105">E</span>xp_tuple (e1, e2, es) -&gt;
     let f = closure_expr toplvl_set env in
-    <span data-count="645">E</span>xp_tuple (<span data-count="645">f</span> e1, <span data-count="645">f</span> e2, List.ma<span data-count="645">p</span> f es)
+    <span data-count="105">E</span>xp_tuple (<span data-count="105">f</span> e1, <span data-count="105">f</span> e2, List.ma<span data-count="105">p</span> f es)
   | <span data-count="176">E</span>xp_if (e1, e2, e3_opt) -&gt;
     let f = closure_expr toplvl_set env in
     <span data-count="176">E</span>xp_if (<span data-count="176">f</span> e1, <span data-count="176">f</span> e2, Option.ma<span data-count="176">p</span> f e3_opt)
@@ -874,66 +874,66 @@ let rec closure_expr toplvl_set env expr =
     let case' = transform_case case in
     <span data-count="1">l</span>et cases' = List.map transform_case cases in
     <span data-count="1">E</span>xp_match (e', (case', cases'))
-  | <span data-count="948">E</span>xp_constant _ -&gt; expr
+  | <span data-count="1013">E</span>xp_constant _ -&gt; expr
   | <span data-count="0">E</span>xp_construct (id, Some e) -&gt; Exp_construct (id, Some (closure_exp<span data-count="0">r</span> toplvl_set env e))
   | <span data-count="0">E</span>xp_construct (_, None) -&gt; expr
   | <span data-count="0">E</span>xp_constraint (e, t) -&gt; Exp_constraint (closure_exp<span data-count="0">r</span> toplvl_set env e, t)
 
 and transform_bindings toplvl_set env rec_flag bindings =
-  <span data-count="723">l</span>et transform_one binding env =
-    <span data-count="792">l</span>et { pat; expr } = binding in
+  <span data-count="787">l</span>et transform_one binding env =
+    <span data-count="856">l</span>et { pat; expr } = binding in
     match pat, expr with
-    | <span data-count="303">P</span>at_var v, Exp_fun ((p, ps), body) -&gt;
+    | <span data-count="351">P</span>at_var v, Exp_fun ((p, ps), body) -&gt;
       let patterns = p :: ps in
       let bound_in_fun =
         List.fold_left
-          (fun acc p -&gt; <span data-count="568">S</span>Set.union acc (SSet.of_lis<span data-count="568">t</span> (pattern_var<span data-count="568">s</span> p)))
+          (fun acc p -&gt; <span data-count="664">S</span>Set.union acc (SSet.of_lis<span data-count="664">t</span> (pattern_var<span data-count="664">s</span> p)))
           SSet.empty
           patterns
       in
-      <span data-count="303">l</span>et bound_for_body =
-        if rec_flag = Recursive then <span data-count="138">S</span>Set.ad<span data-count="138">d</span> v bound_in_fun else <span data-count="165">b</span>ound_in_fun
+      <span data-count="351">l</span>et bound_for_body =
+        if rec_flag = Recursive then <span data-count="138">S</span>Set.ad<span data-count="138">d</span> v bound_in_fun else <span data-count="213">b</span>ound_in_fun
       in
       let free_vars = free_vars_in bound_for_body body in
-      <span data-count="303">l</span>et captured_vars = SSet.diff free_vars toplvl_set in
+      <span data-count="351">l</span>et captured_vars = SSet.diff free_vars toplvl_set in
       (* let captured_vars =
         SSet.filter (fun v -&gt; not (List.mem v std_lib_names)) free_vars
       in *)
-      <span data-count="303">l</span>et captured_vars_list = SSet.elements captured_vars in
-      <span data-count="303">l</span>et new_pats_for_capture = List.map (fun v -&gt; <span data-count="20">P</span>at_var v) captured_vars_list in
-      <span data-count="303">l</span>et saturated_patterns = new_pats_for_capture @ patterns in
+      <span data-count="351">l</span>et captured_vars_list = SSet.elements captured_vars in
+      <span data-count="351">l</span>et new_pats_for_capture = List.map (fun v -&gt; <span data-count="20">P</span>at_var v) captured_vars_list in
+      <span data-count="351">l</span>et saturated_patterns = new_pats_for_capture @ patterns in
       let env_for_body = SMap.add v captured_vars env in
-      <span data-count="303">l</span>et new_body = closure_expr toplvl_set env_for_body body in
-      <span data-count="303">l</span>et new_fun = construct_fun saturated_patterns new_body in
-      <span data-count="303">l</span>et final_expr =
+      <span data-count="351">l</span>et new_body = closure_expr toplvl_set env_for_body body in
+      <span data-count="351">l</span>et new_fun = construct_fun saturated_patterns new_body in
+      <span data-count="351">l</span>et final_expr =
         List.fold_left
           (fun acc fv -&gt; <span data-count="20">E</span>xp_apply (acc, Exp_ident fv))
           new_fun
           captured_vars_list
       in
-      <span data-count="303">l</span>et new_binding = { pat; expr = final_expr } in
+      <span data-count="351">l</span>et new_binding = { pat; expr = final_expr } in
       let final_env = SMap.add v captured_vars env in
-      <span data-count="303">n</span>ew_binding, final_env
-    | <span data-count="489">_</span> -&gt;
+      <span data-count="351">n</span>ew_binding, final_env
+    | <span data-count="505">_</span> -&gt;
       let new_expr = closure_expr toplvl_set env expr in
-      <span data-count="489">l</span>et new_binding = { pat; expr = new_expr } in
+      <span data-count="505">l</span>et new_binding = { pat; expr = new_expr } in
       let bound_vars = pattern_vars pat in
-      <span data-count="489">l</span>et final_env =
-        List.fold_left (fun acc v -&gt; <span data-count="519">S</span>Map.add v SSet.empty acc) env bound_vars
+      <span data-count="505">l</span>et final_env =
+        List.fold_left (fun acc v -&gt; <span data-count="531">S</span>Map.add v SSet.empty acc) env bound_vars
       in
-      <span data-count="489">n</span>ew_binding, final_env
+      <span data-count="505">n</span>ew_binding, final_env
   in
   if rec_flag = Nonrecursive
-  then <span data-count="654">(</span>
+  then <span data-count="718">(</span>
     let transformed, final_env =
       List.fold_left
         (fun (bindings_acc, current_env) b -&gt;
-           <span data-count="654">l</span>et new_b, next_env = transform_one b current_env in
-           <span data-count="654">n</span>ew_b :: bindings_acc, next_env)
+           <span data-count="718">l</span>et new_b, next_env = transform_one b current_env in
+           <span data-count="718">n</span>ew_b :: bindings_acc, next_env)
         ([], env)
         bindings
     in
-    <span data-count="654">L</span>ist.re<span data-count="654">v</span> transformed, final_env)
+    <span data-count="718">L</span>ist.re<span data-count="718">v</span> transformed, final_env)
   else <span data-count="69">(</span>
     let p_vars = List.concat_map (fun b -&gt; <span data-count="69">p</span>attern_vars b.pat) bindings in
     <span data-count="69">l</span>et env_rec = List.fold_left (fun e v -&gt; <span data-count="69">S</span>Map.add v SSet.empty e) env p_vars in
@@ -957,17 +957,17 @@ and transform_bindings toplvl_set env rec_flag bindings =
 ;;
 
 let closure_structure_item_result toplvl_set = function
-  | <span data-count="2">S</span>tr_eval e -&gt;
+  | <span data-count="26">S</span>tr_eval e -&gt;
     let e' = closure_expr toplvl_set SMap.empty e in
-    <span data-count="2">O</span>k (Str_eval e', toplvl_set)
-  | <span data-count="375">S</span>tr_value (rec_flag, (vb, vbs)) -&gt;
+    <span data-count="26">O</span>k (Str_eval e', toplvl_set)
+  | <span data-count="423">S</span>tr_value (rec_flag, (vb, vbs)) -&gt;
     let bindings = vb :: vbs in
     let new_bindings, _ = transform_bindings toplvl_set SMap.empty rec_flag bindings in
-    <span data-count="375">l</span>et new_bound_names = List.concat_map (fun b -&gt; <span data-count="375">p</span>attern_vars b.pat) new_bindings in
-    <span data-count="375">l</span>et new_toplvl_set = SSet.union toplvl_set (SSet.of_lis<span data-count="375">t</span> new_bound_names) in
-    <span data-count="375">(</span>match new_bindings with
+    <span data-count="423">l</span>et new_bound_names = List.concat_map (fun b -&gt; <span data-count="423">p</span>attern_vars b.pat) new_bindings in
+    <span data-count="423">l</span>et new_toplvl_set = SSet.union toplvl_set (SSet.of_lis<span data-count="423">t</span> new_bound_names) in
+    <span data-count="423">(</span>match new_bindings with
      | <span data-count="0">[</span>] -&gt; Error Empty_toplevel_let
-     | <span data-count="375">h</span>d :: tl -&gt; Ok (Str_value (rec_flag, (hd, tl)), new_toplvl_set))
+     | <span data-count="423">h</span>d :: tl -&gt; Ok (Str_value (rec_flag, (hd, tl)), new_toplvl_set))
 ;;
 
 let closure_structure_item toplvl_set item =
@@ -984,19 +984,19 @@ let closure_structure_item toplvl_set item =
 ;;
 
 let cc_program_result (ast : program) : (program, cc_error) result =
-  <span data-count="163">l</span>et toplvl0 = SSet.of_list std_lib_names in
-  <span data-count="163">l</span>et rec go acc current_top = function
-    | <span data-count="163">[</span>] -&gt; Ok (List.re<span data-count="163">v</span> acc)
-    | <span data-count="377">i</span>tem :: rest -&gt;
-      let* new_item, next_top = closure_structure_item_resul<span data-count="377">t</span> current_top item in
-      <span data-count="377">g</span>o (new_item :: acc) next_top rest
+  <span data-count="198">l</span>et toplvl0 = SSet.of_list std_lib_names in
+  <span data-count="198">l</span>et rec go acc current_top = function
+    | <span data-count="198">[</span>] -&gt; Ok (List.re<span data-count="198">v</span> acc)
+    | <span data-count="449">i</span>tem :: rest -&gt;
+      let* new_item, next_top = closure_structure_item_resul<span data-count="449">t</span> current_top item in
+      <span data-count="449">g</span>o (new_item :: acc) next_top rest
   in
   go [] toplvl0 ast
 ;;
 
 let cc_program (ast : program) : program =
-  <span data-count="163">m</span>atch cc_program_result ast with
-  | <span data-count="163">O</span>k p -&gt; p
+  <span data-count="198">m</span>atch cc_program_result ast with
+  | <span data-count="198">O</span>k p -&gt; p
   | <span data-count="0">E</span>rror _e -&gt; ast
 ;;
 </code></pre>

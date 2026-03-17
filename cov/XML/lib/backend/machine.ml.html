@@ -525,47 +525,47 @@
 (** SPDX-License-Identifier: LGPL-3.0-or-later *)
 
 <span data-count="0">t</span>ype reg =
-  <span data-count="724">|</span> A of int (*function args*)
-  <span data-count="1922">|</span> T of int (*temporary*)
-  <span data-count="424">|</span> S of int (*saved*)
+  <span data-count="802">|</span> A of int (*function args*)
+  <span data-count="2126">|</span> T of int (*temporary*)
+  <span data-count="486">|</span> S of int (*saved*)
   <span data-count="0">|</span> RA
-  <span data-count="89">|</span> SP
+  <span data-count="110">|</span> SP
   <span data-count="0">|</span> Zero
 [@@deriving eq]
 
 let gen_reg =
-  QCheck.Gen.oneof_weighte<span data-count="61">d</span>
-    [ 1, QCheck.Gen.ma<span data-count="61">p</span> (fun gen0 -&gt; <span data-count="139">A</span> gen0) QCheck.Gen.(0 -<span data-count="61">-</span> 7)
-    ; 1, QCheck.Gen.ma<span data-count="61">p</span> (fun gen0 -&gt; <span data-count="140">T</span> gen0) QCheck.Gen.(0 -<span data-count="61">-</span> 6)
-    ; 1, QCheck.Gen.ma<span data-count="61">p</span> (fun gen0 -&gt; <span data-count="125">S</span> gen0) QCheck.Gen.(0 -<span data-count="61">-</span> 11)
-    ; 1, QCheck.Gen.pur<span data-count="61">e</span> RA
-    ; 1, QCheck.Gen.pur<span data-count="61">e</span> SP
-    ; 1, QCheck.Gen.pur<span data-count="61">e</span> Zero
+  QCheck.Gen.oneof_weighte<span data-count="69">d</span>
+    [ 1, QCheck.Gen.ma<span data-count="69">p</span> (fun gen0 -&gt; <span data-count="139">A</span> gen0) QCheck.Gen.(0 -<span data-count="69">-</span> 7)
+    ; 1, QCheck.Gen.ma<span data-count="69">p</span> (fun gen0 -&gt; <span data-count="140">T</span> gen0) QCheck.Gen.(0 -<span data-count="69">-</span> 6)
+    ; 1, QCheck.Gen.ma<span data-count="69">p</span> (fun gen0 -&gt; <span data-count="125">S</span> gen0) QCheck.Gen.(0 -<span data-count="69">-</span> 11)
+    ; 1, QCheck.Gen.pur<span data-count="69">e</span> RA
+    ; 1, QCheck.Gen.pur<span data-count="69">e</span> SP
+    ; 1, QCheck.Gen.pur<span data-count="69">e</span> Zero
     ]
 ;;
 
 <span data-count="0">t</span>ype offset = reg * (int[@gen QCheck.Gen.nat_small]) [@@deriving eq]
 
 let gen_offset =
-  QCheck.Gen.ma<span data-count="61">p</span>
+  QCheck.Gen.ma<span data-count="69">p</span>
     (fun (gen0, gen1) -&gt; <span data-count="38">g</span>en0, gen1)
-    (QCheck.Gen.pai<span data-count="61">r</span> gen_reg QCheck.Gen.nat_small)
+    (QCheck.Gen.pai<span data-count="69">r</span> gen_reg QCheck.Gen.nat_small)
 ;;
 
 let pp_reg ppf =
-  <span data-count="7166">l</span>et open Format in
+  <span data-count="7724">l</span>et open Format in
   function
-  | <span data-count="1342">A</span> n -&gt; fprintf ppf "a%d" n
-  | <span data-count="1995">T</span> n -&gt; fprintf ppf "t%d" n
-  | <span data-count="1248">S</span> n -&gt; fprintf ppf "s%d" n
+  | <span data-count="1430">A</span> n -&gt; fprintf ppf "a%d" n
+  | <span data-count="2096">T</span> n -&gt; fprintf ppf "t%d" n
+  | <span data-count="1353">S</span> n -&gt; fprintf ppf "s%d" n
   | <span data-count="154">Z</span>ero -&gt; fprintf ppf "zero"
-  | <span data-count="281">R</span>A -&gt; fprintf ppf "ra"
-  | <span data-count="2146">S</span>P -&gt; fprintf ppf "sp"
+  | <span data-count="315">R</span>A -&gt; fprintf ppf "ra"
+  | <span data-count="2376">S</span>P -&gt; fprintf ppf "sp"
 ;;
 
-let pp_offset ppf (reg, off) = <span data-count="1619">F</span>ormat.fprintf ppf "%d(%a)" off pp_reg reg
-let gen_label = QCheck.Gen.retur<span data-count="61">n</span> "label"
-let gen_comm = QCheck.Gen.retur<span data-count="61">n</span> "comment"
+let pp_offset ppf (reg, off) = <span data-count="1744">F</span>ormat.fprintf ppf "%d(%a)" off pp_reg reg
+let gen_label = QCheck.Gen.retur<span data-count="69">n</span> "label"
+let gen_comm = QCheck.Gen.retur<span data-count="69">n</span> "comment"
 
 <span data-count="0">t</span>ype instr =
   <span data-count="0">|</span> Addi of reg * reg * (int[@gen QCheck.Gen.nat_small]<span data-count="0">)</span> (* ADD immediate *)
@@ -599,154 +599,154 @@ let gen_comm = QCheck.Gen.retur<span data-count="61">n</span> "comment"
 [@@deriving eq]
 
 let gen_instr =
-  QCheck.Gen.oneof_weighte<span data-count="61">d</span>
+  QCheck.Gen.oneof_weighte<span data-count="69">d</span>
     [ ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="10">A</span>ddi (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="18">A</span>dd (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg gen_reg) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="24">S</span>ub (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg gen_reg) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="19">M</span>ul (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg gen_reg) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="19">S</span>lt (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg gen_reg) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="16">S</span>eqz (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="61">r</span> gen_reg gen_reg) )
+          (QCheck.Gen.pai<span data-count="69">r</span> gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="19">S</span>nez (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="61">r</span> gen_reg gen_reg) )
+          (QCheck.Gen.pai<span data-count="69">r</span> gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="19">X</span>or (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg gen_reg) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg gen_reg) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="19">X</span>ori (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="22">B</span>eq (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg gen_label) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg gen_label) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="22">B</span>lt (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg gen_label) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg gen_label) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="20">B</span>le (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg gen_label) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg gen_label) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="24">L</span>la (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="61">r</span> gen_reg gen_label) )
+          (QCheck.Gen.pai<span data-count="69">r</span> gen_reg gen_label) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="25">L</span>i (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="61">r</span> gen_reg QCheck.Gen.nat_small) )
+          (QCheck.Gen.pai<span data-count="69">r</span> gen_reg QCheck.Gen.nat_small) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="19">L</span>d (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="61">r</span> gen_reg gen_offset) )
+          (QCheck.Gen.pai<span data-count="69">r</span> gen_reg gen_offset) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="19">S</span>d (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="61">r</span> gen_reg gen_offset) )
+          (QCheck.Gen.pai<span data-count="69">r</span> gen_reg gen_offset) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="34">M</span>v (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="61">r</span> gen_reg gen_reg) )
-    ; 1, QCheck.Gen.ma<span data-count="61">p</span> (fun gen0 -&gt; <span data-count="25">C</span>omment gen0) gen_comm
-    ; 1, QCheck.Gen.ma<span data-count="61">p</span> (fun gen0 -&gt; <span data-count="19">L</span>abel gen0) gen_label
-    ; 1, QCheck.Gen.ma<span data-count="61">p</span> (fun gen0 -&gt; <span data-count="20">C</span>all gen0) gen_label
-    ; 1, QCheck.Gen.ma<span data-count="61">p</span> (fun gen0 -&gt; <span data-count="26">J</span> gen0) gen_label
-    ; 1, QCheck.Gen.pur<span data-count="61">e</span> Ecall
-    ; 1, QCheck.Gen.pur<span data-count="61">e</span> Ret
+          (QCheck.Gen.pai<span data-count="69">r</span> gen_reg gen_reg) )
+    ; 1, QCheck.Gen.ma<span data-count="69">p</span> (fun gen0 -&gt; <span data-count="25">C</span>omment gen0) gen_comm
+    ; 1, QCheck.Gen.ma<span data-count="69">p</span> (fun gen0 -&gt; <span data-count="19">L</span>abel gen0) gen_label
+    ; 1, QCheck.Gen.ma<span data-count="69">p</span> (fun gen0 -&gt; <span data-count="20">C</span>all gen0) gen_label
+    ; 1, QCheck.Gen.ma<span data-count="69">p</span> (fun gen0 -&gt; <span data-count="26">J</span> gen0) gen_label
+    ; 1, QCheck.Gen.pur<span data-count="69">e</span> Ecall
+    ; 1, QCheck.Gen.pur<span data-count="69">e</span> Ret
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1) -&gt; <span data-count="15">L</span>a (gen0, gen1))
-          (QCheck.Gen.pai<span data-count="61">r</span> gen_reg gen_label) )
+          (QCheck.Gen.pai<span data-count="69">r</span> gen_reg gen_label) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="14">S</span>lli (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
     ; ( 1
-      , QCheck.Gen.ma<span data-count="61">p</span>
+      , QCheck.Gen.ma<span data-count="69">p</span>
           (fun (gen0, gen1, gen2) -&gt; <span data-count="14">S</span>rai (gen0, gen1, gen2))
-          (QCheck.Gen.tripl<span data-count="61">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
+          (QCheck.Gen.tripl<span data-count="69">e</span> gen_reg gen_reg QCheck.Gen.nat_small) )
     ]
 ;;
 
 let pp_instr ppf =
-  <span data-count="4443">l</span>et open Format in
+  <span data-count="4811">l</span>et open Format in
   function
-  | <span data-count="861">A</span>ddi (r1, r2, im) -&gt; fprintf ppf "addi %a, %a, %d" pp_reg r1 pp_reg r2 im
-  | <span data-count="60">A</span>dd (rd, r1, r2) -&gt; fprintf ppf "add %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
-  | <span data-count="31">S</span>ub (rd, r1, r2) -&gt; fprintf ppf "sub %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
-  | <span data-count="23">M</span>ul (rd, r1, r2) -&gt; fprintf ppf "mul %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
+  | <span data-count="955">A</span>ddi (r1, r2, im) -&gt; fprintf ppf "addi %a, %a, %d" pp_reg r1 pp_reg r2 im
+  | <span data-count="63">A</span>dd (rd, r1, r2) -&gt; fprintf ppf "add %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
+  | <span data-count="34">S</span>ub (rd, r1, r2) -&gt; fprintf ppf "sub %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
+  | <span data-count="24">M</span>ul (rd, r1, r2) -&gt; fprintf ppf "mul %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
   | <span data-count="21">S</span>lt (rd, r1, r2) -&gt; fprintf ppf "slt %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
   | <span data-count="31">X</span>or (rd, r1, r2) -&gt; fprintf ppf "xor %a, %a, %a" pp_reg rd pp_reg r1 pp_reg r2
   | <span data-count="19">X</span>ori (rd, r1, im) -&gt; fprintf ppf "xori %a, %a, %d" pp_reg rd pp_reg r1 im
-  | <span data-count="364">L</span>i (r1, n) -&gt; fprintf ppf "li %a, %d" pp_reg r1 n
+  | <span data-count="390">L</span>i (r1, n) -&gt; fprintf ppf "li %a, %d" pp_reg r1 n
   | <span data-count="19">E</span>call -&gt; fprintf ppf "ecall"
-  | <span data-count="370">C</span>all s -&gt; fprintf ppf "call %s" s
-  | <span data-count="104">R</span>et -&gt; fprintf ppf "ret"
+  | <span data-count="405">C</span>all s -&gt; fprintf ppf "call %s" s
+  | <span data-count="125">R</span>et -&gt; fprintf ppf "ret"
   | <span data-count="24">L</span>la (r1, s) -&gt; fprintf ppf "lla %a, %s" pp_reg r1 s
-  | <span data-count="801">L</span>d (r1, offset) -&gt; fprintf ppf "ld %a, %a" pp_reg r1 pp_offset offset
-  | <span data-count="818">S</span>d (r1, offset) -&gt; fprintf ppf "sd %a, %a" pp_reg r1 pp_offset offset
+  | <span data-count="863">L</span>d (r1, offset) -&gt; fprintf ppf "ld %a, %a" pp_reg r1 pp_offset offset
+  | <span data-count="881">S</span>d (r1, offset) -&gt; fprintf ppf "sd %a, %a" pp_reg r1 pp_offset offset
   | <span data-count="28">S</span>eqz (rd, r1) -&gt; fprintf ppf "seqz %a, %a" pp_reg rd pp_reg r1
   | <span data-count="20">S</span>nez (rd, r1) -&gt; fprintf ppf "snez %a, %a" pp_reg rd pp_reg r1
-  | <span data-count="443">M</span>v (r1, r2) -&gt; fprintf ppf "mv %a, %a" pp_reg r1 pp_reg r2
+  | <span data-count="475">M</span>v (r1, r2) -&gt; fprintf ppf "mv %a, %a" pp_reg r1 pp_reg r2
   | <span data-count="35">B</span>eq (r1, r2, s) -&gt; fprintf ppf "beq %a, %a, %s" pp_reg r1 pp_reg r2 s
   | <span data-count="10">B</span>ne (r1, r2, s) -&gt; fprintf ppf "bne %a, %a, %s" pp_reg r1 pp_reg r2 s
   | <span data-count="23">B</span>lt (r1, r2, s) -&gt; fprintf ppf "blt %a, %a, %s" pp_reg r1 pp_reg r2 s
   | <span data-count="21">B</span>le (r1, r2, s) -&gt; fprintf ppf "ble %a, %a, %s" pp_reg r1 pp_reg r2 s
-  | <span data-count="50">L</span>a (r, label) -&gt; fprintf ppf "la %a, %s" pp_reg r label
+  | <span data-count="55">L</span>a (r, label) -&gt; fprintf ppf "la %a, %s" pp_reg r label
   | <span data-count="51">J</span> s -&gt; fprintf ppf "j %s" s
-  | <span data-count="155">L</span>abel s -&gt; fprintf ppf "%s:" s
+  | <span data-count="176">L</span>abel s -&gt; fprintf ppf "%s:" s
   | <span data-count="25">C</span>omment s -&gt; fprintf ppf " # %s" s
   | <span data-count="14">S</span>lli (rd, r1, sh) -&gt; fprintf ppf "slli %a, %a, %d" pp_reg rd pp_reg r1 sh
-  | <span data-count="22">S</span>rai (rd, r1, sh) -&gt; fprintf ppf "srai %a, %a, %d" pp_reg rd pp_reg r1 sh
+  | <span data-count="24">S</span>rai (rd, r1, sh) -&gt; fprintf ppf "srai %a, %a, %d" pp_reg rd pp_reg r1 sh
 ;;
 
-let addi k r1 r2 n = <span data-count="1087">k</span> @@ Addi (r1, r2, n)
-let add k rd r1 r2 = <span data-count="42">k</span> @@ Add (rd, r1, r2)
-let sub k rd r1 r2 = <span data-count="17">k</span> @@ Sub (rd, r1, r2)
-let mul k rd r1 r2 = <span data-count="4">k</span> @@ Mul (rd, r1, r2)
+let addi k r1 r2 n = <span data-count="1217">k</span> @@ Addi (r1, r2, n)
+let add k rd r1 r2 = <span data-count="45">k</span> @@ Add (rd, r1, r2)
+let sub k rd r1 r2 = <span data-count="20">k</span> @@ Sub (rd, r1, r2)
+let mul k rd r1 r2 = <span data-count="5">k</span> @@ Mul (rd, r1, r2)
 let slt k rd r1 r2 = <span data-count="4">k</span> @@ Slt (rd, r1, r2)
 let xor k rd r1 r2 = <span data-count="23">k</span> @@ Xor (rd, r1, r2)
 let xori k rd r1 im = <span data-count="0">k</span> @@ Xori (rd, r1, im)
-let li k r n = <span data-count="349">k</span> (Li (r, n))
+let li k r n = <span data-count="375">k</span> (Li (r, n))
 let ecall k = <span data-count="0">k</span> Ecall
-let call k name = <span data-count="350">k</span> (Call name)
-let ret k = <span data-count="86">k</span> Ret
+let call k name = <span data-count="385">k</span> (Call name)
+let ret k = <span data-count="107">k</span> Ret
 let lla k a s = <span data-count="0">k</span> (Lla (a, s))
-let ld k a b = <span data-count="1024">k</span> (Ld (a, b))
-let sd k a b = <span data-count="1038">k</span> (Sd (a, b))
-let mv k a b = <span data-count="587">k</span> (Mv (a, b))
+let ld k a b = <span data-count="1133">k</span> (Ld (a, b))
+let sd k a b = <span data-count="1148">k</span> (Sd (a, b))
+let mv k a b = <span data-count="647">k</span> (Mv (a, b))
 let beq k r1 r2 r3 = <span data-count="25">k</span> @@ Beq (r1, r2, r3)
 let blt k r1 r2 r3 = <span data-count="0">k</span> @@ Blt (r1, r2, r3)
 let ble k r1 r2 r3 = <span data-count="0">k</span> @@ Ble (r1, r2, r3)
 let seqz k rd r1 = <span data-count="23">k</span> (Seqz (rd, r1))
 let snez k rd r1 = <span data-count="2">k</span> (Snez (rd, r1))
 let j k s = <span data-count="25">k</span> @@ J s
-let la k r label = <span data-count="35">k</span> (La (r, label))
+let la k r label = <span data-count="40">k</span> (La (r, label))
 let comment k s = <span data-count="0">k</span> (Comment s)
-let label k s = <span data-count="136">k</span> (Label s)
+let label k s = <span data-count="157">k</span> (Label s)
 let slli k rd r sh = <span data-count="0">k</span> @@ Slli (rd, r, sh)
-let srai k rd r sh = <span data-count="8">k</span> @@ Srai (rd, r, sh)
+let srai k rd r sh = <span data-count="10">k</span> @@ Srai (rd, r, sh)
 </code></pre>
       </div>
     </div>

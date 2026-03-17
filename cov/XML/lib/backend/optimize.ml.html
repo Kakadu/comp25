@@ -736,42 +736,42 @@ open Base
 open Machine
 
 let rec elim_sd_ld_same_reg = function
-  | <span data-count="293">(</span>Sd (r1, o1), _) :: (Ld (r2, o2), _) :: rest
-    when equal_re<span data-count="293">g</span> r1 r2 &amp;&amp; <span data-count="155">e</span>qual_offse<span data-count="155">t</span> o1 o2 -&gt; <span data-count="137">e</span>lim_sd_ld_same_reg rest
-  | <span data-count="2395">x</span> :: rest -&gt; x :: elim_sd_ld_same_re<span data-count="2395">g</span> rest
-  | <span data-count="21">[</span>] -&gt; []
+  | <span data-count="342">(</span>Sd (r1, o1), _) :: (Ld (r2, o2), _) :: rest
+    when equal_re<span data-count="342">g</span> r1 r2 &amp;&amp; <span data-count="170">e</span>qual_offse<span data-count="170">t</span> o1 o2 -&gt; <span data-count="151">e</span>lim_sd_ld_same_reg rest
+  | <span data-count="2893">x</span> :: rest -&gt; x :: elim_sd_ld_same_re<span data-count="2893">g</span> rest
+  | <span data-count="28">[</span>] -&gt; []
 ;;
 
 let rec elim_sd_ld_same_offset = function
-  | <span data-count="156">(</span>(Sd (r1, o1), _) as i1) :: (Ld (r2, o2), _) :: rest
-    when (not (equal_re<span data-count="156">g</span> r1 r2)) &amp;&amp; <span data-count="138">e</span>qual_offse<span data-count="138">t</span> o1 o2 -&gt;
-    <span data-count="95">l</span>et new_i = Mv (r2, r1), "" in
+  | <span data-count="191">(</span>(Sd (r1, o1), _) as i1) :: (Ld (r2, o2), _) :: rest
+    when (not (equal_re<span data-count="191">g</span> r1 r2)) &amp;&amp; <span data-count="172">e</span>qual_offse<span data-count="172">t</span> o1 o2 -&gt;
+    <span data-count="120">l</span>et new_i = Mv (r2, r1), "" in
     elim_sd_ld_same_offset (i1 :: new_i :: rest)
-  | <span data-count="2395">x</span> :: rest -&gt; x :: elim_sd_ld_same_offse<span data-count="2395">t</span> rest
-  | <span data-count="21">[</span>] -&gt; []
+  | <span data-count="2893">x</span> :: rest -&gt; x :: elim_sd_ld_same_offse<span data-count="2893">t</span> rest
+  | <span data-count="28">[</span>] -&gt; []
 ;;
 
 let rec elim_addi_sd_mv_addi = function
-  | <span data-count="59">(</span>Addi (_, _, aimm1), _)
+  | <span data-count="77">(</span>Addi (_, _, aimm1), _)
     :: (Sd (sr, _), _)
     :: ((Mv (_, mr2), _) as mv_i)
     :: (Addi (_, _, aimm2), _)
     :: rest
-    when aimm1 = <span data-count="59">-</span>aimm2 &amp;&amp; <span data-count="48">e</span>qual_re<span data-count="48">g</span> sr mr2 -&gt; <span data-count="48">e</span>lim_addi_sd_mv_addi (mv_i :: rest)
-  | <span data-count="2251">x</span> :: rest -&gt; x :: elim_addi_sd_mv_add<span data-count="2251">i</span> rest
-  | <span data-count="21">[</span>] -&gt; []
+    when aimm1 = <span data-count="77">-</span>aimm2 &amp;&amp; <span data-count="56">e</span>qual_re<span data-count="56">g</span> sr mr2 -&gt; <span data-count="56">e</span>lim_addi_sd_mv_addi (mv_i :: rest)
+  | <span data-count="2725">x</span> :: rest -&gt; x :: elim_addi_sd_mv_add<span data-count="2725">i</span> rest
+  | <span data-count="28">[</span>] -&gt; []
 ;;
 
 let rec fold_constants = function
   | <span data-count="10">(</span>Li (lid, lii), _) :: (Sub (srd, sr1, sr2), _) :: rest when equal_re<span data-count="10">g</span> lid sr2 -&gt;
     <span data-count="10">l</span>et addi = Addi (srd, sr1, <span data-count="10">-</span>lii), "" in
     fold_constants (addi :: rest)
-  | <span data-count="35">(</span>Addi (aid1, ai1, aii1), _) :: (Addi (aid2, ai2, aii2), _) :: rest
-    when equal_re<span data-count="35">g</span> aid1 ai1 &amp;&amp; <span data-count="26">e</span>qual_re<span data-count="26">g</span> aid1 ai2 -&gt;
+  | <span data-count="43">(</span>Addi (aid1, ai1, aii1), _) :: (Addi (aid2, ai2, aii2), _) :: rest
+    when equal_re<span data-count="43">g</span> aid1 ai1 &amp;&amp; <span data-count="26">e</span>qual_re<span data-count="26">g</span> aid1 ai2 -&gt;
     <span data-count="26">l</span>et addi = Addi (aid2, ai1, aii1 + aii2), "" in
     fold_constants (addi :: rest)
-  | <span data-count="2215">x</span> :: rest -&gt; x :: fold_constant<span data-count="2215">s</span> rest
-  | <span data-count="21">[</span>] -&gt; []
+  | <span data-count="2689">x</span> :: rest -&gt; x :: fold_constant<span data-count="2689">s</span> rest
+  | <span data-count="28">[</span>] -&gt; []
 ;;
 
 let rec fold_branch = function
@@ -812,8 +812,8 @@ let rec fold_branch = function
     <span data-count="1">l</span>et br = Beq (x1, mv1, label), "" in
     fold_branch (li :: br :: rest)
   (* | XOR :: SNEZ :: BEQ *)
-  | <span data-count="2864">x</span> :: rest -&gt; x :: fold_branc<span data-count="2864">h</span> rest
-  | <span data-count="30">[</span>] -&gt; []
+  | <span data-count="3297">x</span> :: rest -&gt; x :: fold_branc<span data-count="3297">h</span> rest
+  | <span data-count="37">[</span>] -&gt; []
 ;;
 
 let is_arg_reg r =
@@ -833,20 +833,20 @@ let reg_used_in_instr reg = function
   | <span data-count="0">M</span>ul (_, r1, r2)
   | <span data-count="0">S</span>lt (_, r1, r2)
   | <span data-count="0">X</span>or (_, r1, r2)
-  | <span data-count="28">S</span>d (r1, (r2, _))
-  | <span data-count="14">L</span>d (r1, (r2, _))
-    when equal_re<span data-count="42">g</span> reg r<span data-count="22">1</span> || equal_re<span data-count="20">g</span> reg r<span data-count="0">2</span> -&gt; <span data-count="22">t</span>rue
+  | <span data-count="35">S</span>d (r1, (r2, _))
+  | <span data-count="15">L</span>d (r1, (r2, _))
+    when equal_re<span data-count="50">g</span> reg r<span data-count="29">1</span> || equal_re<span data-count="21">g</span> reg r<span data-count="0">2</span> -&gt; <span data-count="29">t</span>rue
   | <span data-count="0">S</span>eqz (_, r1)
   | <span data-count="0">S</span>nez (_, r1)
   | <span data-count="0">B</span>eq (_, r1, _)
-  | <span data-count="5">A</span>ddi (_, r1, _)
+  | <span data-count="9">A</span>ddi (_, r1, _)
   | <span data-count="0">X</span>ori (_, r1, _)
-  | <span data-count="25">M</span>v (_, r1)
+  | <span data-count="39">M</span>v (_, r1)
   | <span data-count="0">S</span>lli (_, r1, _)
   | <span data-count="0">S</span>rai (_, r1, _)
-    when equal_re<span data-count="30">g</span> reg r1 -&gt; <span data-count="5">t</span>rue
+    when equal_re<span data-count="48">g</span> reg r1 -&gt; <span data-count="9">t</span>rue
   | <span data-count="37">C</span>all _ when is_arg_re<span data-count="37">g</span> reg -&gt; <span data-count="36">t</span>rue
-  | <span data-count="64">_</span> -&gt; false
+  | <span data-count="79">_</span> -&gt; false
 ;;
 
 let reg_modified_in_instr reg = function
@@ -868,20 +868,20 @@ let reg_modified_in_instr reg = function
   | <span data-count="0">L</span>a (r1, _)
     when equal_re<span data-count="0">g</span> reg r1 -&gt; <span data-count="0">t</span>rue
   | <span data-count="36">C</span>all _ when is_arg_re<span data-count="36">g</span> reg -&gt; <span data-count="36">t</span>rue
-  | <span data-count="22">_</span> -&gt; false
+  | <span data-count="29">_</span> -&gt; false
 ;;
 
 let rec elim_inverse_mv = function
-  | <span data-count="46">(</span>Mv (md1, mv1), _) :: (Mv (md2, mv2), _) :: rest
-    when equal_re<span data-count="46">g</span> md1 mv2 &amp;&amp; <span data-count="17">e</span>qual_re<span data-count="17">g</span> mv1 md2 -&gt; <span data-count="15">e</span>lim_inverse_mv rest
-  | <span data-count="144">(</span>Mv (md1, mv1), _) :: ((i2, _) as i2c) :: (Mv (md2, mv2), _) :: rest
-    when equal_re<span data-count="144">g</span> md1 mv2 &amp;&amp; <span data-count="98">e</span>qual_re<span data-count="98">g</span> mv1 md2 &amp;&amp; <span data-count="89">n</span>ot (reg_used_in_inst<span data-count="89">r</span> md1 i2) -&gt;
-    <span data-count="31">e</span>lim_inverse_mv (i2c :: rest) (* can eliminate both *)
-  | <span data-count="113">(</span>(Mv (md1, mv1), _) as i1) :: ((i2, _) as i2c) :: (Mv (md2, mv2), _) :: rest
-    when equal_re<span data-count="113">g</span> md1 mv2 &amp;&amp; <span data-count="67">e</span>qual_re<span data-count="67">g</span> mv1 md2 &amp;&amp; <span data-count="58">n</span>ot (reg_modified_in_inst<span data-count="58">r</span> md1 i2) -&gt;
-    <span data-count="22">e</span>lim_inverse_mv (i1 :: i2c :: rest) (* can eliminate the second one *)
-  | <span data-count="2101">x</span> :: rest -&gt; x :: elim_inverse_m<span data-count="2101">v</span> rest
-  | <span data-count="21">[</span>] -&gt; []
+  | <span data-count="69">(</span>Mv (md1, mv1), _) :: (Mv (md2, mv2), _) :: rest
+    when equal_re<span data-count="69">g</span> md1 mv2 &amp;&amp; <span data-count="29">e</span>qual_re<span data-count="29">g</span> mv1 md2 -&gt; <span data-count="27">e</span>lim_inverse_mv rest
+  | <span data-count="158">(</span>Mv (md1, mv1), _) :: ((i2, _) as i2c) :: (Mv (md2, mv2), _) :: rest
+    when equal_re<span data-count="158">g</span> md1 mv2 &amp;&amp; <span data-count="110">e</span>qual_re<span data-count="110">g</span> mv1 md2 &amp;&amp; <span data-count="101">n</span>ot (reg_used_in_inst<span data-count="101">r</span> md1 i2) -&gt;
+    <span data-count="36">e</span>lim_inverse_mv (i2c :: rest) (* can eliminate both *)
+  | <span data-count="122">(</span>(Mv (md1, mv1), _) as i1) :: ((i2, _) as i2c) :: (Mv (md2, mv2), _) :: rest
+    when equal_re<span data-count="122">g</span> md1 mv2 &amp;&amp; <span data-count="74">e</span>qual_re<span data-count="74">g</span> mv1 md2 &amp;&amp; <span data-count="65">n</span>ot (reg_modified_in_inst<span data-count="65">r</span> md1 i2) -&gt;
+    <span data-count="29">e</span>lim_inverse_mv (i1 :: i2c :: rest) (* can eliminate the second one *)
+  | <span data-count="2534">x</span> :: rest -&gt; x :: elim_inverse_m<span data-count="2534">v</span> rest
+  | <span data-count="28">[</span>] -&gt; []
 ;;
 
 let rec elim_mv_before_call = function
@@ -889,31 +889,31 @@ let rec elim_mv_before_call = function
     when equal_re<span data-count="28">g</span> ld m1 -&gt;
     <span data-count="28">l</span>et li = Li (md, lii), "" in
     elim_mv_before_call (li :: ci :: rest)
-  | <span data-count="26">(</span>Ld (ld, off), _) :: (Mv (md, m1), _) :: ((Call _, _) as ci) :: rest
-    when equal_re<span data-count="26">g</span> ld m1 -&gt;
-    <span data-count="26">l</span>et li = Ld (md, off), "" in
+  | <span data-count="27">(</span>Ld (ld, off), _) :: (Mv (md, m1), _) :: ((Call _, _) as ci) :: rest
+    when equal_re<span data-count="27">g</span> ld m1 -&gt;
+    <span data-count="27">l</span>et li = Ld (md, off), "" in
     elim_mv_before_call (li :: ci :: rest)
-  | <span data-count="19">(</span>Mv (md1, mv1), _) :: (Mv (md2, mv2), _) :: ((Call _, _) as ci) :: rest
-    when equal_re<span data-count="19">g</span> md1 mv2 -&gt;
+  | <span data-count="20">(</span>Mv (md1, mv1), _) :: (Mv (md2, mv2), _) :: ((Call _, _) as ci) :: rest
+    when equal_re<span data-count="20">g</span> md1 mv2 -&gt;
     <span data-count="2">l</span>et mv = Mv (md2, mv1), "" in
     elim_mv_before_call (mv :: ci :: rest)
-  | <span data-count="2020">x</span> :: rest -&gt; x :: elim_mv_before_cal<span data-count="2020">l</span> rest
-  | <span data-count="21">[</span>] -&gt; []
+  | <span data-count="2452">x</span> :: rest -&gt; x :: elim_mv_before_cal<span data-count="2452">l</span> rest
+  | <span data-count="28">[</span>] -&gt; []
 ;;
 
 let rec fold_mv_smth = function
-  | <span data-count="75">(</span>Mv (md, mv1), _) :: (Sd (sd, off), _) :: rest when equal_re<span data-count="75">g</span> md sd -&gt;
-    <span data-count="75">l</span>et i = Sd (mv1, off), "" in
+  | <span data-count="84">(</span>Mv (md, mv1), _) :: (Sd (sd, off), _) :: rest when equal_re<span data-count="84">g</span> md sd -&gt;
+    <span data-count="84">l</span>et i = Sd (mv1, off), "" in
     fold_mv_smth (i :: rest)
-  | <span data-count="60">(</span>Mv (md, mv1), _) :: (Addi (ad, a1, aimm), _) :: rest when equal_re<span data-count="60">g</span> md a1 -&gt;
+  | <span data-count="76">(</span>Mv (md, mv1), _) :: (Addi (ad, a1, aimm), _) :: rest when equal_re<span data-count="76">g</span> md a1 -&gt;
     <span data-count="10">l</span>et i = Addi (ad, mv1, aimm), "" in
     fold_mv_smth (i :: rest)
-  | <span data-count="9">(</span>Mv (md, mv1), _) :: (Add (ad, a1, a2), _) :: rest
-    when equal_re<span data-count="9">g</span> md a<span data-count="0">1</span> || equal_re<span data-count="9">g</span> md a<span data-count="9">2</span> -&gt;
-    <span data-count="9">l</span>et add = if equal_reg md a1 then <span data-count="0">A</span>dd (ad, mv1, a2), "" else <span data-count="9">A</span>dd (ad, a1, mv1), "" in
+  | <span data-count="11">(</span>Mv (md, mv1), _) :: (Add (ad, a1, a2), _) :: rest
+    when equal_re<span data-count="11">g</span> md a<span data-count="0">1</span> || equal_re<span data-count="11">g</span> md a<span data-count="11">2</span> -&gt;
+    <span data-count="11">l</span>et add = if equal_reg md a1 then <span data-count="0">A</span>dd (ad, mv1, a2), "" else <span data-count="11">A</span>dd (ad, a1, mv1), "" in
     fold_mv_smth (add :: rest)
-  | <span data-count="1926">x</span> :: rest -&gt; x :: fold_mv_smt<span data-count="1926">h</span> rest
-  | <span data-count="21">[</span>] -&gt; []
+  | <span data-count="2347">x</span> :: rest -&gt; x :: fold_mv_smt<span data-count="2347">h</span> rest
+  | <span data-count="28">[</span>] -&gt; []
 ;;
 
 let rec fold_addi_sp = function
@@ -960,7 +960,7 @@ let rec fold_addi_sp = function
     let sdi1 = Sd (r1, (SP, off1 - aimm1 - aimm2)), "" in
     let sdi2 = Sd (r2, (SP, off2 - aimm2)), "" in
     fold_addi_sp (addi :: sdi1 :: sdi2 :: sdi3 :: rest)
-  | <span data-count="15">(</span>Addi (SP, SP, aimm1), _)
+  | <span data-count="19">(</span>Addi (SP, SP, aimm1), _)
     :: (Sd (sd1, (SP, _)), _)
     :: (Addi (SP, SP, aimm2), _)
     :: ((Sd (_, (SP, si2)), _) as sdi2)
@@ -975,7 +975,7 @@ let rec fold_addi_sp = function
     let li = Ld (ld, (SP, aimm1 - limm)), "" in
     let addi = Addi (SP, SP, aimm1 + aimm2), "" in
     fold_addi_sp (li :: addi :: rest)
-  | <span data-count="37">(</span>(Ld (_, (SP, _)), _) as ldi1)
+  | <span data-count="41">(</span>(Ld (_, (SP, _)), _) as ldi1)
     :: (Addi (SP, SP, aimm1), _)
     :: (Ld (ld2, (SP, li2)), _)
     :: (Addi (SP, SP, aimm2), _)
@@ -985,29 +985,29 @@ let rec fold_addi_sp = function
     fold_addi_sp (ldi1 :: ldi2 :: addi :: rest)
   | <span data-count="39">(</span>Addi (SP, SP, aimm1), _) :: ((i, _) as i2) :: (Addi (SP, SP, aimm2), _) :: rest
     when aimm1 = <span data-count="39">-</span>aimm2 &amp;&amp; <span data-count="6">n</span>ot (reg_used_in_inst<span data-count="6">r</span> SP i) -&gt; <span data-count="6">f</span>old_addi_sp (i2 :: rest)
-  | <span data-count="1817">x</span> :: rest -&gt; x :: fold_addi_s<span data-count="1817">p</span> rest
-  | <span data-count="21">[</span>] -&gt; []
+  | <span data-count="2230">x</span> :: rest -&gt; x :: fold_addi_s<span data-count="2230">p</span> rest
+  | <span data-count="28">[</span>] -&gt; []
 ;;
 
 let rec elim_sd_before_ret = function
   | <span data-count="0">(</span>Sd (_, _), _) :: ((Ret, _) as ret) :: rest -&gt; elim_sd_before_ret (ret :: rest)
-  | <span data-count="17">(</span>Sd (_, _), _) :: addi_sp :: ld_ra :: ld_s0 :: ((Ret, _) as ret) :: rest -&gt;
+  | <span data-count="24">(</span>Sd (_, _), _) :: addi_sp :: ld_ra :: ld_s0 :: ((Ret, _) as ret) :: rest -&gt;
     elim_sd_before_ret (addi_sp :: ld_ra :: ld_s0 :: ret :: rest)
-  | <span data-count="32">(</span>Sd (_, (reg, _)), _)
+  | <span data-count="46">(</span>Sd (_, (reg, _)), _)
     :: ((i, _) as ic)
     :: addi_sp
     :: ld_ra
     :: ld_s0
     :: ((Ret, _) as ret)
     :: rest
-    when not (reg_used_in_inst<span data-count="32">r</span> reg i) -&gt;
-    <span data-count="27">e</span>lim_sd_before_ret (ic :: addi_sp :: ld_ra :: ld_s0 :: ret :: rest)
-  | <span data-count="1773">x</span> :: rest -&gt; x :: elim_sd_before_re<span data-count="1773">t</span> rest
-  | <span data-count="21">[</span>] -&gt; []
+    when not (reg_used_in_inst<span data-count="46">r</span> reg i) -&gt;
+    <span data-count="37">e</span>lim_sd_before_ret (ic :: addi_sp :: ld_ra :: ld_s0 :: ret :: rest)
+  | <span data-count="2169">x</span> :: rest -&gt; x :: elim_sd_before_re<span data-count="2169">t</span> rest
+  | <span data-count="28">[</span>] -&gt; []
 ;;
 
 let rec elim_id_fun = function
-  | <span data-count="5">(</span>Addi (SP, SP, _), _)
+  | <span data-count="9">(</span>Addi (SP, SP, _), _)
     :: (Sd (RA, _), _)
     :: (Sd (S 0, _), _)
     :: (Addi (S 0, _, _), _)
@@ -1016,8 +1016,8 @@ let rec elim_id_fun = function
     :: (Ld (S 0, _), _)
     :: ((Ret, _) as ret)
     :: rest -&gt; elim_id_fun (ret :: rest)
-  | <span data-count="1729">x</span> :: rest -&gt; x :: elim_id_fu<span data-count="1729">n</span> rest
-  | <span data-count="21">[</span>] -&gt; []
+  | <span data-count="2097">x</span> :: rest -&gt; x :: elim_id_fu<span data-count="2097">n</span> rest
+  | <span data-count="28">[</span>] -&gt; []
 ;;
 
 let rec elim_mv_before_branch = function
@@ -1033,30 +1033,30 @@ let rec elim_mv_before_branch = function
     when equal_re<span data-count="1">g</span> md br2 &amp;&amp; <span data-count="1">e</span>qual_re<span data-count="1">g</span> ld br1 -&gt;
     <span data-count="1">l</span>et b = Ble (ld, mv1, label), "" in
     fold_branch (li :: b :: rest)
-  | <span data-count="976">x</span> :: rest -&gt; x :: elim_mv_before_branc<span data-count="976">h</span> rest
-  | <span data-count="12">[</span>] -&gt; []
+  | <span data-count="1372">x</span> :: rest -&gt; x :: elim_mv_before_branc<span data-count="1372">h</span> rest
+  | <span data-count="19">[</span>] -&gt; []
 ;;
 
 let peephole code : (instr * string) Queue.t =
-  <span data-count="21">l</span>et code = Queue.to_list code in
-  <span data-count="21">l</span>et optimized = elim_sd_ld_same_reg code in
-  <span data-count="21">l</span>et optimized = elim_sd_ld_same_offset optimized in
-  <span data-count="21">l</span>et optimized = elim_addi_sd_mv_addi optimized in
-  <span data-count="21">l</span>et optimized = fold_constants optimized in
-  <span data-count="21">l</span>et optimized = elim_inverse_mv optimized in
-  <span data-count="21">l</span>et optimized = fold_branch optimized in
-  <span data-count="21">l</span>et optimized = elim_mv_before_call optimized in
-  <span data-count="21">l</span>et optimized = fold_mv_smth optimized in
-  <span data-count="21">l</span>et optimized = fold_addi_sp optimized in
-  <span data-count="21">l</span>et optimized = elim_sd_before_ret optimized in
-  <span data-count="21">l</span>et optimized = elim_mv_before_branch optimized in
-  <span data-count="21">l</span>et optimized = elim_id_fun optimized in
-  <span data-count="21">Q</span>ueue.of_list optimized
+  <span data-count="28">l</span>et code = Queue.to_list code in
+  <span data-count="28">l</span>et optimized = elim_sd_ld_same_reg code in
+  <span data-count="28">l</span>et optimized = elim_sd_ld_same_offset optimized in
+  <span data-count="28">l</span>et optimized = elim_addi_sd_mv_addi optimized in
+  <span data-count="28">l</span>et optimized = fold_constants optimized in
+  <span data-count="28">l</span>et optimized = elim_inverse_mv optimized in
+  <span data-count="28">l</span>et optimized = fold_branch optimized in
+  <span data-count="28">l</span>et optimized = elim_mv_before_call optimized in
+  <span data-count="28">l</span>et optimized = fold_mv_smth optimized in
+  <span data-count="28">l</span>et optimized = fold_addi_sp optimized in
+  <span data-count="28">l</span>et optimized = elim_sd_before_ret optimized in
+  <span data-count="28">l</span>et optimized = elim_mv_before_branch optimized in
+  <span data-count="28">l</span>et optimized = elim_id_fun optimized in
+  <span data-count="28">Q</span>ueue.of_list optimized
 ;;
 
 let optimize code : (instr * string) Queue.t =
-  <span data-count="21">l</span>et code = peephole code in
-  <span data-count="21">c</span>ode
+  <span data-count="28">l</span>et code = peephole code in
+  <span data-count="28">c</span>ode
 ;;
 </code></pre>
       </div>

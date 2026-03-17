@@ -385,79 +385,79 @@ let to_anf_prog str =
 
 let%expect_test "char" =
   <span data-count="1">t</span>o_anf_prog {| 'a' |};
-  <span data-count="1">[</span>%expect{| a;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| a;; |}<span data-count="17">]</span>
 
 
 let%expect_test "int" =
   <span data-count="1">t</span>o_anf_prog {| 1 |};
-  <span data-count="1">[</span>%expect{| 1;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| 1;; |}<span data-count="17">]</span>
 
 
 let%expect_test "str" =
   <span data-count="1">t</span>o_anf_prog {| "Kakadu" |};
-  <span data-count="1">[</span>%expect{| Kakadu;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| Kakadu;; |}<span data-count="17">]</span>
 
 
 let%expect_test "tuple 2" =
   <span data-count="1">t</span>o_anf_prog {| (1, 2) |};
-  <span data-count="1">[</span>%expect{| let t_0 = alloc(1,  2) in t_0;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| let t_0 = alloc(1,  2) in t_0;; |}<span data-count="17">]</span>
 
 
 let%expect_test "tuple 3" =
   <span data-count="1">t</span>o_anf_prog {| (1, 2, 3) |};
-  <span data-count="1">[</span>%expect{| let t_0 = alloc(1,  2,  3) in t_0;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| let t_0 = alloc(1,  2,  3) in t_0;; |}<span data-count="17">]</span>
 
 
 let%expect_test "tuples in tuple" =
   <span data-count="1">t</span>o_anf_prog {| ((1, 2), (3, 4)) |};
   <span data-count="1">[</span>%expect{|
     let t_0 = alloc(1,  2)
-      in let t_1 = alloc(3,  4) in let t_2 = alloc(t_0,  t_1) in t_2;; |}<span data-count="15">]</span>
+      in let t_1 = alloc(3,  4) in let t_2 = alloc(t_0,  t_1) in t_2;; |}<span data-count="17">]</span>
 
 
 let%expect_test "if a then b" =
   <span data-count="1">t</span>o_anf_prog {| if a then b |};
-  <span data-count="1">[</span>%expect{| unsupported expression in ANF normaliser |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| unsupported expression in ANF normaliser |}<span data-count="17">]</span>
 
 
 let%expect_test "if a then b else c" =
   <span data-count="1">t</span>o_anf_prog {| if a then b else c |};
-  <span data-count="1">[</span>%expect{| let t_0 = if a then b else c in t_0;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| let t_0 = if a then b else c in t_0;; |}<span data-count="17">]</span>
 
 
 let%expect_test "apply f x" =
   <span data-count="1">t</span>o_anf_prog {| f x |};
-  <span data-count="1">[</span>%expect{| let t_0 = f x in t_0;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| let t_0 = f x in t_0;; |}<span data-count="17">]</span>
 
 
   let%expect_test "apply f (let a = x in a)" =
   <span data-count="1">t</span>o_anf_prog {| f (let a = x in a) |};
-  <span data-count="1">[</span>%expect{| let t_0 = x in let a = t_0 in let t_1 = f a in t_1;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| let t_0 = x in let a = t_0 in let t_1 = f a in t_1;; |}<span data-count="17">]</span>
 
 
 let%expect_test "apply f x y" =
   <span data-count="1">t</span>o_anf_prog {| f x y |};
-  <span data-count="1">[</span>%expect{| let t_0 = f x in let t_1 = t_0 y in t_1;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| let t_0 = f x in let t_1 = t_0 y in t_1;; |}<span data-count="17">]</span>
 
 
 let%expect_test "apply 1 + 2" =
   <span data-count="1">t</span>o_anf_prog {| 1 + 2 |};
-  <span data-count="1">[</span>%expect{| 3;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| let t_0 = (1 + 2) in t_0;; |}<span data-count="17">]</span>
 
 
 let%expect_test "fun x -&gt; x" =
   <span data-count="1">t</span>o_anf_prog {| fun x -&gt; x |};
-  <span data-count="1">[</span>%expect{| let t_0 = fun x -&gt; x in t_0;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| let t_0 = fun x -&gt; x in t_0;; |}<span data-count="17">]</span>
 
 
 let%expect_test "apply (fun x -&gt; x) 10" =
   <span data-count="1">t</span>o_anf_prog {| (fun x -&gt; x) 10 |};
-  <span data-count="1">[</span>%expect{| let t_0 = fun x -&gt; x in let t_1 = t_0 10 in t_1;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| let t_0 = fun x -&gt; x in let t_1 = t_0 10 in t_1;; |}<span data-count="17">]</span>
 
 
 let%expect_test "let a = 5 in a + 10" =
   <span data-count="1">t</span>o_anf_prog {| let a = 5 in a + 10 |};
-  <span data-count="1">[</span>%expect{| let t_0 = 5 in let a = t_0 in let t_1 = (a + 10) in t_1;; |}<span data-count="15">]</span>
+  <span data-count="1">[</span>%expect{| let t_0 = 5 in let a = t_0 in let t_1 = (a + 10) in t_1;; |}<span data-count="17">]</span>
 
 
 let%expect_test "factorial" =
@@ -468,7 +468,7 @@ let%expect_test "factorial" =
                                                                in let t_2 = fac t_1
                                                                     in let t_3 = (n * t_2)
                                                                         in t_3
-                                  in t_4 in let fac = t_5 in fac;; |}<span data-count="15">]</span>
+                                  in t_4 in let fac = t_5 in fac;; |}<span data-count="17">]</span>
 
 (************************** Structure item **************************)
 
@@ -482,51 +482,51 @@ let%expect_test "factorial" =
                                                                         in
                                                                         let t_3 = (n * t_2)
                                                                         in t_3
-                                            in t_4 in t_5;; |}<span data-count="15">]</span>
+                                            in t_4 in t_5;; |}<span data-count="17">]</span>
 
 (**************************  Error **************************)
 
 let%expect_test "Only_simple_var_params" =
 <span data-count="1">p</span>p_error `Only_simple_var_params;
-<span data-count="1">[</span>%expect {| Only simple variable patterns are allowed in function parameters |}<span data-count="15">]</span>
+<span data-count="1">[</span>%expect {| Only simple variable patterns are allowed in function parameters |}<span data-count="17">]</span>
 
 let%expect_test "Func_no_params" =
 <span data-count="1">p</span>p_error `Func_no_params;
-<span data-count="1">[</span>%expect {| Function with no parameters found |}<span data-count="15">]</span>
+<span data-count="1">[</span>%expect {| Function with no parameters found |}<span data-count="17">]</span>
 
 
 let%expect_test "Let_and_not_supported" =
 <span data-count="1">p</span>p_error `Let_and_not_supported;
-<span data-count="1">[</span>%expect {| let ... and ... is not supported in ANF yet |}<span data-count="15">]</span>
+<span data-count="1">[</span>%expect {| let ... and ... is not supported in ANF yet |}<span data-count="17">]</span>
 
 
 let%expect_test "Unsupported_let_pattern" =
 <span data-count="1">p</span>p_error (`Unsupported_let_pattern "pattern");
-<span data-count="1">[</span>%expect {| Unsupported pattern in let-binding: pattern |}<span data-count="15">]</span>
+<span data-count="1">[</span>%expect {| Unsupported pattern in let-binding: pattern |}<span data-count="17">]</span>
 
 
 let%expect_test "Unsupported_let_pattern" =
 <span data-count="1">p</span>p_error (`Unsupported_let_pattern "wrong_pattern");
-<span data-count="1">[</span>%expect {| Unsupported pattern in let-binding: wrong_pattern |}<span data-count="15">]</span>
+<span data-count="1">[</span>%expect {| Unsupported pattern in let-binding: wrong_pattern |}<span data-count="17">]</span>
 
 
 let%expect_test "Unsupported_expr_in_normaliser" =
 <span data-count="1">p</span>p_error (`Unsupported_expr_in_normaliser);
-<span data-count="1">[</span>%expect {| unsupported expression in ANF normaliser |}<span data-count="15">]</span>
+<span data-count="1">[</span>%expect {| unsupported expression in ANF normaliser |}<span data-count="17">]</span>
 
 let%expect_test "Mutual_rec_not_supported" =
 <span data-count="1">p</span>p_error `Mutual_rec_not_supported;
-<span data-count="1">[</span>%expect {| Mutually recursive let ... and ... bindings are not supported yet. |}<span data-count="15">]</span>
+<span data-count="1">[</span>%expect {| Mutually recursive let ... and ... bindings are not supported yet. |}<span data-count="17">]</span>
 
 
 let%expect_test "Unsupported_toplevel_let" =
 <span data-count="1">p</span>p_error `Unsupported_toplevel_let;
-<span data-count="1">[</span>%expect {| Unsupported pattern in a top-level let-binding. Only simple variables are allowed. |}<span data-count="15">]</span>
+<span data-count="1">[</span>%expect {| Unsupported pattern in a top-level let-binding. Only simple variables are allowed. |}<span data-count="17">]</span>
 
 
 let%expect_test "Unsupported_toplevel_item" =
 <span data-count="1">p</span>p_error `Unsupported_toplevel_item;
-<span data-count="1">[</span>%expect {| Unsupported top-level structure item. |}<span data-count="15">]</span>
+<span data-count="1">[</span>%expect {| Unsupported top-level structure item. |}<span data-count="17">]</span>
 
 </code></pre>
       </div>
