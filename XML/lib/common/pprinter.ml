@@ -194,8 +194,8 @@ let rec pprint_pattern fmt =
   function
   | Pat_constraint (p, tye) -> fprintf fmt "(%a : %a)" pprint_pattern p pprint_type tye
   | Pat_any -> fprintf fmt "_"
-  | Pat_var id ->
-    if is_operator_char id.[0] then fprintf fmt "(%s)" id else fprintf fmt "%s" id
+  | Pat_var id when is_operator_char id.[0] -> fprintf fmt "(%s)" id
+  | Pat_var id -> fprintf fmt "%s" id
   | Pat_constant c -> pprint_constant fmt c
   | Pat_tuple (p1, p2, pl) ->
     fprintf

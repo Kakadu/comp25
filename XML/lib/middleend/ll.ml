@@ -22,30 +22,29 @@ let get_op_name op =
   else (
     let buf = Buffer.create (String.length op * 5) in
     String.iter
-      (fun c ->
-         match c with
-         | '+' -> Buffer.add_string buf "pls"
-         | '*' -> Buffer.add_string buf "str"
-         | '-' -> Buffer.add_string buf "min"
-         | '/' -> Buffer.add_string buf "sls"
-         | '%' -> Buffer.add_string buf "per"
-         | '=' -> Buffer.add_string buf "eql"
-         | '<' -> Buffer.add_string buf "lss"
-         | '>' -> Buffer.add_string buf "gre"
-         | '&' -> Buffer.add_string buf "amp"
-         | '|' -> Buffer.add_string buf "pip"
-         | '!' -> Buffer.add_string buf "ban"
-         | '?' -> Buffer.add_string buf "que"
-         | '@' -> Buffer.add_string buf "att"
-         | '^' -> Buffer.add_string buf "hat"
-         | '~' -> Buffer.add_string buf "tld"
-         | ':' -> Buffer.add_string buf "cln"
-         | '$' -> Buffer.add_string buf "dol"
-         | '.' -> Buffer.add_string buf "dot"
-         | ',' -> Buffer.add_string buf "com"
-         | c ->
-           Buffer.add_string buf "ch";
-           Buffer.add_char buf c)
+      (function
+        | '+' -> Buffer.add_string buf "pls"
+        | '*' -> Buffer.add_string buf "str"
+        | '-' -> Buffer.add_string buf "min"
+        | '/' -> Buffer.add_string buf "sls"
+        | '%' -> Buffer.add_string buf "per"
+        | '=' -> Buffer.add_string buf "eql"
+        | '<' -> Buffer.add_string buf "lss"
+        | '>' -> Buffer.add_string buf "gre"
+        | '&' -> Buffer.add_string buf "amp"
+        | '|' -> Buffer.add_string buf "pip"
+        | '!' -> Buffer.add_string buf "ban"
+        | '?' -> Buffer.add_string buf "que"
+        | '@' -> Buffer.add_string buf "att"
+        | '^' -> Buffer.add_string buf "hat"
+        | '~' -> Buffer.add_string buf "tld"
+        | ':' -> Buffer.add_string buf "cln"
+        | '$' -> Buffer.add_string buf "dol"
+        | '.' -> Buffer.add_string buf "dot"
+        | ',' -> Buffer.add_string buf "com"
+        | c ->
+          Buffer.add_string buf "ch";
+          Buffer.add_char buf c)
       op;
     Buffer.contents buf)
 ;;
